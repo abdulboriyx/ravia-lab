@@ -14,10 +14,6 @@ function getStoredTheme(): Theme | null {
   return stored === "light" || stored === "dark" ? stored : null;
 }
 
-function getSystemTheme(): Theme {
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
 function getThemeSnapshot(): Theme {
   const theme = document.documentElement.dataset.theme;
   return theme === "light" || theme === "dark" ? theme : "dark";
@@ -46,7 +42,7 @@ export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getThemeSnapshot, getServerSnapshot);
 
   useEffect(() => {
-    const activeTheme = getStoredTheme() ?? getSystemTheme();
+    const activeTheme = getStoredTheme() ?? "dark";
     applyTheme(activeTheme);
   }, []);
 
