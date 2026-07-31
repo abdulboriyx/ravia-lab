@@ -1,0 +1,103 @@
+248	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+the 5′ end of an mRNA molecule, which is marked by the 5′ cap that is 
+present on all eukaryotic mRNAs (see Figure 7–16). The small ribosomal 
+subunit then moves forward (5′ to 3′) along the mRNA searching for the 
+first AUG. When this AUG is encountered and recognized by the initiator 
+tRNA, several initiation factors dissociate from the small ribosomal sub-
+unit to make way for the large ribosomal subunit to bind and complete 
+ribosomal assembly. Because the initiator tRNA is bound to the P site, 
+protein synthesis is ready to begin with the addition of the next charged 
+tRNA to the A site (see Figure 7–34).
+The mechanism for selecting a start codon is different in bacteria. Bacterial 
+mRNAs have no 5′ caps to tell the ribosome where to begin searching for 
+the start of translation. Instead, they contain specific ribosome-binding 
+sequences, up to six nucleotides long, that are located a few nucleotides 
+upstream of the AUGs at which translation is to begin. Unlike a eukaryo-
+tic ribosome, a prokaryotic ribosome can readily bind directly to a start 
+codon that lies in the interior of an mRNA, as long as a ribosome-binding 
+site precedes it by several nucleotides. Such ribosome-binding sequences 
+are necessary in bacteria, as prokaryotic mRNAs are often polycistronic—
+that is, they encode several different proteins, each of which is translated 
+from the same mRNA molecule (Figure 7–37). In contrast, a eukaryotic 
+mRNA usually carries the information for a single protein.
+The end of translation in both prokaryotes and eukaryotes is signaled by 
+the presence of one of several codons, called stop codons, in the mRNA 
+(see Figure 7–25). The stop codons—UAA, UAG, and UGA—are not recog-
+nized by a tRNA and do not specify an amino acid, but instead signal to 
+the ribosome to stop translation. Proteins known as release factors bind 
+to any stop codon that reaches the A site on the ribosome; this binding 
+alters the activity of the peptidyl transferase in the ribosome, causing it to 
+catalyze the addition of a water molecule instead of an amino acid to the 
+peptidyl-tRNA (Figure 7–38). This reaction frees the carboxyl end of the 
+polypeptide chain from its attachment to a tRNA molecule; because this 
+is the only attachment that holds the growing polypeptide to the ribos-
+ome, the completed protein chain is immediately released. At this point, 
+the ribosome also releases the mRNA and dissociates into its two sepa-
+rate subunits, which can then assemble on another mRNA molecule to 
+begin a new round of protein synthesis.
+ribosome-binding sites
+5′
+3′
+protein α
+protein β
+protein γ
+mRNA
+AUG
+AUG
+AUG
+P
+P
+P
+E
+P
+A
+5′
+3′
+UAG
+H2N
+NH2
+COOH
+TERMINATION
+BINDING OF
+RELEASE
+FACTOR
+TO THE
+A SITE
+H2O
+3′
+E
+P
+5′
+3′
+UAG
+H2N
+P
+5′
+3′
+UAG
+UAG
+5′
+A
+terminal
+portion of
+mRNA
+released
+polypeptide
+chain
+RIBOSOME
+DISSOCIATES
+Figure 7–37 A single prokaryotic mRNA molecule can encode several different 
+proteins. In prokaryotes, genes directing the different steps in a process are often 
+organized into clusters (operons) that are transcribed together into a single mRNA.  
+A prokaryotic mRNA does not have the same sort of 5′ cap as a eukaryotic mRNA, 
+but instead has a triphosphate at its 5′ end. Prokaryotic ribosomes initiate translation 
+at ribosome-binding sites (dark blue), which can be located in the interior of an 
+mRNA molecule. This feature enables prokaryotes to synthesize different proteins 
+from a single mRNA molecule, with each protein made by a different ribosome.
+Figure 7–38 Translation halts at a stop codon. In the final phase of 
+protein synthesis, the binding of release factor to an A site bearing 
+a stop codon terminates translation of an mRNA molecule. The 
+completed polypeptide is released, and the ribosome dissociates 
+into its two separate subunits. Note that only the 3ʹ end of the mRNA 
+molecule is shown here.

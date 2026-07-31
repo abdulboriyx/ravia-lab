@@ -1,0 +1,59 @@
+228	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+ultimately direct the synthesis of proteins—are called messenger RNAs 
+(mRNAs). In eukaryotes, each mRNA typically carries information tran-
+scribed from just one gene, which codes for a single protein; in bacteria, a 
+set of adjacent genes is often transcribed as a single mRNA, which there-
+fore carries the information for several different proteins.
+The final product of other genes, however, is the RNA itself. As we see 
+later, these nonmessenger RNAs, like proteins, have various roles, serv-
+ing as regulatory, structural, and catalytic components of cells. They play 
+key parts, for example, in translating the genetic message into protein: 
+ribosomal RNAs (rRNAs) form the structural and catalytic core of the ribos-
+omes, which translate mRNAs into protein, and transfer RNAs (tRNAs) act 
+as adaptors that select specific amino acids and hold them in place on a 
+ribosome for their incorporation into protein. Other small RNAs, called 
+microRNAs (miRNAs), serve as key regulators of eukaryotic gene expres-
+sion, as we discuss in Chapter 8. The most common types of RNA are 
+summarized in Table 7–1.
+In the broadest sense, the term gene expression refers to the process 
+by which the information encoded in a DNA sequence is translated into 
+a product that has some effect on a cell or organism. In cases where 
+the final product of the gene is a protein, gene expression includes both 
+transcription and translation. When an RNA molecule is the gene’s final 
+product, however, gene expression does not require translation. 
+Signals in DNA Tell RNA Polymerase Where to Start and 
+Finish Transcription
+The initiation of transcription is an especially critical process because it 
+is the main point at which the cell selects which proteins or RNAs are to 
+be produced. To begin transcription, RNA polymerase must be able to 
+recognize the start of a gene and bind firmly to the DNA at this site. The 
+way in which RNA polymerases recognize the transcription start site of a 
+gene differs somewhat between bacteria and eukaryotes. Because the 
+situation in bacteria is simpler, we describe it first. 
+When an RNA polymerase collides randomly with a DNA molecule, the 
+enzyme sticks weakly to the double helix and then slides rapidly along its 
+length. RNA polymerase latches on tightly only after it has encountered 
+a gene region called a promoter, which contains a specific sequence 
+of nucleotides that lies immediately upstream of the starting point for 
+RNA synthesis. Once bound tightly to this sequence, the RNA polymerase 
+opens up the double helix immediately in front of the promoter to expose 
+the nucleotides on each strand of a short stretch of DNA. One of the two 
+exposed DNA strands then acts as a template for complementary base-
+pairing with incoming ribonucleoside triphosphates, two of which are 
+Table 7–1 Types of RNA Produced in Cells
+Type of RNA
+Function
+messenger RNAs (mRNAs)
+code for proteins
+ribosomal RNAs (rRNAs)
+form the core of the ribosome’s structure and 
+catalyze protein synthesis
+microRNAs (miRNAs)
+regulate gene expression
+transfer RNAs (tRNAs)
+serve as adaptors between mRNA and amino acids 
+during protein synthesis
+other noncoding RNAs
+used in RNA splicing, gene regulation, telomere 
+maintenance, and many other processes

@@ -1,0 +1,105 @@
+227
+Like the DNA polymerase that carries out DNA replication (discussed 
+in Chapter 6), RNA polymerases catalyze the formation of the phos-
+phodiester bonds that link the nucleotides together and form the 
+sugar–phosphate backbone of the RNA chain (see Figure 7–3). The RNA 
+polymerase moves stepwise along the DNA, unwinding the DNA helix 
+just ahead to expose a new region of the template strand for comple-
+mentary base-pairing. In this way, the growing RNA chain is extended by 
+one nucleotide at a time in the 5′-to-3′ direction (Figure 7–7). The incom-
+ing ribonucleoside triphosphates (ATP, CTP, UTP, and GTP) provide the 
+energy needed to drive the reaction forward (see Figure 6–11).
+The almost immediate release of the RNA strand from the DNA as it is syn-
+thesized means that many RNA copies can be made from the same gene 
+in a relatively short time; the synthesis of the next RNA is usually started 
+before the first RNA has been completed (Figure 7–8). A medium-sized 
+gene—say, 1500 nucleotide pairs—requires approximately 50 seconds for 
+a molecule of RNA polymerase to transcribe it (Movie 7.2). At any given 
+time, there could be dozens of polymerases speeding along this single 
+stretch of DNA, hard on one another’s heels, allowing more than 1000 
+transcripts to be synthesized in an hour. For most genes, however, the 
+amount of transcription is much less than this.
+Although RNA polymerase catalyzes essentially the same chemical reac-
+tion as DNA polymerase, there are some important differences between 
+the two enzymes. First, and most obviously, RNA polymerase uses ribo-
+nucleoside for phosphates as substrates, so it catalyzes the linkage of 
+ribonucleotides, not deoxyribonucleotides. Second, unlike the DNA 
+polymerase involved in DNA replication, RNA polymerases can start an 
+RNA chain without a primer. This difference likely evolved because tran-
+scription need not be as accurate as DNA replication; unlike DNA, RNA is 
+not used as the permanent storage form of genetic information in cells, 
+so mistakes in RNA transcripts have relatively minor consequences for a 
+cell. RNA polymerases make about one mistake for every 104 nucleotides 
+copied into RNA, whereas DNA polymerase makes only one mistake for 
+every 107 nucleotides copied.
+Cells Produce Various Types of RNA 
+The vast majority of genes carried in a cell’s DNA specify the amino acid 
+sequences of proteins. The RNA molecules encoded by these genes—which 
+RNA polymerase
+5′
+5′
+3′
+5′
+3′
+incoming
+ribonucleoside
+triphosphates
+DNA template
+strand
+ribonucleoside
+triphosphate
+tunnel
+active site of
+polymerase
+newly synthesized
+RNA transcript
+Figure 7–7 DNA is transcribed into RNA 
+by the enzyme RNA polymerase. RNA 
+polymerase (pale blue) moves stepwise 
+along the DNA, unwinding the DNA helix in 
+front of it. As it progresses, the polymerase 
+adds ribonucleotides one by one to the 
+RNA chain, using an exposed DNA strand as 
+a template. The resulting RNA transcript is 
+thus single-stranded and complementary to 
+this template strand (see Figure 7–6). As the 
+polymerase moves along the DNA template 
+(in the 3′-to-5′ direction), it displaces the 
+newly formed RNA, allowing the two strands 
+of DNA behind the polymerase to rewind. 
+A short region of hybrid DNA/RNA helix 
+(approximately nine nucleotides in length) 
+therefore forms only transiently, causing a 
+“window” of DNA/RNA helix to move along 
+the DNA with the polymerase (Movie 7.2).
+1 μm
+Figure 7–8 Transcription can be visualized 
+in the electron microscope. The 
+micrograph shows many molecules of RNA 
+polymerase simultaneously transcribing two 
+adjacent ribosomal genes on a single DNA 
+molecule. Molecules of RNA polymerase 
+are barely visible as a series of tiny dots 
+along the spine of the DNA molecule; 
+each polymerase has an RNA transcript (a 
+short, fine thread) radiating from it. The 
+RNA molecules being transcribed from the 
+two ribosomal genes—ribosomal RNAs 
+(rRNAs)—are not translated into protein, but 
+are instead used directly as components of 
+ribosomes, macromolecular machines made 
+of RNA and protein. The large particles that 
+can be seen at the free, 5′ end of each rRNA 
+transcript are believed to be ribosomal 
+proteins that have assembled on the ends 
+of the growing transcripts. (Courtesy of 
+Ulrich Scheer.) 
+From DNA to RNA         
+Question 7–2
+In the electron micrograph in Figure 
+7–8, are the RNA polymerase 
+molecules moving from right to left 
+or from left to right? Why are the 
+RNA transcripts so much shorter 
+than the DNA segments (genes) that 
+encode them?

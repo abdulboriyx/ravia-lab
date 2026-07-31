@@ -1,0 +1,92 @@
+238	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+large fraction of the RNA it synthesizes without ever using it. According 
+to one school of thought, early cells—the common ancestors of prokary-
+otes and eukaryotes—contained introns that were lost in prokaryotes 
+during subsequent evolution. By shedding their introns and adopting a 
+smaller, more streamlined genome, prokaryotes would have been able to 
+reproduce more rapidly and efficiently. Consistent with this idea, simple 
+eukaryotes that reproduce rapidly (some yeasts, for example) have rela-
+tively few introns, and these introns are usually much shorter than those 
+found in higher eukaryotes. 
+On the other hand, some argue that introns were originally parasitic 
+mobile genetic elements (discussed in Chapter 9) that happened to 
+invade an early eukaryotic ancestor, colonizing its genome. These host 
+cells then unwittingly replicated the “stowaway” nucleotide sequences 
+along with their own DNA; modern eukaryotes simply never bothered 
+to sweep away the genetic clutter left from that ancient infection. The 
+issue, however, is far from settled; whether introns evolved early—and 
+were lost in prokaryotes—or evolved later in eukaryotes is still a topic of 
+scientific debate, and we return to it in Chapter 9.
+From RNA to Protein
+By the end of the 1950s, biologists had demonstrated that the informa-
+tion encoded in DNA is copied first into RNA and then into protein. The 
+debate then shifted to the “coding problem”: How is the information in 
+a linear sequence of nucleotides in an RNA molecule translated into the 
+linear sequence of a chemically quite different set of subunits—the amino 
+acids in a protein? This fascinating question intrigued scientists at the 
+time. Here was a cryptogram set up by nature that, after more than 3 
+billion years of evolution, could finally be solved by one of the products 
+of evolution—human beings! Indeed, scientists have not only cracked 
+the code but have revealed, in atomic detail, the precise workings of the 
+machinery by which cells read this code.
+AAAA
+AAAA
+CYTOPLASM
+NUCLEUS
+pre-mRNA
+DNA
+introns
+exons
+TRANSCRIPTION
+TRANSLATION
+EXPORT
+5′ CAPPING
+RNA SPLICING
+3′ POLYADENYLATION
+mRNA
+mRNA
+protein
+EUKARYOTES
+(A)
+PROKARYOTES
+(B)
+DNA
+TRANSCRIPTION
+TRANSLATION
+mRNA
+protein
+RNA cap
+Figure 7–24 Prokaryotes and eukaryotes 
+handle their RNA transcripts differently. 
+(A) In eukaryotic cells, the pre-mRNA 
+molecule produced by transcription 
+contains both intron and exon sequences. 
+Its two ends are modified, and the introns 
+are removed by RNA splicing. The resulting 
+mRNA is then transported from the nucleus 
+to the cytoplasm, where it is translated into 
+protein. Although these steps are depicted 
+as occurring in sequence, one at a time, 
+in reality they occur simultaneously. For 
+example, the RNA cap is usually added and 
+splicing usually begins before transcription 
+has been completed. Because of this 
+overlap, transcripts of the entire gene 
+(including all introns and exons) do not 
+typically exist in the cell. (B) In prokaryotes, 
+the production of mRNA molecules 
+is simpler. The 5′ end of an mRNA 
+molecule is produced by the initiation of 
+transcription by RNA polymerase, and the 
+3′ end is produced by the termination of 
+transcription. Because prokaryotic cells 
+lack a nucleus, transcription and translation 
+take place in a common compartment. 
+Translation of a bacterial mRNA can 
+therefore begin before its synthesis has 
+been completed. In both eukaryotes and 
+prokaryotes, the amount of a protein in a 
+cell depends on the rates of each of these 
+steps, as well as on the rates of degradation 
+of the mRNA and protein molecules.

@@ -1,0 +1,33 @@
+Once the double-helical structure of DNA (deoxyribonucleic acid) had 
+been determined in the early 1950s, it became clear that the hereditary 
+information in cells is encoded in the linear order—or sequence—of the 
+four different nucleotide subunits that make up the DNA. We saw in 
+Chapter 6 how this information can be passed on unchanged from a cell 
+to its descendants through the process of DNA replication. But how does 
+the cell decode and use the information? How do genetic instructions 
+written in an alphabet of just four “letters” direct the formation of a bac-
+terium, a fruit fly, or a human? We still have a lot to learn about how the 
+information stored in an organism’s genes produces even the simplest 
+unicellular bacterium, let alone how it directs the development of com-
+plex multicellular organisms like ourselves. But the DNA code itself has 
+been deciphered, and we have come a long way in understanding how 
+cells read it. 
+Even before the DNA code was broken, it was known that the information 
+contained in genes somehow directed the synthesis of proteins. Proteins 
+are the principal constituents of cells and determine not only cell struc-
+ture but also cell function. In previous chapters, we encountered some 
+of the thousands of different kinds of proteins that cells can make. We 
+saw in Chapter 4 that the properties and function of a protein molecule 
+are determined by the sequence of the 20 different amino acid subunits 
+in its polypeptide chain: each type of protein has its own unique amino 
+acid sequence, which dictates how the chain will fold to form a molecule 
+with a distinctive shape and chemistry. The genetic instructions carried 
+by DNA must therefore specify the amino acid sequences of proteins. We 
+will see in this chapter exactly how this is done.
+chapter seven
+7
+From DNA to Protein:
+How Cells Read the Genome
+from DNA to RNA
+from RNA to protein
+RNA and the origins of life

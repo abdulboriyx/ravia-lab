@@ -1,0 +1,59 @@
+250	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+have seen that there are some subtle differences in the way that bac-
+teria and eukaryotes synthesize RNA and proteins. Through a quirk of 
+evolution, these differences form the basis of one of the most important 
+advances in modern medicine.
+Many of our most effective antibiotics are compounds that act by inhib-
+iting bacterial, but not eukaryotic, RNA and protein synthesis. Some 
+of these drugs exploit the small structural and functional differences 
+between bacterial and eukaryotic ribosomes, so that they interfere pref-
+erentially with bacterial protein synthesis. These compounds can thus 
+be taken in doses high enough to kill bacteria without being toxic to 
+humans. Because different antibiotics bind to different regions of the 
+bacterial ribosome, these drugs often inhibit different steps in protein 
+synthesis. A few of the antibiotics that inhibit bacterial RNA and protein 
+synthesis are listed in Table 7–3. 
+Many common antibiotics were first isolated from fungi. Fungi and bacte-
+ria often occupy the same ecological niches; to gain a competitive edge, 
+fungi have evolved, over time, potent toxins that kill bacteria but are 
+harmless to themselves. Because fungi and humans are both eukaryotes, 
+and are thus more closely related to each other than either is to bacteria 
+(see Figure 1–28), we have been able to borrow these weapons to combat 
+our own bacterial foes.
+Controlled Protein Breakdown Helps Regulate the Amount 
+of Each Protein in a Cell
+After a protein is released from the ribosome, a cell can control its activ-
+ity and longevity in various ways. The number of copies of a protein in 
+a cell depends, like the human population, not only on how quickly new 
+individuals are made but also on how long they survive. So controlling 
+the breakdown of proteins into their constituent amino acids helps cells 
+regulate the amount of each particular protein. Proteins vary enormously 
+in their life-span. Structural proteins that become part of a relatively sta-
+ble tissue such as bone or muscle may last for months or even years, 
+whereas other proteins, such as metabolic enzymes and those that regu-
+late cell growth and division (discussed in Chapter 18), last only for days, 
+hours, or even seconds. How does the cell control these lifetimes?
+Cells possess specialized pathways that enzymatically break proteins 
+down into their constituent amino acids (a process termed proteolysis). 
+The enzymes that degrade proteins, first to short peptides and finally to 
+individual amino acids, are known collectively as proteases. Proteases 
+Table 7–3 Antibiotics that Inhibit BACTERIAL Protein or RNA 
+Synthesis
+Antibiotic
+Specific Effect
+Tetracycline
+blocks binding of aminoacyl-tRNA to A site of ribosome 
+(step 1 in Figure 7–34)
+Streptomycin
+prevents the transition from initiation complex to chain 
+elongation (see Figure 7–36); also causes miscoding
+Chloramphenicol
+blocks the peptidyl transferase reaction on ribosomes  
+(step 2 in Figure 7–34)
+Cycloheximide
+blocks the translocation reaction on ribosomes (step 3 in 
+Figure 7–34)
+Rifamycin
+blocks initiation of transcription by binding to RNA 
+polymerase

@@ -1,0 +1,171 @@
+225
+O
+H2C
+O
+OH
+O
+P
+O
+H2C
+O
+OH
+O
+P
+O
+H2C
+O
+OH
+O
+P
+O
+HOCH2
+H
+H
+OH
+H
+H
+OH
+H
+O
+HOCH2
+H
+H
+OH
+H
+H
+OH
+OH
+O
+H2C
+O
+OH
+ribose
+used in RNA
+deoxyribose
+used in DNA
+(A)
+uracil
+used in RNA
+thymine
+used in DNA
+(B)
+O
+C
+C
+HC
+HC
+NH
+N
+H
+O
+O
+O
+C
+C
+C
+HC
+NH
+N
+H
+H3C
+O
+O
+O
+–O
+P
+C
+A
+U
+G
+3′ end
+(C)
+5′ end
+bases
+ribose
+O
+–O
+P
+O
+–O
+P
+O
+–O
+P
+U
+T
+SUGAR DIFFERENCES
+BASE DIFFERENCES
+sugar–phosphate
+backbone
+From DNA to RNA         
+Figure 7–3 The chemical structure of RNA differs slightly from 
+that of DNA. (A) RNA contains the sugar ribose, which differs from 
+deoxyribose, the sugar used in DNA, by the presence of an additional 
+–OH group. (B) RNA contains the base uracil, which differs from 
+thymine, the equivalent base in DNA, by the absence of a –CH3 group. 
+(C) A short length of RNA. The chemical linkage between nucleotides 
+in RNA—a phosphodiester bond—is the same as that in DNA.
+Portions of DNA Sequence Are Transcribed into RNA
+The first step a cell takes in expressing one of its many thousands of 
+genes is to copy the nucleotide sequence of that gene into RNA. The proc-
+ess is called transcription because the information, though copied into 
+another chemical form, is still written in essentially the same language—
+the language of nucleotides. Like DNA, RNA is a linear polymer made 
+of four different nucleotide subunits, linked together by phosphodiester 
+bonds. It differs from DNA chemically in two respects: (1) the nucle-
+otides in RNA are ribonucleotides—that is, they contain the sugar ribose 
+(hence the name ribonucleic acid) rather than deoxyribose; (2) although, 
+like DNA, RNA contains the bases adenine (A), guanine (G), and cyto-
+sine (C), it contains uracil (U) instead of the thymine (T) found in DNA 
+(Figure 7–3). Because U, like T, can base-pair by hydrogen-bonding with 
+A (Figure 7–4), the complementary base-pairing properties described for 
+DNA in Chapter 5 apply also to RNA. 
+Although their chemical differences are small, DNA and RNA differ quite 
+dramatically in overall structure. Whereas DNA always occurs in cells 
+as a double-stranded helix, RNA is single-stranded. This difference has 
+important functional consequences. Because an RNA chain is single-
+stranded, it can fold up into a variety of shapes, just as a polypeptide 
+chain folds up to form the final shape of a protein (Figure 7–5); double-
+stranded DNA cannot fold in this fashion. As we discuss later, the ability 
+to fold into a complex three-dimensional shape allows RNA to carry out 
+various functions in cells, in addition to conveying information between 
+DNA and protein. Whereas DNA functions solely as an information store, 
+some RNAs have structural, regulatory, or catalytic roles.
+C
+C
+C
+C
+N
+N
+O
+uracil
+O
+H
+N
+N
+N
+N
+C
+C
+C
+C
+H
+C
+H
+H
+N
+H
+adenine
+3′
+5′
+5′
+3′
+sugar–phosphate backbone
+H
+H
+U
+A
+Figure 7–4 Uracil forms a base pair with adenine. The hydrogen 
+bonds that hold the base pair together are shown in red. Uracil has the 
+same base-pairing properties as thymine. Thus U-A base pairs in RNA 
+closely resemble T-A base pairs in DNA (see Figure 5–6A). 

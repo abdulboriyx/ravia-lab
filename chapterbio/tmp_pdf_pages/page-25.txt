@@ -1,0 +1,130 @@
+247
+to help fold and stabilize the RNA core, while permitting the changes in 
+rRNA conformation that are necessary for this RNA to catalyze efficient 
+protein synthesis.
+Not only are the three tRNA-binding sites (the A, P, and E sites) on the 
+ribosome formed primarily by the rRNAs, but the catalytic site for peptide 
+bond formation is formed by the 23S rRNA of the large subunit; the near-
+est ribosomal protein is located too far away to make contact with the 
+incoming charged tRNA or with the growing polypeptide chain. The cata-
+lytic site in this rRNA—a peptidyl transferase—is similar in many respects 
+to that found in some protein enzymes: it is a highly structured pocket 
+that precisely orients the two reactants—the elongating polypeptide and 
+the charged tRNA—thereby greatly increasing the probability of a produc-
+tive reaction.
+RNA molecules that possess catalytic activity are called ribozymes. Later, 
+in the final section of this chapter, we will consider other ribozymes and 
+discuss what the existence of RNA-based catalysis might mean for the 
+early evolution of life on Earth. Here we need only note that there is good 
+reason to suspect that RNA rather than protein molecules served as the 
+first catalysts for living cells. If so, the ribosome, with its catalytic RNA 
+core, could be viewed as a relic of an earlier time in life’s history, when 
+cells were run almost entirely by ribozymes.
+Specific Codons in mRNA Signal the Ribosome Where to 
+Start and to Stop Protein Synthesis
+In the test tube, ribosomes can be forced to translate any RNA molecule 
+(see How We Know, pp. 240–241). In a cell, however, a specific start sig-
+nal is required to initiate translation. The site at which protein synthesis 
+begins on an mRNA is crucial, because it sets the reading frame for the 
+whole length of the message. An error of one nucleotide either way at 
+this stage will cause every subsequent codon in the mRNA to be misread, 
+resulting in a nonfunctional protein with a garbled sequence of amino 
+acids (see Figure 7–26). And the rate of initiation determines the rate at 
+which the protein is synthesized from the mRNA.
+The translation of an mRNA begins with the codon AUG, and a special 
+charged tRNA is required to initiate translation. This initiator tRNA 
+always carries the amino acid methionine (or a modified form of methio-
+nine, formyl-methionine, in bacteria). Thus newly made proteins all have 
+methionine as the first amino acid at their N-terminal end, the end of a 
+protein that is synthesized first. This methionine is usually removed later 
+by a specific protease.
+In eukaryotes, an initiator tRNA, charged with methionine, is first loaded 
+into the P site of the small ribosomal subunit, along with additional pro-
+teins called translation initiation factors (Figure 7–36). The initiator 
+tRNA is distinct from the tRNA that normally carries methionine. Of all 
+the tRNAs in the cell, only a charged initiator tRNA molecule is capable of 
+binding tightly to the P site in the absence of the large ribosomal subunit. 
+Next, the small ribosomal subunit loaded with the initiator tRNA binds to 
+Figure 7–36 Initiation of protein synthesis in eukaryotes requires 
+translation initiation factors and a special initiator tRNA. Although 
+not shown here, efficient translation initiation also requires additional 
+proteins that are bound at the 5′ cap and poly-A tail of the mRNA 
+(see Figure 7–23). In this way, the translation apparatus can ascertain 
+that both ends of the mRNA are intact before initiating translation. 
+Following initiation, the protein is elongated by the reactions outlined 
+in Figure 7–34.
+From RNA to Protein         
+Question 7–5
+A sequence of nucleotides in a DNA 
+strand—5′-TTAACGGCTTTTTTC-3′—
+was used as a template to 
+synthesize an mRNA that was then 
+translated into protein. Predict 
+the C-terminal amino acid and 
+the N-terminal amino acid of the 
+resulting polypeptide. Assume that 
+the mRNA is translated without the 
+need for a start codon.
+P
+5′
+3′
+5′
+3′
+5′
+3′
+mRNA
+AUG
+aa
+initiator tRNA
+small ribosomal subunit
+with translation initiation
+factors bound
+SMALL RIBOSOMAL
+SUBUNIT, WITH BOUND
+INITIATOR tRNA,
+MOVES ALONG 
+mRNA SEARCHING 
+FOR FIRST AUG
+TRANSLATION
+INITIATION
+FACTORS 
+DISSOCIATE
+LARGE
+RIBOSOMAL
+SUBUNIT
+BINDS
+CHARGED
+tRNA BINDS
+TO A SITE
+(step 1)
+FIRST PEPTIDE
+BOND FORMS 
+(step 2)
+AUG
+mRNA BINDING
+P
+P
+AUG
+E
+A
+Met
+Met
+Met
+5′
+3′
+P
+AUG
+E
+A
+Met aa
+5′
+3′
+P
+AUG
+E
+A
+Met
+aa
+Met
+translation initiation
+factors

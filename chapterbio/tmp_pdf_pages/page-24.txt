@@ -1,0 +1,133 @@
+246	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+The Ribosome Is a Ribozyme
+The ribosome is one of the largest and most complex structures in the cell, 
+composed of two-thirds RNA and one-third protein by weight. The deter-
+mination of the entire three-dimensional structure of its large and small 
+subunits in 2000 was a major triumph of modern biology. The structure 
+confirmed earlier evidence that the rRNAs—not the proteins—are respon-
+sible for the ribosome’s overall structure and its ability to choreograph 
+and catalyze protein synthesis. 
+The rRNAs are folded into highly compact, precise three-dimensional 
+structures that form the core of the ribosome (Figure 7–35). In marked 
+contrast to the central positioning of the rRNAs, the ribosomal proteins 
+are generally located on the surface, where they fill the gaps and crevices 
+of the folded RNA. The main role of the ribosomal proteins seems to be 
+Figure 7–34 Translation takes place in a four-step cycle. This cycle 
+is repeated over and over during the synthesis of a protein. In step 
+1, a charged tRNA carrying the next amino acid to be added to the 
+polypeptide chain binds to the vacant A site on the ribosome by forming 
+base pairs with the mRNA codon that is exposed there. Because only 
+the appropriate tRNA molecules can base-pair with each codon, this 
+codon determines the specific amino acid added. The A and P sites are 
+sufficiently close together that their two tRNA molecules are forced to 
+form base pairs with codons that are contiguous, with no stray bases in 
+between. This positioning of the tRNAs ensures that the correct reading 
+frame will be preserved throughout the synthesis of the protein. In step 
+2, the carboxyl end of the polypeptide chain (amino acid 3 in step 1) is 
+uncoupled from the tRNA at the P site and joined by a peptide bond to 
+the free amino group of the amino acid linked to the tRNA at the A site. 
+This reaction is catalyzed by an enzymatic site in the large subunit. In 
+step 3, a shift of the large subunit relative to the small subunit moves the 
+two tRNAs into the E and P sites of the large subunit. In step 4, the small 
+subunit moves exactly three nucleotides along the mRNA molecule, 
+bringing it back to its original position relative to the large subunit. This 
+movement ejects the spent tRNA and resets the ribosome with an empty 
+A site so that the next charged tRNA molecule can bind (Movie 7.8).   
+   As indicated, the mRNA is translated in the 5′-to-3′ direction, and the 
+N-terminal end of a protein is made first, with each cycle adding one 
+amino acid to the C-terminus of the polypeptide chain. To watch the 
+translation cycle in atomic detail, see Movie 7.9.
+L1
+5S rRNA
+23S rRNA
+Figure 7–35 Ribosomal RNAs give the 
+ribosome its overall shape. Shown here 
+are the detailed structures of the two rRNAs 
+that form the core of the large subunit of 
+a bacterial ribosome—the 23S rRNA (blue) 
+and the 5S rRNA (purple). One of the protein 
+subunits of the ribosome (L1) is included 
+as a reference point, as this protein forms 
+a characteristic protrusion on the ribosome 
+surface. Ribosomal components are commonly 
+designated by their “S values,” which 
+refer to their rate of sedimentation in an 
+ultracentrifuge. (Adapted from N. Ban et al., 
+Science 289:905–920, 2000. With permission 
+from AAAS.)
+SMALL SUBUNIT TRANSLOCATES
+LARGE SUBUNIT TRANSLOCATES
+newly bound
+charged
+tRNA
+P
+A
+4
+1
+2
+3
+4
+5
+4
+1
+2
+3
+4
+5
+P
+A
+3
+4
+1
+2
+3
+4
+E
+H2N
+H2N
+H2N
+H2N
+STEP 2
+STEP 3
+STEP 4
+STEP 1
+5′
+3′
+5′
+3′
+5′
+3′
+5′
+3′
+P
+A
+3
+4
+1
+2
+3
+4
+H2N
+growing polypeptide chain
+STEP 1
+5′
+3′
+A
+3
+4
+ejected tRNA
+E site
+P site
+A site
+3
+newly
+bound
+charged
+tRNA
+E
+E
+1
+2
+3
+4

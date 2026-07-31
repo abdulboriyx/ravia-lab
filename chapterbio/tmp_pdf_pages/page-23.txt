@@ -1,0 +1,90 @@
+245
+How does the ribosome choreograph all the movements required for 
+translation? In addition to a binding site for an mRNA molecule, each 
+ribosome contains three binding sites for tRNA molecules, called the A 
+site, the P site, and the E site (Figure 7–33). To add an amino acid to a 
+growing peptide chain, the appropriate charged tRNA enters the A site 
+by base-pairing with the complementary codon on the mRNA molecule. 
+Its amino acid is then linked to the peptide chain held by the tRNA in the 
+neighboring P site. Next, the large ribosomal subunit shifts forward, mov-
+ing the spent tRNA to the E site before ejecting it (Figure 7–34). This cycle 
+of reactions is repeated each time an amino acid is added to the polypep-
+tide chain, with the new protein growing from its amino to its carboxyl 
+end until a stop codon in the mRNA is encountered.
++
++
++
+rRNA
++
+rRNA
+rRNA
+rRNA
+~49 ribosomal proteins + 3 rRNA molecules
+~33 ribosomal proteins + 1 rRNA molecule
+large subunit
+small subunit
+MW = 1,400,000
+complete eukaryotic ribosome
+MW = 2,800,000
+large
+subunit
+small
+subunit
+MW = 4,200,000
+~82 different proteins + 
+4 different rRNA molecules
+Figure 7–32 The eukaryotic ribosome 
+is a large complex of four rRNAs and 
+more than 80 small proteins. Prokaryotic 
+ribosomes are very similar: both are formed 
+from a large and small subunit, which only 
+come together after the small subunit has 
+bound an mRNA. Although ribosomal 
+proteins greatly outnumber rRNAs, the 
+RNAs account for most of the mass of the 
+ribosome and give it its overall shape and 
+structure. 
+Figure 7–33 Each ribosome has a binding 
+site for mRNA and three binding sites 
+for tRNA. The tRNA sites are designated 
+the A, P, and E sites (short for aminoacyl-
+tRNA, peptidyl-tRNA, and exit, respectively). 
+(A) Three-dimensional structure of a 
+bacterial ribosome, as determined by X-ray 
+crystallography, with the small subunit in 
+dark green and the large subunit in light 
+green. Both the rRNAs and the ribosomal 
+proteins are shown in green. tRNAs are 
+shown bound in the E site (red), the P site 
+(orange), and the A site (yellow). Although 
+all three tRNA sites are shown occupied 
+here, during the process of protein synthesis 
+only two of these sites are occupied at 
+any one time (see Figure 7–34). (B) Highly 
+schematized representation of a ribosome 
+(in the same orientation as A), which will be 
+used in subsequent figures. Note that both 
+the large and small subunits are involved 
+in forming the A, P, and E sites, while only 
+the small subunit forms the binding site for 
+an mRNA. (B, adapted from M.M. Yusupov 
+et al., Science 292:883–896, 2001, with 
+permission from AAAS. Courtesy of Albion 
+Baucom and Harry Noller.) 
+(A)
+E
+P
+A
+E site
+P site
+A site
+mRNA-
+binding site
+large
+ribosomal
+subunit
+small
+ribosomal
+subunit
+(B)
+From RNA to Protein         

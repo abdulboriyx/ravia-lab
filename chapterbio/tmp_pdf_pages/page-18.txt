@@ -1,0 +1,106 @@
+240
+By the beginning of the 1960s, the central dogma had 
+been accepted as the pathway along which informa-
+tion flows from gene to protein. It was clear that genes 
+encode proteins, that genes are made of DNA, and that 
+mRNA serves as an intermediary, carrying the infor-
+mation from DNA to the ribosome, where the RNA is 
+translated into protein. 
+Even the general format of the genetic code had been 
+worked out: each of the 20 amino acids found in pro-
+teins is represented by a triplet codon in an mRNA 
+molecule. But an even greater challenge remained: 
+biologists, chemists, and even physicists set their sights 
+on breaking the genetic code—attempting to figure out 
+which amino acid each of the 64 possible nucleotide tri-
+plets designates. The most straightforward path to the 
+solution would have been to compare the sequence of 
+a segment of DNA or of mRNA with its corresponding 
+polypeptide product. Techniques for sequencing nucleic 
+acids, however, would not be devised for another 10 
+years. 
+So researchers decided that, to crack the genetic code, 
+they would have to synthesize their own simple RNA 
+molecules. If they could feed these RNA molecules to 
+ribosomes—the machines that make proteins—and 
+then analyze the resulting polypeptide product, they 
+would be on their way to deciphering which triplets 
+encode which amino acids.
+Losing the cells
+Before researchers could test their synthetic mRNAs, 
+they needed to perfect a cell-free system for protein 
+synthesis. This would allow them to translate their 
+messages into polypeptides in a test tube. (Generally 
+speaking, when working in the laboratory, the simpler 
+the system, the easier it is to interpret the results.) To 
+isolate the molecular machinery they needed for such 
+a cell-free translation system, researchers broke open 
+E. coli cells and loaded their contents into a centrifuge 
+tube. Spinning these samples at high speed caused the 
+membranes and other large chunks of cellular debris to 
+be dragged to the bottom of the tube; the lighter cellular 
+components required for protein synthesis—including 
+mRNA, the tRNA adaptors, ribosomes, enzymes, and 
+other small molecules—were left floating in the superna-
+tant. Researchers found that simply adding radioactive 
+amino acids to this cell “soup” would trigger the produc-
+tion of radiolabeled polypeptides. By centrifuging this 
+supernatant again, at a higher speed, the researchers 
+could force the ribosomes, and any newly synthesized 
+peptides attached to them, to the bottom of the tube; the 
+labeled polypeptides could then be detected by measur-
+ing the radioactivity in the sediment remaining in the 
+tube after the top layer had been discarded.
+The trouble with this particular system was that it 
+produced proteins encoded by the cell’s own mRNAs 
+already present in the extract. But researchers wanted 
+to use their own synthetic messages to direct protein 
+synthesis. This problem was solved when Marshall 
+Nirenberg discovered that he could destroy the cells’ 
+mRNA in the extract by adding a small amount of ribo-
+nuclease—an enzyme that degrades RNA—to the mix. 
+Now all he needed to do was prepare large quantities of 
+synthetic mRNA, add it to the cell-free system, and see 
+what peptides came out.
+Faking the message
+Producing a synthetic polynucleotide with a defined 
+sequence was not as simple as it sounds. Again, it 
+would be years before chemists and bioengineers devel-
+oped machines that could synthesize any given string 
+of nucleic acids quickly and cheaply. Nirenberg decided 
+to use polynucleotide phosphorylase, an enzyme that 
+would join ribonucleotides together in the absence of a 
+template. The sequence of the resulting RNA would then 
+depend entirely on which nucleotides were presented 
+to the enzyme. A mixture of nucleotides would be sewn 
+into a random sequence; but a single type of nucleotide 
+would yield a homogeneous polymer containing only 
+that one nucleotide. Thus Nirenberg, working with his 
+collaborator Heinrich Matthaei, first produced synthetic 
+mRNAs made entirely of uracil—poly U.
+Together, the researchers fed this poly U to their cell-
+free translation system. They then added a single type 
+of radioactively labeled amino acid to the mix. After 
+testing each amino acid—one at a time, in 20 differ-
+ent experiments—they determined that poly U directs 
+the synthesis of a polypeptide containing only phenyl-
+alanine (Figure 7–27). With this electrifying result, the 
+first word in the genetic code had been deciphered (see 
+Figure 7–25). 
+Nirenberg and Matthaei then repeated the experiment 
+with poly A and poly C and determined that AAA codes 
+for lysine and CCC for proline. The meaning of poly G 
+could not be ascertained by this method because this 
+polynucleotide forms an odd triple-stranded helix that 
+did not serve as a template in the cell-free system.
+Feeding ribosomes with synthetic RNA seemed a 
+fruitful technique. But with the single-nucleotide pos-
+sibilities exhausted, researchers had nailed down only 
+three codons; they had 61 still to go. The other codons, 
+however, were harder to decipher, and a new synthetic 
+approach was needed. In the 1950s, the organic chem-
+ist Gobind Khorana had been developing methods for 
+preparing mixed polynucleotides of defined sequence—
+but his techniques worked only for DNA. When he 
+CRACKING THE GENETIC CODE
+How we Know

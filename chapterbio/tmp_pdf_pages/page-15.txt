@@ -1,0 +1,98 @@
+237
+proteins that bind to mRNAs that have been appropriately spliced (Figure 
+7–23). The entire set of bound proteins, rather than any single protein, 
+ultimately determines whether an mRNA molecule will leave the nucleus. 
+The “waste RNAs” that remain behind in the nucleus are degraded there, 
+and their nucleotide building blocks are reused for transcription.
+mRNA Molecules Are Eventually Degraded in the Cytosol
+Because a single mRNA molecule can be translated into protein many 
+times (see Figure 7–2), the length of time that a mature mRNA mole-
+cule persists in the cell affects the amount of protein it produces. Each 
+mRNA molecule is eventually degraded into nucleotides by ribonucleases 
+(RNAses) present in the cytosol, but the lifetimes of mRNA molecules dif-
+fer considerably—depending on the nucleotide sequence of the mRNA 
+and the type of cell. In bacteria, most mRNAs are degraded rapidly, hav-
+ing a typical lifetime of about 3 minutes. The mRNAs in eukaryotic cells 
+usually persist longer: some, such as those encoding β-globin, have life-
+times of more than 10 hours, whereas others have lifetimes of less than 
+30 minutes. 
+These different lifetimes are in part controlled by nucleotide sequences 
+in the mRNA itself, most often in the portion of RNA called the 3′ untrans-
+lated region, which lies between the 3′ end of the coding sequence and 
+the poly-A tail. The different lifetimes of mRNAs help the cell control the 
+amount of each protein that it synthesizes. In general, proteins made in 
+large amounts, such as β-globin, are translated from mRNAs that have 
+long lifetimes, whereas proteins made in smaller amounts, or whose lev-
+els must change rapidly in response to signals, are typically synthesized 
+from short-lived mRNAs. 
+The Earliest Cells May Have Had Introns in Their Genes
+The process of transcription is universal: all cells use RNA polymerase 
+and complementary base-pairing to synthesize RNA from DNA. Indeed, 
+bacterial and eukaryotic RNA polymerases are almost identical in overall 
+structure and clearly evolved from a shared ancestral polymerase. It may 
+therefore seem puzzling that the resulting RNA transcripts are handled so 
+differently in eukaryotes and in prokaryotes (Figure 7–24). In particular, 
+RNA splicing seems to mark a fundamental difference between those two 
+types of cells. But how did this dramatic difference arise?
+As we have seen, RNA splicing provides eukaryotes with the ability to 
+produce a variety of proteins from a single gene. It also allows them 
+to evolve new genes by mixing-and-matching exons from preexisting 
+genes, as we discuss in Chapter 9. However, these advantages come with 
+a cost: the cell has to maintain a larger genome and has to discard a 
+poly-A–binding
+protein
+NUCLEUS
+CYTOSOL
+AA
+A
+A
+A
+A
+ 
+5′ cap
+TRANSLATION
+PROTEIN
+EXCHANGE
+exon
+junction
+complex
+nuclear pore
+complex
+initiation factors
+for protein synthesis
+cap-binding
+protein
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+nuclear
+envelope
+Figure 7–23 A specialized set of RNA-
+binding proteins signals that a mature 
+mRNA is ready for export to the cytosol. 
+As indicated on the left, the cap and 
+poly-A tail of a mature mRNA molecule 
+are “marked” by proteins that recognize 
+these modifications. In addition, a group of 
+proteins called the exon junction complex 
+is deposited on the pre-mRNA after each 
+successful splice has occurred. Once the 
+mRNA is deemed “export ready,” a nuclear 
+transport receptor (discussed in Chapter 
+15) associates with the mRNA and guides it 
+through the nuclear pore. In the cytosol, the 
+mRNA can shed some of these proteins and 
+bind new ones, which, along with poly-A–
+binding protein, act as initiation factors for 
+protein synthesis, as we discuss later.
+From DNA to RNA         

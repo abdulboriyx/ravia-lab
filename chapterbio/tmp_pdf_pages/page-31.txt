@@ -1,0 +1,94 @@
+253
+We will see in the next chapter that cells have the ability to change the 
+concentrations of most of their proteins according to their needs. In prin-
+ciple, all of the steps in Figure 7–42 can be regulated by the cell—and 
+many of them, in fact, are. However, as we will see in the next chapter, 
+the initiation of transcription is the most common point for a cell to regu-
+late the expression of its genes.
+Transcription and translation are universal processes that lie at the heart 
+of life. However, when scientists came to consider how the flow of infor-
+mation from DNA to protein might have originated, they came to some 
+unexpected conclusions.
+RNA and the Origins of Life
+The central dogma—that DNA makes RNA that makes protein—presented 
+evolutionary biologists with a knotty puzzle: if nucleic acids are required 
+to direct the synthesis of proteins, and proteins are required to synthe-
+size nucleic acids, how could this system of interdependent components 
+have arisen? One view is that an RNA world existed on Earth before 
+cells containing DNA and proteins appeared. According to this hypoth-
+esis, RNA—which today serves largely as an intermediate between genes 
+and proteins—both stored genetic information and catalyzed chemical 
+reactions in primitive cells. Only later in evolutionary time did DNA take 
+over as the genetic material and proteins become the major catalysts 
+and structural components of cells (Figure 7–44). If this idea is correct, 
+then the transition out of the RNA world was never completed; as we 
+have seen, RNA still catalyzes several fundamental reactions in modern 
+cells. These RNA catalysts—or ribozymes—including those that operate 
+in the ribosome and in the RNA-splicing machinery, can thus be viewed 
+as molecular fossils of an earlier world.
+Life Requires Autocatalysis 
+The origin of life requires molecules that possess, if only to a small extent, 
+one crucial property: the ability to catalyze reactions that lead—directly or 
+indirectly—to the production of more molecules like themselves. Catalysts 
+with this self-producing property, once they had arisen by chance, would 
+divert raw materials from the production of other substances to make 
+more of themselves. In this way, one can envisage the gradual develop-
+ment of an increasingly complex chemical system of organic monomers 
+and polymers that function together to generate more molecules of the 
+same types, fueled by a supply of simple raw materials in the primitive 
+environment on Earth. Such an autocatalytic system would have many 
+of the properties we think of as characteristic of living matter: the sys-
+tem would contain a far-from-random selection of interacting molecules; 
+it would tend to reproduce itself; it would compete with other systems 
+dependent on the same raw materials; and, if deprived of its raw mat-
+erials or maintained at a temperature that upset the balance of reaction 
+rates, it would decay toward chemical equilibrium and “die.”
+Figure 7–43 Many proteins require 
+various modifications to become fully 
+functional. To be useful to the cell, a 
+completed polypeptide must fold correctly 
+into its three-dimensional conformation 
+and then bind any required cofactors (red) 
+and protein partners—all via noncovalent 
+bonding. Many proteins also require one 
+or more covalent modifications to become 
+active—or to be recruited to specific 
+membranes or organelles (not shown). 
+Although phosphorylation and glycosylation 
+are the most common, more than 100 types 
+of covalent modifications of proteins are 
+known. 
+Figure 7–44 An RNA world may have 
+existed before modern cells with DNA 
+and proteins evolved.
+RNA and the Origins of Life         
+nascent polypeptide chain
+FOLDING AND
+COFACTOR BINDING,
+DEPENDENT ON
+NONCOVALENT 
+INTERACTIONS
+COVALENT MODIFICATION
+BY, FOR EXAMPLE,
+PHOSPHORYLATION
+NONCOVALENT BINDING
+TO OTHER PROTEIN
+SUBUNIT
+mature functional protein
+P
+P
+solar
+system
+formed
+RNA
+WORLD
+ﬁrst cells
+with DNA
+ﬁrst
+mammals
+Big Bang
+present
+10
+14
+5
+time (billions of years ago)

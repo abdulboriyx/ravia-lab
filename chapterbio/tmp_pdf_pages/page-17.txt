@@ -1,0 +1,209 @@
+239
+An mRNA Sequence Is Decoded in Sets of Three 
+Nucleotides
+Transcription as a means of information transfer is simple to understand: 
+DNA and RNA are chemically and structurally similar, and DNA can act as 
+a direct template for the synthesis of RNA through complementary base-
+pairing. As the term transcription signifies, it is as if a message written 
+out by hand were being converted, say, into a typewritten text. The lan-
+guage itself and the form of the message do not change, and the symbols 
+used are closely related. 
+In contrast, the conversion of the information in RNA into protein rep-
+resents a translation of the information into another language that 
+uses different symbols. Because there are only 4 different nucleotides in 
+mRNA but 20 different types of amino acids in a protein, this translation 
+cannot be accounted for by a direct one-to-one correspondence between 
+a nucleotide in RNA and an amino acid in protein. The rules by which the 
+nucleotide sequence of a gene, through an intermediary mRNA molecule, 
+is translated into the amino acid sequence of a protein are known as the 
+genetic code. 
+In 1961, it was discovered that the sequence of nucleotides in an mRNA 
+molecule is read consecutively in groups of three. And because RNA is 
+made of 4 different nucleotides, there are 4 × 4 × 4 = 64 possible combi-
+nations of three nucleotides: AAA, AUA, AUG, and so on. However, only 
+20 different amino acids are commonly found in proteins. Either some 
+nucleotide triplets are never used, or the code is redundant, with some 
+amino acids being specified by more than one triplet. The second pos-
+sibility turned out to be correct, as shown by the completely deciphered 
+genetic code shown in Figure 7–25. Each group of three consecutive 
+nucleotides in RNA is called a codon, and each codon specifies one 
+amino acid. The strategy by which this code was cracked is described in 
+How We Know, pp. 240–241.
+The same genetic code is used in nearly all present-day organisms. 
+Although a few slight differences have been found, these occur chiefly in 
+the mRNA of mitochondria and of some fungi and protozoa. Mitochondria 
+have their own DNA replication, transcription, and protein-synthe-
+sis machinery, which operates independently from the corresponding 
+machinery in the rest of the cell (discussed in Chapter 14), and they have 
+been able to accommodate minor changes to the otherwise universal 
+genetic code. Even in fungi and protozoa, the similarities in the code far 
+outweigh the differences. 
+In principle, an mRNA sequence can be translated in any one of three dif-
+ferent reading frames, depending on where the decoding process begins 
+(Figure 7–26). However, only one of the three possible reading frames 
+GCA
+GCC
+GCG
+GCU
+Ala
+A
+AGA
+AGG
+CGA
+CGC
+CGG
+CGU
+Arg
+R
+GAC
+GAU
+Asp
+D
+AAC
+AAU
+Asn
+N
+UGC
+UGU
+Cys
+C
+GAA
+GAG
+Glu
+E
+CAA
+CAG
+Gln
+Q
+GGA
+GGC
+GGG
+GGU
+Gly
+G
+CAC
+CAU
+His
+H
+AUA
+AUC
+AUU
+Ile
+I
+UUA
+UUG
+CUA
+CUC
+CUG
+CUU
+Leu
+L
+AAA
+AAG
+Lys
+K
+AUG
+Met
+M
+UUC
+UUU
+Phe
+F
+CCA
+CCC
+CCG
+CCU
+Pro
+P
+AGC
+AGU
+UCA
+UCC
+UCG
+UCU
+Ser
+S
+ACA
+ACC
+ACG
+ACU
+Thr
+T
+UGG
+Trp
+W
+UAC
+UAU
+Tyr
+Y
+GUA
+GUC
+GUG
+GUU
+Val
+V
+UAA
+UAG
+UGA
+stop
+codons
+amino
+acids
+Figure 7–25 The nucleotide sequence of an mRNA is translated into the amino acid sequence of a protein via the genetic code. 
+All the three-nucleotide codons in mRNAs that specify a given amino acid are listed above that amino acid, which is given in both its 
+three-letter and one-letter abbreviations (see Panel 2–5, pp. 74–75, for the full name of each amino acid and its structure). Like RNA 
+molecules, codons are always written with the 5′-terminal nucleotide to the left. Note that most amino acids are represented by more 
+than one codon, and there are some regularities in the set of codons that specify each amino acid. Codons for the same amino acid tend 
+to contain the same nucleotides at the first and second positions and to vary at the third position. There are three codons that do not 
+specify any amino acid but act as termination sites (stop codons), signaling the end of the protein-coding sequence in an mRNA. One 
+codon—AUG—acts both as an initiation codon, signaling the start of a protein-coding message, and as the codon that specifies the 
+amino acid methionine.
+Figure 7–26 In principle, an mRNA 
+molecule can be translated in three 
+possible reading frames. In the process of 
+translating a nucleotide sequence (blue) into 
+an amino acid sequence (red), the sequence 
+of nucleotides in an mRNA molecule is read 
+from the 5′ to the 3′ end in sequential sets 
+of three nucleotides. In principle, therefore, 
+the same mRNA sequence can specify three 
+completely different amino acid sequences, 
+depending on where translation begins—
+that is, on the reading frame used. In reality, 
+however, only one of these reading frames 
+encodes the actual message and is therefore 
+used in translation, as we discuss later. 
+C U C
+A G C
+G U U
+A C C
+A U
+Leu
+Ser
+Val
+Thr
+5′
+1
+3′
+C
+U C A
+G C G
+U U A
+C C A
+U
+2
+Ser
+Ala
+Leu
+Pro
+C U
+C A G
+C G U
+U A C
+C A U
+Gln
+Arg
+Tyr
+His
+3
+From RNA to Protein         

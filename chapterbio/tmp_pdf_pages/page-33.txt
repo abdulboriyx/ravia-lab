@@ -1,0 +1,87 @@
+255
+fundamental steps in the expression of genetic information—especially 
+those steps where RNA molecules themselves are spliced or translated 
+into protein.
+RNA, therefore, has all the properties required of a molecule that could 
+catalyze its own synthesis (Figure 7–47). Although self-replicating sys-
+tems of RNA molecules have not been found in nature, scientists appear 
+to be well on the way to constructing them in the laboratory. Although 
+this demonstration would not prove that self-replicating RNA molecules 
+were essential to the origin of life on Earth, it would establish that such 
+a scenario is possible.
+RNA Is Thought to Predate DNA in Evolution 
+The first cells on Earth would presumably have been much less com-
+plex and less efficient in reproducing themselves than even the simplest 
+present-day cells. They would have consisted of little more than a simple 
+membrane enclosing a set of self-replicating molecules and a few other 
+components required to provide the materials and energy for this auto-
+catalytic replication. If the evolutionary role for RNA proposed above is 
+correct, these earliest cells would also have differed fundamentally from 
+the cells we know today in having their hereditary information stored in 
+RNA rather than DNA.
+Evidence that RNA arose before DNA in evolution can be found in the 
+chemical differences between them. Ribose (see Figure 7–3A), like 
+catalysis
+Figure 7–47 Could an RNA molecule catalyze its 
+own synthesis? This hypothetical process would 
+require that the RNA catalyze both steps shown in 
+Figure 7–45. The red rays represent the active site 
+of this ribozyme. 
+Figure 7–46 A ribozyme is an RNA 
+molecule that possesses catalytic activity. 
+The RNA molecule shown catalyzes the 
+cleavage of a second RNA at a specific  
+site. Similar ribozymes are found embedded 
+in large RNA genomes—called viroids— 
+that infect plants, where the cleavage 
+reaction is one step in the replication  
+of the viroid. (Adapted from T.R. Cech and 
+O.C. Uhlenbeck, Nature 372:39–40, 1994. 
+With permission from Macmillan  
+Publishers Ltd.) 
+Table 7–4 Biochemical Reactions that Can Be Catalyzed by 
+Ribozymes
+Activity
+Ribozymes
+Peptide bond formation in protein 
+synthesis
+ribosomal RNA
+DNA ligation
+in vitro selected RNA
+RNA splicing
+self-splicing RNAs, small nuclear RNAs
+RNA polymerization
+in vitro selected RNA
+RNA phosphorylation
+in vitro selected RNA
+RNA aminoacylation
+in vitro selected RNA
+RNA alkylation
+in vitro selected RNA
+C–C bond rotation (isomerization)
+in vitro selected RNA
+RNA and the Origins of Life         
+3′
+3′
+3′
+3′
+5′
+5′
+5′
+5′
+ribozyme
+ribozyme
++
++
+substrate
+RNA
+BASE-PAIRING BETWEEN
+RIBOZYME AND SUBSTRATE
+3′
+3′
+5′
+5′
+SUBSTRATE CLEAVAGE
+cleaved
+RNA
+PRODUCT RELEASE

@@ -1,0 +1,104 @@
+235
+We will not describe the splicing machinery in detail, but it is worthwhile 
+to note that, unlike the other steps of mRNA production we have dis-
+cussed, RNA splicing is carried out largely by RNA molecules rather than 
+proteins. These RNA molecules, called small nuclear RNAs (snRNAs), 
+are packaged with additional proteins to form small nuclear ribonucleo-
+proteins (snRNPs, pronounced “snurps”). The snRNPs recognize splice-site 
+sequences through complementary base-pairing between their RNA 
+components and the sequences in the pre-mRNA, and they also partici-
+pate intimately in the chemistry of splicing (Figure 7–21). Together, these 
+snRNPs form the core of the spliceosome, the large assembly of RNA and 
+protein molecules that carries out RNA splicing in the nucleus. To watch 
+the spliceosome in action, see Movie 7.5.
+The intron–exon type of gene arrangement in eukaryotes may, at first, 
+seem wasteful. It does, however, have a number of important benefits. 
+First, the transcripts of many eukaryotic genes can be spliced in differ-
+ent ways, each of which can produce a distinct protein. Such alternative 
+splicing thereby allows many different proteins to be produced from 
+the same gene (Figure 7–22). About 95% of human genes are thought to 
+undergo alternative splicing. Thus RNA splicing enables eukaryotes to 
+increase the already enormous coding potential of their genomes.
+RNA splicing also provides another advantage to eukaryotes, one that is 
+likely to have been profoundly important in the early evolutionary history 
+of genes. As we discuss in detail in Chapter 9, the intron–exon structure 
+of genes is thought to have sped up the emergence of new and useful 
+proteins: novel proteins appear to have arisen by the mixing and match-
+ing of different exons of preexisting genes, much like the assembly of a 
+new type of machine from a kit of preexisting functional components. 
+Indeed, many proteins in present-day cells resemble patchworks com-
+posed from a common set of protein pieces, called protein domains (see 
+Figure 4–51).
+– – – AG GURAGU – –     – –  YURAC – .... – YYYYYYYYNCAG G – – – 
+– – – AG G – – – 
+sequences required for intron removal
+INTRON REMOVED
+5′
+3′
+3′
+5′
+portion of
+pre-mRNA
+exon 1
+exon 1
+exon 2
+exon 2
+intron
+portion of
+spliced mRNA
+OH 
+3′
+5′
+3′
+A 
+OH 
+A 
+HO 
+5′
+3′
+3′
++ 
+lariat 
+5′
+exon 1 
+intron sequence
+exon 2 
+2′
+A 
+portion of
+pre-mRNA
+portion of spliced
+pre-mRNA
+Figure 7–19 Special nucleotide sequences in a pre-mRNA transcript signal the 
+beginning and the end of an intron. Only the nucleotide sequences shown are 
+required to remove an intron; the other positions in an intron can be occupied by 
+any nucleotide. The special sequences are recognized primarily by small nuclear 
+ribonucleoproteins (snRNPs), which direct the cleavage of the RNA at the intron–
+exon borders and catalyze the covalent linkage of the exon sequences. Here, in 
+addition to the standard symbols for nucleotides (A, C, G, U), R stands for either A 
+or G; Y stands for either C or U; N stands for any nucleotide. The A shown in red 
+forms the branch point of the lariat produced in the splicing reaction shown in Figure 
+7–20. The distances along the RNA between the three splicing sequences are highly 
+variable; however, the distance between the branch point and the 5′ splice junction is 
+typically much longer than that between the 3′ splice junction and the branch point 
+(see Figure 7–20). The splicing sequences shown are from humans; similar sequences 
+direct RNA splicing in other eukaryotes.
+Figure 7–20 An intron in a pre-mRNA 
+molecule forms a branched structure 
+during RNA splicing. In the first step, the 
+branch point adenine (red A) in the intron 
+sequence attacks the 5′ splice site and cuts 
+the sugar–phosphate backbone of the RNA 
+at this point (this is the same A highlighted 
+in red in Figure 7–19). In this process, the 
+cut 5′ end of the intron becomes covalently 
+linked to the 2′-OH group of the ribose 
+of the A nucleotide to form a branched 
+structure. The free 3′-OH end of the exon 
+sequence then reacts with the start of 
+the next exon sequence, joining the two 
+exons together into a continuous coding 
+sequence and releasing the intron in the 
+form of a lariat structure, which is eventually 
+degraded in the nucleus. 
+From DNA to RNA         

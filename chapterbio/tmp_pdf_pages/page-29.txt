@@ -1,0 +1,62 @@
+251
+act by cutting (hydrolyzing) the peptide bonds between amino acids (see 
+Panel 2–5, pp. 74–75). One function of proteolytic pathways is to rap-
+idly degrade those proteins whose lifetimes must be kept short. Another 
+is to recognize and remove proteins that are damaged or misfolded. 
+Eliminating improperly folded proteins is critical for an organism, as mis-
+folded proteins tend to aggregate, and protein aggregates can damage 
+cells and even trigger cell death. Eventually, all proteins—even long-lived 
+ones—accumulate damage and are degraded by proteolysis.
+In eukaryotic cells, proteins are broken down by large protein machines 
+called proteasomes, present in both the cytosol and the nucleus. A pro-
+teasome contains a central cylinder formed from proteases whose active 
+sites face into an inner chamber. Each end of the cylinder is stoppered by 
+a large protein complex formed from at least 10 types of protein subunits 
+(Figure 7–40). These protein stoppers bind the proteins destined for deg-
+radation and then—using ATP hydrolysis to fuel this activity—unfold the 
+doomed proteins and thread them into the inner chamber of the cylinder. 
+Once the proteins are inside, proteases chop them into short peptides, 
+which are then jettisoned from either end of the proteasome. Housing 
+proteases inside these molecular destruction chambers makes sense, as 
+it prevents the enzymes from running rampant in the cell. 
+How do proteasomes select which proteins in the cell should be degraded? 
+In eukaryotes, proteasomes act primarily on proteins that have been 
+marked for destruction by the covalent attachment of a small protein 
+called ubiquitin. Specialized enzymes tag selected proteins with a short 
+chain of ubiquitin molecules; these ubiquitylated proteins are then rec-
+ognized, unfolded, and fed into proteasomes by proteins in the stopper 
+(Figure 7–41).
+(A)
+(B)
+central
+cylinder
+(proteases)
+stopper
+target protein with
+polyubiquitin chain
+active sites
+UBIQUITIN
+RECYCLED
+PROTEIN
+DEGRADED
+Figure 7–40 A proteasome degrades 
+short-lived and misfolded proteins. The 
+structures shown were determined by X-ray 
+crystallography. (A) A cut-away view of the 
+central cylinder of the proteasome, with 
+the active sites of the proteases indicated 
+by red dots. (B) The structure of the entire 
+proteasome, in which access to the central 
+cylinder (yellow) is regulated by a stopper 
+(blue) at each end. (B, adapted from P.C.A 
+da Fonseca et al., Mol. Cell 46:54–66, 2012.)
+Figure 7–41 Proteins marked by a 
+polyubiquitin chain are degraded by the 
+proteasome. Proteins in the stopper of a 
+proteasome (blue) recognize target proteins 
+marked by a specific type of polyubiquitin 
+chain. The stopper then unfolds the target 
+protein and threads it into the proteasome’s 
+central cylinder (yellow), which is lined with 
+proteases that chop the protein to pieces. 
+From RNA to Protein         

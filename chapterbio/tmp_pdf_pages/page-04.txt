@@ -1,0 +1,140 @@
+226	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+Transcription Produces RNA That Is Complementary to 
+One Strand of DNA
+All the RNA in a cell is made by transcription, a process that has certain 
+similarities to DNA replication (discussed in Chapter 6). Transcription 
+begins with the opening and unwinding of a small portion of the DNA 
+double helix to expose the bases on each DNA strand. One of the two 
+strands of the DNA double helix then acts as a template for the synthe-
+sis of RNA. Ribonucleotides are added, one by one, to the growing RNA 
+chain; as in DNA replication, the nucleotide sequence of the RNA chain 
+is determined by complementary base-pairing with the DNA template. 
+When a good match is made, the incoming ribonucleotide is covalently 
+linked to the growing RNA chain by the enzyme RNA polymerase. The 
+RNA chain produced by transcription—the RNA transcript—is therefore 
+elongated one nucleotide at a time and has a nucleotide sequence exactly 
+complementary to the strand of DNA used as the template (Figure 7–6).
+Transcription differs from DNA replication in several crucial respects. 
+Unlike a newly formed DNA strand, the RNA strand does not remain 
+hydrogen-bonded to the DNA template strand. Instead, just behind the 
+region where the ribonucleotides are being added, the RNA chain is dis-
+placed and the DNA helix re-forms. For this reason—and because only 
+one strand of the DNA molecule is transcribed—RNA molecules are 
+single-stranded. Further, because RNAs are copied from only a limited 
+region of DNA, RNA molecules are much shorter than DNA molecules; 
+DNA molecules in a human chromosome can be up to 250 million nucle-
+otide pairs long, whereas most mature RNAs are no more than a few 
+thousand nucleotides long, and many are much shorter than that. 
+(C)
+G
+G
+GA
+C
+C
+C
+U
+A
+G
+C
+U
+U
+A
+A
+A
+U
+C
+G
+A
+A
+UU
+U
+A
+U
+G
+C
+A
+U
+U
+A
+C
+G
+U
+A
+A
+A
+A
+UU U
+U
+A
+U
+G
+A
+U
+A
+C
+G
+C
+A
+U
+G
+C
+G
+C
+AU
+G
+C
+(A)
+(B)
+A
+A
+A
+A
+G
+G
+G
+G
+U
+U
+U
+C
+C
+C
+C
+U
+DNA
+RNA
+TRANSCRIPTION
+template strand
+coding strand
+5′
+3′
+5′
+3′
+3′
+5′
+Figure 7–5 RNA molecules can form intramolecular base pairs and fold into specific structures. RNA is single-
+stranded, but it often contains short stretches of nucleotides that can base-pair with complementary sequences  
+found elsewhere on the same molecule. These interactions—along with some “nonconventional base-pair 
+interactions (e.g., A-G)—allow an RNA molecule to fold into a three-dimensional structure that is determined by its 
+sequence of nucleotides. (A) A diagram of a hypothetical, folded RNA structure showing only conventional (G-C and 
+A-U) base-pair interactions. (B) Incorporating nonconventional base-pair interactions (green) changes the structure of 
+the hypothetical RNA shown in (A). (C) Structure of an actual RNA molecule that is involved in RNA splicing. This RNA 
+contains a considerable amount of double-helical structure. The sugar–phosphate backbone is blue and the bases are 
+red; the conventional base-pair interactions are indicated by red “rungs” that are continuous, and nonconventional 
+base pairs are indicated by broken red rungs. For an additional view of RNA structure, see Movie 7.1.
+Figure 7–6 Transcription of a gene 
+produces an RNA complementary to one 
+strand of DNA. The transcribed strand 
+of the gene, the bottom strand in this 
+example, is called the template strand.  
+The nontemplate strand of the gene  
+(here, shown at the top) is sometimes called 
+the coding strand because its sequence 
+is equivalent to the RNA product, as 
+shown. Which DNA strand serves as the 
+template varies, depending on the gene, 
+as we discuss later. By convention, an RNA 
+molecule is always depicted with its  
+5′ end—the first part to be synthesized—
+to the left.

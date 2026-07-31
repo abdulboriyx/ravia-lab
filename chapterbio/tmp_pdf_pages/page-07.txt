@@ -1,0 +1,88 @@
+229
+joined together by the polymerase to begin synthesis of the RNA chain. 
+Chain elongation then continues until the enzyme encounters a second 
+signal in the DNA, the terminator (or stop site), where the polymerase 
+halts and releases both the DNA template and the newly made RNA tran-
+script (Figure 7–9). This terminator sequence is contained within the 
+gene and is transcribed into the 3ʹ end of the newly made RNA. 
+Because the polymerase must bind tightly before transcription can begin, 
+a segment of DNA will be transcribed only if it is preceded by a promoter. 
+This ensures that those portions of a DNA molecule that contain a gene 
+will be transcribed into RNA. The nucleotide sequences of a typical pro-
+moter—and a typical terminator—are presented in Figure 7–10.
+In bacteria, it is a subunit of RNA polymerase, the sigma (σ) factor (see 
+Figure 7–9), that is primarily responsible for recognizing the promoter 
+sequence on the DNA. But how can this factor “see” the promoter, given 
+that the base-pairs in question are situated in the interior of the DNA 
+double helix? It turns out that each base presents unique features to the 
+outside of the double helix, allowing the sigma factor to find the promoter 
+sequence without having to separate the entwined DNA strands. 
+The next problem an RNA polymerase faces is determining which of 
+the two DNA strands to use as a template for transcription: each strand 
+has a different nucleotide sequence and would produce a different RNA 
+transcript. The secret lies in the structure of the promoter itself. Every 
+promoter has a certain polarity: it contains two different nucleotide 
+sequences upstream of the transcriptional start site that position the RNA 
+polymerase, ensuring that it binds to the promoter in only one orientation 
+Figure 7–9 Signals in the nucleotide 
+sequence of a gene tell bacterial RNA 
+polymerase where to start and stop 
+transcription. Bacterial RNA polymerase 
+(light blue) contains a subunit called sigma 
+factor (yellow) that recognizes the promoter 
+of a gene (green). Once transcription has 
+begun, sigma factor is released, and the 
+polymerase moves forward and continues 
+synthesizing the RNA. Chain elongation 
+continues until the polymerase encounters a 
+sequence in the gene called the terminator 
+(red ). There the enzyme halts and releases 
+both the DNA template and the newly 
+made RNA transcript. The polymerase then 
+reassociates with a free sigma factor and 
+searches for another promoter to begin the 
+process again. 
+From DNA to RNA         
+start
+site
+stop
+site
+DNA
+RNA polymerase
+RNA SYNTHESIS 
+BEGINS
+gene
+template strand
+growing RNA transcript
+terminator
+5′
+3′
+3′
+5′
+5′
+3′
+3′
+5′
+5′
+3′
+3′
+5′
+5′
+3′
+3′
+5′
+5′
+5′
+5′
+3′
+SIGMA FACTOR RELEASED
+SIGMA
+FACTOR
+REBINDS
+TERMINATION AND RELEASE OF
+BOTH POLYMERASE AND 
+COMPLETED RNA TRANSCRIPT
+promoter
+gene
+POLYMERASE CLAMPS DOWN ON DNA;
+RNA SYNTHESIS CONTINUES 

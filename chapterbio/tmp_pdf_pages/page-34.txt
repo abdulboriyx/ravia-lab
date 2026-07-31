@@ -1,0 +1,93 @@
+256	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+glucose and other simple carbohydrates, is readily formed from formal-
+dehyde (HCHO), which is one of the principal products of experiments 
+simulating conditions on the primitive Earth. The sugar deoxyribose is 
+harder to make, and in present-day cells it is produced from ribose in 
+a reaction catalyzed by a protein enzyme, suggesting that ribose pre-
+dates deoxyribose in cells. Presumably, DNA appeared on the scene after 
+RNA, and then proved more suited than RNA as a permanent repository 
+of genetic information. In particular, the deoxyribose in its sugar–phos-
+phate backbone makes chains of DNA chemically much more stable than 
+chains of RNA, so that greater lengths of DNA can be maintained without 
+breakage.
+The other differences between RNA and DNA—the double-helical struc-
+ture of DNA and the use of thymine rather than uracil—further enhance 
+DNA stability by making the molecule easier to repair. We saw in Chapter 
+6 that a damaged nucleotide on one strand of the double helix can be 
+repaired by using the other strand as a template. Furthermore, deamina-
+tion, one of the most common unwanted chemical changes occurring in 
+polynucleotides, is easier to detect and repair in DNA than in RNA (see 
+Figure 6–23). This is because the product of the deamination of cytosine 
+is, by chance, uracil, which already exists in RNA, so that such damage 
+would be impossible for repair enzymes to detect in an RNA molecule. 
+However, in DNA, which has thymine rather than uracil, any uracil pro-
+duced by the accidental deamination of cytosine is easily detected and 
+repaired.
+Taken together, the evidence we have discussed supports the idea that 
+RNA—with its ability to provide genetic, structural, and catalytic func-
+tions—preceded DNA in evolution. As cells more closely resembling 
+present-day cells appeared, it is believed that many of the functions orig-
+inally performed by RNA were taken over by DNA and proteins: DNA 
+took over the primary genetic function, and proteins became the major 
+catalysts, while RNA remained primarily as the intermediary connecting 
+the two (Figure 7–48). With the advent of DNA, cells were able to become 
+more complex, for they could then carry and transmit more genetic 
+information than could be stably maintained by RNA alone. Because of 
+the greater chemical complexity of proteins and the variety of chemi-
+cal reactions they can catalyze, the shift (albeit incomplete) from RNA 
+to proteins also provided a much richer source of structural components 
+and enzymes. This enabled cells to evolve the great diversity of structure 
+and function that we see in life today.
+Essential Concepts
+• 
+The flow of genetic information in all living cells is DNA → RNA → 
+protein. The conversion of the genetic instructions in DNA into RNAs 
+and proteins is termed gene expression.
+• 
+To express the genetic information carried in DNA, the nucleotide 
+sequence of a gene is first transcribed into RNA. Transcription is 
+catalyzed by the enzyme RNA polymerase, which uses nucleotide 
+sequences in the DNA molecule to determine which strand to use as 
+a template, and where to start and stop transcribing.
+• 
+RNA differs in several respects from DNA. It contains the sugar ribose 
+instead of deoxyribose and the base uracil (U) instead of thymine (T). 
+RNAs in cells are synthesized as single-stranded molecules, which 
+often fold up into complex three-dimensional shapes. 
+• 
+Cells make several functional types of RNAs, including messenger 
+RNAs (mRNAs), which carry the instructions for making proteins; 
+ribosomal RNAs (rRNAs), which are the crucial components of 
+RNA-based systems 
+RNA
+DNA
+EVOLUTION OF RNAs THAT
+CAN DIRECT PROTEIN SYNTHESIS
+RNA- and protein-based systems
+EVOLUTION OF NEW ENZYMES
+THAT SYNTHESIZE DNA AND
+MAKE RNA COPIES FROM IT
+present-day cells
+RNA
+RNA
+protein
+protein
+Figure 7–48 RNA may have preceded 
+DNA and proteins in evolution. According 
+to this hypothesis, RNA molecules provided 
+genetic, structural, and catalytic functions in 
+the earliest cells. DNA is now the repository 
+of genetic information, and proteins carry 
+out almost all catalysis in cells. RNA now 
+functions mainly as a go-between in protein 
+synthesis, while remaining a catalyst for 
+a few crucial reactions (including protein 
+synthesis).
+Question 7–6
+Discuss the following: “During the 
+evolution of life on Earth, RNA lost 
+its glorious position as the first self-
+replicating catalyst. Its role now is as 
+a mere messenger in the information 
+flow from DNA to protein.”

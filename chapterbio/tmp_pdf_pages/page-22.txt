@@ -1,0 +1,67 @@
+244	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+The synthetase-catalyzed reaction that attaches the amino acid to the 3′ 
+end of the tRNA is one of many reactions in cells coupled to the energy-
+releasing hydrolysis of ATP (see Figure 3–33). The reaction produces a 
+high-energy bond between the charged tRNA and the amino acid. The 
+energy of this bond is later used to link the amino acid covalently to the 
+growing polypeptide chain. 
+The mRNA Message Is Decoded by Ribosomes
+The recognition of a codon by the anticodon on a tRNA molecule depends 
+on the same type of complementary base-pairing used in DNA replication 
+and transcription. However, accurate and rapid translation of mRNA into 
+protein requires a molecular machine that can move along the mRNA, 
+capture complementary tRNA molecules, hold the tRNAs in position, and 
+then covalently link the amino acids that they carry to form a polypeptide 
+chain. In both prokaryotes and eukaryotes, the machine that gets the job 
+done is the ribosome—a large complex made from dozens of small pro-
+teins (the ribosomal proteins) and several crucial RNA molecules called 
+ribosomal RNAs (rRNAs). A typical eukaryotic cell contains millions of 
+ribosomes in its cytoplasm (Figure 7–31). 
+Eukaryotic and prokaryotic ribosomes are very similar in structure and 
+function. Both are composed of one large subunit and one small subunit, 
+which fit together to form a complete ribosome with a mass of several 
+million daltons (Figure 7–32); for comparison, an average-sized pro-
+tein has a mass of 30,000 daltons. The small ribosomal subunit matches 
+the tRNAs to the codons of the mRNA, while the large subunit catalyzes 
+the formation of the peptide bonds that covalently link the amino acids 
+together into a polypeptide chain. These two subunits come together on 
+an mRNA molecule near its 5′ end to start the synthesis of a protein. The 
+mRNA is then pulled through the ribosome like a long piece of tape. As 
+the mRNA inches forward in a 5′-to-3′ direction, the ribosome translates 
+its nucleotide sequence into an amino acid sequence, one codon at a 
+time, using the tRNAs as adaptors. Each amino acid is thereby added in 
+the correct sequence to the end of the growing polypeptide chain (Movie 
+7.7). When synthesis of the protein is finished, the two subunits of the 
+ribosome separate. Ribosomes operate with remarkable efficiency: a 
+eukaryotic ribosome adds about 2 amino acids to a polypeptide chain 
+each second; a bacterial ribosome operates even faster, adding about 20 
+amino acids per second.
+400 nm
+endoplasmic reticulum
+cytosol
+Figure 7–31 Ribosomes are located in 
+the cytoplasm of eukaryotic cells. This 
+electron micrograph shows a thin section of 
+a small region of cytoplasm. The ribosomes 
+appear as small gray blobs. Some are free in 
+the cytosol (red arrows); others are attached 
+to membranes of the endoplasmic reticulum 
+(green arrows). (Courtesy of George Palade.) 
+Question 7–4
+In a clever experiment performed in 
+1962, a cysteine already attached to 
+its tRNA was chemically converted 
+to an alanine. These “hybrid” tRNA 
+molecules were then added to a cell-
+free translation system from which 
+the normal cysteine-tRNAs had 
+been removed. When the resulting 
+protein was analyzed, it was found 
+that alanine had been inserted at 
+every point in the polypeptide chain 
+where cysteine was supposed to be. 
+Discuss what this experiment tells 
+you about the role of aminoacyl-
+tRNA synthetases during the normal 
+translation of the genetic code.

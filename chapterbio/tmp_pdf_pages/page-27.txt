@@ -1,0 +1,62 @@
+249
+We saw in Chapter 4 that many proteins can fold into their three-dimen-
+sional shape spontaneously, and some do so as they are spun out of the 
+ribosome. Most proteins, however, require chaperone proteins to help 
+them fold correctly in the cell. Chaperones can “steer” proteins along pro-
+ductive folding pathways and prevent them from aggregating inside the 
+cell (see Figures 4–9 and 4–10). Newly synthesized proteins are typically 
+met by their chaperones as they emerge from the ribosome.
+Proteins Are Made on Polyribosomes
+The synthesis of most protein molecules takes between 20 seconds and 
+several minutes. But even during this short period, multiple ribosomes 
+usually bind to each mRNA molecule being translated. If the mRNA is 
+being translated efficiently, a new ribosome hops onto the 5′ end of the 
+mRNA molecule almost as soon as the preceding ribosome has trans-
+lated enough of the nucleotide sequence to move out of the way. The 
+mRNA molecules being translated are therefore usually found in the form 
+of polyribosomes, also known as polysomes. These large cytoplasmic 
+assemblies are made up of many ribosomes spaced as close as 80 nucle-
+otides apart along a single mRNA molecule (Figure 7–39). With multiple 
+ribosomes working simultaneously on a single mRNA, many more pro-
+tein molecules can be made in a given time than would be possible if 
+each polypeptide had to be completed before the next could be started.
+Polysomes operate in both bacteria and eukaryotes, but bacteria can 
+speed up the rate of protein synthesis even further. Because bacterial 
+mRNA does not need to be processed and is also physically accessible to 
+ribosomes while it is being made, ribosomes will typically attach to the 
+free end of a bacterial mRNA molecule and start translating it even before 
+the transcription of that RNA is complete; these ribosomes follow closely 
+behind the RNA polymerase as it moves along DNA. 
+Inhibitors of Prokaryotic Protein Synthesis Are Used as 
+Antibiotics
+The ability to translate mRNAs accurately into proteins is a fundamental 
+feature of all life on Earth. Although the ribosome and other molecules 
+that carry out this complex task are very similar among organisms, we 
+(B)
+100 nm
+3′
+stop 
+codon
+UAG
+AUG
+start
+codon
+5′
+mRNA
+100 nm
+growing
+polypeptide
+chain
+(A)
+AA
+AA
+A
+Figure 7–39 Proteins are synthesized on 
+polyribosomes. (A) Schematic drawing 
+showing how a series of ribosomes can 
+simultaneously translate the same mRNA 
+molecule (Movie 7.10). (B) Electron 
+micrograph of a polyribosome in the cytosol 
+of a eukaryotic cell. (B, courtesy of John 
+Heuser.) 
+From RNA to Protein         

@@ -1,0 +1,112 @@
+254	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+But what molecules could have had such autocatalytic properties? In 
+present-day living cells, the most versatile catalysts are proteins, which 
+are able to adopt diverse three-dimensional forms that bristle with chem-
+ically reactive sites on their surface. However, there is no known way in 
+which a protein can reproduce itself directly. RNA molecules, by contrast, 
+could—at least, in principle—catalyze their own synthesis.
+RNA Can Both Store Information and Catalyze Chemical 
+Reactions
+We have seen that complementary base-pairing enables one nucleic acid 
+to act as a template for the formation of another. Thus a single strand of 
+RNA or DNA can specify the sequence of a complementary polynucle-
+otide, which, in turn, can specify the sequence of the original molecule, 
+allowing the original nucleic acid to be replicated (Figure 7–45). Such 
+complementary templating mechanisms lie at the heart of both DNA rep-
+lication and transcription in modern-day cells.
+But the efficient synthesis of polynucleotides by such complementary 
+templating mechanisms also requires catalysts to promote the polymeri-
+zation reaction: without catalysts, polymer formation is slow, error-prone, 
+and inefficient. Today, nucleotide polymerization is catalyzed by protein 
+enzymes—such as DNA and RNA polymerases. But how could this reac-
+tion be catalyzed before proteins with the appropriate catalytic ability 
+existed? The beginnings of an answer were obtained in 1982, when it 
+was discovered that RNA molecules themselves can act as catalysts. The 
+unique potential of RNA molecules to act both as information carriers 
+and as catalysts is thought to have enabled them to have a central role 
+in the origin of life. 
+In present-day cells, RNA is synthesized as a single-stranded molecule, 
+and we have seen that complementary base-pairing can occur between 
+nucleotides in the same chain. This base-pairing, along with noncon-
+ventional hydrogen bonds, can cause each RNA molecule to fold up in 
+a unique way that is determined by its nucleotide sequence (see Figure 
+7–5). Such associations produce complex three-dimensional shapes.
+As we discuss in Chapter 4, protein enzymes are able to catalyze bio-
+chemical reactions because they have surfaces with unique contours 
+and chemical properties. In the same way, RNA molecules, with their 
+unique folded shapes, can serve as catalysts (Figure 7–46). RNAs do not 
+have the same structural and functional diversity as do protein enzymes; 
+they are, after all, built from only four different subunits. Nonetheless, 
+ribozymes can catalyze many types of chemical reactions. Most of the 
+ribozymes that have been studied were constructed in the laboratory and 
+selected for their catalytic activity in a test tube (Table 7–4), as relatively 
+few catalytic RNAs exist in present-day cells. But the processes in which 
+catalytic RNAs still seem to have major roles include some of the most 
+ORIGINAL SEQUENCE
+SERVES AS A TEMPLATE
+TO PRODUCE THE
+COMPLEMENTARY SEQUENCE
+COMPLEMENTARY
+SEQUENCE SERVES AS
+A TEMPLATE TO PRODUCE
+THE ORIGINAL SEQUENCE
+G
+C
+G
+C
+A
+U
+U
+A
+U
+A
+G
+C
+G
+C
+G
+G
+U
+A
+A
+C
+C
+G
+C
+G
+C
+A
+U
+U
+A
+U
+A
+G
+C
+G
+C
+C
+A
+U
+U
+G
+G
+C
+original
+RNA
+complementary
+RNA
+Figure 7–45 An RNA molecule can in 
+principle guide the formation of an 
+exact copy of itself. In the first step, the 
+original RNA molecule acts as a template to 
+form an RNA molecule of complementary 
+sequence. In the second step, this 
+complementary RNA molecule itself acts 
+as a template to form an RNA molecule of 
+the original sequence. Since each template 
+molecule can produce many copies of the 
+complementary strand, these reactions can 
+result in the amplification of the original 
+sequence. 

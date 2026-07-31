@@ -1,0 +1,126 @@
+230	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+(see Figure 7–10A). Because the polymerase can only synthesize RNA 
+in the 5′-to-3′ direction once the enzyme is bound it must use the DNA 
+strand oriented in the 3′-to-5′ direction as its template. 
+This selection of a template strand does not mean that on a given chro-
+mosome, transcription always proceeds in the same direction. With 
+respect to the chromosome as a whole, the direction of transcription var-
+ies from gene to gene. But because each gene typically has only one 
+promoter, the orientation of its promoter determines in which direction 
+that gene is transcribed and therefore which strand is the template strand 
+(Figure 7–11).
+Initiation of Eukaryotic Gene Transcription Is a Complex 
+Process
+Many of the principles we just outlined for bacterial transcription also 
+apply to eukaryotes. However, transcription initiation in eukaryotes dif-
+fers in several important ways from that in bacteria: 
+• The first difference lies in the RNA polymerases themselves. While 
+bacteria contain a single type of RNA polymerase, eukaryotic cells 
+have three—RNA polymerase I, RNA polymerase II, and RNA polymer-
+ase III. These polymerases are responsible for transcribing different 
+types of genes. RNA polymerases I and III transcribe the genes encod-
+ing transfer RNA, ribosomal RNA, and various other RNAs that play 
+structural and catalytic roles in the cell (Table 7–2). RNA polymerase 
+II transcribes the vast majority of eukaryotic genes, including all those 
+that encode proteins and miRNAs (Movie 7.3). Our subsequent dis-
+cussion will therefore focus on RNA polymerase II.
+• A second difference is that, whereas the bacterial RNA polymerase 
+(along with its sigma subunit) is able to initiate transcription on its 
+own, eukaryotic RNA polymerases require the assistance of a large set 
+of accessory proteins. Principal among these are the general transcrip-
+tion factors, which must assemble at each promoter, along with the 
+polymerase, before the polymerase can begin transcription.
+Figure 7–10 Bacterial promoters 
+and terminators have specific 
+nucleotide sequences that are 
+recognized by RNA polymerase. 
+(A) The green-shaded regions 
+represent the nucleotide sequences 
+that specify a promoter. The 
+numbers above the DNA indicate 
+the positions of nucleotides 
+counting from the first nucleotide 
+transcribed, which is designated +1. 
+The polarity of the promoter orients 
+the polymerase and determines 
+which DNA strand is transcribed. 
+All bacterial promoters contain 
+DNA sequences at –10 and –35 
+that closely resemble those shown 
+here. (B) The red-shaded regions 
+represent sequences in the gene 
+that signal the RNA polymerase to 
+terminate transcription. Note that 
+the regions transcribed into RNA 
+contain the terminator but not the 
+promoter nucleotide sequences. By 
+convention, the sequence of a gene 
+is that of the non-template strand, as 
+this strand has the same sequence 
+as the transcribed RNA (with T 
+substituting for U).
+Figure 7–11 On an individual 
+chromosome, some genes are transcribed 
+using one DNA strand as a template, 
+and others are transcribed from the 
+other DNA strand. RNA polymerase 
+always moves in the 3′-to-5′ direction 
+and the selection of the template strand 
+is determined by the orientation of the 
+promoter (green arrowheads) at the 
+beginning of each gene. Thus the genes 
+transcribed from left to right use the bottom 
+DNA strand as the template (see Figure 
+7–10); those transcribed from right to left 
+use the top strand as the template.
+promoter
+promoter
+5′
+3′
+3′
+5′
+gene a
+gene b
+DNA
+RNA transcript
+from gene b
+RNA transcript
+from gene a
+TAGTGTATTGACATGATAGAAGCACTCTACTATATTCTCAATAGGTCCACG
+ATCACATAACTGTACTATCTTCGTGAGATGATATAAGAGTTATCCAGGTGC 
+CCCACAGCCGCCAGTTCCGCTGGCGGCATTTTAACTTTCTTTAATGA
+GGGTGTCGGCGGTCAAGGCGACCGCCGTAAAATTGAAAGAAATTACT 
+5′
+3′
+5′
+3′
+3′
+5′
+3′
+5′
+AGGUCCACG
+5′
+3′
+5′
+3′
+RNA
+RNA
+TRANSCRIPTION
+TRANSCRIPTION
+ template strand
+TERMINATOR
+_35
+_10
++1
+PROMOTER
+start
+site
+stop
+site
+DNA
+DNA
+CCCACAGCCGCCAGUUCCGCUGGCGGCAUUUU
+(A)
+(B)
+ template strand

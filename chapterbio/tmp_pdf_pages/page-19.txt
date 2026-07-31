@@ -1,0 +1,135 @@
+241
+learned of Nirenberg’s work with synthetic RNAs, 
+Khorana directed his energies and skills to producing 
+polyribonucleotides. He found that if he started out by 
+making DNAs of a defined sequence, he could then use 
+RNA polymerase to produce RNAs from those. In this 
+way, Khorana prepared a collection of different RNAs 
+of defined repeating sequence: he generated sequences 
+of repeating dinucleotides (such as poly UC), trinucleo-
+tides (such as poly UUC), or tetranucleotides (such as 
+poly UAUC). 
+These mixed polynucleotides, however, yielded results 
+that were much more difficult to decode than the mono-
+nucleotide messages that Nirenberg had used. Take poly 
+UG, for example. When this repeating dinucleotide is 
+added to the translation system, researchers discovered 
+that it codes for a polypeptide of alternating cysteines 
+and valines. This RNA, of course, contains two differ-
+ent alternating codons: UGU and GUG. So researchers 
+could say that UGU and GUG code for cysteine and 
+valine, although they could not tell which went with 
+which. Thus these mixed messages provided useful 
+information, but they did not definitively reveal which 
+codons specified which amino acids (Figure 7–28).
+Trapping the triplets
+These final ambiguities in the code were resolved when 
+Nirenberg and a young medical graduate named Phil 
+Leder discovered that RNA fragments that were only 
+three nucleotides in length—the size of a single codon—
+could bind to a ribosome and attract the appropriate 
+amino-acid-containing tRNA molecule to the protein-
+making machinery. These complexes—containing one 
+ribosome, one mRNA codon, and one radiolabeled 
+aminoacyl-tRNA—could then be captured on a piece of 
+filter paper and the attached amino acid identified. 
+Their trial run with UUU—the first word—worked 
+splendidly. Leder and Nirenberg primed the usual cell-
+free translation system with snippets of UUU. These 
+trinucleotides bound to the ribosomes, and Phe-tRNAs 
+bound to the UUU. The new system was up and running, 
+and the researchers had confirmed that UUU codes for 
+phenylalanine.
+All that remained was for researchers to produce all 64 
+possible codons—a task that was quickly accomplished 
+in both Nirenberg’s and Khorana’s laboratories. Because 
+these small trinucleotides were much simpler to syn-
+thesize chemically, and the triplet-trapping tests were 
+easier to perform and analyze than the previous decod-
+ing experiments, the researchers were able to work out 
+the complete genetic code within the next year.
+5’
+3’
+synthetic mRNA
+radioactive polypeptide synthesized
+cell-free translation
+system plus radioactive
+amino acids
+Phe Phe Phe Phe Phe Phe Phe Phe
+N
+C
+UU
+UU
+U
+U
+U
+U
+UU
+UU
+UUUUUU
+U
+U
+U
+U
+U
+U 
+poly UG
+...Cys–Val–Cys–Val...
+UGU
+GUG
+MESSAGE
+PEPTIDES
+PRODUCED
+CODON
+ASSIGNMENTS
+poly UAUC
+...Tyr–Leu–Ser–Ile...
+UAU
+CUA
+UCU
+AUC
+Tyr, Leu,
+Ser, Ile
+poly AG
+...Arg–Glu–Arg–Glu...
+AGA
+GAG
+Arg, Glu
+Cys, Val*
+poly UUC
+ ...Phe–Phe–Phe...
++
+...Ser–Ser–Ser...
++
+...Leu–Leu–Leu...
+UUC
+UCU
+CUU
+Phe, Ser,
+Leu
+* One codon speciﬁes Cys, the other Val, but which is which?
+The same ambiguity exists for the other codon assignments
+shown here.
+Figure 7–27 UUU codes for 
+phenylalanine. Synthetic mRNAs 
+are fed into a cell-free translation 
+system containing bacterial 
+ribosomes, tRNAs, enzymes, 
+and other small molecules. 
+Radioactive amino acids are 
+added to this mix and the 
+resulting polypeptides analyzed. 
+In this case, poly U is shown to 
+encode a polypeptide containing 
+only phenylalanine. 
+Figure 7–28 Using synthetic RNAs of mixed, repeating 
+ribonucleotide sequences, scientists further narrowed 
+the coding possibilities. Although these mixed messages 
+produced mixed polypeptides, they did not permit the 
+unambiguous assignment of a single codon to a specific amino 
+acid. For example, the results of the poly-UG experiment 
+cannot distinguish whether UGU or GUG encodes cysteine. 
+As indicated, the same type of ambiguity confounded the 
+interpretation of all the experiments using di-, tri-, and 
+tetranucleotides.
+From RNA to Protein         

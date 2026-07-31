@@ -1,0 +1,119 @@
+233
+G
+CH3
+3′
+5′
++
+AAAAA150–250
+coding
+sequence
+noncoding
+sequence
+protein
+RNA
+5′ cap
+(A)
+(B)
+RNA capping and polyadenylation
+OH
+CH2
+OH
+CH2
+OH
+CH2
+CH2
+5′
+5′
+CH3
+7-methylguanosine
+5′ end of initial
+RNA transcript
+5′-to-5′
+triphosphate
+bridge
+poly-A tail
+HO
+OH
+N +
+P
+P
+P
+P
+P
+P
+P
+P
+5′ cap
+Different types of RNA are processed in different ways before leaving the 
+nucleus. Two processing steps, capping and polyadenylation, occur only 
+on RNA transcripts destined to become mRNA molecules (called precur-
+sor mRNAs, or pre-mRNAs).
+1.	 RNA capping modifies the 5′ end of the RNA transcript, the end that 
+is synthesized first. The RNA is capped by the addition of an atypical 
+nucleotide—a guanine (G) nucleotide bearing a methyl group, which 
+is attached to the 5′ end of the RNA in an unusual way (Figure 7–16). 
+This capping occurs after RNA polymerase II has produced about 25 
+nucleotides of RNA, long before it has completed transcribing the 
+whole gene.
+2.	 Polyadenylation provides a newly transcribed mRNA with a spe-
+cial structure at its 3′ end. In contrast with bacteria, where the 3′ end 
+of an mRNA is simply the end of the chain synthesized by the RNA 
+polymerase, the 3′ end of a forming eukaryotic mRNA is first trimmed 
+by an enzyme that cuts the RNA chain at a particular sequence of 
+nucleotides. The transcript is then finished off by a second enzyme 
+that adds a series of repeated adenine (A) nucleotides to the cut end. 
+This poly-A tail is generally a few hundred nucleotides long (see Figure 
+7–16A).
+These two modifications—capping and polyadenylation—increase the 
+stability of a eukaryotic mRNA molecule, facilitate its export from the 
+nucleus to the cytoplasm, and generally mark the RNA molecule as an 
+mRNA. They are also used by the protein-synthesis machinery to make 
+sure that both ends of the mRNA are present and that the message is 
+therefore complete before protein synthesis begins. 
+In Eukaryotes, Protein-Coding Genes Are Interrupted by 
+Noncoding Sequences Called Introns
+Most eukaryotic pre-mRNAs have to undergo an additional processing 
+step before they are functional mRNAs. This step involves a far more 
+radical modification of the pre-mRNA transcript than capping or poly-
+adenylation, and it is the consequence of a surprising feature of most 
+eukaryotic genes. In bacteria, most proteins are encoded by an uninter-
+rupted stretch of DNA sequence that is transcribed into an mRNA that, 
+without any further processing, can be translated into protein. Most pro-
+tein-coding eukaryotic genes, in contrast, have their coding sequences 
+interrupted by long, noncoding, intervening sequences called introns. 
+The scattered pieces of coding sequence—called expressed sequences or 
+Figure 7–15 Phosphorylation of the tail of 
+RNA polymerase II allows RNA-processing 
+proteins to assemble there. Note that the 
+phosphates shown here are in addition to 
+the ones required for transcription initiation 
+(see Figure 7–12). Capping, polyadenylation, 
+and splicing are all modifications that occur 
+during RNA processing in the nucleus. 
+P
+P
+P
+P
+mRNA
+RNA polymerase II
+capping factors
+splicing
+factors
+polyadenylation
+factors
+RNA 
+PROCESSING
+BEGINS
+P
+P
+P
+P
+DNA
+Figure 7–16 Eukaryotic pre-mRNA molecules are modified by 
+capping and polyadenylation. (A) A eukaryotic mRNA has a cap 
+at the 5′ end and a poly-A tail at the 3′ end. Note that not all of the 
+RNA transcript shown codes for protein. (B) The structure of the  
+5′ cap. Many eukaryotic mRNA caps carry an additional modification: 
+the 2′-hydroxyl group on the second ribose sugar in the mRNA is 
+methylated (not shown).
+From DNA to RNA         

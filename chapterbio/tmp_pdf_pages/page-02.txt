@@ -1,0 +1,114 @@
+224	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+DNA does not synthesize proteins itself, but it acts like a manager, del-
+egating the various tasks to a team of workers. When a particular protein 
+is needed by the cell, the nucleotide sequence of the appropriate segment 
+of a DNA molecule is first copied into another type of nucleic acid—RNA 
+(ribonucleic acid ). That segment of DNA is called a gene, and the result-
+ing RNA copies are then used to direct the synthesis of the protein. Many 
+thousands of these conversions from DNA to protein occur every sec-
+ond in each cell in our body. The flow of genetic information in cells is 
+therefore from DNA to RNA to protein (Figure 7–1). All cells, from bacte-
+ria to humans, express their genetic information in this way—a principle 
+so fundamental that it has been termed the central dogma of molecular 
+biology.
+In this chapter, we explain the mechanisms by which cells copy DNA 
+into RNA (a process called transcription) and then use the information 
+in RNA to make protein (a process called translation). We also discuss 
+a few of the key variations on this basic scheme. Principal among these 
+is RNA splicing, a process in eukaryotic cells in which segments of an 
+RNA transcript are removed—and the remaining segments stitched back 
+together—before the RNA is translated into protein. In the final section, 
+we consider how the present scheme of information storage, transcrip-
+tion, and translation might have arisen from much simpler systems in the 
+earliest stages of cell evolution. 
+From DNA to RNA
+Transcription and translation are the means by which cells read out, or 
+express, the instructions in their genes. Many identical RNA copies can be 
+made from the same gene, and each RNA molecule can direct the syn-
+thesis of many identical protein molecules. This successive amplification 
+enables cells to rapidly synthesize large amounts of protein whenever 
+necessary. At the same time, each gene can be transcribed, and its RNA 
+translated, at different rates, providing the cell with a way to make vast 
+quantities of some proteins and tiny quantities of others (Figure 7–2). 
+Moreover, as we discuss in Chapter 8, a cell can change (or regulate) the 
+expression of each of its genes according to the needs of the moment. 
+In this section, we discuss the production of RNA, the first step in gene 
+expression.
+Figure 7–1 Genetic information directs 
+the synthesis of proteins. The flow of 
+genetic information from DNA to RNA 
+(transcription) and from RNA to protein 
+(translation) occurs in all living cells. It 
+was Francis Crick who dubbed this flow 
+of information “the central dogma.” The 
+segments of DNA that are transcribed into 
+RNA are called genes. 
+Figure 7–2 A cell can express different 
+genes at different rates. In this and later 
+figures, the untranscribed portions of the 
+DNA are shown in gray.
+Question 7–1
+Consider the expression “central 
+dogma,” which refers to the flow 
+of genetic information from DNA 
+to RNA to protein. Is the word 
+“dogma” appropriate in this 
+context?
+H2N
+COOH
+5′
+3′
+5′
+3′
+5′
+3′
+PROTEIN
+RNA
+DNA
+amino acids
+PROTEIN SYNTHESIS
+TRANSLATION
+RNA SYNTHESIS
+TRANSCRIPTION
+gene
+nucleotides
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+A
+B
+B
+B
+DNA
+gene A
+gene B
+TRANSCRIPTION
+TRANSLATION
+TRANSCRIPTION
+TRANSLATION
+RNA
+RNA
+protein
+protein

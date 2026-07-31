@@ -1,0 +1,89 @@
+231
+• A third distinctive feature of transcription in eukaryotes is that the 
+mechanisms that control its initiation are much more elaborate than 
+those in prokaryotes—a point we discuss in detail in Chapter 8. In bac-
+teria, genes tend to lie very close to one another in the DNA, with only 
+very short lengths of nontranscribed DNA between them. But in plants 
+and animals, including humans, individual genes are spread out along 
+the DNA, with stretches of up to 100,000 nucleotide pairs between one 
+gene and the next. This architecture allows a single gene to be con-
+trolled by a large variety of regulatory DNA sequences scattered along 
+the DNA, and it enables eukaryotes to engage in more complex forms 
+of transcriptional regulation than do bacteria.
+• Last but not least, eukaryotic transcription initiation must take into 
+account the packing of DNA into nucleosomes and more compact 
+forms of chromatin structure, as we describe in Chapter 8. 
+We now turn to the general transcription factors and discuss how they 
+help eukaryotic RNA polymerase II initiate transcription. 
+Eukaryotic RNA Polymerase Requires General 
+Transcription Factors
+The initial finding that, unlike bacterial RNA polymerase, purified eukary-
+otic RNA polymerase II could not initiate transcription on its own in a 
+test tube led to the discovery and purification of the general transcrip-
+tion factors. These accessory proteins assemble on the promoter, where 
+they position the RNA polymerase and pull apart the DNA double helix 
+to expose the template strand, allowing the polymerase to begin tran-
+scription. Thus the general transcription factors have a similar role in 
+eukaryotic transcription as sigma factor has in bacterial transcription.
+Figure 7–12 shows how the general transcription factors assemble at 
+a promoter used by RNA polymerase II. The assembly process typically 
+begins with the binding of the general transcription factor TFIID to a short 
+Table 7–2 The Three RNA Polymerases in Eukaryotic Cells
+Type of Polymerase
+Genes Transcribed
+RNA polymerase I
+most rRNA genes
+RNA polymerase II
+all protein-coding genes, miRNA genes, plus 
+genes for other noncoding RNAs (e.g., those in 
+spliceosomes)
+RNA polymerase III
+tRNA genes 
+5S rRNA gene 
+genes for many other small RNAs
+Figure 7–12 To begin transcription, eukaryotic RNA polymerase II 
+requires a set of general transcription factors. These transcription 
+factors are called TFIIB, TFIID, and so on. (A) Many eukaryotic 
+promoters contain a DNA sequence called the TATA box. (B) The 
+TATA box is recognized by a subunit of the general transcription factor 
+TFIID, called the TATA-binding protein (TBP). For simplicity, the DNA 
+distortion produced by the binding of the TBP (see Figure 7–13) is 
+not shown. (C) The binding of TFIID enables the adjacent binding of 
+TFIIB. (D) The rest of the general transcription factors, as well as the 
+RNA polymerase itself, assemble at the promoter. (E) TFIIH then pries 
+apart the double helix at the transcription start point, using the energy 
+of ATP hydrolysis, which exposes the template strand of the gene (not 
+shown). TFIIH also phosphorylates RNA polymerase II, releasing the 
+polymerase from most of the general transcription factors, so it can 
+begin transcription. The site of phosphorylation is a long polypeptide 
+“tail” that extends from the polymerase. 
+From DNA to RNA         
+Question 7–3
+Could the RNA polymerase used 
+for transcription be used as the 
+polymerase that makes the RNA 
+primer required for DNA replication 
+(discussed in Chapter 6)?
+TATA box
+TFIID
+TBP
+start of transcription
+TFIIB
+TFIIE
+TFIIF
+RNA polymerase II
+TRANSCRIPTION
+TFIIH
+other factors
+(A)
+(B)
+(C)
+(D)
+(E)
+ribonucleoside
+triphosphates
+(UTP, ATP, CTP, GTP)
+RNA
+DNA
+P
+P

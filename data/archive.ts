@@ -17,6 +17,14 @@ export type ArchiveEntry = {
 
 export const archiveEntries: ArchiveEntry[] = [
   {
+    date: "2026-07-31",
+    type: "Code",
+    title: "Chapter 7: DNA, RNA, Protein",
+    description:
+      "Interactive study prototype for Chapter 7 figures, tracing genetic information from DNA through RNA into protein.",
+    href: "/chapterbio/"
+  },
+  {
     date: "2026-07-17",
     type: "Fragment",
     title: "What the hell is going on?",

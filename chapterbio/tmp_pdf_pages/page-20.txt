@@ -1,0 +1,110 @@
+242	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+in an mRNA specifies the correct protein. We discuss later how a special 
+punctuation signal at the beginning of each mRNA molecule sets the cor-
+rect reading frame.
+tRNA Molecules Match Amino Acids to Codons in mRNA
+The codons in an mRNA molecule do not directly recognize the amino 
+acids they specify: the group of three nucleotides does not, for exam-
+ple, bind directly to the amino acid. Rather, the translation of mRNA into 
+protein depends on adaptor molecules that can recognize and bind to a 
+codon at one site on their surface and to an amino acid at another site. 
+These adaptors consist of a set of small RNA molecules known as trans-
+fer RNAs (tRNAs), each about 80 nucleotides in length.
+We saw earlier that an RNA molecule generally folds into a three-dimen-
+sional structure by forming base pairs between different regions of the 
+molecule. If the base-paired regions are sufficiently extensive, they will 
+fold back on themselves to form a double-helical structure, like that of 
+double-stranded DNA. The tRNA molecule provides a striking example of 
+this. Four short segments of the folded tRNA are double-helical, producing 
+a molecule that looks like a cloverleaf when drawn schematically (Figure 
+7–29A). For example, a 5′-GCUC-3′ sequence in one part of a polynucle-
+otide chain can base-pair with a 5′-GAGC-3′ sequence in another region 
+of the same molecule. The cloverleaf undergoes further folding to form a 
+compact, L-shaped structure that is held together by additional hydrogen 
+bonds between different regions of the molecule (Figure 7–29B and C).
+Two regions of unpaired nucleotides situated at either end of the L-shaped 
+tRNA molecule are crucial to the function of tRNAs in protein synthesis. 
+One of these regions forms the anticodon, a set of three consecutive 
+nucleotides that bind, through base-pairing, to the complementary codon 
+A
+C
+G
+C
+U
+U
+A
+AG A C A C
+C
+C
+U A
+G
+T Ψ
+G
+U
+G
+U
+C
+CUG
+G
+A
+G
+G
+U
+CΨ
+Y
+A
+A
+G
+U
+C
+AG
+A
+G
+C
+C
+C
+G
+A
+G
+A
+G
+G
+G
+DD G A CUC G
+AU
+U
+U
+A
+G
+G
+C
+G
+attached amino
+acid (Phe)
+3′ end
+5′ end
+anticodon
+anticodon
+loop
+anticodon
+(A)
+(E)
+(B)
+(C)
+5′  GCGGAUUUAGCUCAGDDGGGAGAGCGCCAGACUGAAYAΨCUGGAGGUCCUGUGTΨCGAUCCACAGAAUUCGCACCA  3′
+A
+C
+C
+a cloverleaf
+(D)
+A
+Figure 7–29 tRNA molecules are molecular adaptors, linking amino acids to codons. In this series of diagrams, the same tRNA 
+molecule—in this case, a tRNA specific for the amino acid phenylalanine (Phe)—is depicted in various ways. (A) The conventional 
+“cloverleaf” structure shows the complementary base-pairing (red lines) that creates the double-helical regions of the molecule. The 
+anticodon loop (blue) contains the sequence of three nucleotides (red letters) that base-pairs with a codon in mRNA. The amino acid 
+matching the codon–anticodon pair is attached at the 3′ end of the tRNA. tRNAs contain some unusual bases, which are produced by 
+chemical modification after the tRNA has been synthesized. The bases denoted Ψ (for pseudouridine) and D (for dihydrouridine) are 
+derived from uracil. (B and C) Views of the actual L-shaped molecule, based on X-ray diffraction analysis. These two images are rotated 
+90º with respect to each other. (D) Schematic representation of tRNA, emphasizing the anticodon, that will be used in subsequent 
+figures. (E) The linear nucleotide sequence of the tRNA molecule, color-coded to match A, B, and C. 

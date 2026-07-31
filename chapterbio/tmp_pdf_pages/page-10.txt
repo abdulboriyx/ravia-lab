@@ -1,0 +1,88 @@
+232	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+segment of DNA double helix composed primarily of T and A nucleotides; 
+because of its composition, this part of the promoter is known as the TATA 
+box. Upon binding to DNA, TFIID causes a dramatic local distortion in the 
+DNA double helix (Figure 7–13), which helps to serve as a landmark for 
+the subsequent assembly of other proteins at the promoter. The TATA box 
+is a key component of many promoters used by RNA polymerase II, and 
+it is typically located 25 nucleotides upstream from the transcription start 
+site. Once TFIID has bound to the TATA box, the other factors assemble, 
+along with RNA polymerase II, to form a complete transcription initiation 
+complex. Although Figure 7–12 shows the general transcription factors 
+piling onto the promoter in a certain order, the actual order of assembly 
+probably differs from one promoter to the next.
+After RNA polymerase II has been positioned on the promoter, it must be 
+released from the complex of general transcription factors to begin its task 
+of making an RNA molecule. A key step in liberating the RNA polymer-
+ase is the addition of phosphate groups to its “tail” (see Figure 7–12E). 
+This liberation is initiated by the general transcription factor TFIIH, which 
+contains a protein kinase as one of its subunits. Once transcription has 
+begun, most of the general transcription factors dissociate from the DNA 
+and then are available to initiate another round of transcription with a 
+new RNA polymerase molecule. When RNA polymerase II finishes tran-
+scribing a gene, it too is released from the DNA; the phosphates on its 
+tail are stripped off by protein phosphatases, and the polymerase is then 
+ready to find a new promoter. Only the dephosphorylated form of RNA 
+polymerase II can initiate RNA synthesis.
+Eukaryotic mRNAs Are Processed in the Nucleus
+Although the templating principle by which DNA is transcribed into RNA 
+is the same in all organisms, the way in which the RNA transcripts are 
+handled before they can be used by the cell to make protein differs greatly 
+between bacteria and eukaryotes. Bacterial DNA lies directly exposed 
+to the cytoplasm, which contains the ribosomes on which protein syn-
+thesis takes place. As an mRNA molecule in a bacterium starts to be 
+synthesized, ribosomes immediately attach to the free 5′ end of the RNA 
+transcript and begin translating it into protein. 
+In eukaryotic cells, by contrast, DNA is enclosed within the nucleus. 
+Transcription takes place in the nucleus, but protein synthesis takes 
+place on ribosomes in the cytoplasm. So, before a eukaryotic mRNA 
+can be translated into protein, it must be transported out of the nucleus 
+through small pores in the nuclear envelope (Figure 7–14). Before it can 
+be exported to the cytosol, however, a eukaryotic RNA must go through 
+several RNA processing steps, which include capping, splicing, and poly-
+adenylation, as we discuss shortly. These steps take place as the RNA is 
+being synthesized. The enzymes responsible for RNA processing ride on 
+the phosphorylated tail of eukaryotic RNA polymerase II as it synthesizes 
+an RNA molecule (see Figure 7–12), and they process the transcript as it 
+emerges from the polymerase (Figure 7–15).
+A A
+A
+A
+T
+A
+T
+5′
+3′
+3′
+5′
+N
+C
+G
+Figure 7–13 TATA-binding protein (TBP) binds to the TATA box 
+(indicated by letters) and bends the DNA double helix. The unique 
+distortion of DNA caused by TBP, which is a subunit of TFIID (see 
+Figure 7–12), helps attract the other general transcription factors. 
+TBP is a single polypeptide chain that is folded into two very similar 
+domains (blue and green). The protein sits atop the DNA double helix 
+like a saddle on a bucking horse (Movie 7.4). (Adapted from J.L. Kim 
+et al., Nature 365:520–527, 1993. With permission from Macmillan 
+Publishers Ltd.)
+Figure 7–14 Before they can be 
+translated, mRNA molecules made in 
+the nucleus must be exported to the 
+cytosol via pores in the nuclear envelope 
+(red arrows). Shown here is a section of a 
+liver cell nucleus. The nucleolus is where 
+ribosomal RNAs are synthesized and 
+combined with proteins to form ribosomes, 
+which are then exported to the cytoplasm. 
+(From D.W. Fawcett, A Textbook of 
+Histology, 11th ed. Philadelphia: Saunders, 
+1986. With permission from Elsevier.) 
+nucleus
+nucleolus
+cytosol
+5 μm
+nuclear
+envelope

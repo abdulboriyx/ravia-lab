@@ -1,0 +1,65 @@
+252	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+Proteins that are meant to be short-lived often contain a short amino 
+acid sequence that identifies the protein as one to be ubiquitylated and 
+degraded in proteasomes. Damaged or misfolded proteins, as well as 
+proteins containing oxidized or otherwise abnormal amino acids, are 
+also recognized and degraded by this ubiquitin-dependent proteolytic 
+system. The enzymes that add a polyubiquitin chain to such proteins rec-
+ognize signals that become exposed on these proteins as a result of the 
+misfolding or chemical damage—for example, amino acid sequences or 
+conformational motifs that remain buried and inaccessible in the normal 
+“healthy” protein.
+There Are Many Steps Between DNA and Protein
+We have seen that many types of chemical reactions are required to 
+produce a protein from the information contained in a gene. The final 
+concentration of a protein in a cell therefore depends on the rate at which 
+each of the many steps is carried out (Figure 7–42). In addition, many 
+proteins—once they leave the ribosome—require further attention before 
+they are useful to the cell. Examples of such post-translational modifica-
+tions include covalent modification (such as phosphorylation), the binding 
+of small-molecule cofactors, or association with other protein subunits, 
+which are often needed for a newly synthesized protein to become fully 
+functional (Figure 7–43).
+5′
+3′
+DNA
+introns
+exons
+INITIATION OF TRANSCRIPTION
+3′ RNA CLEAVAGE,
+POLYADENYLATION,
+AND TERMINATION OF TRANSCRIPTION
+INITIATION OF PROTEIN SYNTHESIS (TRANSLATION)
+COMPLETION OF PROTEIN SYNTHESIS
+AND PROTEIN FOLDING
+mRNA DEGRADATION
+PROTEIN DEGRADATION
+EXPORT
+5′ RNA CAPPING,
+ELONGATION,
+AND SPLICING
+AAAA
+mRNA
+AAAA
+AAAA
+mRNA
+NUCLEUS
+CYTOSOL
+5′ cap
+COOH
+H2N
+H2N
+COOH
+poly-A tail
+Figure 7–42 Protein production in a 
+eukaryotic cell requires many steps. The 
+final concentration of each protein depends 
+on the rate of each step depicted. Even after 
+an mRNA and its corresponding protein have 
+been produced, their concentrations can 
+be regulated by degradation. Although not 
+shown here, the activity of the protein can 
+also be regulated by other post-translational 
+modifications or the binding of small 
+molecules (see Figure 7–43).

@@ -1,0 +1,72 @@
+257
+ribosomes; and transfer RNAs (tRNAs), which act as adaptor mol-
+ecules in protein synthesis. 
+• 
+To begin transcription, RNA polymerase binds to specific DNA sites 
+called promoters that lie immediately upstream of genes. To initiate 
+transcription, eukaryotic RNA polymerases require the assembly of 
+a complex of general transcription factors at the promoter, whereas 
+bacterial RNA polymerase requires only an additional subunit, called 
+sigma factor. 
+• 
+Most protein-coding genes in eukaryotic cells are composed of a 
+number of coding regions, called exons, interspersed with larger 
+noncoding regions, called introns. When a eukaryotic gene is tran-
+scribed from DNA into RNA, both the exons and introns are copied. 
+• 
+Introns are removed from the RNA transcripts in the nucleus by RNA 
+splicing, a reaction catalyzed by small ribonucleoprotein complexes 
+known as snRNPs. Splicing removes the introns from the RNA and 
+joins together the exons—often in a variety of combinations, allowing 
+multiple proteins to be produced from the same gene. 
+• 
+Eukaryotic pre-mRNAs go through several additional RNA process-
+ing steps before they leave the nucleus as mRNAs, including 5′ RNA 
+capping and 3′ polyadenylation. These reactions, along with splicing, 
+take place as the pre-mRNA is being transcribed. 
+• 
+Translation of the nucleotide sequence of an mRNA into a protein 
+takes place in the cytoplasm on large ribonucleoprotein assemblies 
+called ribosomes. As the mRNA moves through the ribosome, its 
+message is translated into protein.
+• 
+The nucleotide sequence in mRNA is read in sets of three nucleotides 
+called codons; each codon corresponds to one amino acid. 
+• 
+The correspondence between amino acids and codons is specified 
+by the genetic code. The possible combinations of the 4 different 
+nucleotides in RNA give 64 different codons in the genetic code. Most 
+amino acids are specified by more than one codon.
+• 
+tRNAs act as adaptor molecules in protein synthesis. Enzymes called 
+aminoacyl-tRNA synthetases covalently link amino acids to their 
+appropriate tRNAs. Each tRNA contains a sequence of three nucle-
+otides, the anticodon, which recognizes a codon in an mRNA through 
+complementary base-pairing.
+• 
+Protein synthesis begins when a ribosome assembles at an initia-
+tion codon (AUG) in an mRNA molecule, a process that depends on 
+proteins called translation initiation factors. The completed protein 
+chain is released from the ribosome when a stop codon (UAA, UAG, 
+or UGA) in the mRNA is reached.
+• 
+The stepwise linking of amino acids into a polypeptide chain is cata-
+lyzed by an rRNA molecule in the large ribosomal subunit, which thus 
+acts as a ribozyme.
+• 
+The concentration of a protein in a cell depends on the rate at 
+which the mRNA and protein are synthesized and degraded. Protein 
+degradation in the cytosol and nucleus occurs inside large protein 
+complexes called proteasomes. 
+• 
+From our knowledge of present-day organisms and the molecules 
+they contain, it seems likely that life on Earth began with the evolu-
+tion of RNA molecules that could catalyze their own replication. 
+• 
+It has been proposed that RNA served as both the genome and the 
+catalysts in the first cells, before DNA replaced RNA as a more stable 
+molecule for storing genetic information, and proteins replaced RNAs 
+as the major catalytic and structural components. RNA catalysts in 
+modern cells are thought to provide a glimpse into an ancient, RNA-
+based world.
+Essential Concepts         

@@ -1,0 +1,87 @@
+234	
+Chapter 7     From DNA to Protein: How Cells Read the Genome
+exons—are usually shorter than the introns, and they often represent 
+only a small fraction of the total length of the gene (Figure 7–17). Introns 
+range in length from a single nucleotide to more than 10,000 nucleotides. 
+Some protein-coding eukaryotic genes lack introns altogether, and some 
+have only a few; but most have many (Figure 7–18). Note that the terms 
+“exon” and “intron” apply to both the DNA and the corresponding RNA 
+sequences. 
+Introns Are Removed From Pre-mRNAs by RNA Splicing
+To produce an mRNA in a eukaryotic cell, the entire length of the gene, 
+introns as well as exons, is transcribed into RNA. After capping, and as 
+RNA polymerase II continues to transcribe the gene, the process of RNA 
+splicing begins, in which the introns are removed from the newly synthe-
+sized RNA and the exons are stitched together. Each transcript ultimately 
+receives a poly-A tail; in some cases, this happens after splicing, whereas 
+in other cases, it occurs before the final splicing reactions have been 
+completed. Once a transcript has been spliced and its 5′ and 3′ ends have 
+been modified, the RNA is now a functional mRNA molecule that can 
+leave the nucleus and be translated into protein.
+How does the cell determine which parts of the RNA transcript to remove 
+during splicing? Unlike the coding sequence of an exon, most of the 
+nucleotide sequence of an intron is unimportant. Although there is lit-
+tle overall resemblance between the nucleotide sequences of different 
+introns, each intron contains a few short nucleotide sequences that act 
+as cues for its removal from the pre-mRNA. These special sequences are 
+found at or near each end of the intron and are the same or very similar in 
+all introns (Figure 7–19). Guided by these sequences, an elaborate splic-
+ing machine cuts out the intron in the form of a “lariat” structure (Figure 
+7–20), formed by the reaction of the “A” nucleotide highlighted in red in 
+Figures 7–19 and 7–20.
+5′
+3′
+5′
+3′
+3′
+5′
+DNA
+3′
+5′
+DNA
+bacterial gene
+eukaryotic gene
+coding region
+coding regions
+(exons)
+noncoding regions
+(introns)
+human β-globin gene
+1 2 3
+2000
+nucleotide pairs
+human Factor VIII gene
+exons
+200,000 nucleotide pairs
+1
+5
+10
+14
+22
+25
+26
+(A)
+(B)
+introns
+DNA
+Figure 7–17 Eukaryotic and bacterial genes are organized differently. A bacterial 
+gene consists of a single stretch of uninterrupted nucleotide sequence that encodes 
+the amino acid sequence of a protein (or more than one protein). In contrast, the 
+protein-coding sequences of most eukaryotic genes (exons) are interrupted by 
+noncoding sequences (introns). Promoters for transcription are indicated in green.
+Figure 7–18 Most protein-
+coding human genes are 
+broken into multiple exons 
+and introns. (A) The β-globin 
+gene, which encodes one of 
+the subunits of the oxygen-
+carrying protein hemoglobin, 
+contains 3 exons. (B) The 
+Factor VIII gene, which 
+encodes a protein (Factor VIII) 
+that functions in the blood-
+clotting pathway, contains 26 
+exons. Mutations in this large 
+gene are responsible for the 
+most prevalent form of the 
+blood disorder hemophilia. 

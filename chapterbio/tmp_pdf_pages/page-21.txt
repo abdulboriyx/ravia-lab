@@ -1,0 +1,126 @@
+243
+in an mRNA molecule. The other is a short single-stranded region at the 
+3′ end of the molecule; this is the site where the amino acid that matches 
+the codon is covalently attached to the tRNA. 
+We saw in the previous section that the genetic code is redundant; that 
+is, several different codons can specify a single amino acid (see Figure 
+7–25). This redundancy implies either that there is more than one tRNA 
+for many of the amino acids or that some tRNA molecules can base-pair 
+with more than one codon. In fact, both situations occur. Some amino 
+acids have more than one tRNA, and some tRNAs are constructed so 
+that they require accurate base-pairing only at the first two positions of 
+the codon and can tolerate a mismatch (or wobble) at the third position. 
+This wobble base-pairing explains why so many of the alternative codons 
+for an amino acid differ only in their third nucleotide (see Figure 7–25). 
+Wobble base-pairings make it possible to fit the 20 amino acids to their 
+61 codons with as few as 31 kinds of tRNA molecules. The exact number 
+of different kinds of tRNAs, however, differs from one species to the next. 
+For example, humans have nearly 500 different tRNA genes, but only 48 
+anticodons are represented among them.
+Specific Enzymes Couple tRNAs to the Correct Amino 
+Acid
+For a tRNA molecule to carry out its role as an adaptor, it must be linked—
+or charged—with the correct amino acid. How does each tRNA molecule 
+recognize the one amino acid in 20 that is its right partner? Recognition 
+and attachment of the correct amino acid depend on enzymes called 
+aminoacyl-tRNA synthetases, which covalently couple each amino acid 
+to its appropriate set of tRNA molecules. In most organisms, there is a 
+different synthetase enzyme for each amino acid. That means that there 
+are 20 synthetases in all: one attaches glycine to all tRNAs that recog-
+nize codons for glycine, another attaches phenylalanine to all tRNAs that 
+recognize codons for phenylalanine, and so on. Each synthetase enzyme 
+recognizes specific nucleotides in both the anticodon and the amino-
+acid-accepting arm of the correct tRNA (Movie 7.6). The synthetases are 
+thus equal in importance to the tRNAs in the decoding process, because 
+it is the combined action of the synthetases and tRNAs that allows each 
+codon in the mRNA molecule to specify its proper amino acid (Figure 
+7–30).
+Figure 7–30 The genetic code is 
+translated by the cooperation of two 
+adaptors: aminoacyl-tRNA synthetases 
+and tRNAs. Each synthetase couples a 
+particular amino acid to its corresponding 
+tRNAs, a process called charging. The 
+anticodon on the charged tRNA molecule 
+then forms base pairs with the appropriate 
+codon on the mRNA. An error in either 
+the charging step or the binding of the 
+charged tRNA to its codon will cause the 
+wrong amino acid to be incorporated into 
+a protein chain. In the sequence of events 
+shown, the amino acid tryptophan (Trp) is 
+selected by the codon UGG on the mRNA.
+From RNA to Protein         
+H
+N CH
+C
+CH2
+H2N
+C
+C
+H
+O
+OH
+H
+N CH
+C
+CH2
+H2N
+C
+H
+H
+N CH
+C
+CH2
+amino acid
+(tryptophan)
+tRNA synthetase
+(tryptophanyl
+tRNA synthetase)
+LINKAGE OF AMINO
+ACID TO tRNA
+ANTICODON IN tRNA 
+BINDS TO ITS CODON 
+IN mRNA
+codon in
+mRNA
+anticodon
+in tRNA
+NET RESULT: AMINO ACID IS 
+SELECTED BY ITS CODON IN
+AN mRNA
+C
+O
+O
+H2N
+C
+H
+C
+O
+O
+A
+C
+C
+A
+C
+C
++ 2
+U
+G
+G
+5′
+3′
+base-pairing
+high-energy
+bond
+tRNA
+(tRNA
+Trp)
+A
+C
+C
+3′
+5′
+ATP
+AMP
+Pi
