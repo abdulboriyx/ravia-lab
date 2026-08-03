@@ -20,7 +20,7 @@ export interface FigureEntry {
   status: FigureStatus;
 }
 
-const base = '/figures/';
+const base = `${import.meta.env.BASE_URL}figures/`;
 
 export const figures: FigureEntry[] = [
   ['7-1', 2, 224, 'Genetic information directs the synthesis of proteins.', 'central dogma', ['DNA', 'RNA', 'protein', 'transcription', 'translation'], 'Information flows from genes through RNA into protein products.', ['annotated 2D']],
