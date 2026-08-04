@@ -373,6 +373,188 @@ main {
   letter-spacing: 0;
 }
 
+.projectPage {
+  padding: 112px clamp(16px, 3vw, 40px) 88px;
+}
+
+.projectHero,
+.projectBody,
+.milestoneSection {
+  width: min(100%, var(--archive-width));
+  margin-inline: auto;
+}
+
+.projectHero {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.28fr) minmax(0, 1fr);
+  gap: clamp(18px, 4vw, 72px);
+  align-items: end;
+  min-height: clamp(420px, 58svh, 640px);
+  padding-bottom: clamp(28px, 5vw, 64px);
+  border-bottom: 1px solid var(--fg);
+}
+
+.projectKicker,
+.projectAside p:first-child,
+.projectSection h2,
+.milestoneHeader p,
+.milestoneList span {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+  font-weight: 700;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.projectKicker,
+.projectAside,
+.projectSection h2,
+.milestoneHeader p,
+.milestoneList span {
+  color: var(--muted);
+}
+
+.projectTitleBlock {
+  width: min(100%, 940px);
+}
+
+.projectTitleBlock h1 {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(4.4rem, 12vw, 12rem);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: 0;
+}
+
+.projectTitleBlock p {
+  width: min(100%, 720px);
+  margin: clamp(24px, 3vw, 38px) 0 0 auto;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.5vw, 1.38rem);
+  font-weight: 500;
+  line-height: 1.28;
+}
+
+.projectBody {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.32fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 86px);
+  padding: clamp(34px, 6vw, 74px) 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.projectAside {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  max-width: 310px;
+}
+
+.projectAside p:last-child,
+.projectSection p,
+.projectPlainList,
+.projectTokenList {
+  margin: 0;
+  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
+  font-weight: 500;
+  line-height: 1.42;
+}
+
+.projectMain {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(220px, 0.88fr);
+  gap: clamp(28px, 4vw, 58px);
+}
+
+.projectSection:first-child {
+  grid-row: span 2;
+}
+
+.projectSection {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+}
+
+.projectTokenList,
+.projectPlainList {
+  padding: 0;
+  list-style: none;
+}
+
+.projectTokenList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.projectTokenList li {
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 650;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.projectPlainList {
+  display: grid;
+  gap: 11px;
+}
+
+.projectPlainList li {
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--line);
+}
+
+.milestoneSection {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.32fr) minmax(0, 1fr);
+  gap: clamp(24px, 5vw, 86px);
+  padding-top: clamp(34px, 6vw, 74px);
+}
+
+.milestoneHeader {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.milestoneHeader h2 {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(2rem, 4.2vw, 5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: 0;
+}
+
+.milestoneList {
+  display: grid;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.milestoneList li {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: clamp(14px, 2vw, 28px);
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.milestoneList p {
+  margin: 0;
+  font-size: clamp(1rem, 1.45vw, 1.42rem);
+  font-weight: 500;
+  line-height: 1.22;
+}
+
 @media (max-width: 1100px) {
   .sectionRule {
     grid-template-columns: minmax(0, 1fr) auto;
@@ -418,6 +600,29 @@ main {
 
   .archiveRow p {
     max-width: 60ch;
+  }
+
+  .projectHero,
+  .projectBody,
+  .milestoneSection {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projectHero {
+    min-height: auto;
+    padding-top: 42px;
+  }
+
+  .projectTitleBlock p {
+    margin-left: 0;
+  }
+
+  .projectMain {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .projectSection:first-child {
+    grid-row: auto;
   }
 }
 
@@ -474,12 +679,21 @@ main {
 
   .indexSection,
   .subPage,
-  .aboutPage {
+  .aboutPage,
+  .projectPage {
     padding-inline: 14px;
   }
 
   .pageIntro h1 {
     font-size: clamp(3.8rem, 22vw, 7rem);
+  }
+
+  .projectTitleBlock h1 {
+    font-size: clamp(3.6rem, 18vw, 6.8rem);
+  }
+
+  .milestoneList li {
+    grid-template-columns: 42px minmax(0, 1fr);
   }
 }
 

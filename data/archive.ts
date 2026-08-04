@@ -17,6 +17,14 @@ export type ArchiveEntry = {
 
 export const archiveEntries: ArchiveEntry[] = [
   {
+    date: "2026-08-04",
+    type: "Code",
+    title: "Spatial Ravia",
+    description:
+      "A conversational scientific world-model system for turning questions into interactive scientific representations.",
+    href: "/code/spatial-ravia"
+  },
+  {
     date: "2026-07-31",
     type: "Code",
     title: "Chapter 7: DNA, RNA, Protein",
