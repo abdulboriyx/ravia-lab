@@ -373,186 +373,344 @@ main {
   letter-spacing: 0;
 }
 
-.projectPage {
-  padding: 112px clamp(16px, 3vw, 40px) 88px;
-}
-
-.projectHero,
-.projectBody,
-.milestoneSection {
-  width: min(100%, var(--archive-width));
-  margin-inline: auto;
-}
-
-.projectHero {
+.spatialWorkspace {
   display: grid;
-  grid-template-columns: minmax(120px, 0.28fr) minmax(0, 1fr);
-  gap: clamp(18px, 4vw, 72px);
+  gap: 14px;
+  min-height: 100svh;
+  padding: 92px clamp(12px, 1.6vw, 22px) 18px;
+}
+
+.workspaceTop {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr) auto;
+  gap: 18px;
   align-items: end;
-  min-height: clamp(420px, 58svh, 640px);
-  padding-bottom: clamp(28px, 5vw, 64px);
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--fg);
 }
 
-.projectKicker,
-.projectAside p:first-child,
-.projectSection h2,
-.milestoneHeader p,
-.milestoneList span {
+.workspaceTop p,
+.workspaceTop span,
+.panelBlock h2,
+.promptForm label,
+.commandForm label,
+.canvasMeta,
+.canvasToolbar,
+.bottomPanel label,
+.limitations p:first-child {
   margin: 0;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+  font-size: 0.76rem;
   font-weight: 700;
   line-height: 1.1;
   text-transform: uppercase;
 }
 
-.projectKicker,
-.projectAside,
-.projectSection h2,
-.milestoneHeader p,
-.milestoneList span {
+.workspaceTop p,
+.workspaceTop span,
+.panelBlock h2,
+.canvasMeta,
+.limitations p:first-child {
   color: var(--muted);
 }
 
-.projectTitleBlock {
-  width: min(100%, 940px);
-}
-
-.projectTitleBlock h1 {
+.workspaceTop h1 {
   margin: 0;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: clamp(4.4rem, 12vw, 12rem);
+  font-size: clamp(1.85rem, 4vw, 4.7rem);
   font-weight: 700;
-  line-height: 0.78;
+  line-height: 0.86;
   letter-spacing: 0;
 }
 
-.projectTitleBlock p {
-  width: min(100%, 720px);
-  margin: clamp(24px, 3vw, 38px) 0 0 auto;
-  color: var(--muted);
-  font-size: clamp(1rem, 1.5vw, 1.38rem);
-  font-weight: 500;
-  line-height: 1.28;
-}
-
-.projectBody {
+.workspaceShell {
   display: grid;
-  grid-template-columns: minmax(160px, 0.32fr) minmax(0, 1fr);
-  gap: clamp(24px, 5vw, 86px);
-  padding: clamp(34px, 6vw, 74px) 0;
-  border-bottom: 1px solid var(--line);
+  grid-template-columns: minmax(240px, 0.74fr) minmax(520px, 1.7fr) minmax(270px, 0.82fr);
+  gap: 14px;
+  min-height: 620px;
 }
 
-.projectAside {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  max-width: 310px;
+.workspacePanel,
+.simulationColumn,
+.bottomPanel {
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
 }
 
-.projectAside p:last-child,
-.projectSection p,
-.projectPlainList,
-.projectTokenList {
-  margin: 0;
-  font-size: clamp(0.95rem, 1.1vw, 1.08rem);
-  font-weight: 500;
-  line-height: 1.42;
-}
-
-.projectMain {
+.workspacePanel {
   display: grid;
-  grid-template-columns: minmax(0, 1.12fr) minmax(220px, 0.88fr);
-  gap: clamp(28px, 4vw, 58px);
-}
-
-.projectSection:first-child {
-  grid-row: span 2;
-}
-
-.projectSection {
-  display: grid;
-  gap: 16px;
   align-content: start;
+  gap: 18px;
+  padding: 16px;
+  overflow: auto;
 }
 
-.projectTokenList,
-.projectPlainList {
+.promptForm,
+.commandForm,
+.panelBlock,
+.panelBlock div {
+  display: grid;
+  gap: 10px;
+}
+
+.promptForm textarea,
+.commandForm input,
+.representationSelect select {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font: inherit;
+}
+
+.promptForm textarea {
+  min-height: 148px;
+  padding: 12px;
+  resize: vertical;
+  font-size: 1rem;
+  line-height: 1.32;
+}
+
+.examplePrompts {
+  display: grid;
+  gap: 7px;
+}
+
+.examplePrompts button,
+.primaryAction,
+.canvasToolbar button,
+.commandForm button,
+.segmentedControl button {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--fg);
+  background: transparent;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.examplePrompts button {
+  padding: 9px;
+}
+
+.primaryAction,
+.commandForm button {
+  padding: 12px;
+  color: var(--bg);
+  background: var(--fg);
+}
+
+.panelBlock {
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.panelBlock p,
+.panelBlock li,
+.limitations p:last-child,
+.selectionReadout span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.panelBlock ul {
+  display: grid;
+  gap: 7px;
   padding: 0;
+  margin: 0;
   list-style: none;
 }
 
-.projectTokenList {
+.panelBlock li.activeEntity {
+  color: var(--fg);
+}
+
+.commandForm input,
+.representationSelect select {
+  padding: 10px;
+}
+
+.simulationColumn {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+}
+
+.canvasToolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid var(--line);
 }
 
-.projectTokenList li {
-  padding: 7px 10px;
-  border: 1px solid var(--line);
-  color: var(--fg);
+.canvasToolbar button {
+  padding: 9px 10px;
+}
+
+.canvasToolbar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.canvasToolbar input,
+.timelineControl input {
+  accent-color: var(--fg);
+}
+
+.simulationCanvas {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  background:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.canvasMeta {
+  position: absolute;
+  z-index: 2;
+  top: 14px;
+  left: 14px;
+  display: grid;
+  gap: 5px;
+}
+
+.simulationCanvas svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+}
+
+.simulationCanvas g[role="button"] {
+  cursor: pointer;
+  outline: none;
+}
+
+.forkGuide {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.simComponent {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 4;
+  transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.simComponent text,
+.comparisonLayer text {
+  fill: var(--fg);
+  stroke: none;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 0.82rem;
-  font-weight: 650;
-  line-height: 1;
+  font-size: 18px;
+  font-weight: 700;
   text-transform: uppercase;
 }
 
-.projectPlainList {
-  display: grid;
-  gap: 11px;
+.helicase polygon,
+.polymerase circle,
+.ligase rect,
+.okazakiFragments rect {
+  fill: var(--bg);
+  stroke: var(--fg);
+  stroke-width: 3;
 }
 
-.projectPlainList li {
-  padding-bottom: 11px;
-  border-bottom: 1px solid var(--line);
+.rnaPrimers {
+  stroke-width: 7;
 }
 
-.milestoneSection {
-  display: grid;
-  grid-template-columns: minmax(160px, 0.32fr) minmax(0, 1fr);
-  gap: clamp(24px, 5vw, 86px);
-  padding-top: clamp(34px, 6vw, 74px);
+.leadingStrand {
+  stroke-dasharray: 10 9;
 }
 
-.milestoneHeader {
-  display: grid;
-  align-content: start;
-  gap: 18px;
+.laggingStrand {
+  stroke-width: 5;
 }
 
-.milestoneHeader h2 {
-  margin: 0;
+.simComponent.isActive,
+g.isActive,
+.isActive path,
+.isActive line,
+.isActive rect,
+.isActive circle,
+.isActive polygon {
+  stroke-width: 7;
+}
+
+.comparisonLayer {
+  fill: none;
+  stroke: var(--muted);
+  stroke-width: 3;
+  stroke-dasharray: 12 10;
+}
+
+.selectionReadout {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  width: min(330px, calc(100% - 28px));
+  padding: 12px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.selectionReadout p {
+  margin: 0 0 6px;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: clamp(2rem, 4.2vw, 5rem);
+  font-size: 0.86rem;
   font-weight: 700;
-  line-height: 0.9;
-  letter-spacing: 0;
+  text-transform: uppercase;
 }
 
-.milestoneList {
+.bottomPanel {
   display: grid;
-  padding: 0;
-  margin: 0;
-  list-style: none;
+  grid-template-columns: minmax(260px, 1fr) auto minmax(190px, 240px) minmax(280px, 0.8fr);
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
 }
 
-.milestoneList li {
+.timelineControl,
+.representationSelect {
   display: grid;
-  grid-template-columns: 54px minmax(0, 1fr);
-  gap: clamp(14px, 2vw, 28px);
-  padding: 18px 0;
-  border-bottom: 1px solid var(--line);
+  gap: 8px;
 }
 
-.milestoneList p {
-  margin: 0;
-  font-size: clamp(1rem, 1.45vw, 1.42rem);
-  font-weight: 500;
-  line-height: 1.22;
+.segmentedControl {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.segmentedControl button {
+  padding: 10px 12px;
+}
+
+.segmentedControl button.isSelected {
+  color: var(--bg);
+  background: var(--fg);
+}
+
+.limitations {
+  display: grid;
+  gap: 6px;
 }
 
 @media (max-width: 1100px) {
@@ -602,27 +760,31 @@ main {
     max-width: 60ch;
   }
 
-  .projectHero,
-  .projectBody,
-  .milestoneSection {
+  .workspaceTop {
     grid-template-columns: minmax(0, 1fr);
+    align-items: start;
   }
 
-  .projectHero {
-    min-height: auto;
-    padding-top: 42px;
+  .workspaceShell {
+    grid-template-columns: minmax(220px, 0.72fr) minmax(480px, 1.45fr);
   }
 
-  .projectTitleBlock p {
-    margin-left: 0;
+  .rightPanel {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  .projectMain {
-    grid-template-columns: minmax(0, 1fr);
+  .rightPanel .commandForm {
+    grid-column: 1 / -1;
   }
 
-  .projectSection:first-child {
-    grid-row: auto;
+  .bottomPanel {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .representationSelect,
+  .limitations {
+    grid-column: 1 / -1;
   }
 }
 
@@ -644,6 +806,23 @@ main {
   .brainStage {
     width: min(68vw, 430px);
     margin-top: clamp(42px, 7svh, 70px);
+  }
+
+  .spatialWorkspace {
+    padding-top: 112px;
+  }
+
+  .workspaceShell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .rightPanel {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .simulationCanvas,
+  .simulationCanvas svg {
+    min-height: 480px;
   }
 }
 
@@ -679,8 +858,7 @@ main {
 
   .indexSection,
   .subPage,
-  .aboutPage,
-  .projectPage {
+  .aboutPage {
     padding-inline: 14px;
   }
 
@@ -688,12 +866,35 @@ main {
     font-size: clamp(3.8rem, 22vw, 7rem);
   }
 
-  .projectTitleBlock h1 {
-    font-size: clamp(3.6rem, 18vw, 6.8rem);
+  .spatialWorkspace {
+    padding: 98px 10px 14px;
   }
 
-  .milestoneList li {
-    grid-template-columns: 42px minmax(0, 1fr);
+  .workspaceTop h1 {
+    font-size: clamp(1.65rem, 11vw, 3rem);
+  }
+
+  .workspacePanel {
+    padding: 12px;
+  }
+
+  .rightPanel,
+  .bottomPanel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .simulationCanvas,
+  .simulationCanvas svg {
+    min-height: 420px;
+  }
+
+  .canvasToolbar {
+    align-items: stretch;
+  }
+
+  .canvasToolbar button,
+  .canvasToolbar label {
+    flex: 1 1 120px;
   }
 }
 
