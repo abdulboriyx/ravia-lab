@@ -637,6 +637,34 @@ main {
   cursor: pointer;
 }
 
+.claimItem {
+  display: grid;
+  gap: 4px;
+}
+
+.claimItem > span,
+.provenanceDetails summary {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.provenanceDetails {
+  padding-top: 2px;
+}
+
+.provenanceDetails summary {
+  cursor: pointer;
+}
+
+.provenanceDetails div {
+  display: grid;
+  gap: 3px;
+  padding: 7px 0 8px;
+  border-top: 1px solid var(--line);
+}
+
 .commandForm input,
 .representationSelect select {
   padding: 10px;
@@ -783,6 +811,71 @@ main {
   outline: none;
 }
 
+.scientificPrimitive {
+  fill: none;
+  stroke: var(--fg);
+  stroke-width: 4;
+  transition: opacity 160ms ease, stroke-width 160ms ease;
+}
+
+.scientificPrimitive text,
+.renderLabel {
+  fill: var(--fg);
+  stroke: none;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.primitive-primary {
+  stroke: var(--fg);
+}
+
+.primitive-secondary {
+  stroke: var(--muted);
+}
+
+.primitive-muted,
+.primitive-guide {
+  stroke: var(--line);
+}
+
+.primitive-accent,
+.primitive-warning {
+  stroke: var(--fg);
+}
+
+.primitive-surface,
+.primitive-field {
+  fill: rgba(255, 255, 255, 0.04);
+  stroke: var(--muted);
+}
+
+.scientificPrimitive:is(polygon, circle, rect, ellipse),
+.scientificPrimitive :is(polygon, circle, rect, ellipse) {
+  fill: var(--bg);
+}
+
+.scientificPrimitive:is(line) {
+  stroke-width: 7;
+}
+
+.primitiveMarker {
+  fill: var(--fg);
+  stroke: none;
+}
+
+.scientificPrimitive.isActive,
+.isActive .scientificPrimitive,
+.isActive path,
+.isActive line,
+.isActive rect,
+.isActive circle,
+.isActive polygon {
+  stroke-width: 7;
+}
+
 .forkGuide {
   fill: none;
   stroke: var(--line);
@@ -807,25 +900,19 @@ main {
   text-transform: uppercase;
 }
 
-.helicase polygon,
-.polymerase circle,
-.ligase rect,
-.okazakiFragments rect {
+.simComponent:is(polygon, circle, rect),
+.simComponent:is(g) :is(polygon, circle, rect) {
   fill: var(--bg);
   stroke: var(--fg);
   stroke-width: 3;
 }
 
-.rnaPrimers {
+.simComponent:is(line) {
   stroke-width: 7;
 }
 
-.leadingStrand {
+.simComponent:is(path) {
   stroke-dasharray: 10 9;
-}
-
-.laggingStrand {
-  stroke-width: 5;
 }
 
 .simComponent.isActive,
@@ -898,6 +985,54 @@ g.isActive,
 .limitations {
   display: grid;
   gap: 6px;
+}
+
+.primitiveGallery {
+  display: grid;
+  gap: 18px;
+  min-height: 100svh;
+  padding: 112px clamp(14px, 3vw, 40px) 36px;
+}
+
+.primitiveGalleryHeader {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 18px;
+  align-items: end;
+  border-bottom: 1px solid var(--fg);
+  padding-bottom: 14px;
+}
+
+.primitiveGalleryHeader p,
+.primitiveGalleryHeader h1 {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 700;
+}
+
+.primitiveGalleryHeader p {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.primitiveGalleryHeader h1 {
+  font-size: clamp(2rem, 6vw, 7rem);
+  line-height: 0.86;
+}
+
+.primitiveGalleryCanvas {
+  border: 1px solid var(--line);
+  background:
+    linear-gradient(to right, var(--line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--line) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.primitiveGalleryCanvas svg {
+  display: block;
+  width: 100%;
+  min-height: 640px;
 }
 
 @media (max-width: 1100px) {

@@ -7,15 +7,13 @@ import {
   createInitialSession,
   setRepresentationMode,
   setTimelinePosition,
+  shouldShowPrimitive,
   startSessionFromPrompt
 } from "./model";
-
-const examples = [
-  "How is DNA copied?",
-  "Show a replication fork.",
-  "Why are Okazaki fragments necessary?",
-  "What happens without ligase?"
-];
+import type { ScientificClaim, ScientificClaimProvenance } from "./model";
+import type { ScientificPrimitive } from "./primitives.ts";
+import { resolveCoord } from "./primitives.ts";
+import { initialExamples, processPacks } from "./process-registry";
 
 export function SpatialRaviaPrototype() {
   const [session, setSession] = useState<SpatialSessionState>(() => createInitialSession());
@@ -45,7 +43,10 @@ export function SpatialRaviaPrototype() {
           playback: {
             ...current.playback,
             timelinePosition:
-              (current.playback.timelinePosition + (delta / 11000) * current.playback.speed) % 1
+              (current.playback.timelinePosition +
+                delta / current.activeModel.renderPlan.progressDurationMs *
+                  current.playback.speed) %
+              1
           }
         };
       });
@@ -60,7 +61,7 @@ export function SpatialRaviaPrototype() {
   function generate(event?: FormEvent<HTMLFormElement>, nextPrompt = prompt) {
     event?.preventDefault();
     const trimmed = nextPrompt.trim();
-    const updated = startSessionFromPrompt(session, trimmed);
+    const updated = startSessionFromPrompt(session, trimmed, processPacks);
 
     setPrompt(trimmed);
     setSession(updated);
@@ -73,6 +74,7 @@ export function SpatialRaviaPrototype() {
   }
 
   const generated = Boolean(session.activeModel);
+  const examples = session.activeModel?.examples ?? initialExamples;
 
   return (
     <main className={generated ? "spatialWorkspace isGenerated" : "spatialWorkspace"}>
@@ -89,20 +91,7 @@ export function SpatialRaviaPrototype() {
               placeholder="Describe a biological process you want to understand."
               autoFocus
             />
-            <div className="examplePrompts" aria-label="Example prompts">
-              {examples.map((example) => (
-                <button
-                  key={example}
-                  type="button"
-                  onClick={() => {
-                    setPrompt(example);
-                    generate(undefined, example);
-                  }}
-                >
-                  {example}
-                </button>
-              ))}
-            </div>
+            <ExamplePromptButtons examples={examples} generate={generate} setPrompt={setPrompt} />
             <button className="primaryAction" type="submit">
               Generate
             </button>
@@ -110,7 +99,7 @@ export function SpatialRaviaPrototype() {
 
           {session.activeIntervention === "unsupported prompt" ? (
             <p className="unsupportedNotice">
-              Unsupported process. This local prototype currently supports DNA replication only.
+              Unsupported process. This local prototype does not have a process pack for that yet.
             </p>
           ) : null}
         </section>
@@ -127,31 +116,18 @@ export function SpatialRaviaPrototype() {
               <button type="submit">Generate</button>
             </form>
             <p>{session.activeModel?.process}</p>
-            <span>Schematic, not molecularly exact</span>
+            <span>{session.activeModel?.renderPlan.subtitle}</span>
           </section>
 
           <div className={inspectorOpen ? "workspaceShell" : "workspaceShell inspectorClosed"}>
             <aside className="workspacePanel leftPanel" aria-label="Controls and context">
               <PanelBlock title="Examples">
-                <div className="examplePrompts">
-                  {examples.map((example) => (
-                    <button
-                      key={example}
-                      type="button"
-                      onClick={() => {
-                        setPrompt(example);
-                        generate(undefined, example);
-                      }}
-                    >
-                      {example}
-                    </button>
-                  ))}
-                </div>
+                <ExamplePromptButtons examples={examples} generate={generate} setPrompt={setPrompt} />
               </PanelBlock>
 
               <PanelBlock title="Model assumptions">
                 {session.activeModel?.assumptions.map((assumption) => (
-                  <p key={assumption}>{assumption}</p>
+                  <ClaimLine claim={assumption} key={assumption.id} />
                 ))}
               </PanelBlock>
 
@@ -163,7 +139,9 @@ export function SpatialRaviaPrototype() {
 
               <PanelBlock title="Accuracy / status">
                 <p>{session.activeIntervention}</p>
-                <p>Schematic biology representation; mocked timing and distances.</p>
+                {session.activeModel?.scaleDistortions.slice(0, 2).map((distortion) => (
+                  <p key={distortion}>{distortion}</p>
+                ))}
               </PanelBlock>
             </aside>
 
@@ -188,7 +166,7 @@ export function SpatialRaviaPrototype() {
                     id="follow-up-command"
                     value={command}
                     onChange={(event) => setCommand(event.target.value)}
-                    placeholder="isolate the lagging strand"
+                    placeholder={session.activeModel?.commandRules[0]?.phrases[0] ?? "enter command"}
                   />
                   <button type="submit">Apply</button>
                 </form>
@@ -208,6 +186,33 @@ export function SpatialRaviaPrototype() {
         </>
       )}
     </main>
+  );
+}
+
+function ExamplePromptButtons({
+  examples,
+  generate,
+  setPrompt
+}: {
+  examples: string[];
+  generate: (event?: FormEvent<HTMLFormElement>, nextPrompt?: string) => void;
+  setPrompt: (prompt: string) => void;
+}) {
+  return (
+    <div className="examplePrompts" aria-label="Example prompts">
+      {examples.map((example) => (
+        <button
+          key={example}
+          type="button"
+          onClick={() => {
+            setPrompt(example);
+            generate(undefined, example);
+          }}
+        >
+          {example}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -276,7 +281,7 @@ function SimulationControls({
           }))
         }
       >
-        5&apos;/3&apos;
+        Direction
       </button>
     </div>
   );
@@ -305,180 +310,50 @@ function RepresentationView({
     return <JsonView session={session} />;
   }
 
-  return <DnaReplicationCanvas session={session} setSession={setSession} />;
+  return <RenderPlanView session={session} setSession={setSession} />;
 }
 
-function DnaReplicationCanvas({
+function RenderPlanView({
   session,
   setSession
 }: {
   session: SpatialSessionState;
   setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
 }) {
-  const progress = session.playback.timelinePosition;
-  const forkX = 270 + progress * 310;
-  const noLigase =
-    session.hiddenEntities.includes("ligase") || session.activeIntervention === "compare-no-ligase";
+  const plan = session.activeModel?.renderPlan;
   const selected = new Set(session.selectedEntities);
-  const visible = (id: string) =>
-    !session.hiddenEntities.includes(id) &&
-    (!session.isolatedEntity ||
-      id === session.isolatedEntity ||
-      (session.isolatedEntity === "lagging-strand" &&
-        ["okazaki-fragments", "rna-primers"].includes(id)));
-
-  const interactiveProps = (id: string) => ({
-    role: "button",
-    tabIndex: 0,
-    onClick: () =>
-      setSession((current) => ({ ...current, selectedEntities: [id] })),
-    onKeyDown: (event: KeyboardEvent<SVGGElement>) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        setSession((current) => ({ ...current, selectedEntities: [id] }));
-      }
-    }
-  });
-
   const selectedEntity = session.activeModel?.entities.find((entity) =>
     selected.has(entity.id)
   );
 
+  if (!plan) {
+    return null;
+  }
+
   return (
     <div className="simulationCanvas">
       <div className="canvasMeta">
-        <p>DNA replication / replication fork</p>
-        <p>Schematic, not molecularly exact</p>
+        <p>{plan.title}</p>
+        <p>{plan.subtitle}</p>
       </div>
 
-      <svg viewBox="0 0 920 560" role="img" aria-label="DNA replication fork schematic">
+      <svg viewBox={plan.viewBox} role="img" aria-label={plan.ariaLabel}>
+        <PrimitiveSvgDefs />
         <g>
-          <path className="forkGuide" d="M108 280 C232 222 360 226 470 280" />
-          <path className="forkGuide" d="M108 280 C232 338 360 334 470 280" />
-
-          {visible("parental-strand-5to3") ? (
-            <g {...interactiveProps("parental-strand-5to3")}>
-              <path
-                className={componentClass(selected, "parental-strand-5to3")}
-                d={`M112 280 C230 224 ${forkX - 70} 222 ${forkX} 214 C650 186 738 142 820 92`}
+          {plan.primitives
+            .filter((primitive) => shouldShowPrimitive(primitive, session))
+            .map((primitive) => (
+              <PrimitiveSvgElement
+                primitive={primitive}
+                key={primitive.id}
+                progress={session.playback.timelinePosition}
+                activeIntervention={session.activeIntervention}
+                showDirectionality={session.playback.showDirectionality}
+                showLabels={session.playback.showLabels}
+                selected={selected}
+                setSession={setSession}
               />
-            </g>
-          ) : null}
-
-          {visible("parental-strand-3to5") ? (
-            <g {...interactiveProps("parental-strand-3to5")}>
-              <path
-                className={componentClass(selected, "parental-strand-3to5")}
-                d={`M112 280 C230 336 ${forkX - 70} 338 ${forkX} 346 C650 374 738 418 820 468`}
-              />
-            </g>
-          ) : null}
-
-          {visible("leading-strand") ? (
-            <g {...interactiveProps("leading-strand")}>
-              <path
-                className={componentClass(selected, "leading-strand")}
-                d={`M130 296 C260 322 ${forkX - 110} 324 ${forkX - 24} 342`}
-              />
-            </g>
-          ) : null}
-
-          {visible("lagging-strand") ? (
-            <g {...interactiveProps("lagging-strand")}>
-              <g className={componentClass(selected, "lagging-strand")}>
-                <path d={`M${forkX - 44} 228 C${forkX - 96} 236 ${forkX - 140} 254 ${forkX - 186} 270`} />
-                <path d={`M${forkX - 138} 252 C${forkX - 190} 264 ${forkX - 234} 276 ${forkX - 282} 288`} />
-                <path d={`M${forkX - 238} 276 C${forkX - 288} 288 ${forkX - 332} 298 ${forkX - 372} 306`} />
-              </g>
-            </g>
-          ) : null}
-
-          {visible("rna-primers") ? (
-            <g {...interactiveProps("rna-primers")}>
-              <g className={componentClass(selected, "rna-primers")}>
-                <line x1={forkX - 54} y1="229" x2={forkX - 26} y2="223" />
-                <line x1={forkX - 150} y1="254" x2={forkX - 122} y2="248" />
-                <line x1={forkX - 252} y1="278" x2={forkX - 224} y2="272" />
-              </g>
-            </g>
-          ) : null}
-
-          {visible("okazaki-fragments") ? (
-            <g {...interactiveProps("okazaki-fragments")}>
-              <g className={componentClass(selected, "okazaki-fragments")}>
-                <rect x={forkX - 190} y="267" width="54" height="8" />
-                <rect x={forkX - 288} y="290" width="62" height="8" />
-                <rect x={forkX - 372} y="309" width="48" height="8" />
-              </g>
-            </g>
-          ) : null}
-
-          {visible("ssb") ? (
-            <g {...interactiveProps("ssb")}>
-              <g className={componentClass(selected, "ssb")}>
-                <circle cx={forkX + 72} cy="190" r="9" />
-                <circle cx={forkX + 103} cy="176" r="9" />
-                <circle cx={forkX + 74} cy="370" r="9" />
-                <circle cx={forkX + 104} cy="386" r="9" />
-              </g>
-            </g>
-          ) : null}
-
-          {visible("helicase") ? (
-            <g {...interactiveProps("helicase")}>
-              <g className={componentClass(selected, "helicase")}>
-                <polygon points={`${forkX - 28},280 ${forkX + 4},244 ${forkX + 46},280 ${forkX + 4},316`} />
-                {session.playback.showLabels ? <text x={forkX + 56} y="284">helicase</text> : null}
-              </g>
-            </g>
-          ) : null}
-
-          {visible("primase") ? (
-            <g {...interactiveProps("primase")}>
-              <g className={componentClass(selected, "primase")}>
-                <rect x={forkX - 92} y="210" width="34" height="24" />
-                {session.playback.showLabels ? <text x={forkX - 130} y="204">primase</text> : null}
-              </g>
-            </g>
-          ) : null}
-
-          {visible("dna-polymerase") ? (
-            <g {...interactiveProps("dna-polymerase")}>
-              <g className={componentClass(selected, "dna-polymerase")}>
-                <circle cx={forkX - 42} cy="342" r="22" />
-                <circle cx={forkX - 84} cy="238" r="18" />
-                {session.playback.showLabels ? <text x={forkX - 24} y="382">polymerase</text> : null}
-              </g>
-            </g>
-          ) : null}
-
-          {visible("ligase") ? (
-            <g {...interactiveProps("ligase")}>
-              <g className={componentClass(selected, "ligase")}>
-                <rect x={forkX - 326} y="270" width="28" height="28" />
-                {session.playback.showLabels ? <text x={forkX - 354} y="330">ligase</text> : null}
-              </g>
-            </g>
-          ) : null}
-
-          {session.playback.showDirectionality ? (
-            <g className="directionLabels">
-              <text x="88" y="250">5&apos;</text>
-              <text x="812" y="76">3&apos;</text>
-              <text x="88" y="328">3&apos;</text>
-              <text x="812" y="494">5&apos;</text>
-              <text x={forkX - 18} y="372">5&apos; -&gt; 3&apos;</text>
-            </g>
-          ) : null}
-
-          {noLigase ? (
-            <g className="comparisonLayer">
-              <line x1="642" y1="150" x2="824" y2="150" />
-              <line x1="662" y1="180" x2="710" y2="180" />
-              <line x1="730" y1="180" x2="778" y2="180" />
-              <text x="642" y="128">no ligase: nicks remain</text>
-            </g>
-          ) : null}
+            ))}
         </g>
       </svg>
 
@@ -491,6 +366,222 @@ function DnaReplicationCanvas({
         </span>
       </div>
     </div>
+  );
+}
+
+function PrimitiveSvgElement({
+  primitive,
+  progress,
+  activeIntervention,
+  showDirectionality,
+  showLabels,
+  selected,
+  setSession
+}: {
+  primitive: ScientificPrimitive;
+  progress: number;
+  activeIntervention: string;
+  showDirectionality: boolean;
+  showLabels: boolean;
+  selected: Set<string>;
+  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
+}) {
+  const className = [
+    "scientificPrimitive",
+    `primitive-${primitive.kind}`,
+    `primitive-${primitive.styleToken}`,
+    primitive.entityId && selected.has(primitive.entityId) ? "isActive" : ""
+  ]
+    .filter(Boolean)
+    .join(" ");
+  const interactiveProps = primitive.entityId && primitive.selectable.enabled
+    ? {
+        role: "button",
+        tabIndex: 0,
+        onClick: () =>
+          setSession((current) => ({ ...current, selectedEntities: [primitive.entityId ?? ""] })),
+        onKeyDown: (event: KeyboardEvent<SVGGElement>) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            setSession((current) => ({ ...current, selectedEntities: [primitive.entityId ?? ""] }));
+          }
+        }
+      }
+    : {};
+
+  const content = renderPrimitiveShape(primitive, progress, className);
+  const labels = primitive.labels
+    .filter((label) =>
+      shouldShowPrimitiveLabel({
+        activeIntervention,
+        mode: label.visibility?.mode ?? "always",
+        interventions: label.visibility?.interventions,
+        showDirectionality,
+        showLabels
+      })
+    )
+    .map((label) => (
+      <text
+        className="renderLabel"
+        key={`${primitive.id}-${label.text}`}
+        x={resolveCoord(label.at[0], progress)}
+        y={resolveCoord(label.at[1], progress)}
+      >
+        {label.text}
+      </text>
+    ));
+
+  return (
+    <g {...interactiveProps}>
+      {content}
+      {labels}
+    </g>
+  );
+}
+
+function shouldShowPrimitiveLabel({
+  activeIntervention,
+  mode,
+  interventions,
+  showDirectionality,
+  showLabels
+}: {
+  activeIntervention: string;
+  mode: "always" | "labels" | "directionality" | "intervention";
+  interventions?: string[];
+  showDirectionality: boolean;
+  showLabels: boolean;
+}) {
+  if (mode === "labels") {
+    return showLabels;
+  }
+
+  if (mode === "directionality") {
+    return showDirectionality;
+  }
+
+  if (mode === "intervention") {
+    return interventions?.includes(activeIntervention) ?? false;
+  }
+
+  return true;
+}
+
+function renderPrimitiveShape(
+  primitive: ScientificPrimitive,
+  progress: number,
+  className: string
+) {
+  const geometry = primitive.geometry;
+  const directionalProps =
+    primitive.kind === "directional-arrow" ? { markerEnd: "url(#primitive-arrowhead)" } : {};
+
+  if ("d" in geometry) {
+    return <path className={className} d={geometry.d(progress)} {...directionalProps} />;
+  }
+
+  if ("x1" in geometry) {
+    return (
+      <line
+        className={className}
+        {...directionalProps}
+        x1={resolveCoord(geometry.x1, progress)}
+        y1={resolveCoord(geometry.y1, progress)}
+        x2={resolveCoord(geometry.x2, progress)}
+        y2={resolveCoord(geometry.y2, progress)}
+      />
+    );
+  }
+
+  if ("width" in geometry) {
+    return (
+      <rect
+        className={className}
+        x={resolveCoord(geometry.x, progress)}
+        y={resolveCoord(geometry.y, progress)}
+        width={resolveCoord(geometry.width, progress)}
+        height={resolveCoord(geometry.height, progress)}
+      />
+    );
+  }
+
+  if ("r" in geometry) {
+    return (
+      <circle
+        className={className}
+        cx={resolveCoord(geometry.cx, progress)}
+        cy={resolveCoord(geometry.cy, progress)}
+        r={resolveCoord(geometry.r, progress)}
+      />
+    );
+  }
+
+  if ("rx" in geometry) {
+    return (
+      <ellipse
+        className={className}
+        cx={resolveCoord(geometry.cx, progress)}
+        cy={resolveCoord(geometry.cy, progress)}
+        rx={resolveCoord(geometry.rx, progress)}
+        ry={resolveCoord(geometry.ry, progress)}
+      />
+    );
+  }
+
+  if ("points" in geometry) {
+    return (
+      <polygon
+        className={className}
+        points={geometry.points
+          .map(([x, y]) => `${resolveCoord(x, progress)},${resolveCoord(y, progress)}`)
+          .join(" ")}
+      />
+    );
+  }
+
+  if ("time" in geometry) {
+    return (
+      <g className={className}>
+        <line x1={60 + geometry.time * 760} y1={92 + geometry.lane * 36} x2={60 + geometry.time * 760} y2={128 + geometry.lane * 36} />
+        <text x={68 + geometry.time * 760} y={118 + geometry.lane * 36}>{geometry.label}</text>
+      </g>
+    );
+  }
+
+  if ("radius" in geometry) {
+    return (
+      <g className={className}>
+        <circle cx={resolveCoord(geometry.x, progress)} cy={resolveCoord(geometry.y, progress)} r={resolveCoord(geometry.radius, progress)} />
+        <text x={resolveCoord(geometry.x, progress) + 28} y={resolveCoord(geometry.y, progress) + 4}>{geometry.label}</text>
+      </g>
+    );
+  }
+
+  return "text" in geometry ? (
+    <text
+      className={className}
+      x={resolveCoord(geometry.x, progress)}
+      y={resolveCoord(geometry.y, progress)}
+    >
+      {geometry.text}
+    </text>
+  ) : null;
+}
+
+function PrimitiveSvgDefs() {
+  return (
+    <defs>
+      <marker
+        id="primitive-arrowhead"
+        markerHeight="10"
+        markerWidth="10"
+        orient="auto"
+        refX="8"
+        refY="5"
+      >
+        <path d="M0 0 L10 5 L0 10 Z" className="primitiveMarker" />
+      </marker>
+    </defs>
   );
 }
 
@@ -532,6 +623,7 @@ function ModelInspector({
               >
                 {entity.label}
               </button>
+              <ProvenanceDetails provenance={entity.provenance} />
             </li>
           ))}
         </ul>
@@ -539,23 +631,37 @@ function ModelInspector({
 
       <PanelBlock title="Relations">
         {model.relations.slice(0, 5).map((relation) => (
-          <p key={relation.id}>{relation.source} -&gt; {relation.target}: {relation.relation}</p>
+          <div className="claimItem" key={relation.id}>
+            <p>{relation.source} -&gt; {relation.target}: {relation.relation}</p>
+            <ProvenanceDetails provenance={relation.provenance} />
+          </div>
         ))}
       </PanelBlock>
 
       <PanelBlock title="Variables">
-        <p>fork_position = {Math.round(session.playback.timelinePosition * 100)}%</p>
+        <p>timeline_position = {Math.round(session.playback.timelinePosition * 100)}%</p>
         <p>speed = {session.playback.speed}x</p>
-        <p>ligase_present = {String(!session.hiddenEntities.includes("ligase"))}</p>
+        {model.parameters.slice(0, 3).map((parameter) => (
+          <div className="claimItem" key={parameter.id}>
+            <p>{parameter.id} = {String(parameter.value)}</p>
+            <ProvenanceDetails provenance={parameter.provenance} />
+          </div>
+        ))}
       </PanelBlock>
 
       <PanelBlock title="Assumptions">
-        <p>{model.assumptions[0]}</p>
+        {model.assumptions.slice(0, 2).map((assumption) => (
+          <ClaimLine claim={assumption} key={assumption.id} />
+        ))}
       </PanelBlock>
 
       <PanelBlock title="Governing rules">
-        <p>synthesis_direction = 5&apos; -&gt; 3&apos;</p>
-        <p>lagging_joining requires ligase_present</p>
+        {model.transitions.slice(0, 2).map((transition) => (
+          <div className="claimItem" key={transition.id}>
+            <p>{transition.rule}</p>
+            <ProvenanceDetails provenance={transition.provenance} />
+          </div>
+        ))}
       </PanelBlock>
 
       <PanelBlock title="Active intervention">
@@ -566,10 +672,13 @@ function ModelInspector({
 }
 
 function TimelineView({ session }: { session: SpatialSessionState }) {
+  const states = session.activeModel?.states ?? [];
+  const divisor = Math.max(1, states.length - 1);
+
   return (
     <div className="alternateView">
-      {session.activeModel?.states.map((state) => (
-        <section key={state.id} className={state.order / 4 <= session.playback.timelinePosition ? "activeStage" : ""}>
+      {states.map((state) => (
+        <section key={state.id} className={state.order / divisor <= session.playback.timelinePosition ? "activeStage" : ""}>
           <span>{String(state.order + 1).padStart(2, "0")}</span>
           <h2>{state.label}</h2>
           <p>{state.description}</p>
@@ -598,15 +707,10 @@ function ExplanationView({ session }: { session: SpatialSessionState }) {
 
   return (
     <div className="explanationView">
-      <h2>Why Okazaki fragments are necessary</h2>
-      <p>
-        DNA polymerase can extend only in the 5&apos; to 3&apos; direction. At a replication fork,
-        one new strand can follow the fork continuously, while the opposite template is
-        exposed in the reverse orientation. The lagging strand is therefore synthesized
-        in short 5&apos; to 3&apos; segments called Okazaki fragments, then processed and sealed.
-      </p>
+      <h2>{model?.process}</h2>
+      {model?.representationRules.map((rule) => <ClaimLine claim={rule} key={rule.id} />)}
       <h3>Limitations</h3>
-      {model?.limitations.map((limitation) => <p key={limitation}>{limitation}</p>)}
+      {model?.limitations.map((limitation) => <ClaimLine claim={limitation} key={limitation.id} />)}
     </div>
   );
 }
@@ -657,7 +761,7 @@ function BottomPanel({
       <div className="segmentedControl" aria-label="Baseline or intervention">
         <button
           type="button"
-          className={session.activeIntervention !== "compare-no-ligase" ? "isSelected" : ""}
+          className={session.activeIntervention === "baseline" ? "isSelected" : ""}
           onClick={() =>
             setSession((current) => ({ ...current, activeIntervention: "baseline" }))
           }
@@ -666,11 +770,16 @@ function BottomPanel({
         </button>
         <button
           type="button"
-          className={session.activeIntervention === "compare-no-ligase" ? "isSelected" : ""}
+          className={session.activeIntervention !== "baseline" ? "isSelected" : ""}
           onClick={() =>
-            setSession((current) =>
-              applyFollowUpCommand(current, "compare normal replication with no ligase")
-            )
+            setSession((current) => {
+              const command = current.activeModel?.commandRules.find((rule) =>
+                rule.patch.activeIntervention?.startsWith("compare")
+              );
+              return command
+                ? applyFollowUpCommand(current, command.phrases[0])
+                : { ...current, activeIntervention: "intervention" };
+            })
           }
         >
           Intervention
@@ -691,7 +800,7 @@ function BottomPanel({
             )
           }
         >
-          <option value="scene">3D scene</option>
+          <option value="scene">scene</option>
           <option value="timeline">process timeline</option>
           <option value="graph">process graph</option>
           <option value="explanation">explanation</option>
@@ -702,11 +811,42 @@ function BottomPanel({
       <div className="limitations">
         <p>Scientific limitations and citations</p>
         <p>
-          {session.activeModel?.limitations[0]} Sources:{" "}
+          {session.activeModel?.limitations[0]?.claim} Sources:{" "}
           {session.activeModel?.sources.map((source) => source.authors).join("; ")}
         </p>
       </div>
     </section>
+  );
+}
+
+function ClaimLine({ claim }: { claim: ScientificClaim }) {
+  return (
+    <div className="claimItem">
+      <p>{claim.claim}</p>
+      <span>{claim.claimType} / {claim.status}</span>
+      <ProvenanceDetails provenance={claim.provenance} />
+    </div>
+  );
+}
+
+function ProvenanceDetails({ provenance }: { provenance: ScientificClaimProvenance[] }) {
+  const disagreement = provenance.find((item) => item.disagreementNote);
+
+  return (
+    <details className="provenanceDetails">
+      <summary>provenance</summary>
+      {provenance.map((item) => (
+        <div key={`${item.sourceId}-${item.supportedClaim}`}>
+          <p>{item.title}</p>
+          <p>{item.authorsOrInstitution} / {item.publicationType} / {item.accessDate}</p>
+          <p>{item.supportType} / {item.claimStatus} / confidence {Math.round(item.confidence * 100)}%</p>
+          <p>{item.supportedClaim}</p>
+          <p>{item.urlOrDoi}</p>
+          {item.license ? <p>{item.license}</p> : null}
+        </div>
+      ))}
+      {disagreement ? <p>Disagreement: {disagreement.disagreementNote}</p> : <p>No source disagreement recorded.</p>}
+    </details>
   );
 }
 
@@ -723,8 +863,4 @@ function PanelBlock({
       <div>{children}</div>
     </section>
   );
-}
-
-function componentClass(selected: Set<string>, id: string) {
-  return selected.has(id) ? "simComponent isActive" : "simComponent";
 }
