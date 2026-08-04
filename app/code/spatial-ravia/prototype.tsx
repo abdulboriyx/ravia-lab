@@ -4,16 +4,23 @@ import { FormEvent, KeyboardEvent, ReactNode, useEffect, useRef, useState } from
 import {
   SpatialSessionState,
   applyFollowUpCommand,
+  applyCounterfactualIntervention,
+  compareActiveBranchToBaseline,
+  createCounterfactualBranch,
   createInitialSession,
+  dispatchScientificSessionEvent,
+  redoScientificSessionEvent,
+  returnToBaselineBranch,
+  resetScientificSession,
   setRepresentationMode,
   setTimelinePosition,
-  shouldShowPrimitive,
-  startSessionFromPrompt
+  startSessionFromPrompt,
+  undoScientificSessionEvent
 } from "./model";
 import type { ScientificClaim, ScientificClaimProvenance } from "./model";
-import type { ScientificPrimitive } from "./primitives.ts";
-import { resolveCoord } from "./primitives.ts";
 import { initialExamples, processPacks } from "./process-registry";
+import type { CompiledSceneNode, ResolvedGeometry } from "./scene-compiler";
+import { compileSceneFromSession } from "./scene-compiler";
 
 export function SpatialRaviaPrototype() {
   const [session, setSession] = useState<SpatialSessionState>(() => createInitialSession());
@@ -228,10 +235,12 @@ function SimulationControls({
       <button
         type="button"
         onClick={() =>
-          setSession((current) => ({
-            ...current,
-            playback: { ...current.playback, playing: !current.playback.playing }
-          }))
+          setSession((current) =>
+            dispatchScientificSessionEvent(current, {
+              type: "PLAYBACK_CHANGED",
+              playback: { playing: !current.playback.playing }
+            })
+          )
         }
       >
         {session.playback.playing ? "Pause" : "Play"}
@@ -242,6 +251,26 @@ function SimulationControls({
       >
         Restart
       </button>
+      <button
+        type="button"
+        onClick={() => setSession((current) => undoScientificSessionEvent(current, processPacks))}
+        disabled={session.eventLog.length === 0}
+      >
+        Undo
+      </button>
+      <button
+        type="button"
+        onClick={() => setSession((current) => redoScientificSessionEvent(current, processPacks))}
+        disabled={session.undoneEvents.length === 0}
+      >
+        Redo
+      </button>
+      <button
+        type="button"
+        onClick={() => setSession((current) => resetScientificSession(current))}
+      >
+        Reset
+      </button>
       <label>
         Speed
         <input
@@ -251,20 +280,24 @@ function SimulationControls({
           step="0.25"
           value={session.playback.speed}
           onChange={(event) =>
-            setSession((current) => ({
-              ...current,
-              playback: { ...current.playback, speed: Number(event.target.value) }
-            }))
+            setSession((current) =>
+              dispatchScientificSessionEvent(current, {
+                type: "PLAYBACK_CHANGED",
+                playback: { speed: Number(event.target.value) }
+              })
+            )
           }
         />
       </label>
       <button
         type="button"
         onClick={() =>
-          setSession((current) => ({
-            ...current,
-            playback: { ...current.playback, showLabels: !current.playback.showLabels }
-          }))
+          setSession((current) =>
+            dispatchScientificSessionEvent(current, {
+              type: "PLAYBACK_CHANGED",
+              playback: { showLabels: !current.playback.showLabels }
+            })
+          )
         }
       >
         Labels
@@ -272,13 +305,12 @@ function SimulationControls({
       <button
         type="button"
         onClick={() =>
-          setSession((current) => ({
-            ...current,
-            playback: {
-              ...current.playback,
-              showDirectionality: !current.playback.showDirectionality
-            }
-          }))
+          setSession((current) =>
+            dispatchScientificSessionEvent(current, {
+              type: "PLAYBACK_CHANGED",
+              playback: { showDirectionality: !current.playback.showDirectionality }
+            })
+          )
         }
       >
         Direction
@@ -320,36 +352,33 @@ function RenderPlanView({
   session: SpatialSessionState;
   setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
 }) {
-  const plan = session.activeModel?.renderPlan;
+  const scene = compileSceneFromSession(session);
   const selected = new Set(session.selectedEntities);
   const selectedEntity = session.activeModel?.entities.find((entity) =>
     selected.has(entity.id)
   );
 
-  if (!plan) {
+  if (!scene) {
     return null;
   }
 
   return (
     <div className="simulationCanvas">
       <div className="canvasMeta">
-        <p>{plan.title}</p>
-        <p>{plan.subtitle}</p>
+        <p>{scene.title}</p>
+        <p>{scene.subtitle}</p>
+        {scene.indicators.warning ? <span>{scene.indicators.warning}</span> : null}
       </div>
 
-      <svg viewBox={plan.viewBox} role="img" aria-label={plan.ariaLabel}>
+      <svg viewBox={scene.viewBox} role="img" aria-label={scene.ariaLabel}>
         <PrimitiveSvgDefs />
         <g>
-          {plan.primitives
-            .filter((primitive) => shouldShowPrimitive(primitive, session))
-            .map((primitive) => (
+          {scene.nodes
+            .filter((node) => node.visible)
+            .map((node) => (
               <PrimitiveSvgElement
-                primitive={primitive}
-                key={primitive.id}
-                progress={session.playback.timelinePosition}
-                activeIntervention={session.activeIntervention}
-                showDirectionality={session.playback.showDirectionality}
-                showLabels={session.playback.showLabels}
+                primitive={node}
+                key={node.id}
                 selected={selected}
                 setSession={setSession}
               />
@@ -371,18 +400,10 @@ function RenderPlanView({
 
 function PrimitiveSvgElement({
   primitive,
-  progress,
-  activeIntervention,
-  showDirectionality,
-  showLabels,
   selected,
   setSession
 }: {
-  primitive: ScientificPrimitive;
-  progress: number;
-  activeIntervention: string;
-  showDirectionality: boolean;
-  showLabels: boolean;
+  primitive: CompiledSceneNode;
   selected: Set<string>;
   setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
 }) {
@@ -394,174 +415,154 @@ function PrimitiveSvgElement({
   ]
     .filter(Boolean)
     .join(" ");
-  const interactiveProps = primitive.entityId && primitive.selectable.enabled
+  const interactiveProps = primitive.entityId && primitive.selectable
     ? {
         role: "button",
         tabIndex: 0,
         onClick: () =>
-          setSession((current) => ({ ...current, selectedEntities: [primitive.entityId ?? ""] })),
+          setSession((current) =>
+            dispatchScientificSessionEvent(current, {
+              type: "ENTITY_SELECTED",
+              entityIds: [primitive.entityId ?? ""]
+            })
+          ),
         onKeyDown: (event: KeyboardEvent<SVGGElement>) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            setSession((current) => ({ ...current, selectedEntities: [primitive.entityId ?? ""] }));
+            setSession((current) =>
+              dispatchScientificSessionEvent(current, {
+                type: "ENTITY_SELECTED",
+                entityIds: [primitive.entityId ?? ""]
+              })
+            );
           }
         }
-      }
+    }
     : {};
 
-  const content = renderPrimitiveShape(primitive, progress, className);
+  const content = renderPrimitiveShape(primitive.geometry, primitive.kind, className);
   const labels = primitive.labels
-    .filter((label) =>
-      shouldShowPrimitiveLabel({
-        activeIntervention,
-        mode: label.visibility?.mode ?? "always",
-        interventions: label.visibility?.interventions,
-        showDirectionality,
-        showLabels
-      })
-    )
+    .filter((label) => label.visible)
     .map((label) => (
       <text
         className="renderLabel"
         key={`${primitive.id}-${label.text}`}
-        x={resolveCoord(label.at[0], progress)}
-        y={resolveCoord(label.at[1], progress)}
+        x={label.x}
+        y={label.y}
       >
         {label.text}
       </text>
     ));
 
   return (
-    <g {...interactiveProps}>
+    <g transform={primitive.transform.svg || undefined} {...interactiveProps}>
       {content}
       {labels}
     </g>
   );
 }
 
-function shouldShowPrimitiveLabel({
-  activeIntervention,
-  mode,
-  interventions,
-  showDirectionality,
-  showLabels
-}: {
-  activeIntervention: string;
-  mode: "always" | "labels" | "directionality" | "intervention";
-  interventions?: string[];
-  showDirectionality: boolean;
-  showLabels: boolean;
-}) {
-  if (mode === "labels") {
-    return showLabels;
-  }
-
-  if (mode === "directionality") {
-    return showDirectionality;
-  }
-
-  if (mode === "intervention") {
-    return interventions?.includes(activeIntervention) ?? false;
-  }
-
-  return true;
-}
-
 function renderPrimitiveShape(
-  primitive: ScientificPrimitive,
-  progress: number,
+  geometry: ResolvedGeometry,
+  kind: CompiledSceneNode["kind"],
   className: string
 ) {
-  const geometry = primitive.geometry;
   const directionalProps =
-    primitive.kind === "directional-arrow" ? { markerEnd: "url(#primitive-arrowhead)" } : {};
+    kind === "directional-arrow" ? { markerEnd: "url(#primitive-arrowhead)" } : {};
 
-  if ("d" in geometry) {
-    return <path className={className} d={geometry.d(progress)} {...directionalProps} />;
+  if (geometry.type === "path") {
+    return <path className={className} d={geometry.d} {...directionalProps} />;
   }
 
-  if ("x1" in geometry) {
+  if (geometry.type === "line") {
     return (
       <line
         className={className}
         {...directionalProps}
-        x1={resolveCoord(geometry.x1, progress)}
-        y1={resolveCoord(geometry.y1, progress)}
-        x2={resolveCoord(geometry.x2, progress)}
-        y2={resolveCoord(geometry.y2, progress)}
+        x1={geometry.x1}
+        y1={geometry.y1}
+        x2={geometry.x2}
+        y2={geometry.y2}
       />
     );
   }
 
-  if ("width" in geometry) {
+  if (geometry.type === "rect") {
     return (
       <rect
         className={className}
-        x={resolveCoord(geometry.x, progress)}
-        y={resolveCoord(geometry.y, progress)}
-        width={resolveCoord(geometry.width, progress)}
-        height={resolveCoord(geometry.height, progress)}
+        x={geometry.x}
+        y={geometry.y}
+        width={geometry.width}
+        height={geometry.height}
       />
     );
   }
 
-  if ("r" in geometry) {
+  if (geometry.type === "circle") {
     return (
       <circle
         className={className}
-        cx={resolveCoord(geometry.cx, progress)}
-        cy={resolveCoord(geometry.cy, progress)}
-        r={resolveCoord(geometry.r, progress)}
+        cx={geometry.cx}
+        cy={geometry.cy}
+        r={geometry.r}
       />
     );
   }
 
-  if ("rx" in geometry) {
+  if (geometry.type === "ellipse") {
     return (
       <ellipse
         className={className}
-        cx={resolveCoord(geometry.cx, progress)}
-        cy={resolveCoord(geometry.cy, progress)}
-        rx={resolveCoord(geometry.rx, progress)}
-        ry={resolveCoord(geometry.ry, progress)}
+        cx={geometry.cx}
+        cy={geometry.cy}
+        rx={geometry.rx}
+        ry={geometry.ry}
       />
     );
   }
 
-  if ("points" in geometry) {
+  if (geometry.type === "polygon") {
     return (
       <polygon
         className={className}
-        points={geometry.points
-          .map(([x, y]) => `${resolveCoord(x, progress)},${resolveCoord(y, progress)}`)
-          .join(" ")}
+        points={geometry.points.map(([x, y]) => `${x},${y}`).join(" ")}
       />
     );
   }
 
-  if ("time" in geometry) {
+  if (geometry.type === "timeline-event") {
     return (
       <g className={className}>
-        <line x1={60 + geometry.time * 760} y1={92 + geometry.lane * 36} x2={60 + geometry.time * 760} y2={128 + geometry.lane * 36} />
-        <text x={68 + geometry.time * 760} y={118 + geometry.lane * 36}>{geometry.label}</text>
+        <line x1={geometry.x} y1={geometry.y} x2={geometry.x} y2={geometry.y + 36} />
+        <text x={geometry.x + 8} y={geometry.y + 26}>{geometry.label}</text>
       </g>
     );
   }
 
-  if ("radius" in geometry) {
+  if (geometry.type === "graph-node") {
     return (
       <g className={className}>
-        <circle cx={resolveCoord(geometry.x, progress)} cy={resolveCoord(geometry.y, progress)} r={resolveCoord(geometry.radius, progress)} />
-        <text x={resolveCoord(geometry.x, progress) + 28} y={resolveCoord(geometry.y, progress) + 4}>{geometry.label}</text>
+        <circle cx={geometry.x} cy={geometry.y} r={geometry.radius} />
+        <text x={geometry.x + 28} y={geometry.y + 4}>{geometry.label}</text>
       </g>
     );
   }
 
-  return "text" in geometry ? (
+  if (geometry.type === "graph-edge") {
+    return (
+      <g className={className}>
+        <line x1={geometry.x1} y1={geometry.y1} x2={geometry.x2} y2={geometry.y2} />
+        {geometry.label ? <text x={(geometry.x1 + geometry.x2) / 2} y={(geometry.y1 + geometry.y2) / 2}>{geometry.label}</text> : null}
+      </g>
+    );
+  }
+
+  return geometry.type === "text" ? (
     <text
       className={className}
-      x={resolveCoord(geometry.x, progress)}
-      y={resolveCoord(geometry.y, progress)}
+      x={geometry.x}
+      y={geometry.y}
     >
       {geometry.text}
     </text>
@@ -615,10 +616,12 @@ function ModelInspector({
               <button
                 type="button"
                 onClick={() =>
-                  setSession((current) => ({
-                    ...current,
-                    selectedEntities: [entity.id]
-                  }))
+                  setSession((current) =>
+                    dispatchScientificSessionEvent(current, {
+                      type: "ENTITY_SELECTED",
+                      entityIds: [entity.id]
+                    })
+                  )
                 }
               >
                 {entity.label}
@@ -763,7 +766,12 @@ function BottomPanel({
           type="button"
           className={session.activeIntervention === "baseline" ? "isSelected" : ""}
           onClick={() =>
-            setSession((current) => ({ ...current, activeIntervention: "baseline" }))
+            setSession((current) =>
+              dispatchScientificSessionEvent(current, {
+                type: "INTERVENTION_APPLIED",
+                interventionId: "baseline"
+              })
+            )
           }
         >
           Baseline
@@ -806,6 +814,70 @@ function BottomPanel({
           <option value="explanation">explanation</option>
           <option value="json">developer JSON</option>
         </select>
+      </div>
+
+      <div className="branchPanel" aria-label="Counterfactual branches">
+        <p>Branch: {session.branches.find((branch) => branch.id === session.activeBranchId)?.name ?? "Baseline"}</p>
+        <button
+          type="button"
+          onClick={() =>
+            setSession((current) =>
+              createCounterfactualBranch(current, `Branch ${current.branches.length}`)
+            )
+          }
+          disabled={!session.activeModel}
+        >
+          Clone
+        </button>
+        <button
+          type="button"
+          onClick={() => setSession((current) => returnToBaselineBranch(current))}
+          disabled={session.activeBranchId === "baseline"}
+        >
+          Baseline
+        </button>
+        <select
+          aria-label="Switch branch"
+          value={session.activeBranchId}
+          onChange={(event) =>
+            setSession((current) =>
+              dispatchScientificSessionEvent(current, {
+                type: "BRANCH_SWITCHED",
+                branchId: event.target.value
+              })
+            )
+          }
+        >
+          {session.branches.map((branch) => (
+            <option key={branch.id} value={branch.id}>{branch.name}</option>
+          ))}
+        </select>
+        <div className="branchInterventions">
+          {session.activeModel?.interventions
+            .filter((intervention) => intervention.modelDelta)
+            .map((intervention) => (
+              <button
+                key={intervention.id}
+                type="button"
+                onClick={() =>
+                  setSession((current) =>
+                    applyCounterfactualIntervention(current, intervention.id)
+                  )
+                }
+              >
+                {intervention.label}
+              </button>
+            ))}
+        </div>
+        {session.activeBranchId !== "baseline" ? (
+          <div className="branchDiffs">
+            {compareActiveBranchToBaseline(session).slice(0, 6).map((difference) => (
+              <p key={`${difference.path}-${difference.counterfactual}`}>
+                <b>{difference.source}</b> {difference.path}: {difference.baseline} {"->"} {difference.counterfactual} ({difference.classification})
+              </p>
+            ))}
+          </div>
+        ) : null}
       </div>
 
       <div className="limitations">

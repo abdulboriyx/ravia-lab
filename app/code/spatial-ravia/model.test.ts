@@ -6,11 +6,22 @@ import type {
 } from "./model.ts";
 import {
   applyFollowUpCommand,
+  applyCounterfactualIntervention,
+  compareActiveBranchToBaseline,
   compileBiologicalProcessPack,
+  createCounterfactualBranch,
   createInitialSession,
+  deserializeScientificSession,
+  dispatchScientificSessionEvent,
   parsePromptWithPacks,
+  redoScientificSessionEvent,
+  replayScientificSessionEvents,
   resolvePromptIntent,
+  resetScientificSession,
+  serializeScientificSession,
   startSessionFromPrompt,
+  switchScientificBranch,
+  undoScientificSessionEvent,
   validateBiologicalProcessPack,
   validateBiologicalProcessPackLayered
 } from "./model.ts";
@@ -450,6 +461,185 @@ test("transcription follow-up commands use the same session reducer", () => {
   const paused = applyFollowUpCommand(timeline, "pause at initiation");
   assert.equal(paused.playback.playing, false);
   assert.equal(paused.playback.timelinePosition, 0);
+});
+
+test("event-sourced session replay reproduces current scientific state", () => {
+  const started = startSessionFromPrompt(
+    createInitialSession(),
+    "Show DNA replication.",
+    processPacks
+  );
+  const hidden = applyFollowUpCommand(started, "hide the leading strand");
+  const timeline = dispatchScientificSessionEvent(hidden, {
+    type: "TIMELINE_MOVED",
+    timelinePosition: 0.66
+  });
+  const graph = dispatchScientificSessionEvent(timeline, {
+    type: "REPRESENTATION_CHANGED",
+    representationMode: "graph"
+  });
+  const replayed = replayScientificSessionEvents(graph.eventLog, processPacks);
+
+  assert.equal(replayed.initialPrompt, "Show DNA replication.");
+  assert.equal(replayed.selectedProcessPackId, dnaReplicationPack.id);
+  assert.equal(replayed.activeModel?.process, graph.activeModel?.process);
+  assert.deepEqual(replayed.hiddenEntities, graph.hiddenEntities);
+  assert.equal(replayed.representationMode, "graph");
+  assert.equal(replayed.playback.timelinePosition, 0.66);
+  assert.equal(replayed.validationResults?.valid, true);
+  assert.ok(replayed.provenance.length > 0);
+  assert.ok(replayed.modelChangeHistory.length > 0);
+});
+
+test("undo and redo replay event history without destroying scientific model state", () => {
+  const started = startSessionFromPrompt(
+    createInitialSession(),
+    "Show transcription.",
+    processPacks
+  );
+  const timeline = dispatchScientificSessionEvent(started, {
+    type: "REPRESENTATION_CHANGED",
+    representationMode: "timeline"
+  });
+  const hidden = applyFollowUpCommand(timeline, "hide coding strand");
+  const undone = undoScientificSessionEvent(hidden, processPacks);
+  const redone = redoScientificSessionEvent(undone, processPacks);
+
+  assert.equal(undone.activeModel?.process, eukaryoticTranscriptionPack.process);
+  assert.equal(undone.representationMode, "timeline");
+  assert.ok(!undone.hiddenEntities.includes("coding-strand"));
+  assert.ok(redone.hiddenEntities.includes("coding-strand"));
+  assert.equal(redone.activeModel?.process, eukaryoticTranscriptionPack.process);
+});
+
+test("session reset is event-sourced and clears active scientific state", () => {
+  const started = startSessionFromPrompt(
+    createInitialSession(),
+    "Show DNA replication.",
+    processPacks
+  );
+  const reset = resetScientificSession(started);
+  const replayed = replayScientificSessionEvents(reset.eventLog, processPacks);
+
+  assert.equal(reset.activeModel, null);
+  assert.equal(reset.currentPrompt, "");
+  assert.equal(replayed.activeModel, null);
+  assert.equal(replayed.currentPrompt, "");
+});
+
+test("scientific session serialization round-trips through replay", () => {
+  const session = applyFollowUpCommand(
+    startSessionFromPrompt(createInitialSession(), "What happens without ligase?", processPacks),
+    "show process graph"
+  );
+  const restored = deserializeScientificSession(
+    serializeScientificSession(session),
+    processPacks
+  );
+
+  assert.equal(restored.initialPrompt, "What happens without ligase?");
+  assert.equal(restored.selectedProcessPackId, dnaReplicationPack.id);
+  assert.deepEqual(restored.hiddenEntities, session.hiddenEntities);
+  assert.equal(restored.activeIntervention, session.activeIntervention);
+  assert.equal(restored.representationMode, session.representationMode);
+  assert.deepEqual(restored.eventLog, session.eventLog);
+});
+
+test("representation switching never destroys scientific state", () => {
+  const session = applyFollowUpCommand(
+    startSessionFromPrompt(createInitialSession(), "Show transcription.", processPacks),
+    "isolate template strand"
+  );
+  const changed = dispatchScientificSessionEvent(session, {
+    type: "REPRESENTATION_CHANGED",
+    representationMode: "json"
+  });
+
+  assert.equal(changed.activeModel?.process, session.activeModel?.process);
+  assert.deepEqual(changed.selectedEntities, session.selectedEntities);
+  assert.deepEqual(changed.hiddenEntities, session.hiddenEntities);
+  assert.equal(changed.isolatedEntity, session.isolatedEntity);
+  assert.equal(changed.activeModel?.renderPlan, session.activeModel?.renderPlan);
+});
+
+test("counterfactual branch applies typed DNA deltas and reports exact differences", () => {
+  const baseline = startSessionFromPrompt(
+    createInitialSession(),
+    "Show DNA replication.",
+    processPacks
+  );
+  const branched = createCounterfactualBranch(baseline, "No ligase");
+  const noLigase = applyCounterfactualIntervention(branched, "remove-ligase");
+  const differences = compareActiveBranchToBaseline(noLigase);
+
+  assert.equal(noLigase.activeBranchId, "no-ligase");
+  assert.equal(noLigase.branches.length, 2);
+  assert.equal(noLigase.activeModel?.parameters.find((parameter) => parameter.id === "ligase-present")?.value, false);
+  assert.ok(noLigase.hiddenEntities.includes("ligase"));
+  assert.ok(differences.some((difference) => difference.path === "parameters.ligase-present" && difference.source === "direct-intervention"));
+  assert.ok(differences.some((difference) => difference.source === "predicted-downstream"));
+  assert.ok(differences.some((difference) => difference.source === "unsupported-outcome"));
+  assert.ok(differences.every((difference) => ["schematic", "quantitative"].includes(difference.classification)));
+});
+
+test("multiple named counterfactual branches remain isolated and reversible", () => {
+  const baseline = startSessionFromPrompt(
+    createInitialSession(),
+    "Show DNA replication.",
+    processPacks
+  );
+  const helicaseBranch = applyCounterfactualIntervention(
+    createCounterfactualBranch(baseline, "Helicase stopped"),
+    "helicase-stopped"
+  );
+  const primerBranch = applyCounterfactualIntervention(
+    createCounterfactualBranch(switchScientificBranch(helicaseBranch, "baseline"), "No primers"),
+    "primer-formation-disabled"
+  );
+  const backToHelicase = switchScientificBranch(primerBranch, "helicase-stopped");
+  const backToBaseline = switchScientificBranch(backToHelicase, "baseline");
+
+  assert.equal(primerBranch.branches.length, 3);
+  assert.equal(backToHelicase.activeModel?.parameters.find((parameter) => parameter.id === "fork-rate")?.value, 0);
+  assert.equal(backToBaseline.activeModel?.parameters.find((parameter) => parameter.id === "fork-rate")?.value, 1);
+  assert.equal(backToBaseline.activeModel?.parameters.find((parameter) => parameter.id === "ligase-present")?.value, true);
+  assert.deepEqual(backToBaseline.hiddenEntities, []);
+});
+
+test("transcription counterfactuals use process-pack model deltas", () => {
+  const baseline = startSessionFromPrompt(
+    createInitialSession(),
+    "Show transcription.",
+    processPacks
+  );
+  const branch = createCounterfactualBranch(baseline, "No polymerase");
+  const noPolymerase = applyCounterfactualIntervention(branch, "rna-polymerase-absent");
+  const differences = compareActiveBranchToBaseline(noPolymerase);
+
+  assert.equal(noPolymerase.activeBranchId, "no-polymerase");
+  assert.equal(noPolymerase.activeModel?.parameters.find((parameter) => parameter.id === "rna-length")?.value, 0);
+  assert.ok(noPolymerase.hiddenEntities.includes("rna-polymerase-ii"));
+  assert.ok(differences.some((difference) => difference.path === "entities.rna-polymerase-ii"));
+  assert.ok(differences.some((difference) => difference.source === "predicted-downstream"));
+});
+
+test("counterfactual branches serialize, replay, undo, and redo", () => {
+  const session = applyCounterfactualIntervention(
+    createCounterfactualBranch(
+      startSessionFromPrompt(createInitialSession(), "Show transcription.", processPacks),
+      "Promoter blocked"
+    ),
+    "promoter-inaccessible"
+  );
+  const restored = deserializeScientificSession(serializeScientificSession(session), processPacks);
+  const undone = undoScientificSessionEvent(session, processPacks);
+  const redone = redoScientificSessionEvent(undone, processPacks);
+
+  assert.equal(restored.activeBranchId, session.activeBranchId);
+  assert.deepEqual(compareActiveBranchToBaseline(restored), compareActiveBranchToBaseline(session));
+  assert.equal(undone.activeBranchId, "promoter-blocked");
+  assert.equal(undone.activeModel?.entities.find((entity) => entity.id === "promoter")?.description.includes("Counterfactual state"), false);
+  assert.equal(redone.activeModel?.entities.find((entity) => entity.id === "promoter")?.description.includes("Counterfactual state"), true);
 });
 
 function clonePack(): BiologicalProcessPack {

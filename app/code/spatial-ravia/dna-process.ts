@@ -5,6 +5,7 @@ import type {
   ScientificEntity,
   ScientificEntityKind,
   ScientificIntervention,
+  ScientificModelDelta,
   ScientificParameter,
   ScientificRelation,
   ScientificState,
@@ -116,8 +117,10 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     intervention("isolate-lagging-strand", "Isolate lagging strand", "Dim all entities except the lagging-strand path.", ["lagging-strand", "okazaki-fragments", "rna-primers"]),
     intervention("hide-leading-strand", "Hide leading strand", "Remove the continuous leading-strand path.", ["leading-strand"]),
     intervention("show-rna-primers", "Show RNA primers", "Reveal primer segments on the lagging strand.", ["rna-primers"]),
-    intervention("remove-ligase", "Remove ligase", "Show unresolved nicks between Okazaki fragments.", ["ligase", "okazaki-fragments"]),
-    intervention("compare-no-ligase", "Compare normal vs no ligase", "Render baseline and no-ligase outcome together.", ["ligase", "okazaki-fragments"]),
+    intervention("remove-ligase", "Remove ligase", "Show unresolved nicks between Okazaki fragments.", ["ligase", "okazaki-fragments"], dnaCounterfactualDelta("ligase-absent")),
+    intervention("compare-no-ligase", "Compare normal vs no ligase", "Render baseline and no-ligase outcome together.", ["ligase", "okazaki-fragments"], dnaCounterfactualDelta("ligase-absent")),
+    intervention("helicase-stopped", "Helicase stopped", "Stop fork opening before strand extension can proceed.", ["helicase", "parental-strand-5to3", "parental-strand-3to5"], dnaCounterfactualDelta("helicase-stopped")),
+    intervention("primer-formation-disabled", "Primer formation disabled", "Disable RNA primer formation before polymerase extension.", ["primase", "rna-primers", "dna-polymerase"], dnaCounterfactualDelta("primer-formation-disabled")),
     intervention("explain-okazaki", "Explain Okazaki fragments", "Focus the model on lagging-strand discontinuity.", ["lagging-strand", "okazaki-fragments"])
   ],
   representationRules: [
@@ -850,9 +853,91 @@ function intervention(
   id: string,
   label: string,
   description: string,
-  affectedEntities: string[]
+  affectedEntities: string[],
+  modelDelta?: ScientificModelDelta
 ): ScientificIntervention {
-  return { id, label, description, affectedEntities };
+  return { id, label, description, affectedEntities, modelDelta };
+}
+
+function dnaCounterfactualDelta(
+  id: "ligase-absent" | "helicase-stopped" | "primer-formation-disabled"
+): ScientificModelDelta {
+  if (id === "ligase-absent") {
+    return {
+      id,
+      label: "Ligase absent",
+      interventionId: "remove-ligase",
+      operations: [
+        { type: "SET_PARAMETER", parameterId: "ligase-present", value: false },
+        { type: "SET_ENTITY_STATE", entityId: "ligase", state: "absent" },
+        { type: "SET_TRANSITION_STATE", transitionId: "seal-fragments", state: "blocked" }
+      ],
+      directInterventions: [
+        counterfactualClaim("dna-direct-ligase-absent", "Ligase is absent from the counterfactual branch.", "direct-intervention")
+      ],
+      predictedConsequences: [
+        counterfactualClaim("dna-predicted-unsealed-nicks", "Okazaki fragments remain separated by unresolved nicks in this schematic model.", "predicted-downstream")
+      ],
+      unsupportedOutcomes: [
+        counterfactualClaim("dna-unsupported-cell-fate", "Cell viability, checkpoint behavior, and repair pathway outcomes are not predicted by this prototype.", "unsupported-outcome")
+      ]
+    };
+  }
+
+  if (id === "helicase-stopped") {
+    return {
+      id,
+      label: "Helicase stopped",
+      interventionId: "helicase-stopped",
+      operations: [
+        { type: "SET_ENTITY_STATE", entityId: "helicase", state: "stopped" },
+        { type: "SET_TRANSITION_STATE", transitionId: "open-fork", state: "blocked" },
+        { type: "SET_PARAMETER", parameterId: "fork-rate", value: 0 }
+      ],
+      directInterventions: [
+        counterfactualClaim("dna-direct-helicase-stopped", "Helicase unwinding is stopped in the counterfactual branch.", "direct-intervention")
+      ],
+      predictedConsequences: [
+        counterfactualClaim("dna-predicted-fork-stalls", "Fork opening stalls, limiting downstream primer placement and strand extension in the schematic.", "predicted-downstream")
+      ],
+      unsupportedOutcomes: [
+        counterfactualClaim("dna-unsupported-collapse-repair", "Replication-fork collapse or repair pathway choice is outside this model.", "unsupported-outcome")
+      ]
+    };
+  }
+
+  return {
+    id,
+    label: "Primer formation disabled",
+    interventionId: "primer-formation-disabled",
+    operations: [
+      { type: "SET_ENTITY_STATE", entityId: "rna-primers", state: "disabled" },
+      { type: "SET_TRANSITION_STATE", transitionId: "lay-primers", state: "blocked" },
+      { type: "ADD_RELATION_QUALIFIER", relationId: "rna-primers-enables-dna-polymerase", qualifier: "Counterfactual: primer availability is disabled." }
+    ],
+    directInterventions: [
+      counterfactualClaim("dna-direct-primers-disabled", "RNA primer formation is disabled in the counterfactual branch.", "direct-intervention")
+    ],
+    predictedConsequences: [
+      counterfactualClaim("dna-predicted-extension-blocked", "DNA polymerase cannot initiate new extension events without primers in this schematic.", "predicted-downstream")
+    ],
+    unsupportedOutcomes: [
+      counterfactualClaim("dna-unsupported-alternative-priming", "Alternative priming or rescue mechanisms are not modeled.", "unsupported-outcome")
+    ]
+  };
+}
+
+function counterfactualClaim(
+  id: string,
+  claimText: string,
+  status: ScientificModelDelta["directInterventions"][number]["status"]
+) {
+  return {
+    id,
+    claim: claimText,
+    status,
+    classification: "schematic" as const
+  };
 }
 
 function claim(

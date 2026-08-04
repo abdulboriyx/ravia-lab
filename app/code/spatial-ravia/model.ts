@@ -81,6 +81,46 @@ export type ScientificIntervention = {
   label: string;
   description: string;
   affectedEntities: string[];
+  modelDelta?: ScientificModelDelta;
+};
+
+export type ScientificModelDeltaOperation =
+  | {
+      type: "SET_PARAMETER";
+      parameterId: string;
+      value: ScientificParameter["value"];
+    }
+  | {
+      type: "SET_ENTITY_STATE";
+      entityId: string;
+      state: "present" | "absent" | "stopped" | "inaccessible" | "disabled";
+    }
+  | {
+      type: "SET_TRANSITION_STATE";
+      transitionId: string;
+      state: "enabled" | "blocked" | "unsupported";
+    }
+  | {
+      type: "ADD_RELATION_QUALIFIER";
+      relationId: string;
+      qualifier: string;
+    };
+
+export type CounterfactualClaim = {
+  id: string;
+  claim: string;
+  status: "direct-intervention" | "predicted-downstream" | "unsupported-outcome";
+  classification: "schematic" | "quantitative";
+};
+
+export type ScientificModelDelta = {
+  id: string;
+  label: string;
+  interventionId: string;
+  operations: ScientificModelDeltaOperation[];
+  directInterventions: CounterfactualClaim[];
+  predictedConsequences: CounterfactualClaim[];
+  unsupportedOutcomes: CounterfactualClaim[];
 };
 
 export type ScientificSource = {
@@ -237,6 +277,14 @@ export type ScientificModel = {
   examples: string[];
 };
 
+export type ScientificModelDifference = {
+  path: string;
+  baseline: string;
+  counterfactual: string;
+  source: "direct-intervention" | "predicted-downstream" | "unsupported-outcome";
+  classification: "schematic" | "quantitative";
+};
+
 export type CompilationErrorCode =
   | "missing_required_field"
   | "missing_required_entity"
@@ -348,19 +396,145 @@ export type SpatialPromptResult =
       resolution: PromptIntentResolution;
     };
 
+export type ConversationTurn = {
+  role: "user" | "system";
+  message: string;
+};
+
+export type ScientificSessionEventType =
+  | "PROCESS_SELECTED"
+  | "UNSUPPORTED_PROMPT"
+  | "CONVERSATION_TURN_ADDED"
+  | "ENTITY_SELECTED"
+  | "ENTITY_HIDDEN"
+  | "ENTITY_SHOWN"
+  | "ENTITY_ISOLATED"
+  | "INTERVENTION_APPLIED"
+  | "REPRESENTATION_CHANGED"
+  | "PLAYBACK_CHANGED"
+  | "TIMELINE_MOVED"
+  | "CONTEXT_CHANGED"
+  | "BRANCH_CREATED"
+  | "BRANCH_SWITCHED"
+  | "MODEL_DELTA_APPLIED"
+  | "SESSION_RESET";
+
+export type ScientificSessionEvent =
+  | {
+      type: "PROCESS_SELECTED";
+      prompt: string;
+      packId: string;
+      biologicalContext: string;
+      intent: string;
+      validation: LayeredValidationResult;
+    }
+  | {
+      type: "UNSUPPORTED_PROMPT";
+      prompt: string;
+      reason: string;
+    }
+  | {
+      type: "CONVERSATION_TURN_ADDED";
+      turn: ConversationTurn;
+    }
+  | {
+      type: "ENTITY_SELECTED";
+      entityIds: string[];
+    }
+  | {
+      type: "ENTITY_HIDDEN";
+      entityIds: string[];
+    }
+  | {
+      type: "ENTITY_SHOWN";
+      entityIds: string[];
+    }
+  | {
+      type: "ENTITY_ISOLATED";
+      entityId: string | null;
+      entityIds: string[];
+    }
+  | {
+      type: "INTERVENTION_APPLIED";
+      interventionId: string;
+    }
+  | {
+      type: "REPRESENTATION_CHANGED";
+      representationMode: RepresentationMode;
+    }
+  | {
+      type: "PLAYBACK_CHANGED";
+      playback: Partial<PlaybackState> & { reset?: boolean };
+    }
+  | {
+      type: "TIMELINE_MOVED";
+      timelinePosition: number;
+    }
+  | {
+      type: "CONTEXT_CHANGED";
+      biologicalContext: string;
+    }
+  | {
+      type: "BRANCH_CREATED";
+      branchId: string;
+      name: string;
+      sourceBranchId: string;
+    }
+  | {
+      type: "BRANCH_SWITCHED";
+      branchId: string;
+    }
+  | {
+      type: "MODEL_DELTA_APPLIED";
+      branchId: string;
+      delta: ScientificModelDelta;
+    }
+  | {
+      type: "SESSION_RESET";
+    };
+
+export type ScientificModelBranch = {
+  id: string;
+  name: string;
+  sourceBranchId: string | null;
+  model: ScientificModel | null;
+  modelVersion: number;
+  representationMode: RepresentationMode;
+  selectedEntities: string[];
+  hiddenEntities: string[];
+  isolatedEntity: string | null;
+  playback: PlaybackState;
+  interventions: string[];
+  appliedDeltas: ScientificModelDelta[];
+  differences: ScientificModelDifference[];
+  directInterventions: CounterfactualClaim[];
+  predictedConsequences: CounterfactualClaim[];
+  unsupportedOutcomes: CounterfactualClaim[];
+};
+
 export type SpatialSessionState = {
+  sessionId: string;
+  initialPrompt: string;
   currentPrompt: string;
+  selectedProcessPackId: string | null;
   activeModel: ScientificModel | null;
+  modelVersion: number;
+  baselineModel: ScientificModel | null;
+  activeBranchId: string;
+  branches: ScientificModelBranch[];
   selectedEntities: string[];
   hiddenEntities: string[];
   isolatedEntity: string | null;
   activeIntervention: string;
   representationMode: RepresentationMode;
   playback: PlaybackState;
-  conversationHistory: Array<{
-    role: "user" | "system";
-    message: string;
-  }>;
+  interventions: string[];
+  conversationHistory: ConversationTurn[];
+  validationResults: LayeredValidationResult | null;
+  provenance: ScientificClaimProvenance[];
+  modelChangeHistory: string[];
+  eventLog: ScientificSessionEvent[];
+  undoneEvents: ScientificSessionEvent[];
 };
 
 export function createScientificModelFromPack(
@@ -1315,8 +1489,15 @@ function hasAny(tokens: string[], terms: string[]) {
 
 export function createInitialSession(): SpatialSessionState {
   return {
+    sessionId: "local-scientific-session",
+    initialPrompt: "",
     currentPrompt: "",
+    selectedProcessPackId: null,
     activeModel: null,
+    modelVersion: 0,
+    baselineModel: null,
+    activeBranchId: "baseline",
+    branches: [],
     selectedEntities: [],
     hiddenEntities: [],
     isolatedEntity: null,
@@ -1329,7 +1510,13 @@ export function createInitialSession(): SpatialSessionState {
       showLabels: true,
       showDirectionality: true
     },
-    conversationHistory: []
+    interventions: [],
+    conversationHistory: [],
+    validationResults: null,
+    provenance: [],
+    modelChangeHistory: [],
+    eventLog: [],
+    undoneEvents: []
   };
 }
 
@@ -1341,33 +1528,35 @@ export function startSessionFromPrompt(
   const result = parsePromptWithPacks(prompt, packs);
 
   if (!result.supported) {
-    return {
-      ...session,
-      currentPrompt: prompt,
-      activeIntervention: "unsupported prompt",
-      conversationHistory: [
-        ...session.conversationHistory,
-        { role: "user", message: prompt },
-        { role: "system", message: result.reason }
-      ]
-    };
+    return dispatchScientificSessionEvents(session, [
+      { type: "UNSUPPORTED_PROMPT", prompt, reason: result.reason },
+      { type: "CONVERSATION_TURN_ADDED", turn: { role: "user", message: prompt } },
+      { type: "CONVERSATION_TURN_ADDED", turn: { role: "system", message: result.reason } }
+    ], packs);
   }
 
-  const withModel: SpatialSessionState = {
-    ...createInitialSession(),
-    currentPrompt: prompt,
-    activeModel: result.model,
-    representationMode: result.model.representationChoice,
-    playback: { ...session.playback, playing: true, timelinePosition: 0 },
-    conversationHistory: [
-      ...session.conversationHistory,
-      { role: "user", message: prompt },
-      { role: "system", message: `Loaded ${result.model.process}: ${result.intent}` }
-    ]
-  };
+  const packId = result.resolution.processCandidates[0]?.packId;
+  const pack = packId ? packs.find((item) => item.id === packId) : null;
+  const validation = pack ? validateBiologicalProcessPackLayered(pack) : null;
+  const withModel = dispatchScientificSessionEvents(createInitialSession(), [
+    {
+      type: "PROCESS_SELECTED",
+      prompt,
+      packId: packId ?? result.model.process,
+      biologicalContext: result.context,
+      intent: result.intent,
+      validation: validation ?? createEmptyLayeredValidation()
+    },
+    { type: "PLAYBACK_CHANGED", playback: { ...session.playback, playing: true, timelinePosition: 0 } },
+    { type: "CONVERSATION_TURN_ADDED", turn: { role: "user", message: prompt } },
+    {
+      type: "CONVERSATION_TURN_ADDED",
+      turn: { role: "system", message: `Loaded ${result.model.process}: ${result.intent}` }
+    }
+  ], packs);
 
   return result.suggestedCommandId
-    ? applyCommandRule(withModel, findCommandRule(result.model, result.suggestedCommandId))
+    ? applyCommandRule(withModel, findCommandRule(result.model, result.suggestedCommandId), packs)
     : withModel;
 }
 
@@ -1375,20 +1564,15 @@ export function applyFollowUpCommand(
   session: SpatialSessionState,
   command: string
 ): SpatialSessionState {
-  const history = [
-    ...session.conversationHistory,
-    { role: "user" as const, message: command }
-  ];
-
   if (!session.activeModel) {
-    return {
-      ...session,
-      activeIntervention: "no active model",
-      conversationHistory: [
-        ...history,
-        { role: "system", message: "Generate a supported process before applying commands." }
-      ]
-    };
+    return dispatchScientificSessionEvents(session, [
+      { type: "CONVERSATION_TURN_ADDED", turn: { role: "user", message: command } },
+      { type: "INTERVENTION_APPLIED", interventionId: "no active model" },
+      {
+        type: "CONVERSATION_TURN_ADDED",
+        turn: { role: "system", message: "Generate a supported process before applying commands." }
+      }
+    ]);
   }
 
   const normalized = normalizeText(command);
@@ -1397,44 +1581,43 @@ export function applyFollowUpCommand(
   );
 
   if (!rule) {
-    return {
-      ...session,
-      activeIntervention: "unsupported command",
-      conversationHistory: [
-        ...history,
-        { role: "system", message: "Unsupported command. The deterministic prototype abstained." }
-      ]
-    };
+    return dispatchScientificSessionEvents(session, [
+      { type: "CONVERSATION_TURN_ADDED", turn: { role: "user", message: command } },
+      { type: "INTERVENTION_APPLIED", interventionId: "unsupported command" },
+      {
+        type: "CONVERSATION_TURN_ADDED",
+        turn: { role: "system", message: "Unsupported command. The deterministic prototype abstained." }
+      }
+    ]);
   }
 
-  return applyCommandRule({ ...session, conversationHistory: history }, rule);
+  return applyCommandRule(
+    dispatchScientificSessionEvent(session, {
+      type: "CONVERSATION_TURN_ADDED",
+      turn: { role: "user", message: command }
+    }),
+    rule
+  );
 }
 
 export function setRepresentationMode(
   session: SpatialSessionState,
   representationMode: RepresentationMode
 ): SpatialSessionState {
-  return {
-    ...session,
-    representationMode,
-    activeModel: session.activeModel
-      ? { ...session.activeModel, representationChoice: representationMode }
-      : null
-  };
+  return dispatchScientificSessionEvent(session, {
+    type: "REPRESENTATION_CHANGED",
+    representationMode
+  });
 }
 
 export function setTimelinePosition(
   session: SpatialSessionState,
   timelinePosition: number
 ): SpatialSessionState {
-  return {
-    ...session,
-    playback: {
-      ...session.playback,
-      playing: false,
-      timelinePosition: Math.min(1, Math.max(0, timelinePosition))
-    }
-  };
+  return dispatchScientificSessionEvents(session, [
+    { type: "PLAYBACK_CHANGED", playback: { playing: false } },
+    { type: "TIMELINE_MOVED", timelinePosition }
+  ]);
 }
 
 export function resolveCoord(coord: Coord, progress: number) {
@@ -1481,43 +1664,956 @@ export function shouldShowPrimitive(
 
 function applyCommandRule(
   session: SpatialSessionState,
-  commandRule: CommandRule | undefined
+  commandRule: CommandRule | undefined,
+  packs?: BiologicalProcessPack[]
 ): SpatialSessionState {
   if (!commandRule) {
     return session;
   }
 
   const patch = commandRule.patch;
-  const hiddenReset = patch.hiddenEntities?.reset ? [] : session.hiddenEntities;
-  const hiddenRemoved = hiddenReset.filter(
-    (id) => !(patch.hiddenEntities?.remove ?? []).includes(id)
-  );
-  const hiddenEntities = [
-    ...hiddenRemoved,
-    ...(patch.hiddenEntities?.add ?? []).filter((id) => !hiddenRemoved.includes(id))
-  ];
-  const playback = patch.playback?.reset
-    ? createInitialSession().playback
-    : { ...session.playback, ...patch.playback };
+  const events: ScientificSessionEvent[] = [];
 
-  return {
-    ...session,
-    hiddenEntities,
-    selectedEntities: patch.selectedEntities ?? session.selectedEntities,
-    isolatedEntity:
-      patch.isolatedEntity === undefined ? session.isolatedEntity : patch.isolatedEntity,
-    activeIntervention: patch.activeIntervention ?? commandRule.id,
-    representationMode: patch.representationMode ?? session.representationMode,
-    playback,
-    conversationHistory: [
-      ...session.conversationHistory,
-      { role: "system", message: commandRule.response }
-    ]
-  };
+  if (patch.hiddenEntities?.reset) {
+    events.push({ type: "ENTITY_SHOWN", entityIds: [...session.hiddenEntities] });
+  }
+
+  if (patch.hiddenEntities?.remove?.length) {
+    events.push({ type: "ENTITY_SHOWN", entityIds: patch.hiddenEntities.remove });
+  }
+
+  if (patch.hiddenEntities?.add?.length) {
+    events.push({ type: "ENTITY_HIDDEN", entityIds: patch.hiddenEntities.add });
+  }
+
+  if (patch.selectedEntities) {
+    events.push({ type: "ENTITY_SELECTED", entityIds: patch.selectedEntities });
+  }
+
+  if (patch.isolatedEntity !== undefined) {
+    events.push({
+      type: "ENTITY_ISOLATED",
+      entityId: patch.isolatedEntity,
+      entityIds: patch.isolatedEntity
+        ? session.activeModel?.renderPlan.isolationGroups[patch.isolatedEntity] ?? [patch.isolatedEntity]
+        : []
+    });
+  }
+
+  events.push({
+    type: "INTERVENTION_APPLIED",
+    interventionId: patch.activeIntervention ?? commandRule.id
+  });
+
+  if (patch.representationMode) {
+    events.push({
+      type: "REPRESENTATION_CHANGED",
+      representationMode: patch.representationMode
+    });
+  }
+
+  if (patch.playback) {
+    events.push({
+      type: "PLAYBACK_CHANGED",
+      playback: patch.playback
+    });
+  }
+
+  events.push({
+    type: "CONVERSATION_TURN_ADDED",
+    turn: { role: "system", message: commandRule.response }
+  });
+
+  return dispatchScientificSessionEvents(session, events, packs);
 }
 
 function findCommandRule(model: ScientificModel, id: string) {
   return model.commandRules.find((commandRule) => commandRule.id === id);
+}
+
+export function dispatchScientificSessionEvent(
+  session: SpatialSessionState,
+  event: ScientificSessionEvent,
+  packs: BiologicalProcessPack[] = []
+): SpatialSessionState {
+  return dispatchScientificSessionEvents(session, [event], packs);
+}
+
+export function dispatchScientificSessionEvents(
+  session: SpatialSessionState,
+  events: ScientificSessionEvent[],
+  packs: BiologicalProcessPack[] = []
+): SpatialSessionState {
+  return events.reduce((current, event) => ({
+    ...syncActiveBranch(applyScientificSessionEvent(current, event, packs)),
+    eventLog: [...current.eventLog, event],
+    undoneEvents: []
+  }), session);
+}
+
+export function replayScientificSessionEvents(
+  events: ScientificSessionEvent[],
+  packs: BiologicalProcessPack[]
+): SpatialSessionState {
+  return events.reduce(
+    (session, event) => syncActiveBranch(applyScientificSessionEvent(session, event, packs)),
+    createInitialSession()
+  );
+}
+
+export function undoScientificSessionEvent(
+  session: SpatialSessionState,
+  packs: BiologicalProcessPack[]
+): SpatialSessionState {
+  if (session.eventLog.length === 0) {
+    return session;
+  }
+
+  const undoStart = findUndoStartIndex(session.eventLog);
+  const eventLog = session.eventLog.slice(0, undoStart);
+  const removedEvents = session.eventLog.slice(undoStart);
+
+  return {
+    ...replayScientificSessionEvents(eventLog, packs),
+    eventLog,
+    undoneEvents: [...removedEvents, ...session.undoneEvents]
+  };
+}
+
+export function redoScientificSessionEvent(
+  session: SpatialSessionState,
+  packs: BiologicalProcessPack[]
+): SpatialSessionState {
+  if (session.undoneEvents.length === 0) {
+    return session;
+  }
+
+  return {
+    ...dispatchScientificSessionEvents(
+      { ...session, undoneEvents: [] },
+      session.undoneEvents,
+      packs
+    ),
+    undoneEvents: []
+  };
+}
+
+export function resetScientificSession(session: SpatialSessionState): SpatialSessionState {
+  return dispatchScientificSessionEvent(session, { type: "SESSION_RESET" });
+}
+
+export function createCounterfactualBranch(
+  session: SpatialSessionState,
+  name: string
+): SpatialSessionState {
+  const branchId = createBranchId(name, session.branches);
+
+  return dispatchScientificSessionEvents(session, [
+    {
+      type: "BRANCH_CREATED",
+      branchId,
+      name,
+      sourceBranchId: session.activeBranchId
+    },
+    {
+      type: "BRANCH_SWITCHED",
+      branchId
+    }
+  ]);
+}
+
+export function switchScientificBranch(
+  session: SpatialSessionState,
+  branchId: string
+): SpatialSessionState {
+  return dispatchScientificSessionEvent(session, {
+    type: "BRANCH_SWITCHED",
+    branchId
+  });
+}
+
+export function returnToBaselineBranch(session: SpatialSessionState): SpatialSessionState {
+  return switchScientificBranch(session, "baseline");
+}
+
+export function applyCounterfactualIntervention(
+  session: SpatialSessionState,
+  interventionId: string
+): SpatialSessionState {
+  const intervention = session.activeModel?.interventions.find((item) => item.id === interventionId);
+
+  if (!intervention?.modelDelta) {
+    return dispatchScientificSessionEvent(session, {
+      type: "INTERVENTION_APPLIED",
+      interventionId: `unsupported counterfactual: ${interventionId}`
+    });
+  }
+
+  return dispatchScientificSessionEvent(session, {
+    type: "MODEL_DELTA_APPLIED",
+    branchId: session.activeBranchId,
+    delta: intervention.modelDelta
+  });
+}
+
+export function compareActiveBranchToBaseline(
+  session: SpatialSessionState
+): ScientificModelDifference[] {
+  const branch = getActiveBranch(session);
+  const baseline = getBaselineBranch(session);
+
+  if (!branch || !baseline) {
+    return [];
+  }
+
+  return compareBranches(baseline, branch);
+}
+
+export function serializeScientificSession(session: SpatialSessionState) {
+  return JSON.stringify({
+    sessionId: session.sessionId,
+    eventLog: session.eventLog,
+    undoneEvents: session.undoneEvents
+  });
+}
+
+export function deserializeScientificSession(
+  serialized: string,
+  packs: BiologicalProcessPack[]
+): SpatialSessionState {
+  const parsed = JSON.parse(serialized) as {
+    sessionId?: string;
+    eventLog?: ScientificSessionEvent[];
+    undoneEvents?: ScientificSessionEvent[];
+  };
+  const eventLog = parsed.eventLog ?? [];
+  const replayed = replayScientificSessionEvents(eventLog, packs);
+
+  return {
+    ...replayed,
+    sessionId: parsed.sessionId ?? replayed.sessionId,
+    eventLog,
+    undoneEvents: parsed.undoneEvents ?? []
+  };
+}
+
+function applyScientificSessionEvent(
+  session: SpatialSessionState,
+  event: ScientificSessionEvent,
+  packs: BiologicalProcessPack[]
+): SpatialSessionState {
+  if (event.type === "BRANCH_CREATED") {
+    const source = session.branches.find((branch) => branch.id === event.sourceBranchId) ??
+      getBaselineBranch(session);
+
+    if (!source) {
+      return session;
+    }
+
+    if (session.branches.some((branch) => branch.id === event.branchId)) {
+      return session;
+    }
+
+    return {
+      ...session,
+      branches: [
+        ...session.branches,
+        createScientificModelBranch({
+          id: event.branchId,
+          name: event.name,
+          sourceBranchId: source.id,
+          model: cloneScientificModel(source.model),
+          modelVersion: source.modelVersion,
+          representationMode: source.representationMode,
+          selectedEntities: [...source.selectedEntities],
+          hiddenEntities: [...source.hiddenEntities],
+          isolatedEntity: source.isolatedEntity,
+          playback: { ...source.playback },
+          interventions: [...source.interventions],
+          appliedDeltas: source.appliedDeltas.map(cloneScientificModelDelta),
+          differences: source.differences.map((difference) => ({ ...difference })),
+          directInterventions: source.directInterventions.map((claim) => ({ ...claim })),
+          predictedConsequences: source.predictedConsequences.map((claim) => ({ ...claim })),
+          unsupportedOutcomes: source.unsupportedOutcomes.map((claim) => ({ ...claim }))
+        })
+      ],
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Created branch: ${event.name}`
+      ]
+    };
+  }
+
+  if (event.type === "BRANCH_SWITCHED") {
+    const branch = session.branches.find((item) => item.id === event.branchId);
+
+    if (!branch) {
+      return session;
+    }
+
+    return {
+      ...session,
+      activeBranchId: branch.id,
+      activeModel: branch.model,
+      modelVersion: branch.modelVersion,
+      representationMode: branch.representationMode,
+      selectedEntities: [...branch.selectedEntities],
+      hiddenEntities: [...branch.hiddenEntities],
+      isolatedEntity: branch.isolatedEntity,
+      playback: { ...branch.playback },
+      interventions: [...branch.interventions],
+      activeIntervention: branch.interventions.at(-1) ?? "baseline",
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Switched branch: ${branch.name}`
+      ]
+    };
+  }
+
+  if (event.type === "MODEL_DELTA_APPLIED") {
+    if (event.branchId !== session.activeBranchId || !session.activeModel) {
+      return session;
+    }
+
+    const model = applyScientificModelDelta(session.activeModel, event.delta);
+    const baseline = getBaselineBranch(session);
+    const nextBranch = createScientificModelBranch({
+      id: session.activeBranchId,
+      name: getActiveBranch(session)?.name ?? session.activeBranchId,
+      sourceBranchId: getActiveBranch(session)?.sourceBranchId ?? "baseline",
+      model,
+      modelVersion: session.modelVersion + 1,
+      representationMode: session.representationMode,
+      selectedEntities: [...session.selectedEntities],
+      hiddenEntities: addUniqueMany(session.hiddenEntities, hiddenEntitiesForDelta(event.delta)),
+      isolatedEntity: session.isolatedEntity,
+      playback: { ...session.playback },
+      interventions: addUniqueMany(session.interventions, [event.delta.interventionId]),
+      appliedDeltas: [...(getActiveBranch(session)?.appliedDeltas ?? []), event.delta],
+      differences: [],
+      directInterventions: [
+        ...(getActiveBranch(session)?.directInterventions ?? []),
+        ...event.delta.directInterventions
+      ],
+      predictedConsequences: [
+        ...(getActiveBranch(session)?.predictedConsequences ?? []),
+        ...event.delta.predictedConsequences
+      ],
+      unsupportedOutcomes: [
+        ...(getActiveBranch(session)?.unsupportedOutcomes ?? []),
+        ...event.delta.unsupportedOutcomes
+      ]
+    });
+    nextBranch.differences = baseline ? compareBranches(baseline, nextBranch) : [];
+
+    return {
+      ...session,
+      activeModel: model,
+      modelVersion: session.modelVersion + 1,
+      hiddenEntities: nextBranch.hiddenEntities,
+      interventions: nextBranch.interventions,
+      activeIntervention: event.delta.interventionId,
+      branches: replaceBranch(session.branches, nextBranch),
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Applied model delta: ${event.delta.label}`
+      ]
+    };
+  }
+
+  if (event.type === "SESSION_RESET") {
+    return createInitialSession();
+  }
+
+  if (event.type === "UNSUPPORTED_PROMPT") {
+    return {
+      ...session,
+      currentPrompt: event.prompt,
+      activeIntervention: "unsupported prompt",
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Unsupported prompt: ${event.reason}`
+      ]
+    };
+  }
+
+  if (event.type === "PROCESS_SELECTED") {
+    const pack = packs.find((item) => item.id === event.packId);
+    const compiled = pack
+      ? compileBiologicalProcessPack(pack, { biologicalContext: event.biologicalContext })
+      : null;
+
+    if (!compiled?.ok) {
+      return {
+        ...session,
+        currentPrompt: event.prompt,
+        initialPrompt: session.initialPrompt || event.prompt,
+        selectedProcessPackId: event.packId,
+        activeIntervention: "compile failed",
+        validationResults: event.validation,
+        modelChangeHistory: [
+          ...session.modelChangeHistory,
+          `Failed to load process pack ${event.packId}`
+        ]
+      };
+    }
+
+    return {
+      ...session,
+      initialPrompt: session.initialPrompt || event.prompt,
+      currentPrompt: event.prompt,
+      selectedProcessPackId: event.packId,
+      activeModel: compiled.model,
+      modelVersion: session.modelVersion + 1,
+      baselineModel: compiled.model,
+      activeBranchId: "baseline",
+      branches: [
+        createScientificModelBranch({
+          id: "baseline",
+          name: "Baseline",
+          sourceBranchId: null,
+          model: compiled.model,
+          modelVersion: session.modelVersion + 1,
+          representationMode: compiled.model.representationChoice,
+          selectedEntities: [],
+          hiddenEntities: [],
+          isolatedEntity: null,
+          playback: session.playback,
+          interventions: []
+        })
+      ],
+      selectedEntities: [],
+      hiddenEntities: [],
+      isolatedEntity: null,
+      activeIntervention: "baseline",
+      representationMode: compiled.model.representationChoice,
+      interventions: [],
+      validationResults: event.validation,
+      provenance: collectSessionProvenance(compiled.model),
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Loaded ${compiled.model.process} from ${event.packId}`
+      ]
+    };
+  }
+
+  if (event.type === "CONVERSATION_TURN_ADDED") {
+    return {
+      ...session,
+      conversationHistory: [...session.conversationHistory, event.turn]
+    };
+  }
+
+  if (event.type === "ENTITY_SELECTED") {
+    return {
+      ...session,
+      selectedEntities: [...event.entityIds],
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Selected entities: ${event.entityIds.join(", ") || "none"}`
+      ]
+    };
+  }
+
+  if (event.type === "ENTITY_HIDDEN") {
+    return {
+      ...session,
+      hiddenEntities: addUniqueMany(session.hiddenEntities, event.entityIds),
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Hidden entities: ${event.entityIds.join(", ")}`
+      ]
+    };
+  }
+
+  if (event.type === "ENTITY_SHOWN") {
+    return {
+      ...session,
+      hiddenEntities: session.hiddenEntities.filter((id) => !event.entityIds.includes(id)),
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Shown entities: ${event.entityIds.join(", ") || "all"}`
+      ]
+    };
+  }
+
+  if (event.type === "ENTITY_ISOLATED") {
+    return {
+      ...session,
+      isolatedEntity: event.entityId,
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        event.entityId ? `Isolated entity: ${event.entityId}` : "Cleared isolation"
+      ]
+    };
+  }
+
+  if (event.type === "INTERVENTION_APPLIED") {
+    return {
+      ...session,
+      activeIntervention: event.interventionId,
+      interventions: addUniqueMany(session.interventions, [event.interventionId]),
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Applied intervention: ${event.interventionId}`
+      ]
+    };
+  }
+
+  if (event.type === "REPRESENTATION_CHANGED") {
+    return {
+      ...session,
+      representationMode: event.representationMode,
+      modelVersion: session.modelVersion + 1,
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Changed representation: ${event.representationMode}`
+      ]
+    };
+  }
+
+  if (event.type === "PLAYBACK_CHANGED") {
+    const { reset, ...playbackPatch } = event.playback;
+
+    return {
+      ...session,
+      playback: reset
+        ? { ...createInitialSession().playback, ...playbackPatch }
+        : { ...session.playback, ...playbackPatch },
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        "Changed playback state"
+      ]
+    };
+  }
+
+  if (event.type === "TIMELINE_MOVED") {
+    return {
+      ...session,
+      playback: {
+        ...session.playback,
+        timelinePosition: Math.min(1, Math.max(0, event.timelinePosition))
+      },
+      modelChangeHistory: [
+        ...session.modelChangeHistory,
+        `Moved timeline: ${Math.round(Math.min(1, Math.max(0, event.timelinePosition)) * 100)}%`
+      ]
+    };
+  }
+
+  return {
+    ...session,
+    activeModel: session.activeModel
+      ? { ...session.activeModel, biologicalContext: event.biologicalContext }
+      : null,
+    modelVersion: session.modelVersion + 1,
+    modelChangeHistory: [
+      ...session.modelChangeHistory,
+      `Changed context: ${event.biologicalContext}`
+    ]
+  };
+}
+
+function createEmptyLayeredValidation(): LayeredValidationResult {
+  return {
+    valid: false,
+    errors: [],
+    warnings: [],
+    abstentionReasons: ["No process-pack validation was available."],
+    layers: createEmptyLayerMap()
+  };
+}
+
+function createScientificModelBranch(input: {
+  id: string;
+  name: string;
+  sourceBranchId: string | null;
+  model: ScientificModel | null;
+  modelVersion: number;
+  representationMode: RepresentationMode;
+  selectedEntities: string[];
+  hiddenEntities: string[];
+  isolatedEntity: string | null;
+  playback: PlaybackState;
+  interventions: string[];
+  appliedDeltas?: ScientificModelDelta[];
+  differences?: ScientificModelDifference[];
+  directInterventions?: CounterfactualClaim[];
+  predictedConsequences?: CounterfactualClaim[];
+  unsupportedOutcomes?: CounterfactualClaim[];
+}): ScientificModelBranch {
+  return {
+    id: input.id,
+    name: input.name,
+    sourceBranchId: input.sourceBranchId,
+    model: input.model,
+    modelVersion: input.modelVersion,
+    representationMode: input.representationMode,
+    selectedEntities: input.selectedEntities,
+    hiddenEntities: input.hiddenEntities,
+    isolatedEntity: input.isolatedEntity,
+    playback: input.playback,
+    interventions: input.interventions,
+    appliedDeltas: input.appliedDeltas ?? [],
+    differences: input.differences ?? [],
+    directInterventions: input.directInterventions ?? [],
+    predictedConsequences: input.predictedConsequences ?? [],
+    unsupportedOutcomes: input.unsupportedOutcomes ?? []
+  };
+}
+
+function syncActiveBranch(session: SpatialSessionState): SpatialSessionState {
+  if (session.branches.length === 0 || !session.activeBranchId) {
+    return session;
+  }
+
+  const existing = getActiveBranch(session);
+
+  if (!existing) {
+    return session;
+  }
+
+  const synced = {
+    ...existing,
+    model: session.activeModel,
+    modelVersion: session.modelVersion,
+    representationMode: session.representationMode,
+    selectedEntities: [...session.selectedEntities],
+    hiddenEntities: [...session.hiddenEntities],
+    isolatedEntity: session.isolatedEntity,
+    playback: { ...session.playback },
+    interventions: [...session.interventions]
+  };
+
+  return {
+    ...session,
+    branches: replaceBranch(session.branches, synced)
+  };
+}
+
+function applyScientificModelDelta(
+  model: ScientificModel,
+  delta: ScientificModelDelta
+): ScientificModel {
+  const cloned = cloneScientificModel(model);
+
+  if (!cloned) {
+    return model;
+  }
+
+  let next: ScientificModel = cloned;
+
+  for (const operation of delta.operations) {
+    if (operation.type === "SET_PARAMETER") {
+      next = {
+        ...next,
+        parameters: next.parameters.map((parameter) =>
+          parameter.id === operation.parameterId
+            ? {
+                ...parameter,
+                value: operation.value,
+                description: `${parameter.description} Counterfactual: ${delta.label}.`
+              }
+            : parameter
+        )
+      };
+    }
+
+    if (operation.type === "SET_ENTITY_STATE") {
+      next = {
+        ...next,
+        entities: next.entities.map((entity) =>
+          entity.id === operation.entityId
+            ? {
+                ...entity,
+                description: `${entity.description} Counterfactual state: ${operation.state}.`
+              }
+            : entity
+        )
+      };
+    }
+
+    if (operation.type === "SET_TRANSITION_STATE") {
+      next = {
+        ...next,
+        transitions: next.transitions.map((transition) =>
+          transition.id === operation.transitionId
+            ? {
+                ...transition,
+                rule: `${transition.rule}; counterfactual transition state: ${operation.state}`
+              }
+            : transition
+        )
+      };
+    }
+
+    if (operation.type === "ADD_RELATION_QUALIFIER") {
+      next = {
+        ...next,
+        relations: next.relations.map((relation) =>
+          relation.id === operation.relationId
+            ? {
+                ...relation,
+                description: `${relation.description} ${operation.qualifier}`
+              }
+            : relation
+        )
+      };
+    }
+  }
+
+  return next;
+}
+
+function compareBranches(
+  baseline: ScientificModelBranch,
+  branch: ScientificModelBranch
+): ScientificModelDifference[] {
+  const differences: ScientificModelDifference[] = [];
+
+  for (const delta of branch.appliedDeltas) {
+    for (const operation of delta.operations) {
+      differences.push(differenceForOperation(baseline.model, branch.model, operation));
+    }
+
+    for (const claim of delta.predictedConsequences) {
+      differences.push({
+        path: `prediction.${claim.id}`,
+        baseline: "not present",
+        counterfactual: claim.claim,
+        source: "predicted-downstream",
+        classification: claim.classification
+      });
+    }
+
+    for (const claim of delta.unsupportedOutcomes) {
+      differences.push({
+        path: `unsupported.${claim.id}`,
+        baseline: "not present",
+        counterfactual: claim.claim,
+        source: "unsupported-outcome",
+        classification: claim.classification
+      });
+    }
+  }
+
+  return differences;
+}
+
+function differenceForOperation(
+  baseline: ScientificModel | null,
+  branch: ScientificModel | null,
+  operation: ScientificModelDeltaOperation
+): ScientificModelDifference {
+  if (operation.type === "SET_PARAMETER") {
+    return {
+      path: `parameters.${operation.parameterId}`,
+      baseline: String(baseline?.parameters.find((item) => item.id === operation.parameterId)?.value ?? "missing"),
+      counterfactual: String(branch?.parameters.find((item) => item.id === operation.parameterId)?.value ?? operation.value),
+      source: "direct-intervention",
+      classification: "schematic"
+    };
+  }
+
+  if (operation.type === "SET_ENTITY_STATE") {
+    return {
+      path: `entities.${operation.entityId}`,
+      baseline: "present",
+      counterfactual: operation.state,
+      source: "direct-intervention",
+      classification: "schematic"
+    };
+  }
+
+  if (operation.type === "SET_TRANSITION_STATE") {
+    return {
+      path: `transitions.${operation.transitionId}`,
+      baseline: baseline?.transitions.find((item) => item.id === operation.transitionId)?.rule ?? "missing",
+      counterfactual: branch?.transitions.find((item) => item.id === operation.transitionId)?.rule ?? operation.state,
+      source: "direct-intervention",
+      classification: "schematic"
+    };
+  }
+
+  return {
+    path: `relations.${operation.relationId}`,
+    baseline: baseline?.relations.find((item) => item.id === operation.relationId)?.description ?? "missing",
+    counterfactual: branch?.relations.find((item) => item.id === operation.relationId)?.description ?? operation.qualifier,
+    source: "direct-intervention",
+    classification: "schematic"
+  };
+}
+
+function hiddenEntitiesForDelta(delta: ScientificModelDelta) {
+  return delta.operations
+    .filter((operation) =>
+      operation.type === "SET_ENTITY_STATE" &&
+      ["absent", "inaccessible", "disabled"].includes(operation.state)
+    )
+    .map((operation) => operation.type === "SET_ENTITY_STATE" ? operation.entityId : "");
+}
+
+function getActiveBranch(session: SpatialSessionState) {
+  return session.branches.find((branch) => branch.id === session.activeBranchId) ?? null;
+}
+
+function getBaselineBranch(session: SpatialSessionState) {
+  return session.branches.find((branch) => branch.id === "baseline") ?? null;
+}
+
+function replaceBranch(
+  branches: ScientificModelBranch[],
+  nextBranch: ScientificModelBranch
+) {
+  return branches.map((branch) => branch.id === nextBranch.id ? nextBranch : branch);
+}
+
+function createBranchId(name: string, branches: ScientificModelBranch[]) {
+  const base = normalizeText(name)
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "") || "branch";
+  let candidate = base;
+  let index = 2;
+
+  while (branches.some((branch) => branch.id === candidate)) {
+    candidate = `${base}-${index}`;
+    index += 1;
+  }
+
+  return candidate;
+}
+
+function cloneScientificModel(model: ScientificModel | null): ScientificModel | null {
+  if (!model) {
+    return null;
+  }
+
+  return {
+    ...model,
+    aliases: [...model.aliases],
+    entities: model.entities.map((entity) => ({
+      ...entity,
+      aliases: [...entity.aliases],
+      provenance: entity.provenance.map((item) => ({ ...item }))
+    })),
+    relations: model.relations.map((relation) => ({
+      ...relation,
+      provenance: relation.provenance.map((item) => ({ ...item }))
+    })),
+    states: model.states.map((state) => ({
+      ...state,
+      activeEntities: [...state.activeEntities],
+      provenance: state.provenance.map((item) => ({ ...item }))
+    })),
+    transitions: model.transitions.map((transition) => ({
+      ...transition,
+      provenance: transition.provenance.map((item) => ({ ...item }))
+    })),
+    parameters: model.parameters.map((parameter) => ({
+      ...parameter,
+      provenance: parameter.provenance.map((item) => ({ ...item }))
+    })),
+    interventions: model.interventions.map((intervention) => ({
+      ...intervention,
+      affectedEntities: [...intervention.affectedEntities],
+      modelDelta: intervention.modelDelta ? cloneScientificModelDelta(intervention.modelDelta) : undefined
+    })),
+    assumptions: model.assumptions.map((claim) => ({
+      ...claim,
+      provenance: claim.provenance.map((item) => ({ ...item }))
+    })),
+    limitations: model.limitations.map((claim) => ({
+      ...claim,
+      provenance: claim.provenance.map((item) => ({ ...item }))
+    })),
+    sources: model.sources.map((source) => ({ ...source })),
+    representationRules: model.representationRules.map((claim) => ({
+      ...claim,
+      provenance: claim.provenance.map((item) => ({ ...item }))
+    })),
+    literalElements: [...model.literalElements],
+    schematicElements: [...model.schematicElements],
+    scaleDistortions: [...model.scaleDistortions],
+    renderPlan: {
+      ...model.renderPlan,
+      isolationGroups: Object.fromEntries(
+        Object.entries(model.renderPlan.isolationGroups).map(([id, entityIds]) => [
+          id,
+          [...entityIds]
+        ])
+      ),
+      primitives: [...model.renderPlan.primitives]
+    },
+    commandRules: model.commandRules.map((rule) => ({
+      ...rule,
+      phrases: [...rule.phrases],
+      patch: {
+        ...rule.patch,
+        hiddenEntities: rule.patch.hiddenEntities
+          ? {
+              add: rule.patch.hiddenEntities.add ? [...rule.patch.hiddenEntities.add] : undefined,
+              remove: rule.patch.hiddenEntities.remove ? [...rule.patch.hiddenEntities.remove] : undefined,
+              reset: rule.patch.hiddenEntities.reset
+            }
+          : undefined,
+        selectedEntities: rule.patch.selectedEntities ? [...rule.patch.selectedEntities] : undefined,
+        playback: rule.patch.playback ? { ...rule.patch.playback } : undefined
+      }
+    })),
+    examples: [...model.examples]
+  };
+}
+
+function cloneScientificModelDelta(delta: ScientificModelDelta): ScientificModelDelta {
+  return structuredClone(delta) as ScientificModelDelta;
+}
+
+function collectSessionProvenance(model: ScientificModel): ScientificClaimProvenance[] {
+  return [
+    ...model.entities.flatMap((entity) => entity.provenance),
+    ...model.relations.flatMap((relation) => relation.provenance),
+    ...model.states.flatMap((state) => state.provenance),
+    ...model.transitions.flatMap((transition) => transition.provenance),
+    ...model.parameters.flatMap((parameter) => parameter.provenance),
+    ...model.assumptions.flatMap((claim) => claim.provenance),
+    ...model.limitations.flatMap((claim) => claim.provenance),
+    ...model.representationRules.flatMap((claim) => claim.provenance)
+  ];
+}
+
+function findUndoStartIndex(events: ScientificSessionEvent[]) {
+  const lastEvent = events.at(-1);
+
+  if (lastEvent?.type !== "CONVERSATION_TURN_ADDED" || lastEvent.turn.role !== "system") {
+    return Math.max(0, events.length - 1);
+  }
+
+  for (let index = events.length - 2; index >= 0; index -= 1) {
+    const event = events[index];
+
+    if (event.type === "CONVERSATION_TURN_ADDED" && event.turn.role === "user") {
+      return index;
+    }
+  }
+
+  return Math.max(0, events.length - 1);
+}
+
+function addUniqueMany(values: string[], additions: string[]) {
+  const next = [...values];
+
+  for (const value of additions) {
+    if (!next.includes(value)) {
+      next.push(value);
+    }
+  }
+
+  return next;
 }
 
 function normalizeText(value: string) {

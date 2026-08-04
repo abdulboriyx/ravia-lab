@@ -72,6 +72,15 @@ export type PrimitiveAnimationBinding = {
   parameter: string;
 };
 
+export type PrimitiveLayoutHint = {
+  anchorId?: string;
+  anchorPoint?: "center" | "start" | "end";
+  offset?: [Coord, Coord];
+  groupId?: string;
+  stageIds?: string[];
+  cameraPriority?: number;
+};
+
 export type PrimitiveLabel = {
   text: string;
   at: [Coord, Coord];
@@ -93,6 +102,7 @@ export type PrimitiveBase = {
   transform: PrimitiveTransform;
   visibility: PrimitiveVisibility;
   selectable: PrimitiveSelectableState;
+  layout?: PrimitiveLayoutHint;
   animationBindings: PrimitiveAnimationBinding[];
   labels: PrimitiveLabel[];
   provenance: PrimitiveProvenance[];

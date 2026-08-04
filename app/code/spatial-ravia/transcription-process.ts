@@ -5,6 +5,7 @@ import type {
   ScientificEntity,
   ScientificEntityKind,
   ScientificIntervention,
+  ScientificModelDelta,
   ScientificParameter,
   ScientificRelation,
   ScientificState,
@@ -122,6 +123,9 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     intervention("show-growing-rna", "Show growing RNA", "Select and reveal the nascent RNA transcript.", ["growing-rna-transcript"]),
     intervention("pause-at-initiation", "Pause at initiation", "Pause playback at the initiation state.", ["initiation", "promoter", "transcription-factors", "rna-polymerase-ii"]),
     intervention("show-transcription-bubble", "Show transcription bubble", "Highlight the locally unwound transcription bubble.", ["transcription-bubble"]),
+    intervention("promoter-inaccessible", "Promoter inaccessible", "Prevent initiation complex assembly at the promoter.", ["promoter", "transcription-factors", "rna-polymerase-ii"], transcriptionCounterfactualDelta("promoter-inaccessible")),
+    intervention("rna-polymerase-absent", "RNA polymerase absent", "Remove RNA polymerase II from the transcription unit.", ["rna-polymerase-ii", "growing-rna-transcript"], transcriptionCounterfactualDelta("rna-polymerase-absent")),
+    intervention("initiation-factor-removed", "Initiation factor removed", "Remove the grouped general transcription-factor support for initiation.", ["transcription-factors", "initiation", "rna-polymerase-ii"], transcriptionCounterfactualDelta("initiation-factor-removed")),
     intervention("explain-template-choice", "Explain template-strand use", "Focus explanation on template selection and coding-strand correspondence.", ["template-strand", "coding-strand", "growing-rna-transcript"])
   ],
   assumptions: [
@@ -613,9 +617,90 @@ function intervention(
   id: string,
   label: string,
   description: string,
-  affectedEntities: string[]
+  affectedEntities: string[],
+  modelDelta?: ScientificModelDelta
 ): ScientificIntervention {
-  return { id, label, description, affectedEntities };
+  return { id, label, description, affectedEntities, modelDelta };
+}
+
+function transcriptionCounterfactualDelta(
+  id: "promoter-inaccessible" | "rna-polymerase-absent" | "initiation-factor-removed"
+): ScientificModelDelta {
+  if (id === "promoter-inaccessible") {
+    return {
+      id,
+      label: "Promoter inaccessible",
+      interventionId: "promoter-inaccessible",
+      operations: [
+        { type: "SET_ENTITY_STATE", entityId: "promoter", state: "inaccessible" },
+        { type: "SET_TRANSITION_STATE", transitionId: "assemble-initiation", state: "blocked" }
+      ],
+      directInterventions: [
+        counterfactualClaim("transcription-direct-promoter-inaccessible", "The promoter is inaccessible in the counterfactual branch.", "direct-intervention")
+      ],
+      predictedConsequences: [
+        counterfactualClaim("transcription-predicted-initiation-blocked", "Initiation-complex assembly is blocked, so productive transcription does not begin in the schematic.", "predicted-downstream")
+      ],
+      unsupportedOutcomes: [
+        counterfactualClaim("transcription-unsupported-chromatin-remodeling", "Chromatin remodeling or enhancer-mediated rescue is not predicted.", "unsupported-outcome")
+      ]
+    };
+  }
+
+  if (id === "rna-polymerase-absent") {
+    return {
+      id,
+      label: "RNA polymerase absent",
+      interventionId: "rna-polymerase-absent",
+      operations: [
+        { type: "SET_ENTITY_STATE", entityId: "rna-polymerase-ii", state: "absent" },
+        { type: "SET_TRANSITION_STATE", transitionId: "escape-promoter", state: "blocked" },
+        { type: "SET_PARAMETER", parameterId: "rna-length", value: 0 }
+      ],
+      directInterventions: [
+        counterfactualClaim("transcription-direct-polymerase-absent", "RNA polymerase II is absent from the counterfactual branch.", "direct-intervention")
+      ],
+      predictedConsequences: [
+        counterfactualClaim("transcription-predicted-no-rna-growth", "The RNA transcript does not grow because the polymerase is missing in this schematic.", "predicted-downstream")
+      ],
+      unsupportedOutcomes: [
+        counterfactualClaim("transcription-unsupported-polymerase-recruitment", "Delayed recruitment, degradation, or compensation by other polymerases is not modeled.", "unsupported-outcome")
+      ]
+    };
+  }
+
+  return {
+    id,
+    label: "Initiation factor removed",
+    interventionId: "initiation-factor-removed",
+    operations: [
+      { type: "SET_ENTITY_STATE", entityId: "transcription-factors", state: "absent" },
+      { type: "SET_TRANSITION_STATE", transitionId: "assemble-initiation", state: "blocked" },
+      { type: "ADD_RELATION_QUALIFIER", relationId: "transcription-factors-positions-rna-polymerase-ii", qualifier: "Counterfactual: initiation-factor support is removed." }
+    ],
+    directInterventions: [
+      counterfactualClaim("transcription-direct-factor-removed", "The grouped initiation factor support is removed in the counterfactual branch.", "direct-intervention")
+    ],
+    predictedConsequences: [
+      counterfactualClaim("transcription-predicted-polymerase-positioning-impaired", "RNA polymerase II positioning at the promoter is impaired in this schematic.", "predicted-downstream")
+    ],
+    unsupportedOutcomes: [
+      counterfactualClaim("transcription-unsupported-factor-specificity", "Specific factor identities and partial-complex rescue are not modeled.", "unsupported-outcome")
+    ]
+  };
+}
+
+function counterfactualClaim(
+  id: string,
+  claimText: string,
+  status: ScientificModelDelta["directInterventions"][number]["status"]
+) {
+  return {
+    id,
+    claim: claimText,
+    status,
+    classification: "schematic" as const
+  };
 }
 
 function claim(
