@@ -380,11 +380,58 @@ main {
   padding: 92px clamp(12px, 1.6vw, 22px) 18px;
 }
 
+.promptStage {
+  display: grid;
+  min-height: calc(100svh - 130px);
+  place-items: center;
+}
+
+.centralPrompt {
+  display: grid;
+  gap: 14px;
+  width: min(100%, 760px);
+}
+
+.centralPrompt label {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: clamp(1.8rem, 5vw, 5.2rem);
+  font-weight: 700;
+  line-height: 0.92;
+}
+
+.centralPrompt textarea {
+  min-height: 180px;
+  padding: 14px;
+  border: 0;
+  border-bottom: 1px solid var(--fg);
+  border-radius: 0;
+  color: var(--fg);
+  background: transparent;
+  font: inherit;
+  font-size: clamp(1.05rem, 1.7vw, 1.5rem);
+  resize: vertical;
+}
+
+.centralPrompt textarea::placeholder,
+.compactPrompt input::placeholder {
+  color: var(--muted);
+}
+
+.unsupportedNotice {
+  width: min(100%, 760px);
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
 .workspaceTop {
   display: grid;
-  grid-template-columns: 220px minmax(0, 1fr) auto;
+  grid-template-columns: minmax(340px, 0.7fr) minmax(0, 1fr) auto;
   gap: 18px;
-  align-items: end;
+  align-items: center;
   padding-bottom: 12px;
   border-bottom: 1px solid var(--fg);
 }
@@ -397,7 +444,8 @@ main {
 .canvasMeta,
 .canvasToolbar,
 .bottomPanel label,
-.limitations p:first-child {
+.limitations p:first-child,
+.compactPrompt label {
   margin: 0;
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-size: 0.76rem;
@@ -423,11 +471,54 @@ main {
   letter-spacing: 0;
 }
 
+.compactPrompt {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.compactPrompt input {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font: inherit;
+}
+
+.compactPrompt button,
+.inspectorToggle,
+.openInspector {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 0;
+  color: var(--fg);
+  background: transparent;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.compactPrompt button,
+.inspectorToggle,
+.openInspector {
+  padding: 10px;
+}
+
 .workspaceShell {
   display: grid;
   grid-template-columns: minmax(240px, 0.74fr) minmax(520px, 1.7fr) minmax(270px, 0.82fr);
   gap: 14px;
   min-height: 620px;
+}
+
+.workspaceShell.inspectorClosed {
+  grid-template-columns: minmax(240px, 0.62fr) minmax(560px, 1.8fr) 48px;
 }
 
 .workspacePanel,
@@ -535,6 +626,17 @@ main {
   color: var(--fg);
 }
 
+.panelBlock li button {
+  appearance: none;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
 .commandForm input,
 .representationSelect select {
   padding: 10px;
@@ -580,6 +682,86 @@ main {
   background-size: 72px 72px;
 }
 
+.alternateView,
+.graphView,
+.explanationView,
+.jsonView {
+  min-height: 560px;
+  overflow: auto;
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.alternateView {
+  display: grid;
+  align-content: start;
+  gap: 0;
+}
+
+.alternateView section {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 18px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--line);
+  opacity: 0.48;
+}
+
+.alternateView section.activeStage {
+  opacity: 1;
+}
+
+.alternateView span,
+.alternateView h2,
+.graphView b,
+.explanationView h2,
+.explanationView h3 {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.alternateView p,
+.graphView span,
+.explanationView p,
+.jsonView {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.94rem;
+  line-height: 1.42;
+}
+
+.graphView {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.graphView div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 170px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.graphView b {
+  color: var(--fg);
+  font-size: 0.74rem;
+}
+
+.explanationView {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  max-width: 760px;
+}
+
+.jsonView {
+  white-space: pre-wrap;
+}
+
 .canvasMeta {
   position: absolute;
   z-index: 2;
@@ -615,7 +797,8 @@ main {
 }
 
 .simComponent text,
-.comparisonLayer text {
+.comparisonLayer text,
+.directionLabels text {
   fill: var(--fg);
   stroke: none;
   font-family: var(--font-display), var(--font-sans), sans-serif;
@@ -660,6 +843,10 @@ g.isActive,
   stroke: var(--muted);
   stroke-width: 3;
   stroke-dasharray: 12 10;
+}
+
+.directionLabels {
+  fill: var(--fg);
 }
 
 .selectionReadout {
