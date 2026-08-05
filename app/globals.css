@@ -1345,3 +1345,347 @@ g.isActive,
     opacity: 0.92;
   }
 }
+
+:root[data-spatial-ravia="active"] {
+  --bg: #020305;
+  --fg: #eef7fa;
+  --muted: #8d9ca3;
+  --line: rgba(158, 216, 232, 0.18);
+  color-scheme: dark;
+}
+
+:root[data-spatial-ravia="active"] body {
+  overflow: hidden;
+  background: #020305;
+}
+
+:root[data-spatial-ravia="active"] .siteHeader {
+  display: none;
+}
+
+body:has(.spatialWorkspace) .siteHeader {
+  display: none;
+}
+
+.spatialWorkspace {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: block;
+  min-height: 100svh;
+  overflow: hidden;
+  padding: 0;
+  color: #eef7fa;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(39, 92, 105, 0.2), transparent 36%),
+    linear-gradient(180deg, #05070a 0%, #020305 58%, #000 100%);
+}
+
+.spatialCanvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.spatialCanvas canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+.spatialCanvas canvas:active {
+  cursor: grabbing;
+}
+
+.spatialPromptStage {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  padding: clamp(18px, 4vw, 42px);
+  background:
+    radial-gradient(circle at 50% 50%, rgba(81, 179, 205, 0.16), transparent 28%),
+    radial-gradient(circle at 50% 72%, rgba(112, 244, 190, 0.08), transparent 36%);
+}
+
+.spatialPrompt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: min(760px, 92vw);
+  border-bottom: 1px solid rgba(220, 247, 255, 0.55);
+  background: rgba(2, 5, 7, 0.34);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 0 70px rgba(65, 207, 238, 0.12);
+}
+
+.spatialPrompt input,
+.scenePromptOverlay input {
+  min-width: 0;
+  border: 0;
+  color: #eef7fa;
+  background: transparent;
+  font: inherit;
+  letter-spacing: 0;
+  outline: none;
+}
+
+.spatialPrompt input {
+  padding: clamp(16px, 2.6vw, 26px) clamp(14px, 2.4vw, 24px);
+  font-size: clamp(1.1rem, 2.2vw, 1.8rem);
+}
+
+.spatialPrompt button,
+.scenePromptOverlay button,
+.sceneControls button,
+.spatialDrawer button {
+  appearance: none;
+  border: 1px solid rgba(201, 239, 247, 0.22);
+  border-radius: 6px;
+  color: #eef7fa;
+  background: rgba(8, 16, 19, 0.62);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.spatialPrompt button {
+  align-self: center;
+  margin-right: 10px;
+  padding: 12px 14px;
+}
+
+.spatialNotice {
+  position: absolute;
+  top: calc(50% + 54px);
+  width: min(760px, 92vw);
+  margin: 0;
+  color: #e0a56e;
+  font-size: 0.8rem;
+}
+
+.sceneTopOverlay {
+  position: absolute;
+  z-index: 4;
+  top: clamp(14px, 2vw, 24px);
+  left: clamp(14px, 2vw, 24px);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(780px, calc(100vw - 28px));
+  pointer-events: none;
+}
+
+.scenePromptOverlay {
+  display: grid;
+  grid-template-columns: minmax(180px, 360px) auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px;
+  border: 1px solid rgba(201, 239, 247, 0.14);
+  border-radius: 8px;
+  background: rgba(2, 5, 7, 0.38);
+  backdrop-filter: blur(18px);
+  pointer-events: auto;
+}
+
+.scenePromptOverlay input {
+  padding: 5px 8px;
+  font-size: 0.86rem;
+}
+
+.scenePromptOverlay button,
+.sceneControls button,
+.spatialDrawer button {
+  padding: 8px 10px;
+}
+
+.sceneTopOverlay span,
+.timelineOverlay span,
+.hoverReadout,
+.spatialDrawer {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+.sceneTopOverlay span {
+  color: rgba(222, 247, 252, 0.72);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(42, 207, 238, 0.24);
+}
+
+.sceneControls {
+  position: absolute;
+  z-index: 5;
+  right: clamp(14px, 2vw, 24px);
+  bottom: clamp(58px, 8svh, 84px);
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.sceneControlToggle {
+  box-shadow: 0 0 28px rgba(76, 218, 244, 0.12);
+}
+
+.sceneControlTray {
+  display: none;
+  max-width: min(380px, calc(100vw - 28px));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid rgba(201, 239, 247, 0.14);
+  border-radius: 8px;
+  background: rgba(1, 4, 6, 0.5);
+  backdrop-filter: blur(18px);
+}
+
+.sceneControls.isOpen .sceneControlTray,
+.sceneControls:focus-within .sceneControlTray,
+.sceneControls:hover .sceneControlTray {
+  display: grid;
+}
+
+.sceneControls button:hover,
+.scenePromptOverlay button:hover,
+.spatialDrawer button:hover {
+  border-color: rgba(136, 236, 255, 0.45);
+  background: rgba(20, 43, 49, 0.78);
+}
+
+.timelineOverlay {
+  position: absolute;
+  z-index: 4;
+  right: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  left: clamp(14px, 2vw, 24px);
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 9px 10px;
+  border: 1px solid rgba(201, 239, 247, 0.11);
+  border-radius: 8px;
+  background: rgba(1, 4, 6, 0.36);
+  backdrop-filter: blur(14px);
+}
+
+.timelineOverlay span {
+  color: rgba(222, 247, 252, 0.68);
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.timelineOverlay input {
+  width: 100%;
+  accent-color: #6df0b8;
+}
+
+.hoverReadout {
+  position: absolute;
+  z-index: 4;
+  left: clamp(14px, 2vw, 24px);
+  bottom: clamp(58px, 8svh, 84px);
+  display: grid;
+  gap: 4px;
+  width: min(360px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border-left: 1px solid rgba(109, 240, 184, 0.54);
+  color: rgba(237, 250, 251, 0.9);
+  background: rgba(1, 5, 7, 0.36);
+  backdrop-filter: blur(12px);
+}
+
+.hoverReadout strong {
+  font-size: 0.82rem;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.hoverReadout span {
+  color: rgba(207, 226, 230, 0.78);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.spatialDrawer {
+  position: absolute;
+  z-index: 6;
+  top: 0;
+  right: 0;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  width: min(430px, 100vw);
+  height: 100%;
+  padding: clamp(18px, 2.8vw, 30px);
+  overflow: auto;
+  border-left: 1px solid rgba(201, 239, 247, 0.14);
+  color: #eef7fa;
+  background: rgba(2, 5, 7, 0.78);
+  backdrop-filter: blur(24px);
+  box-shadow: -24px 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.spatialDrawer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.spatialDrawer h2 {
+  margin: 0;
+  font-size: 0.94rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.drawerList {
+  display: grid;
+  gap: 14px;
+}
+
+.drawerList p {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  color: rgba(213, 231, 234, 0.82);
+  font-size: 0.88rem;
+  line-height: 1.44;
+}
+
+.drawerList span {
+  color: rgba(142, 163, 169, 0.9);
+}
+
+@media (max-width: 720px) {
+  .sceneTopOverlay {
+    right: 14px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .scenePromptOverlay {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .sceneControls {
+    bottom: 86px;
+  }
+
+  .sceneControlTray {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hoverReadout {
+    display: none;
+  }
+}

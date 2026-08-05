@@ -1,37 +1,99 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, ReactNode, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import {
   SpatialSessionState,
   applyFollowUpCommand,
-  applyCounterfactualIntervention,
-  compareActiveBranchToBaseline,
-  createCounterfactualBranch,
   createInitialSession,
   dispatchScientificSessionEvent,
-  redoScientificSessionEvent,
-  returnToBaselineBranch,
-  resetScientificSession,
-  setRepresentationMode,
   setTimelinePosition,
-  startSessionFromPrompt,
-  undoScientificSessionEvent
+  startSessionFromPrompt
 } from "./model";
-import type { ScientificClaim, ScientificClaimProvenance } from "./model";
-import { initialExamples, processPacks } from "./process-registry";
-import type { CompiledSceneNode, ResolvedGeometry } from "./scene-compiler";
-import { compileSceneFromSession } from "./scene-compiler";
-import {
-  resolveStructureForSession,
-  structureClaimProvenance
-} from "./structure-visualization";
+import type { ScientificClaim, ScientificSource } from "./model";
+import { processPacks } from "./process-registry";
+
+type SceneCommand =
+  | "isolate-polymerase"
+  | "hide-coding-strand"
+  | "show-growing-rna"
+  | "show-directionality"
+  | "compare-initiation-elongation";
+
+type SpatialPrimitive = {
+  id: string;
+  entityId?: string;
+  kind:
+    | "strand-path"
+    | "molecular-complex-volume"
+    | "anchored-label"
+    | "directional-flow"
+    | "animated-transcript"
+    | "translucent-interaction-region"
+    | "timeline-driven-state-transition";
+};
+
+type SceneOptions = {
+  generated: boolean;
+  timeline: number;
+  showDirectionality: boolean;
+  hideCodingStrand: boolean;
+  isolatePolymerase: boolean;
+  showGrowingRna: boolean;
+  compareMode: boolean;
+  selectedEntity: string | null;
+};
+
+type SpatialSceneHandle = {
+  setOptions: (options: SceneOptions) => void;
+  destroy: () => void;
+};
+
+const defaultPrompt = "Show transcription";
+
+const spatialPrimitives: SpatialPrimitive[] = [
+  { id: "template-strand", entityId: "template-strand", kind: "strand-path" },
+  { id: "coding-strand", entityId: "coding-strand", kind: "strand-path" },
+  { id: "rna-polymerase-ii", entityId: "rna-polymerase-ii", kind: "molecular-complex-volume" },
+  { id: "transcription-bubble", entityId: "transcription-bubble", kind: "translucent-interaction-region" },
+  { id: "growing-rna-transcript", entityId: "growing-rna-transcript", kind: "animated-transcript" },
+  { id: "directional-flow", kind: "directional-flow" },
+  { id: "hover-labels", kind: "anchored-label" },
+  { id: "stage-driver", kind: "timeline-driven-state-transition" }
+];
 
 export function SpatialRaviaPrototype() {
   const [session, setSession] = useState<SpatialSessionState>(() => createInitialSession());
-  const [prompt, setPrompt] = useState("");
-  const [command, setCommand] = useState("");
-  const [inspectorOpen, setInspectorOpen] = useState(true);
+  const [prompt, setPrompt] = useState(defaultPrompt);
+  const [drawer, setDrawer] = useState<"assumptions" | "sources" | null>(null);
+  const [controlsOpen, setControlsOpen] = useState(false);
+  const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
+  const [hoveredEntity, setHoveredEntity] = useState<string | null>(null);
+  const [localCommands, setLocalCommands] = useState<Record<SceneCommand, boolean>>({
+    "isolate-polymerase": false,
+    "hide-coding-strand": false,
+    "show-growing-rna": true,
+    "show-directionality": false,
+    "compare-initiation-elongation": false
+  });
   const previousTick = useRef<number | null>(null);
+
+  const generated = Boolean(session.activeModel);
+  const model = session.activeModel;
+
+  useEffect(() => {
+    document.documentElement.dataset.spatialRavia = "active";
+    return () => {
+      delete document.documentElement.dataset.spatialRavia;
+    };
+  }, []);
 
   useEffect(() => {
     let frame = 0;
@@ -55,7 +117,7 @@ export function SpatialRaviaPrototype() {
             ...current.playback,
             timelinePosition:
               (current.playback.timelinePosition +
-                delta / current.activeModel.renderPlan.progressDurationMs *
+                (delta / current.activeModel.renderPlan.progressDurationMs) *
                   current.playback.speed) %
               1
           }
@@ -69,982 +131,832 @@ export function SpatialRaviaPrototype() {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
-  function generate(event?: FormEvent<HTMLFormElement>, nextPrompt = prompt) {
-    event?.preventDefault();
-    const trimmed = nextPrompt.trim();
-    const updated = startSessionFromPrompt(session, trimmed, processPacks);
-
-    setPrompt(trimmed);
-    setSession(updated);
-  }
-
-  function submitCommand(event: FormEvent<HTMLFormElement>) {
+  function generate(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    setSession((current) => applyFollowUpCommand(current, command));
-    setCommand("");
+    const trimmed = prompt.trim() || defaultPrompt;
+    setPrompt(trimmed);
+    setSession((current) => {
+      const next = startSessionFromPrompt(current, trimmed, processPacks);
+      if (!next.activeModel) {
+        return next;
+      }
+
+      return dispatchScientificSessionEvent(next, {
+        type: "PLAYBACK_CHANGED",
+        playback: { playing: true, reset: true }
+      });
+    });
   }
 
-  const generated = Boolean(session.activeModel);
-  const examples = session.activeModel?.examples ?? initialExamples;
+  function toggleCommand(command: SceneCommand) {
+    setLocalCommands((current) => {
+      const next = { ...current, [command]: !current[command] };
+      return next;
+    });
+
+    if (command === "hide-coding-strand") {
+      setSession((current) => applyFollowUpCommand(current, "hide coding strand"));
+    }
+
+    if (command === "show-growing-rna") {
+      setSession((current) => applyFollowUpCommand(current, "show growing rna"));
+    }
+  }
+
+  const selectedDescription = useMemo(() => {
+    const activeId = selectedEntity ?? hoveredEntity;
+    return model?.entities.find((entity) => entity.id === activeId) ?? null;
+  }, [hoveredEntity, model?.entities, selectedEntity]);
 
   return (
-    <main className={generated ? "spatialWorkspace isGenerated" : "spatialWorkspace"}>
+    <main className={generated ? "spatialWorkspace spatialGenerated" : "spatialWorkspace"}>
+      <TranscriptionScene
+        generated={generated}
+        session={session}
+        commands={localCommands}
+        selectedEntity={selectedEntity}
+        onEntityHover={setHoveredEntity}
+        onEntitySelect={setSelectedEntity}
+      />
+
       {!generated ? (
-        <section className="promptStage" aria-label="Spatial Ravia prompt">
-          <form className="centralPrompt" onSubmit={generate}>
-            <label htmlFor="initial-science-prompt">
-              Describe a biological process you want to understand.
-            </label>
-            <textarea
-              id="initial-science-prompt"
+        <section className="spatialPromptStage" aria-label="Spatial Ravia prompt">
+          <form className="spatialPrompt" onSubmit={generate}>
+            <input
+              aria-label="Science prompt"
               value={prompt}
               onChange={(event) => setPrompt(event.target.value)}
-              placeholder="Describe a biological process you want to understand."
               autoFocus
             />
-            <ExamplePromptButtons examples={examples} generate={generate} setPrompt={setPrompt} />
-            <button className="primaryAction" type="submit">
-              Generate
-            </button>
+            <button type="submit">Generate</button>
           </form>
-
           {session.activeIntervention === "unsupported prompt" ? (
-            <p className="unsupportedNotice">
-              Unsupported process. This local prototype does not have a process pack for that yet.
-            </p>
+            <p className="spatialNotice">Unsupported process in this local pack.</p>
           ) : null}
         </section>
       ) : (
         <>
-          <section className="workspaceTop" aria-label="Current process">
-            <form className="compactPrompt" onSubmit={generate}>
-              <label htmlFor="science-prompt">Prompt</label>
+          <div className="sceneTopOverlay" aria-label="Scene status">
+            <form className="scenePromptOverlay" onSubmit={generate}>
               <input
-                id="science-prompt"
+                aria-label="Science prompt"
                 value={prompt}
                 onChange={(event) => setPrompt(event.target.value)}
               />
-              <button type="submit">Generate</button>
+              <button type="submit">Run</button>
             </form>
-            <p>{session.activeModel?.process}</p>
-            <span>{session.activeModel?.renderPlan.subtitle}</span>
-          </section>
-
-          <div className={inspectorOpen ? "workspaceShell" : "workspaceShell inspectorClosed"}>
-            <aside className="workspacePanel leftPanel" aria-label="Controls and context">
-              <PanelBlock title="Examples">
-                <ExamplePromptButtons examples={examples} generate={generate} setPrompt={setPrompt} />
-              </PanelBlock>
-
-              <PanelBlock title="Model assumptions">
-                {session.activeModel?.assumptions.map((assumption) => (
-                  <ClaimLine claim={assumption} key={assumption.id} />
-                ))}
-              </PanelBlock>
-
-              <PanelBlock title="Sources">
-                {session.activeModel?.sources.map((source) => (
-                  <p key={source.id}>{source.authors}: {source.title}</p>
-                ))}
-              </PanelBlock>
-
-              <PanelBlock title="Accuracy / status">
-                <p>{session.activeIntervention}</p>
-                {session.activeModel?.scaleDistortions.slice(0, 2).map((distortion) => (
-                  <p key={distortion}>{distortion}</p>
-                ))}
-              </PanelBlock>
-            </aside>
-
-            <section className="simulationColumn" aria-label="Simulation workspace">
-              <SimulationControls session={session} setSession={setSession} />
-              <RepresentationView session={session} setSession={setSession} />
-            </section>
-
-            {inspectorOpen ? (
-              <aside className="workspacePanel rightPanel" aria-label="Internal model">
-                <button
-                  className="inspectorToggle"
-                  type="button"
-                  onClick={() => setInspectorOpen(false)}
-                >
-                  Collapse model
-                </button>
-                <ModelInspector session={session} setSession={setSession} />
-                <form className="commandForm" onSubmit={submitCommand}>
-                  <label htmlFor="follow-up-command">Follow-up command</label>
-                  <input
-                    id="follow-up-command"
-                    value={command}
-                    onChange={(event) => setCommand(event.target.value)}
-                    placeholder={session.activeModel?.commandRules[0]?.phrases[0] ?? "enter command"}
-                  />
-                  <button type="submit">Apply</button>
-                </form>
-              </aside>
-            ) : (
-              <button
-                className="openInspector"
-                type="button"
-                onClick={() => setInspectorOpen(true)}
-              >
-                Model
-              </button>
-            )}
+            <span>{currentStageLabel(session)}</span>
           </div>
 
-          <BottomPanel session={session} setSession={setSession} />
+          <div className={controlsOpen ? "sceneControls isOpen" : "sceneControls"}>
+            <button
+              type="button"
+              className="sceneControlToggle"
+              onClick={() => setControlsOpen((open) => !open)}
+              aria-expanded={controlsOpen}
+            >
+              Controls
+            </button>
+            <div className="sceneControlTray">
+              <button
+                type="button"
+                onClick={() =>
+                  setSession((current) =>
+                    dispatchScientificSessionEvent(current, {
+                      type: "PLAYBACK_CHANGED",
+                      playback: { playing: !current.playback.playing }
+                    })
+                  )
+                }
+              >
+                {session.playback.playing ? "Pause" : "Play"}
+              </button>
+              <button type="button" onClick={() => toggleCommand("isolate-polymerase")}>
+                Isolate Pol II
+              </button>
+              <button type="button" onClick={() => toggleCommand("hide-coding-strand")}>
+                Hide coding strand
+              </button>
+              <button type="button" onClick={() => toggleCommand("show-growing-rna")}>
+                Growing RNA
+              </button>
+              <button type="button" onClick={() => toggleCommand("show-directionality")}>
+                5&apos; / 3&apos;
+              </button>
+              <button type="button" onClick={() => toggleCommand("compare-initiation-elongation")}>
+                Initiation / elongation
+              </button>
+              <button type="button" onClick={() => setDrawer("assumptions")}>
+                Assumptions
+              </button>
+              <button type="button" onClick={() => setDrawer("sources")}>
+                Sources
+              </button>
+            </div>
+          </div>
+
+          <div className="timelineOverlay" aria-label="Timeline">
+            <span>{Math.round(session.playback.timelinePosition * 100)}%</span>
+            <input
+              aria-label="Timeline scrub"
+              type="range"
+              min="0"
+              max="1"
+              step="0.001"
+              value={session.playback.timelinePosition}
+              onChange={(event) =>
+                setSession((current) => setTimelinePosition(current, Number(event.target.value)))
+              }
+            />
+          </div>
+
+          {selectedDescription ? (
+            <div className="hoverReadout">
+              <strong>{selectedDescription.label}</strong>
+              <span>{selectedDescription.description}</span>
+            </div>
+          ) : null}
+
+          {drawer ? (
+            <SpatialDrawer
+              title={drawer === "assumptions" ? "Assumptions" : "Sources"}
+              onClose={() => setDrawer(null)}
+            >
+              {drawer === "assumptions" ? (
+                <ClaimList claims={[...(model?.assumptions ?? []), ...(model?.limitations ?? [])]} />
+              ) : (
+                <SourceList sources={model?.sources ?? []} />
+              )}
+            </SpatialDrawer>
+          ) : null}
         </>
       )}
     </main>
   );
 }
 
-function ExamplePromptButtons({
-  examples,
-  generate,
-  setPrompt
-}: {
-  examples: string[];
-  generate: (event?: FormEvent<HTMLFormElement>, nextPrompt?: string) => void;
-  setPrompt: (prompt: string) => void;
-}) {
-  return (
-    <div className="examplePrompts" aria-label="Example prompts">
-      {examples.map((example) => (
-        <button
-          key={example}
-          type="button"
-          onClick={() => {
-            setPrompt(example);
-            generate(undefined, example);
-          }}
-        >
-          {example}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-function SimulationControls({
+function TranscriptionScene({
+  generated,
   session,
-  setSession
+  commands,
+  selectedEntity,
+  onEntityHover,
+  onEntitySelect
 }: {
+  generated: boolean;
   session: SpatialSessionState;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
+  commands: Record<SceneCommand, boolean>;
+  selectedEntity: string | null;
+  onEntityHover: (entity: string | null) => void;
+  onEntitySelect: (entity: string | null) => void;
 }) {
-  return (
-    <div className="canvasToolbar" aria-label="Simulation controls">
-      <button
-        type="button"
-        onClick={() =>
-          setSession((current) =>
-            dispatchScientificSessionEvent(current, {
-              type: "PLAYBACK_CHANGED",
-              playback: { playing: !current.playback.playing }
-            })
-          )
-        }
-      >
-        {session.playback.playing ? "Pause" : "Play"}
-      </button>
-      <button
-        type="button"
-        onClick={() => setSession((current) => applyFollowUpCommand(current, "restart"))}
-      >
-        Restart
-      </button>
-      <button
-        type="button"
-        onClick={() => setSession((current) => undoScientificSessionEvent(current, processPacks))}
-        disabled={session.eventLog.length === 0}
-      >
-        Undo
-      </button>
-      <button
-        type="button"
-        onClick={() => setSession((current) => redoScientificSessionEvent(current, processPacks))}
-        disabled={session.undoneEvents.length === 0}
-      >
-        Redo
-      </button>
-      <button
-        type="button"
-        onClick={() => setSession((current) => resetScientificSession(current))}
-      >
-        Reset
-      </button>
-      <label>
-        Speed
-        <input
-          type="range"
-          min="0.25"
-          max="2"
-          step="0.25"
-          value={session.playback.speed}
-          onChange={(event) =>
-            setSession((current) =>
-              dispatchScientificSessionEvent(current, {
-                type: "PLAYBACK_CHANGED",
-                playback: { speed: Number(event.target.value) }
-              })
-            )
-          }
-        />
-      </label>
-      <button
-        type="button"
-        onClick={() =>
-          setSession((current) =>
-            dispatchScientificSessionEvent(current, {
-              type: "PLAYBACK_CHANGED",
-              playback: { showLabels: !current.playback.showLabels }
-            })
-          )
-        }
-      >
-        Labels
-      </button>
-      <button
-        type="button"
-        onClick={() =>
-          setSession((current) =>
-            dispatchScientificSessionEvent(current, {
-              type: "PLAYBACK_CHANGED",
-              playback: { showDirectionality: !current.playback.showDirectionality }
-            })
-          )
-        }
-      >
-        Direction
-      </button>
-    </div>
-  );
-}
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const sceneRef = useRef<SpatialSceneHandle | null>(null);
 
-function RepresentationView({
-  session,
-  setSession
-}: {
-  session: SpatialSessionState;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
-}) {
-  if (session.representationMode === "timeline") {
-    return <TimelineView session={session} />;
-  }
-
-  if (session.representationMode === "graph") {
-    return <ProcessGraphView session={session} />;
-  }
-
-  if (session.representationMode === "molecular-structure") {
-    return <MolecularStructureView session={session} />;
-  }
-
-  if (session.representationMode === "explanation") {
-    return <ExplanationView session={session} />;
-  }
-
-  if (session.representationMode === "json") {
-    return <JsonView session={session} />;
-  }
-
-  return <RenderPlanView session={session} setSession={setSession} />;
-}
-
-function RenderPlanView({
-  session,
-  setSession
-}: {
-  session: SpatialSessionState;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
-}) {
-  const scene = compileSceneFromSession(session);
-  const selected = new Set(session.selectedEntities);
-  const selectedEntity = session.activeModel?.entities.find((entity) =>
-    selected.has(entity.id)
-  );
-
-  if (!scene) {
-    return null;
-  }
-
-  return (
-    <div className="simulationCanvas">
-      <div className="canvasMeta">
-        <p>{scene.title}</p>
-        <p>{scene.subtitle}</p>
-        {scene.indicators.warning ? <span>{scene.indicators.warning}</span> : null}
-      </div>
-
-      <svg viewBox={scene.viewBox} role="img" aria-label={scene.ariaLabel}>
-        <PrimitiveSvgDefs />
-        <g>
-          {scene.nodes
-            .filter((node) => node.visible)
-            .map((node) => (
-              <PrimitiveSvgElement
-                primitive={node}
-                key={node.id}
-                selected={selected}
-                setSession={setSession}
-              />
-            ))}
-        </g>
-      </svg>
-
-      <div className="selectionReadout">
-        <p>{selectedEntity ? selectedEntity.label : "Select a component"}</p>
-        <span>
-          {selectedEntity
-            ? selectedEntity.description
-            : "Click schematic parts to update the persistent model state."}
-        </span>
-      </div>
-    </div>
-  );
-}
-
-function PrimitiveSvgElement({
-  primitive,
-  selected,
-  setSession
-}: {
-  primitive: CompiledSceneNode;
-  selected: Set<string>;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
-}) {
-  const className = [
-    "scientificPrimitive",
-    `primitive-${primitive.kind}`,
-    `primitive-${primitive.styleToken}`,
-    primitive.entityId && selected.has(primitive.entityId) ? "isActive" : ""
-  ]
-    .filter(Boolean)
-    .join(" ");
-  const interactiveProps = primitive.entityId && primitive.selectable
-    ? {
-        role: "button",
-        tabIndex: 0,
-        onClick: () =>
-          setSession((current) =>
-            dispatchScientificSessionEvent(current, {
-              type: "ENTITY_SELECTED",
-              entityIds: [primitive.entityId ?? ""]
-            })
-          ),
-        onKeyDown: (event: KeyboardEvent<SVGGElement>) => {
-          if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            setSession((current) =>
-              dispatchScientificSessionEvent(current, {
-                type: "ENTITY_SELECTED",
-                entityIds: [primitive.entityId ?? ""]
-              })
-            );
-          }
-        }
+  useEffect(() => {
+    if (!mountRef.current) {
+      return;
     }
-    : {};
 
-  const content = renderPrimitiveShape(primitive.geometry, primitive.kind, className);
-  const labels = primitive.labels
-    .filter((label) => label.visible)
-    .map((label) => (
-      <text
-        className="renderLabel"
-        key={`${primitive.id}-${label.text}`}
-        x={label.x}
-        y={label.y}
-      >
-        {label.text}
-      </text>
-    ));
+    const handle = createTranscriptionWorld(mountRef.current, onEntityHover, onEntitySelect);
+    sceneRef.current = handle;
+
+    return () => {
+      handle.destroy();
+      sceneRef.current = null;
+    };
+  }, [onEntityHover, onEntitySelect]);
+
+  useEffect(() => {
+    sceneRef.current?.setOptions({
+      generated,
+      timeline: session.playback.timelinePosition,
+      showDirectionality: commands["show-directionality"],
+      hideCodingStrand:
+        commands["hide-coding-strand"] || session.hiddenEntities.includes("coding-strand"),
+      isolatePolymerase: commands["isolate-polymerase"],
+      showGrowingRna: commands["show-growing-rna"],
+      compareMode: commands["compare-initiation-elongation"],
+      selectedEntity
+    });
+  }, [commands, generated, selectedEntity, session.hiddenEntities, session.playback]);
 
   return (
-    <g transform={primitive.transform.svg || undefined} {...interactiveProps}>
-      {content}
-      {labels}
-    </g>
+    <div
+      className="spatialCanvas"
+      ref={mountRef}
+      aria-label="Three-dimensional transcription scene"
+      data-primitives={spatialPrimitives.map((primitive) => primitive.kind).join(" ")}
+    />
   );
 }
 
-function renderPrimitiveShape(
-  geometry: ResolvedGeometry,
-  kind: CompiledSceneNode["kind"],
-  className: string
-) {
-  const directionalProps =
-    kind === "directional-arrow" ? { markerEnd: "url(#primitive-arrowhead)" } : {};
+function createTranscriptionWorld(
+  mount: HTMLDivElement,
+  onEntityHover: (entity: string | null) => void,
+  onEntitySelect: (entity: string | null) => void
+): SpatialSceneHandle {
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(mount.clientWidth, mount.clientHeight);
+  renderer.setClearColor(0x020305, 1);
+  renderer.shadowMap.enabled = true;
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  mount.appendChild(renderer.domElement);
 
-  if (geometry.type === "path") {
-    return <path className={className} d={geometry.d} {...directionalProps} />;
-  }
+  const scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x05070a, 0.032);
 
-  if (geometry.type === "line") {
-    return (
-      <line
-        className={className}
-        {...directionalProps}
-        x1={geometry.x1}
-        y1={geometry.y1}
-        x2={geometry.x2}
-        y2={geometry.y2}
-      />
-    );
-  }
+  const camera = new THREE.PerspectiveCamera(45, mount.clientWidth / mount.clientHeight, 0.1, 160);
+  camera.position.set(0, 6.6, 18);
 
-  if (geometry.type === "rect") {
-    return (
-      <rect
-        className={className}
-        x={geometry.x}
-        y={geometry.y}
-        width={geometry.width}
-        height={geometry.height}
-      />
-    );
-  }
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.055;
+  controls.enablePan = true;
+  controls.minDistance = 6;
+  controls.maxDistance = 34;
+  controls.target.set(0, 0.4, 0);
 
-  if (geometry.type === "circle") {
-    return (
-      <circle
-        className={className}
-        cx={geometry.cx}
-        cy={geometry.cy}
-        r={geometry.r}
-      />
-    );
-  }
+  const raycaster = new THREE.Raycaster();
+  const pointer = new THREE.Vector2(-10, -10);
+  const interactive: THREE.Object3D[] = [];
 
-  if (geometry.type === "ellipse") {
-    return (
-      <ellipse
-        className={className}
-        cx={geometry.cx}
-        cy={geometry.cy}
-        rx={geometry.rx}
-        ry={geometry.ry}
-      />
-    );
-  }
+  const world = new THREE.Group();
+  world.name = "timeline-driven-state-transition";
+  scene.add(world);
 
-  if (geometry.type === "polygon") {
-    return (
-      <polygon
-        className={className}
-        points={geometry.points.map(([x, y]) => `${x},${y}`).join(" ")}
-      />
-    );
-  }
+  const hemi = new THREE.HemisphereLight(0x7f9bb0, 0x050505, 0.45);
+  scene.add(hemi);
 
-  if (geometry.type === "timeline-event") {
-    return (
-      <g className={className}>
-        <line x1={geometry.x} y1={geometry.y} x2={geometry.x} y2={geometry.y + 36} />
-        <text x={geometry.x + 8} y={geometry.y + 26}>{geometry.label}</text>
-      </g>
-    );
-  }
+  const key = new THREE.SpotLight(0xd9eef8, 3.8, 46, Math.PI / 4.8, 0.55, 1.2);
+  key.position.set(-7, 10, 9);
+  key.castShadow = true;
+  scene.add(key);
 
-  if (geometry.type === "graph-node") {
-    return (
-      <g className={className}>
-        <circle cx={geometry.x} cy={geometry.y} r={geometry.radius} />
-        <text x={geometry.x + 28} y={geometry.y + 4}>{geometry.label}</text>
-      </g>
-    );
-  }
+  const rim = new THREE.PointLight(0x59e0ff, 1.6, 28);
+  rim.position.set(9, 3.2, -7);
+  scene.add(rim);
 
-  if (geometry.type === "graph-edge") {
-    return (
-      <g className={className}>
-        <line x1={geometry.x1} y1={geometry.y1} x2={geometry.x2} y2={geometry.y2} />
-        {geometry.label ? <text x={(geometry.x1 + geometry.x2) / 2} y={(geometry.y1 + geometry.y2) / 2}>{geometry.label}</text> : null}
-      </g>
-    );
-  }
-
-  return geometry.type === "text" ? (
-    <text
-      className={className}
-      x={geometry.x}
-      y={geometry.y}
-    >
-      {geometry.text}
-    </text>
-  ) : null;
-}
-
-function PrimitiveSvgDefs() {
-  return (
-    <defs>
-      <marker
-        id="primitive-arrowhead"
-        markerHeight="10"
-        markerWidth="10"
-        orient="auto"
-        refX="8"
-        refY="5"
-      >
-        <path d="M0 0 L10 5 L0 10 Z" className="primitiveMarker" />
-      </marker>
-    </defs>
+  const floor = new THREE.Mesh(
+    new THREE.PlaneGeometry(38, 24, 28, 16),
+    new THREE.MeshStandardMaterial({
+      color: 0x050607,
+      roughness: 0.78,
+      metalness: 0.12,
+      transparent: true,
+      opacity: 0.8
+    })
   );
-}
+  floor.rotation.x = -Math.PI / 2;
+  floor.position.y = -3.1;
+  floor.receiveShadow = true;
+  world.add(floor);
 
-function ModelInspector({
-  session,
-  setSession
-}: {
-  session: SpatialSessionState;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
-}) {
-  const model = session.activeModel;
+  const grid = new THREE.GridHelper(38, 38, 0x1e3339, 0x0b1518);
+  grid.position.y = -3.08;
+  world.add(grid);
 
-  if (!model) {
-    return null;
+  const particles = createParticles();
+  world.add(particles);
+
+  const promoter = createPromoterRegion();
+  const factors = createFactorCluster();
+  const polymerase = createPolymerase();
+  const bubble = createBubble();
+  const template = createStrand("template-strand", 0x4fb5ff, -0.34, 0);
+  const coding = createStrand("coding-strand", 0xf0a85e, 0.34, Math.PI);
+  const rna = createRnaTranscript();
+  const arrows = createDirectionArrows();
+  const labels = createLabels();
+  const comparisonGhost = createComparisonGhost();
+
+  [promoter, factors, polymerase, bubble, template, coding, rna, arrows, labels, comparisonGhost].forEach(
+    (object) => world.add(object)
+  );
+
+  [promoter, factors, polymerase, bubble, template, coding, rna, arrows, labels, comparisonGhost].forEach(
+    (object) => {
+      object.visible = false;
+    }
+  );
+
+  [promoter, factors, polymerase, bubble, template, coding, rna].forEach((object) => {
+    object.traverse((child) => {
+      if (child.userData.entityId) {
+        interactive.push(child);
+      }
+    });
+  });
+
+  const options: SceneOptions = {
+    generated: false,
+    timeline: 0,
+    showDirectionality: false,
+    hideCodingStrand: false,
+    isolatePolymerase: false,
+    showGrowingRna: true,
+    compareMode: false,
+    selectedEntity: null
+  };
+
+  function updateScene(elapsed: number) {
+    const assemble = options.generated ? smoothstep(0, 0.22, options.timeline) : 0;
+    const bubbleOpen = smoothstep(0.16, 0.38, options.timeline);
+    const escape = smoothstep(0.32, 0.58, options.timeline);
+    const elongation = smoothstep(0.5, 0.96, options.timeline);
+    const polX = THREE.MathUtils.lerp(-5.1, 5.9, Math.max(escape, elongation));
+    const transcriptLength = options.showGrowingRna ? smoothstep(0.35, 0.92, options.timeline) : 0;
+
+    world.rotation.y = Math.sin(elapsed * 0.11) * 0.055;
+    particles.rotation.y = elapsed * 0.014;
+
+    promoter.position.set(-6.05, -0.08, 0);
+    promoter.scale.setScalar(THREE.MathUtils.lerp(0.001, 1, smoothstep(0.02, 0.18, options.timeline)));
+    promoter.visible = options.generated;
+
+    factors.position.set(-5.35, 1.2 + Math.sin(elapsed * 1.3) * 0.025, -0.05);
+    factors.scale.setScalar(THREE.MathUtils.lerp(0.001, 1, smoothstep(0.08, 0.3, options.timeline)));
+    factors.visible = options.generated;
+
+    template.visible = options.generated;
+    coding.visible = options.generated && !options.hideCodingStrand;
+    template.scale.setScalar(THREE.MathUtils.lerp(0.001, 1, assemble));
+    coding.scale.setScalar(THREE.MathUtils.lerp(0.001, 1, assemble));
+    template.position.y = -0.28 - bubbleOpen * 0.24;
+    coding.position.y = 0.28 + bubbleOpen * 0.24;
+    coding.rotation.z = Math.sin(elapsed * 0.55) * 0.012;
+    template.rotation.z = -Math.sin(elapsed * 0.48) * 0.012;
+
+    polymerase.visible = options.generated;
+    polymerase.position.set(polX, 0.3, 0.05);
+    polymerase.rotation.y = Math.sin(elapsed * 0.34) * 0.06;
+    polymerase.scale.setScalar(THREE.MathUtils.lerp(0.001, 1, smoothstep(0.14, 0.36, options.timeline)));
+
+    bubble.visible = options.generated && bubbleOpen > 0.01;
+    bubble.position.set(polX, 0.08, 0);
+    bubble.scale.set(1.2 + bubbleOpen * 1.45, 0.42 + bubbleOpen * 0.75, 0.76 + bubbleOpen * 0.75);
+    setMaterialOpacity(bubble, 0.06 + bubbleOpen * 0.22);
+
+    rna.visible = options.generated && transcriptLength > 0.01;
+    rna.position.set(polX - 0.15, -0.22, 0.25);
+    updateRnaGeometry(rna, transcriptLength, elapsed);
+
+    arrows.visible = options.generated && options.showDirectionality;
+    arrows.position.x = polX;
+    labels.visible = options.generated && Boolean(options.selectedEntity || options.showDirectionality);
+    updateLabels(labels, polX, transcriptLength, options.selectedEntity);
+
+    comparisonGhost.visible = options.generated && options.compareMode;
+    comparisonGhost.position.x = -4.8;
+    comparisonGhost.rotation.y = Math.sin(elapsed * 0.3) * 0.08;
+
+    applyFocus([promoter, factors, polymerase, bubble, template, coding, rna, arrows], options);
   }
 
-  const visibleEntities = model.entities.filter((entity) => !session.hiddenEntities.includes(entity.id));
+  function animate(now = 0) {
+    const elapsed = now / 1000;
+    updateScene(elapsed);
+    controls.update();
+    renderer.render(scene, camera);
+    frame = window.requestAnimationFrame(animate);
+  }
 
-  return (
-    <>
-      <PanelBlock title="Current internal model">
-        <p>{model.process}</p>
-        <p>{model.biologicalContext}</p>
-        <p>{session.representationMode}</p>
-      </PanelBlock>
+  function resize() {
+    const width = mount.clientWidth;
+    const height = mount.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+  }
 
-      <PanelBlock title="Entities">
-        <ul>
-          {visibleEntities.map((entity) => (
-            <li className={session.selectedEntities.includes(entity.id) ? "activeEntity" : ""} key={entity.id}>
-              <button
-                type="button"
-                onClick={() =>
-                  setSession((current) =>
-                    dispatchScientificSessionEvent(current, {
-                      type: "ENTITY_SELECTED",
-                      entityIds: [entity.id]
-                    })
-                  )
-                }
-              >
-                {entity.label}
-              </button>
-              <ProvenanceDetails provenance={entity.provenance} />
-            </li>
-          ))}
-        </ul>
-      </PanelBlock>
+  function updatePointer(event: PointerEvent) {
+    const rect = renderer.domElement.getBoundingClientRect();
+    pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+    pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObjects(interactive, true)[0]?.object;
+    onEntityHover((hit?.userData.entityId as string | undefined) ?? null);
+  }
 
-      <PanelBlock title="Relations">
-        {model.relations.slice(0, 5).map((relation) => (
-          <div className="claimItem" key={relation.id}>
-            <p>{relation.source} -&gt; {relation.target}: {relation.relation}</p>
-            <ProvenanceDetails provenance={relation.provenance} />
-          </div>
-        ))}
-      </PanelBlock>
+  function selectPointer(event: PointerEvent) {
+    updatePointer(event);
+    raycaster.setFromCamera(pointer, camera);
+    const hit = raycaster.intersectObjects(interactive, true)[0]?.object;
+    onEntitySelect((hit?.userData.entityId as string | undefined) ?? null);
+  }
 
-      <PanelBlock title="Variables">
-        <p>timeline_position = {Math.round(session.playback.timelinePosition * 100)}%</p>
-        <p>speed = {session.playback.speed}x</p>
-        {model.parameters.slice(0, 3).map((parameter) => (
-          <div className="claimItem" key={parameter.id}>
-            <p>{parameter.id} = {String(parameter.value)}</p>
-            <ProvenanceDetails provenance={parameter.provenance} />
-          </div>
-        ))}
-      </PanelBlock>
+  let frame = window.requestAnimationFrame(animate);
+  window.addEventListener("resize", resize);
+  renderer.domElement.addEventListener("pointermove", updatePointer);
+  renderer.domElement.addEventListener("pointerdown", selectPointer);
 
-      <PanelBlock title="Assumptions">
-        {model.assumptions.slice(0, 2).map((assumption) => (
-          <ClaimLine claim={assumption} key={assumption.id} />
-        ))}
-      </PanelBlock>
-
-      <PanelBlock title="Governing rules">
-        {model.transitions.slice(0, 2).map((transition) => (
-          <div className="claimItem" key={transition.id}>
-            <p>{transition.rule}</p>
-            <ProvenanceDetails provenance={transition.provenance} />
-          </div>
-        ))}
-      </PanelBlock>
-
-      <PanelBlock title="Active intervention">
-        <p>{session.activeIntervention}</p>
-      </PanelBlock>
-    </>
-  );
+  return {
+    setOptions(nextOptions) {
+      Object.assign(options, nextOptions);
+    },
+    destroy() {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+      renderer.domElement.removeEventListener("pointermove", updatePointer);
+      renderer.domElement.removeEventListener("pointerdown", selectPointer);
+      controls.dispose();
+      scene.traverse((object) => {
+        const mesh = object as THREE.Mesh;
+        mesh.geometry?.dispose?.();
+        const material = mesh.material as THREE.Material | THREE.Material[] | undefined;
+        if (Array.isArray(material)) {
+          material.forEach((item) => item.dispose());
+        } else {
+          material?.dispose?.();
+        }
+      });
+      renderer.dispose();
+      renderer.domElement.remove();
+    }
+  };
 }
 
-function TimelineView({ session }: { session: SpatialSessionState }) {
+function createStrand(entityId: string, color: number, yOffset: number, phase: number) {
+  const group = new THREE.Group();
+  group.name = entityId;
+  const material = new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.48,
+    metalness: 0.08,
+    emissive: color,
+    emissiveIntensity: 0.14
+  });
+  const beadMaterial = new THREE.MeshStandardMaterial({
+    color: 0xd7e8ef,
+    roughness: 0.52,
+    metalness: 0.04,
+    emissive: color,
+    emissiveIntensity: 0.08
+  });
+
+  for (let i = 0; i < 74; i += 1) {
+    const x = -7.4 + i * 0.2;
+    const z = Math.sin(i * 0.62 + phase) * 0.28;
+    const y = yOffset + Math.cos(i * 0.62 + phase) * 0.18;
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 12, 12), material);
+    bead.position.set(x, y, z);
+    bead.castShadow = true;
+    bead.userData.entityId = entityId;
+    group.add(bead);
+
+    if (i % 3 === 0) {
+      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, 0.52, 8), beadMaterial);
+      base.position.set(x, y * 0.2, z * 0.4);
+      base.rotation.z = Math.PI / 2;
+      base.userData.entityId = entityId;
+      group.add(base);
+    }
+  }
+
+  return group;
+}
+
+function createPolymerase() {
+  const group = new THREE.Group();
+  group.name = "rna-polymerase-ii";
+  const core = new THREE.Mesh(
+    new THREE.SphereGeometry(0.95, 40, 32),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x9eb7c5,
+      roughness: 0.36,
+      metalness: 0.08,
+      transmission: 0.08,
+      transparent: true,
+      opacity: 0.9,
+      emissive: 0x183844,
+      emissiveIntensity: 0.42
+    })
+  );
+  core.scale.set(1.24, 0.82, 1);
+  core.castShadow = true;
+  core.userData.entityId = "rna-polymerase-ii";
+  group.add(core);
+
+  const cleft = new THREE.Mesh(
+    new THREE.TorusGeometry(0.74, 0.08, 14, 44, Math.PI * 1.42),
+    new THREE.MeshStandardMaterial({
+      color: 0x54e2ff,
+      roughness: 0.25,
+      emissive: 0x1bbad3,
+      emissiveIntensity: 0.55
+    })
+  );
+  cleft.rotation.set(Math.PI / 2, 0.2, 0.1);
+  cleft.position.set(0.04, -0.08, 0.08);
+  cleft.userData.entityId = "rna-polymerase-ii";
+  group.add(cleft);
+
+  for (let i = 0; i < 7; i += 1) {
+    const lobe = new THREE.Mesh(
+      new THREE.SphereGeometry(0.22 + (i % 2) * 0.08, 18, 14),
+      new THREE.MeshStandardMaterial({
+        color: i % 2 ? 0x748895 : 0xb6ccd5,
+        roughness: 0.44,
+        emissive: 0x10252d,
+        emissiveIntensity: 0.22
+      })
+    );
+    const angle = (i / 7) * Math.PI * 2;
+    lobe.position.set(Math.cos(angle) * 0.92, Math.sin(angle) * 0.42, Math.sin(angle * 1.7) * 0.66);
+    lobe.castShadow = true;
+    lobe.userData.entityId = "rna-polymerase-ii";
+    group.add(lobe);
+  }
+
+  return group;
+}
+
+function createBubble() {
+  const bubble = new THREE.Mesh(
+    new THREE.SphereGeometry(1, 32, 24),
+    new THREE.MeshPhysicalMaterial({
+      color: 0x75f1ff,
+      roughness: 0.18,
+      transmission: 0.28,
+      transparent: true,
+      opacity: 0.18,
+      emissive: 0x0e7e9a,
+      emissiveIntensity: 0.38,
+      depthWrite: false
+    })
+  );
+  bubble.name = "transcription-bubble";
+  bubble.userData.entityId = "transcription-bubble";
+  return bubble;
+}
+
+function createPromoterRegion() {
+  const group = new THREE.Group();
+  group.name = "promoter";
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xe6cf7a,
+    roughness: 0.42,
+    emissive: 0x5b4e13,
+    emissiveIntensity: 0.5
+  });
+
+  for (let i = 0; i < 6; i += 1) {
+    const marker = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.8, 0.18), material);
+    marker.position.set(i * 0.18, 0, Math.sin(i) * 0.08);
+    marker.userData.entityId = "promoter";
+    group.add(marker);
+  }
+
+  return group;
+}
+
+function createFactorCluster() {
+  const group = new THREE.Group();
+  group.name = "transcription-factors";
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xb18cff,
+    roughness: 0.5,
+    emissive: 0x2b1657,
+    emissiveIntensity: 0.34
+  });
+
+  for (let i = 0; i < 9; i += 1) {
+    const unit = new THREE.Mesh(new THREE.SphereGeometry(0.16 + (i % 3) * 0.04, 16, 12), material);
+    unit.position.set((i % 3) * 0.36 - 0.36, Math.floor(i / 3) * 0.22 - 0.22, Math.sin(i) * 0.24);
+    unit.userData.entityId = "transcription-factors";
+    group.add(unit);
+  }
+
+  return group;
+}
+
+function createRnaTranscript() {
+  const group = new THREE.Group();
+  group.name = "growing-rna-transcript";
+  group.userData.entityId = "growing-rna-transcript";
+  return group;
+}
+
+function updateRnaGeometry(group: THREE.Group, length: number, elapsed: number) {
+  group.clear();
+  const material = new THREE.MeshStandardMaterial({
+    color: 0x6df0b8,
+    roughness: 0.34,
+    emissive: 0x16845d,
+    emissiveIntensity: 0.45
+  });
+  const count = Math.max(2, Math.floor(32 * length));
+  for (let i = 0; i < count; i += 1) {
+    const t = i / Math.max(1, count - 1);
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(0.055, 12, 10), material);
+    bead.position.set(-t * (0.6 + length * 5.8), -0.18 - t * 1.15, 0.18 + Math.sin(t * 10 + elapsed * 2.2) * 0.24);
+    bead.userData.entityId = "growing-rna-transcript";
+    group.add(bead);
+  }
+}
+
+function createDirectionArrows() {
+  const group = new THREE.Group();
+  group.name = "directional-flow";
+  const material = new THREE.MeshStandardMaterial({
+    color: 0xdff8ff,
+    roughness: 0.3,
+    emissive: 0x55d5ff,
+    emissiveIntensity: 0.4
+  });
+
+  const arrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(-1.6, 1.45, 0.5), 3.2, 0x8feaff, 0.24, 0.1);
+  group.add(arrow);
+  ["5'", "3'"].forEach((text, index) => {
+    const sprite = makeTextSprite(text, material.color.getHex());
+    sprite.position.set(index === 0 ? -3.1 : 2.2, 1.78, 0.58);
+    group.add(sprite);
+  });
+  return group;
+}
+
+function createLabels() {
+  const group = new THREE.Group();
+  group.name = "anchored-label";
+  [
+    ["Promoter", -6.2, -0.98, 0.2],
+    ["RNA polymerase II", -5.1, 1.75, 0.2],
+    ["Template strand", -1.9, -1.05, 0.2],
+    ["Coding strand", -1.7, 1.05, 0.2],
+    ["Nascent RNA", -1.1, -1.9, 0.4]
+  ].forEach(([text, x, y, z]) => {
+    const sprite = makeTextSprite(String(text), 0xd9eef8);
+    sprite.position.set(Number(x), Number(y), Number(z));
+    group.add(sprite);
+  });
+  return group;
+}
+
+function updateLabels(group: THREE.Group, polX: number, transcriptLength: number, selected: string | null) {
+  group.children.forEach((child) => {
+    child.visible = !selected || child.name === selected;
+  });
+  const polLabel = group.children[1];
+  if (polLabel) {
+    polLabel.position.x = polX;
+  }
+  const rnaLabel = group.children[4];
+  if (rnaLabel) {
+    rnaLabel.position.x = polX - 0.5 - transcriptLength * 1.7;
+  }
+}
+
+function makeTextSprite(text: string, color: number) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 128;
+  const context = canvas.getContext("2d");
+  if (context) {
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.font = "600 42px Arial";
+    context.fillStyle = "rgba(4, 8, 10, 0.64)";
+    context.fillRect(0, 18, canvas.width, 78);
+    context.strokeStyle = "rgba(170, 220, 230, 0.35)";
+    context.strokeRect(0.5, 18.5, canvas.width - 1, 77);
+    context.fillStyle = `#${color.toString(16).padStart(6, "0")}`;
+    context.fillText(text, 26, 70);
+  }
+  const texture = new THREE.CanvasTexture(canvas);
+  const sprite = new THREE.Sprite(
+    new THREE.SpriteMaterial({ map: texture, transparent: true, opacity: 0.86, depthWrite: false })
+  );
+  sprite.name = entityNameFromLabel(text);
+  sprite.scale.set(1.7, 0.42, 1);
+  return sprite;
+}
+
+function createComparisonGhost() {
+  const group = createPolymerase();
+  group.name = "initiation-elongation-comparison";
+  group.traverse((child) => {
+    const mesh = child as THREE.Mesh;
+    const material = mesh.material as THREE.MeshStandardMaterial | undefined;
+    if (material) {
+      mesh.material = material.clone();
+      const cloned = mesh.material as THREE.MeshStandardMaterial;
+      cloned.color.set(0x4b5d66);
+      cloned.transparent = true;
+      cloned.opacity = 0.24;
+      cloned.depthWrite = false;
+    }
+  });
+  group.position.set(-4.8, 0.25, -2.5);
+  return group;
+}
+
+function createParticles() {
+  const count = 420;
+  const positions = new Float32Array(count * 3);
+  for (let i = 0; i < count; i += 1) {
+    positions[i * 3] = (Math.random() - 0.5) * 34;
+    positions[i * 3 + 1] = (Math.random() - 0.5) * 14;
+    positions[i * 3 + 2] = (Math.random() - 0.5) * 24;
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+  const material = new THREE.PointsMaterial({
+    color: 0x82a8b5,
+    size: 0.025,
+    transparent: true,
+    opacity: 0.45,
+    depthWrite: false
+  });
+  return new THREE.Points(geometry, material);
+}
+
+function applyFocus(objects: THREE.Object3D[], options: SceneOptions) {
+  const focus = options.isolatePolymerase ? "rna-polymerase-ii" : options.selectedEntity;
+  objects.forEach((object) => {
+    const isFocused = !focus || object.name === focus || object.name === "transcription-bubble" || object.name === "growing-rna-transcript";
+    setMaterialOpacity(object, isFocused ? 1 : 0.18);
+  });
+}
+
+function setMaterialOpacity(object: THREE.Object3D, opacity: number) {
+  object.traverse((child) => {
+    const mesh = child as THREE.Mesh;
+    const material = mesh.material as THREE.Material | THREE.Material[] | undefined;
+    if (!material) {
+      return;
+    }
+    const materials = Array.isArray(material) ? material : [material];
+    materials.forEach((item) => {
+      item.transparent = opacity < 1;
+      item.opacity = opacity;
+    });
+  });
+}
+
+function smoothstep(edge0: number, edge1: number, value: number) {
+  const x = THREE.MathUtils.clamp((value - edge0) / (edge1 - edge0), 0, 1);
+  return x * x * (3 - 2 * x);
+}
+
+function entityNameFromLabel(label: string) {
+  return label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+function currentStageLabel(session: SpatialSessionState) {
   const states = session.activeModel?.states ?? [];
-  const divisor = Math.max(1, states.length - 1);
-
-  return (
-    <div className="alternateView">
-      {states.map((state) => (
-        <section key={state.id} className={state.order / divisor <= session.playback.timelinePosition ? "activeStage" : ""}>
-          <span>{String(state.order + 1).padStart(2, "0")}</span>
-          <h2>{state.label}</h2>
-          <p>{state.description}</p>
-        </section>
-      ))}
-    </div>
-  );
-}
-
-function ProcessGraphView({ session }: { session: SpatialSessionState }) {
-  return (
-    <div className="graphView">
-      {session.activeModel?.relations.map((relation) => (
-        <div key={relation.id}>
-          <span>{relation.source}</span>
-          <b>{relation.relation}</b>
-          <span>{relation.target}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ExplanationView({ session }: { session: SpatialSessionState }) {
-  const model = session.activeModel;
-
-  return (
-    <div className="explanationView">
-      <h2>{model?.process}</h2>
-      {model?.representationRules.map((rule) => <ClaimLine claim={rule} key={rule.id} />)}
-      <h3>Limitations</h3>
-      {model?.limitations.map((limitation) => <ClaimLine claim={limitation} key={limitation.id} />)}
-    </div>
-  );
-}
-
-function MolecularStructureView({ session }: { session: SpatialSessionState }) {
-  const structure = resolveStructureForSession(session);
-
-  if (!structure.supported) {
-    return (
-      <div className="structureView structureUnavailable">
-        <section>
-          <p>Molecular structure</p>
-          <h2>no suitable reviewed structure selected</h2>
-          <p>{structure.reason}</p>
-          {structure.warnings.map((warning) => (
-            <p key={warning.code}><b>{warning.code}</b> {warning.message}</p>
-          ))}
-        </section>
-      </div>
-    );
+  if (states.length === 0) {
+    return "Spatial model";
   }
 
-  const metadata = structure.record.structure;
-  const provenance = structureClaimProvenance(structure);
-
-  return (
-    <div className="structureView">
-      <div className="structureViewer">
-        <iframe
-          title={`Molstar view of PDB ${structure.mapping.pdbId}`}
-          src={structure.viewerUrl}
-          loading="lazy"
-          referrerPolicy="no-referrer"
-        />
-      </div>
-
-      <aside className="structureMetadata" aria-label="Structure metadata and warnings">
-        <p>Molecular structure / Mol*</p>
-        <h2>{structure.mapping.entityLabel}</h2>
-        <dl>
-          <div>
-            <dt>PDB</dt>
-            <dd>{structure.mapping.pdbId}</dd>
-          </div>
-          <div>
-            <dt>Assembly</dt>
-            <dd>
-              {structure.mapping.useBiologicalAssembly
-                ? `biological assembly ${structure.mapping.assemblyId}`
-                : "asymmetric unit"}
-            </dd>
-          </div>
-          <div>
-            <dt>Method</dt>
-            <dd>{metadata?.method}</dd>
-          </div>
-          <div>
-            <dt>Resolution</dt>
-            <dd>{metadata?.resolutionAngstrom ? `${metadata.resolutionAngstrom} A` : "not reported"}</dd>
-          </div>
-          <div>
-            <dt>Organism</dt>
-            <dd>{metadata?.organism}</dd>
-          </div>
-          <div>
-            <dt>Evidence</dt>
-            <dd>
-              {structure.record.evidence.experimental ? "experimentally determined" : "not experimental"}
-              {structure.record.evidence.predicted ? " / predicted" : ""}
-            </dd>
-          </div>
-        </dl>
-
-        <section>
-          <h3>Chains</h3>
-          {metadata?.chains.map((chain) => (
-            <p key={chain.id}>{chain.id}: {chain.label} / {chain.moleculeType}</p>
-          ))}
-        </section>
-
-        <section>
-          <h3>Ligands</h3>
-          {metadata?.ligands.map((ligand) => (
-            <p key={ligand.id}>{ligand.id}: {ligand.name} / {ligand.native ? "native or physiological ion" : "non-native"}</p>
-          ))}
-        </section>
-
-        <section>
-          <h3>Warnings</h3>
-          {structure.warnings.map((warning) => (
-            <p key={warning.code}><b>{warning.code}</b> {warning.message}</p>
-          ))}
-        </section>
-
-        <section>
-          <h3>Provenance</h3>
-          <p>{provenance.title}</p>
-          <p>{provenance.urlOrDoi}</p>
-          <p>{provenance.supportedClaim}</p>
-        </section>
-      </aside>
-    </div>
+  const index = Math.min(
+    states.length - 1,
+    Math.floor(session.playback.timelinePosition * states.length)
   );
+  return states[index]?.label ?? "Spatial model";
 }
 
-function JsonView({ session }: { session: SpatialSessionState }) {
-  return (
-    <pre className="jsonView">
-      {JSON.stringify(
-        {
-          model: session.activeModel,
-          selectedEntities: session.selectedEntities,
-          hiddenEntities: session.hiddenEntities,
-          isolatedEntity: session.isolatedEntity,
-          activeIntervention: session.activeIntervention,
-          playback: session.playback
-        },
-        null,
-        2
-      )}
-    </pre>
-  );
-}
-
-function BottomPanel({
-  session,
-  setSession
-}: {
-  session: SpatialSessionState;
-  setSession: (updater: (current: SpatialSessionState) => SpatialSessionState) => void;
-}) {
-  return (
-    <section className="bottomPanel" aria-label="Timeline and representation controls">
-      <div className="timelineControl">
-        <label htmlFor="timeline">Timeline</label>
-        <input
-          id="timeline"
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={session.playback.timelinePosition}
-          onChange={(event) =>
-            setSession((current) => setTimelinePosition(current, Number(event.target.value)))
-          }
-        />
-      </div>
-
-      <div className="segmentedControl" aria-label="Baseline or intervention">
-        <button
-          type="button"
-          className={session.activeIntervention === "baseline" ? "isSelected" : ""}
-          onClick={() =>
-            setSession((current) =>
-              dispatchScientificSessionEvent(current, {
-                type: "INTERVENTION_APPLIED",
-                interventionId: "baseline"
-              })
-            )
-          }
-        >
-          Baseline
-        </button>
-        <button
-          type="button"
-          className={session.activeIntervention !== "baseline" ? "isSelected" : ""}
-          onClick={() =>
-            setSession((current) => {
-              const command = current.activeModel?.commandRules.find((rule) =>
-                rule.patch.activeIntervention?.startsWith("compare")
-              );
-              return command
-                ? applyFollowUpCommand(current, command.phrases[0])
-                : { ...current, activeIntervention: "intervention" };
-            })
-          }
-        >
-          Intervention
-        </button>
-      </div>
-
-      <div className="representationSelect">
-        <label htmlFor="representation">Representation</label>
-        <select
-          id="representation"
-          value={session.representationMode}
-          onChange={(event) =>
-            setSession((current) =>
-              setRepresentationMode(
-                current,
-                event.target.value as SpatialSessionState["representationMode"]
-              )
-            )
-          }
-        >
-          <option value="scene">scene</option>
-          <option value="mixed">mixed workspace</option>
-          <option value="molecular-structure">molecular structure</option>
-          <option value="timeline">process timeline</option>
-          <option value="graph">process graph</option>
-          <option value="voltage-graph">voltage graph</option>
-          <option value="explanation">explanation</option>
-          <option value="json">developer JSON</option>
-        </select>
-      </div>
-
-      <div className="branchPanel" aria-label="Counterfactual branches">
-        <p>Branch: {session.branches.find((branch) => branch.id === session.activeBranchId)?.name ?? "Baseline"}</p>
-        <button
-          type="button"
-          onClick={() =>
-            setSession((current) =>
-              createCounterfactualBranch(current, `Branch ${current.branches.length}`)
-            )
-          }
-          disabled={!session.activeModel}
-        >
-          Clone
-        </button>
-        <button
-          type="button"
-          onClick={() => setSession((current) => returnToBaselineBranch(current))}
-          disabled={session.activeBranchId === "baseline"}
-        >
-          Baseline
-        </button>
-        <select
-          aria-label="Switch branch"
-          value={session.activeBranchId}
-          onChange={(event) =>
-            setSession((current) =>
-              dispatchScientificSessionEvent(current, {
-                type: "BRANCH_SWITCHED",
-                branchId: event.target.value
-              })
-            )
-          }
-        >
-          {session.branches.map((branch) => (
-            <option key={branch.id} value={branch.id}>{branch.name}</option>
-          ))}
-        </select>
-        <div className="branchInterventions">
-          {session.activeModel?.interventions
-            .filter((intervention) => intervention.modelDelta)
-            .map((intervention) => (
-              <button
-                key={intervention.id}
-                type="button"
-                onClick={() =>
-                  setSession((current) =>
-                    applyCounterfactualIntervention(current, intervention.id)
-                  )
-                }
-              >
-                {intervention.label}
-              </button>
-            ))}
-        </div>
-        {session.activeBranchId !== "baseline" ? (
-          <div className="branchDiffs">
-            {compareActiveBranchToBaseline(session).slice(0, 6).map((difference) => (
-              <p key={`${difference.path}-${difference.counterfactual}`}>
-                <b>{difference.source}</b> {difference.path}: {difference.baseline} {"->"} {difference.counterfactual} ({difference.classification})
-              </p>
-            ))}
-          </div>
-        ) : null}
-      </div>
-
-      <div className="limitations">
-        <p>Scientific limitations and citations</p>
-        <p>
-          {session.activeModel?.limitations[0]?.claim} Sources:{" "}
-          {session.activeModel?.sources.map((source) => source.authors).join("; ")}
-        </p>
-      </div>
-    </section>
-  );
-}
-
-function ClaimLine({ claim }: { claim: ScientificClaim }) {
-  return (
-    <div className="claimItem">
-      <p>{claim.claim}</p>
-      <span>{claim.claimType} / {claim.status}</span>
-      <ProvenanceDetails provenance={claim.provenance} />
-    </div>
-  );
-}
-
-function ProvenanceDetails({ provenance }: { provenance: ScientificClaimProvenance[] }) {
-  const disagreement = provenance.find((item) => item.disagreementNote);
-
-  return (
-    <details className="provenanceDetails">
-      <summary>provenance</summary>
-      {provenance.map((item) => (
-        <div key={`${item.sourceId}-${item.supportedClaim}`}>
-          <p>{item.title}</p>
-          <p>{item.authorsOrInstitution} / {item.publicationType} / {item.accessDate}</p>
-          <p>{item.supportType} / {item.claimStatus} / confidence {Math.round(item.confidence * 100)}%</p>
-          <p>{item.supportedClaim}</p>
-          <p>{item.urlOrDoi}</p>
-          {item.license ? <p>{item.license}</p> : null}
-        </div>
-      ))}
-      {disagreement ? <p>Disagreement: {disagreement.disagreementNote}</p> : <p>No source disagreement recorded.</p>}
-    </details>
-  );
-}
-
-function PanelBlock({
+function SpatialDrawer({
   title,
-  children
+  children,
+  onClose
 }: {
   title: string;
-  children: ReactNode;
+  children: React.ReactNode;
+  onClose: () => void;
 }) {
   return (
-    <section className="panelBlock">
-      <h2>{title}</h2>
-      <div>{children}</div>
-    </section>
+    <aside className="spatialDrawer" aria-label={title}>
+      <header>
+        <h2>{title}</h2>
+        <button type="button" onClick={onClose}>
+          Close
+        </button>
+      </header>
+      {children}
+    </aside>
+  );
+}
+
+function ClaimList({ claims }: { claims: ScientificClaim[] }) {
+  return (
+    <div className="drawerList">
+      {claims.map((claim) => (
+        <p key={claim.id}>{claim.claim}</p>
+      ))}
+    </div>
+  );
+}
+
+function SourceList({ sources }: { sources: ScientificSource[] }) {
+  return (
+    <div className="drawerList">
+      {sources.map((source) => (
+        <p key={source.id}>
+          <strong>{source.authors}</strong>
+          <span>{source.title}</span>
+        </p>
+      ))}
+    </div>
   );
 }
