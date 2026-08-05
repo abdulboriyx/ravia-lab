@@ -12,13 +12,25 @@ export function ArchiveList({ entries }: ArchiveListProps) {
         <li className="archiveRow" key={`${entry.date}-${entry.title}`}>
           <time dateTime={entry.date}>{formatDate(entry.date)}</time>
           <span className="archiveType">{entry.type}</span>
-          <Link className="archiveTitle" href={entry.href}>
-            {entry.title}
-          </Link>
+          {entry.href ? (
+            <Link className="archiveTitle" href={entry.href}>
+              {entry.title}
+            </Link>
+          ) : (
+            <span className="archiveTitle archiveTitleUnavailable">
+              {entry.title}
+            </span>
+          )}
           <p>{entry.description}</p>
-          <Link className="archiveArrow" href={entry.href} aria-label={`Open ${entry.title}`}>
-            -&gt;
-          </Link>
+          {entry.href ? (
+            <Link className="archiveArrow" href={entry.href} aria-label={`Open ${entry.title}`}>
+              -&gt;
+            </Link>
+          ) : (
+            <span className="archiveStatus" aria-label={`${entry.title} is planned`}>
+              Planned
+            </span>
+          )}
         </li>
       ))}
     </ol>

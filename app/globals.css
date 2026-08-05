@@ -354,6 +354,25 @@ main {
   font-size: 1.12rem;
 }
 
+.archiveTitleUnavailable {
+  color: var(--muted);
+}
+
+.archiveStatus {
+  justify-self: end;
+  color: var(--muted);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chapterBioHost {
+  min-height: 100svh;
+  padding-top: 76px;
+  background: #f7f6f1;
+}
+
 .aboutPage {
   display: flex;
   align-items: flex-start;

@@ -12,7 +12,8 @@ export type ArchiveEntry = {
   type: EntryType;
   title: string;
   description: string;
-  href: string;
+  href?: string;
+  status?: "available" | "planned";
 };
 
 export const archiveEntries: ArchiveEntry[] = [
@@ -38,7 +39,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "What the hell is going on?",
     description:
       "The standing question behind the archive: reality outside, consciousness inside, and the failure of easy explanations.",
-    href: "/fragments/what-the-hell-is-going-on"
+    status: "planned"
   },
   {
     date: "2026-06-28",
@@ -46,7 +47,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Civic weather station",
     description:
       "A prototype for tracking institutional signals, political pressure, scientific claims, and cultural shocks.",
-    href: "/projects/civic-weather-station"
+    status: "planned"
   },
   {
     date: "2026-05-12",
@@ -54,7 +55,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Reality has a user interface problem",
     description:
       "A claim about feeds, dashboards, metrics, language, and the surfaces that teach us what counts as real.",
-    href: "/arguments/reality-has-a-user-interface-problem"
+    status: "planned"
   },
   {
     date: "2026-04-03",
@@ -62,7 +63,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Signal notebook",
     description:
       "Small scripts for collecting, labeling, and revisiting public data without pretending the labels are neutral.",
-    href: "/code/signal-notebook"
+    status: "planned"
   },
   {
     date: "2026-02-19",
@@ -70,7 +71,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Memory is not storage",
     description:
       "Notes on recollection, identity drift, emotional revision, and memory as reconstruction rather than retrieval.",
-    href: "/notes/memory-is-not-storage"
+    status: "planned"
   },
   {
     date: "2025-12-06",
@@ -78,7 +79,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "The institutions are tired",
     description:
       "A draft map of legitimacy, bureaucracy, spectacle, and systems that continue after belief goes missing.",
-    href: "/essays/the-institutions-are-tired"
+    status: "planned"
   },
   {
     date: "2025-10-14",
@@ -86,7 +87,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Desire as an operating system",
     description:
       "A formal attempt to describe motivation, compulsion, avoidance, appetite, and repeated behavior.",
-    href: "/papers/desire-as-an-operating-system"
+    status: "planned"
   },
   {
     date: "2025-08-22",
@@ -94,7 +95,7 @@ export const archiveEntries: ArchiveEntry[] = [
     title: "Faith after certainty",
     description:
       "Unfinished thoughts on belief, discipline, doubt, and whether faith can survive without false closure.",
-    href: "/fragments/faith-after-certainty"
+    status: "planned"
   }
 ];
 
