@@ -1796,6 +1796,10 @@ body:has(.spatialWorkspace) .siteHeader {
   background: #020305;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] {
+  background: #f6f8f6;
+}
+
 .molstarStage,
 .molstarMount {
   position: absolute;
@@ -1812,10 +1816,20 @@ body:has(.spatialWorkspace) .siteHeader {
   background: #020305;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-plugin {
+  background: #f6f8f6;
+}
+
 .molstarMount .msp-layout-main,
 .molstarMount .msp-viewport,
 .molstarMount .msp-canvas3d {
   background: #020305 !important;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-layout-main,
+.molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-viewport,
+.molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-canvas3d {
+  background: #f6f8f6 !important;
 }
 
 .molstarMount .msp-layout-left,
@@ -1836,6 +1850,7 @@ body:has(.spatialWorkspace) .siteHeader {
 .molstarLoadState,
 .structureIdentity,
 .structureControls,
+.structureSelectionReadout,
 .structureInspector {
   font-family: var(--font-display), var(--font-sans), sans-serif;
 }
@@ -1853,6 +1868,11 @@ body:has(.spatialWorkspace) .siteHeader {
   text-transform: uppercase;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .molstarLoadState {
+  color: rgba(20, 31, 34, 0.74);
+  background: #f6f8f6;
+}
+
 .structureIdentity {
   position: absolute;
   z-index: 4;
@@ -1868,6 +1888,12 @@ body:has(.spatialWorkspace) .siteHeader {
   backdrop-filter: blur(14px);
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .structureIdentity {
+  border-left-color: rgba(16, 112, 99, 0.55);
+  color: #0f1b1d;
+  background: rgba(246, 248, 246, 0.54);
+}
+
 .structureIdentity strong {
   font-size: 0.82rem;
   line-height: 1;
@@ -1880,6 +1906,10 @@ body:has(.spatialWorkspace) .siteHeader {
   line-height: 1.25;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .structureIdentity span {
+  color: rgba(27, 47, 51, 0.72);
+}
+
 .structureControls {
   position: absolute;
   z-index: 4;
@@ -1889,7 +1919,7 @@ body:has(.spatialWorkspace) .siteHeader {
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: 7px;
-  max-width: min(560px, calc(100vw - 28px));
+  max-width: min(680px, calc(100vw - 28px));
   padding: 8px;
   border: 1px solid rgba(201, 239, 247, 0.13);
   border-radius: 8px;
@@ -1897,7 +1927,44 @@ body:has(.spatialWorkspace) .siteHeader {
   backdrop-filter: blur(16px);
 }
 
+.structureControlGroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.structureBubbleControl {
+  align-items: center;
+  min-width: min(320px, 100%);
+}
+
+.structureBubbleControl label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #eef7fa;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.structureBubbleControl input {
+  width: 150px;
+  accent-color: #6df0b8;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureBubbleControl label {
+  color: #122124;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureControls {
+  border-color: rgba(24, 45, 49, 0.16);
+  background: rgba(246, 248, 246, 0.64);
+}
+
 .structureControls button,
+.structureSelectionReadout button,
 .structureInspector button {
   appearance: none;
   border: 1px solid rgba(201, 239, 247, 0.22);
@@ -1913,15 +1980,108 @@ body:has(.spatialWorkspace) .siteHeader {
   cursor: pointer;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .structureControls button,
+.molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout button,
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector button {
+  border-color: rgba(25, 52, 57, 0.24);
+  color: #122124;
+  background: rgba(255, 255, 255, 0.62);
+}
+
 .structureControls button {
   padding: 8px 10px;
 }
 
 .structureControls button.isSelected,
 .structureControls button:hover,
+.structureSelectionReadout button:hover,
 .structureInspector button:hover {
   border-color: rgba(109, 240, 184, 0.5);
   background: rgba(22, 58, 56, 0.78);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureControls button.isSelected,
+.molstarWorkspace[data-spatial-theme="light"] .structureControls button:hover,
+.molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout button:hover,
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector button:hover {
+  border-color: rgba(16, 112, 99, 0.48);
+  background: rgba(202, 236, 227, 0.74);
+}
+
+.structureSelectionReadout {
+  position: absolute;
+  z-index: 4;
+  left: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  display: grid;
+  gap: 12px;
+  width: min(360px, calc(100vw - 28px));
+  padding: 12px;
+  border: 1px solid rgba(201, 239, 247, 0.14);
+  border-radius: 8px;
+  color: #eef7fa;
+  background: rgba(1, 4, 6, 0.54);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout {
+  border-color: rgba(24, 45, 49, 0.16);
+  color: #122124;
+  background: rgba(246, 248, 246, 0.76);
+  box-shadow: 0 18px 60px rgba(49, 63, 66, 0.16);
+}
+
+.structureSelectionReadout header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.structureSelectionReadout strong {
+  font-size: 0.82rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.structureSelectionReadout button {
+  padding: 7px 9px;
+}
+
+.structureSelectionReadout dl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 12px;
+  margin: 0;
+}
+
+.structureSelectionReadout div {
+  display: contents;
+}
+
+.structureSelectionReadout dt {
+  color: rgba(232, 248, 252, 0.58);
+  font-size: 0.66rem;
+  font-weight: 700;
+  line-height: 1.25;
+  text-transform: uppercase;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout dt {
+  color: rgba(27, 47, 51, 0.62);
+}
+
+.structureSelectionReadout dd {
+  min-width: 0;
+  margin: 0;
+  color: rgba(213, 231, 234, 0.84);
+  font-size: 0.78rem;
+  line-height: 1.25;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout dd {
+  color: rgba(20, 43, 49, 0.84);
 }
 
 .structureInspector {
@@ -1941,6 +2101,13 @@ body:has(.spatialWorkspace) .siteHeader {
   background: rgba(2, 5, 7, 0.78);
   backdrop-filter: blur(24px);
   box-shadow: -24px 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector {
+  border-left-color: rgba(24, 45, 49, 0.16);
+  color: #122124;
+  background: rgba(246, 248, 246, 0.86);
+  box-shadow: -24px 0 80px rgba(49, 63, 66, 0.18);
 }
 
 .structureInspector header {
@@ -1983,12 +2150,21 @@ body:has(.spatialWorkspace) .siteHeader {
   text-transform: uppercase;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector dt {
+  color: rgba(27, 47, 51, 0.62);
+}
+
 .structureInspector dd,
 .structureInspector p {
   margin: 0;
   color: rgba(213, 231, 234, 0.82);
   font-size: 0.86rem;
   line-height: 1.36;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector dd,
+.molstarWorkspace[data-spatial-theme="light"] .structureInspector p {
+  color: rgba(20, 43, 49, 0.84);
 }
 
 @media (max-width: 720px) {
@@ -2002,5 +2178,14 @@ body:has(.spatialWorkspace) .siteHeader {
 
   .structureControls button {
     flex: 1 1 136px;
+  }
+
+  .structureBubbleControl {
+    flex: 1 1 100%;
+  }
+
+  .structureBubbleControl label,
+  .structureBubbleControl input {
+    flex: 1 1 160px;
   }
 }
