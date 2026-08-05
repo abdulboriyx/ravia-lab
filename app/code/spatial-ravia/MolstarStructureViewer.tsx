@@ -193,6 +193,7 @@ type MolstarQueryRuntime = {
       logic: {
         and: (args: unknown[]) => unknown;
         not: (args: unknown[]) => unknown;
+        or: (args: unknown[]) => unknown;
       };
       rel: {
         eq: (args: unknown[]) => unknown;
@@ -256,6 +257,26 @@ export default function MolstarStructureViewer({
   const [message, setMessage] = useState("Initializing Mol* module");
   const [selection, setSelection] = useState<SelectionReadout | null>(null);
   const [viewerReady, setViewerReady] = useState(false);
+  const frameRequestRef = useRef(0);
+
+  const requestStructureFrame = (preset: StructureCameraPreset) => {
+    const viewer = viewerRef.current;
+    if (!viewer) {
+      return;
+    }
+
+    const request = frameRequestRef.current + 1;
+    frameRequestRef.current = request;
+    frameStructure(viewer, preset);
+
+    // Mol* commits representations asynchronously. A second fit catches the
+    // final bounds when a command changes from the duplex to an isolated layer.
+    window.setTimeout(() => {
+      if (frameRequestRef.current === request && viewerRef.current === viewer) {
+        frameStructure(viewer, preset);
+      }
+    }, 220);
+  };
 
   useEffect(() => {
     let disposed = false;
@@ -340,7 +361,7 @@ export default function MolstarStructureViewer({
       return;
     }
 
-    frameStructure(viewer, cameraCommand.preset);
+    requestStructureFrame(cameraCommand.preset);
   }, [cameraCommand, viewerReady]);
 
   useEffect(() => {
@@ -486,7 +507,7 @@ export default function MolstarStructureViewer({
 
         setMolstarBackground(viewer, Color, theme);
         if (!isBubbleFrameUpdate) {
-          frameStructure(viewer, "reset");
+          requestStructureFrame("reset");
         }
       } catch (error) {
         console.error("[Spatial Ravia] structure-preset failure", {
@@ -1091,6 +1112,7 @@ async function applySemanticRepresentation(
   const sugars = await createComponent(viewer, runtime, structureWithProps, "semantic-sugars", "Sugars", {
     "atom-test": atomNameIn(runtime.MolScriptBuilder, sugarAtoms)
   });
+  const labelComponents = await createLabelComponents(viewer, runtime, structureWithProps);
 
   const update = viewer.plugin.state.data.build();
   const strandTrace = {
@@ -1177,6 +1199,7 @@ async function applySemanticRepresentation(
     },
     { tag: "spatial-ravia-hydrogen-bonds-semantic" }
   );
+  addNucleotideLabels(viewer, update, labelComponents);
 
   await update.commit();
 }
@@ -1209,6 +1232,7 @@ async function applyIsolatedRepresentation(
         { label: isolationLabel(options.isolationMode), tags: ["spatial-ravia-isolation"] }
       )
     : structureWithProps;
+  const labelComponents = await createLabelComponents(viewer, runtime, structureWithProps);
 
   const update = viewer.plugin.state.data.build();
 
@@ -1251,8 +1275,70 @@ async function applyIsolatedRepresentation(
       { tag: `spatial-ravia-${options.isolationMode}-representation` }
     );
   }
+  addNucleotideLabels(viewer, update, labelComponents);
 
   await update.commit();
+}
+
+async function createLabelComponents(
+  viewer: MolstarViewerInstance,
+  runtime: MolstarQueryRuntime,
+  structure: MolstarSelector
+) {
+  const nucleotideComponent = await createComponent(viewer, runtime, structure, "nucleotide-labels", "Nucleotide numbering", {
+    "residue-test": nucleotideResidueTest(runtime.MolScriptBuilder)
+  });
+  const terminalComponent = await createComponent(viewer, runtime, structure, "terminal-labels", "5' and 3' endpoint residues", {
+    "residue-test": terminalResidueTest(runtime.MolScriptBuilder)
+  });
+
+  return { nucleotideComponent, terminalComponent };
+}
+
+function addNucleotideLabels(
+  viewer: MolstarViewerInstance,
+  update: MolstarStateBuilder,
+  components: {
+    nucleotideComponent: MolstarSelector | undefined;
+    terminalComponent: MolstarSelector | undefined;
+  }
+) {
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    components.nucleotideComponent,
+    {
+      type: "label",
+      typeParams: {
+        level: "residue",
+        residueScale: 0.58,
+        background: true,
+        backgroundMargin: 0.08,
+        backgroundOpacity: 0.72,
+        borderWidth: 0.08
+      },
+      color: "uniform",
+      colorParams: uniformColor(0x111827)
+    },
+    { tag: "spatial-ravia-nucleotide-number-labels" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    components.terminalComponent,
+    {
+      type: "label",
+      typeParams: {
+        level: "residue",
+        residueScale: 1.05,
+        background: true,
+        backgroundMargin: 0.12,
+        backgroundOpacity: 0.82,
+        borderWidth: 0.12
+      },
+      color: "uniform",
+      colorParams: uniformColor(0x064e3b)
+    },
+    { tag: "spatial-ravia-terminal-residue-labels" }
+  );
 }
 
 function isolationRepresentation(
@@ -1274,6 +1360,19 @@ function isolationRepresentation(
       },
       color: "uniform",
       colorParams: uniformColor(semanticColors.backbone)
+    };
+  }
+
+  if (isolationMode === "strand-a" || isolationMode === "strand-b") {
+    return {
+      type: "ball-and-stick",
+      typeParams: {
+        sizeFactor: viewMode === "atomic" ? 0.24 : 0.32,
+        sizeAspectRatio: 0.72,
+        aromaticBonds: true
+      },
+      color,
+      colorParams: params
     };
   }
 
@@ -1475,6 +1574,20 @@ function createComponent(
     `spatial-ravia-${key}`,
     { label, tags: ["spatial-ravia-semantic"] }
   );
+}
+
+function nucleotideResidueTest(MS: MolstarQueryRuntime["MolScriptBuilder"]) {
+  return MS.core.set.has([MS.set("DA", "DC", "DG", "DT", "A", "C", "G", "T"), MS.ammp("label_comp_id")]);
+}
+
+function terminalResidueTest(MS: MolstarQueryRuntime["MolScriptBuilder"]) {
+  return MS.core.logic.and([
+    nucleotideResidueTest(MS),
+    MS.core.logic.or([
+      MS.core.rel.eq([MS.ammp("label_seq_id"), 1]),
+      MS.core.rel.eq([MS.ammp("label_seq_id"), dnaLength])
+    ])
+  ]);
 }
 
 function atomNameIn(MS: MolstarQueryRuntime["MolScriptBuilder"], atoms: string[]) {

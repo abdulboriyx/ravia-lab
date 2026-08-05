@@ -1851,6 +1851,7 @@ body:has(.spatialWorkspace) .siteHeader {
 .structureIdentity,
 .structureControls,
 .structureScaleBadge,
+.structureEndpointBadge,
 .structureSelectionReadout,
 .structureInspector {
   font-family: var(--font-display), var(--font-sans), sans-serif;
@@ -2037,6 +2038,43 @@ body:has(.spatialWorkspace) .siteHeader {
   background: linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
 }
 
+.structureEndpointBadge {
+  position: absolute;
+  z-index: 4;
+  left: clamp(14px, 2vw, 24px);
+  bottom: clamp(106px, 12vw, 126px);
+  display: grid;
+  gap: 4px;
+  width: min(260px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border: 1px solid rgba(201, 239, 247, 0.14);
+  border-radius: 8px;
+  color: #eef7fa;
+  background: rgba(1, 4, 6, 0.48);
+  backdrop-filter: blur(14px);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureEndpointBadge {
+  border-color: rgba(24, 45, 49, 0.16);
+  color: #122124;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.structureEndpointBadge strong,
+.structureEndpointBadge span {
+  font-size: 0.68rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.structureEndpointBadge span {
+  color: rgba(205, 226, 231, 0.78);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureEndpointBadge span {
+  color: rgba(27, 47, 51, 0.74);
+}
+
 .structureControls {
   position: absolute;
   z-index: 4;
@@ -2203,7 +2241,7 @@ body:has(.spatialWorkspace) .siteHeader {
   position: absolute;
   z-index: 4;
   left: clamp(14px, 2vw, 24px);
-  bottom: clamp(108px, 12vw, 132px);
+  bottom: clamp(200px, 22vw, 240px);
   display: grid;
   gap: 12px;
   width: min(360px, calc(100vw - 28px));

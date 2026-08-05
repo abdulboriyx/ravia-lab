@@ -175,6 +175,11 @@ export function SpatialRaviaPrototype() {
     setCameraCommand((command) => ({ preset, nonce: command.nonce + 1 }));
   };
 
+  const setIsolationAndFrame = (mode: StructureIsolationMode, preset: StructureCameraPreset = "reset") => {
+    setIsolationMode(mode);
+    sendCameraPreset(preset);
+  };
+
   const stepBasePair = (direction: -1 | 1) => {
     setFocusedBasePair((position) => {
       const next = Math.min(10, Math.max(1, position + direction));
@@ -370,21 +375,30 @@ export function SpatialRaviaPrototype() {
                   key={mode.id}
                   type="button"
                   className={isolationMode === mode.id ? "isSelected" : ""}
-                  onClick={() => setIsolationMode(mode.id)}
+                  onClick={() => setIsolationAndFrame(mode.id)}
                 >
                   {mode.label}
                 </button>
               ))}
             </div>
             <div className="structureControlGroup structurePresetGroup" aria-label="Inspection presets">
-              <button type="button" onClick={() => setIsolationMode("strand-a")}>
+              <button type="button" onClick={() => setIsolationAndFrame("strand-a")}>
                 Isolate A
               </button>
-              <button type="button" onClick={() => setIsolationMode("strand-b")}>
+              <button type="button" onClick={() => setIsolationAndFrame("strand-b")}>
                 Isolate B
               </button>
-              <button type="button" onClick={() => setIsolationMode("backbone")}>
+              <button type="button" onClick={() => setIsolationAndFrame("backbone")}>
                 Backbone only
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsolationAndFrame("base-pair", "base-pair");
+                  setViewMode("ball-stick");
+                }}
+              >
+                Partners
               </button>
               <button
                 type="button"
@@ -399,10 +413,9 @@ export function SpatialRaviaPrototype() {
                 type="button"
                 onClick={() => {
                   setSource("idealized");
-                  setIsolationMode("all");
+                  setIsolationAndFrame("all");
                   setTransformation(neutralTransformation);
                   setBubbleProgress(0);
-                  sendCameraPreset("reset");
                 }}
               >
                 Reset camera
@@ -416,9 +429,8 @@ export function SpatialRaviaPrototype() {
                 type="button"
                 className={isolationMode === "base-pair" ? "isSelected" : ""}
                 onClick={() => {
-                  setIsolationMode("base-pair");
+                  setIsolationAndFrame("base-pair", "base-pair");
                   setViewMode("ball-stick");
-                  sendCameraPreset("base-pair");
                 }}
               >
                 BP {focusedBasePair}
@@ -448,6 +460,14 @@ export function SpatialRaviaPrototype() {
           <span>Scale: Angstrom coordinate units</span>
           <i aria-hidden="true" />
           <span>Bar: 10 Å</span>
+        </div>
+      ) : null}
+
+      {sceneStarted ? (
+        <div className="structureEndpointBadge" aria-label="DNA strand endpoint labels">
+          <strong>Endpoint labels</strong>
+          <span>Chain A: 5′ A1 → 3′ A10</span>
+          <span>Chain B: 3′ B1 → 5′ B10</span>
         </div>
       ) : null}
 
@@ -581,7 +601,7 @@ function resolvePromptIsolation(
     return "backbone";
   }
 
-  if (words.has("phosphate") || words.has("phosphates")) {
+  if (words.has("phosphate") || words.has("phosphates") || normalized.includes("highlight phosphate")) {
     return "phosphates";
   }
 
@@ -599,6 +619,16 @@ function resolvePromptIsolation(
 
   if (normalized.includes("strand b") || normalized.includes("chain b")) {
     return "strand-b";
+  }
+
+  if (
+    normalized.includes("step through base") ||
+    normalized.includes("step through nucleotide") ||
+    normalized.includes("complementary partner") ||
+    normalized.includes("pairing partner") ||
+    normalized.includes("base pair partner")
+  ) {
+    return "base-pair";
   }
 
   if (requestedBasePairs > 0 && !normalized.includes("open")) {
@@ -623,7 +653,7 @@ function readBasePairCount(normalized: string) {
 }
 
 function readBasePairPosition(normalized: string) {
-  const numeric = normalized.match(/(?:base\s*pair|bp)\s+(\d+)/);
+  const numeric = normalized.match(/(?:base\s*pair|bp|base|nucleotide)\s+(\d+)/);
   if (numeric) {
     return Math.min(10, Math.max(1, Number(numeric[1])));
   }
