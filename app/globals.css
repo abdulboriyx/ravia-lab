@@ -1850,6 +1850,7 @@ body:has(.spatialWorkspace) .siteHeader {
 .molstarLoadState,
 .structureIdentity,
 .structureControls,
+.structureScaleBadge,
 .structureSelectionReadout,
 .structureInspector {
   font-family: var(--font-display), var(--font-sans), sans-serif;
@@ -1871,6 +1872,85 @@ body:has(.spatialWorkspace) .siteHeader {
 .molstarWorkspace[data-spatial-theme="light"] .molstarLoadState {
   color: rgba(20, 31, 34, 0.74);
   background: #ffffff;
+}
+
+.structurePromptBar {
+  position: absolute;
+  z-index: 6;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: min(560px, calc(100vw - 32px));
+  padding: 6px;
+  border: 1px solid rgba(24, 45, 49, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.84);
+  box-shadow: 0 22px 70px rgba(49, 63, 66, 0.14);
+  transform: translate(-50%, -50%);
+  backdrop-filter: blur(18px);
+}
+
+.structurePromptBar.isDocked {
+  top: clamp(14px, 2vw, 24px);
+  width: min(420px, calc(100vw - 32px));
+  transform: translateX(-50%);
+}
+
+.structurePromptBar input {
+  min-width: 0;
+  flex: 1 1 auto;
+  border: 0;
+  border-radius: 6px;
+  color: #122124;
+  background: transparent;
+  font: inherit;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  outline: 0;
+  padding: 10px 12px;
+}
+
+.structurePromptBar input::placeholder {
+  color: rgba(27, 47, 51, 0.46);
+}
+
+.structurePromptBar button {
+  appearance: none;
+  border: 1px solid rgba(16, 112, 99, 0.32);
+  border-radius: 6px;
+  color: #122124;
+  background: rgba(202, 236, 227, 0.74);
+  font: inherit;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1;
+  padding: 0 14px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.molstarWorkspace[data-spatial-theme="dark"] .structurePromptBar {
+  border-color: rgba(201, 239, 247, 0.16);
+  background: rgba(1, 4, 6, 0.72);
+  box-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+}
+
+.molstarWorkspace[data-spatial-theme="dark"] .structurePromptBar input {
+  color: #eef7fa;
+}
+
+.molstarWorkspace[data-spatial-theme="dark"] .structurePromptBar input::placeholder {
+  color: rgba(205, 226, 231, 0.46);
+}
+
+.molstarWorkspace[data-spatial-theme="dark"] .structurePromptBar button {
+  border-color: rgba(109, 240, 184, 0.4);
+  color: #eef7fa;
+  background: rgba(22, 58, 56, 0.78);
 }
 
 .structureIdentity {
@@ -1910,21 +1990,64 @@ body:has(.spatialWorkspace) .siteHeader {
   color: rgba(27, 47, 51, 0.72);
 }
 
+.structureScaleBadge {
+  position: absolute;
+  z-index: 4;
+  left: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  display: grid;
+  gap: 4px;
+  width: min(260px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border: 1px solid rgba(201, 239, 247, 0.14);
+  border-radius: 8px;
+  color: #eef7fa;
+  background: rgba(1, 4, 6, 0.48);
+  backdrop-filter: blur(14px);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureScaleBadge {
+  border-color: rgba(24, 45, 49, 0.16);
+  color: #122124;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.structureScaleBadge strong,
+.structureScaleBadge span {
+  font-size: 0.68rem;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.structureScaleBadge span {
+  color: rgba(205, 226, 231, 0.74);
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureScaleBadge span {
+  color: rgba(27, 47, 51, 0.72);
+}
+
+.structureScaleBadge i {
+  display: block;
+  width: 86px;
+  height: 6px;
+  margin: 3px 0;
+  border-right: 1px solid currentColor;
+  border-left: 1px solid currentColor;
+  background: linear-gradient(currentColor, currentColor) center / 100% 1px no-repeat;
+}
+
 .structureControls {
   position: absolute;
   z-index: 4;
   right: clamp(14px, 2vw, 24px);
   bottom: clamp(14px, 2vw, 24px);
   display: flex;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  flex-wrap: nowrap;
   justify-content: flex-end;
-  gap: 7px;
-  max-width: min(680px, calc(100vw - 28px));
-  padding: 8px;
-  border: 1px solid rgba(201, 239, 247, 0.13);
-  border-radius: 8px;
-  background: rgba(1, 4, 6, 0.42);
-  backdrop-filter: blur(16px);
+  gap: 8px;
+  max-width: calc(100vw - 28px);
 }
 
 .structureControlGroup {
@@ -1933,12 +2056,40 @@ body:has(.spatialWorkspace) .siteHeader {
   gap: 7px;
 }
 
+.structureToolbarMenu {
+  position: relative;
+}
+
+.structureToolbarMenu summary {
+  list-style: none;
+}
+
+.structureToolbarMenu summary::-webkit-details-marker {
+  display: none;
+}
+
+.structureToolbarPopover {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  display: grid;
+  gap: 8px;
+  width: min(620px, calc(100vw - 28px));
+  padding: 10px;
+  border: 1px solid rgba(201, 239, 247, 0.18);
+  border-radius: 8px;
+  background: rgba(1, 4, 6, 0.76);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+}
+
 .structureBubbleControl {
   align-items: center;
   min-width: min(320px, 100%);
 }
 
-.structureBubbleControl label {
+.structureBubbleControl label,
+.structureTransformSliders label {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -1949,21 +2100,52 @@ body:has(.spatialWorkspace) .siteHeader {
   text-transform: uppercase;
 }
 
-.structureBubbleControl input {
+.structureBubbleControl input,
+.structureTransformSliders input {
   width: 150px;
   accent-color: #6df0b8;
 }
 
-.molstarWorkspace[data-spatial-theme="light"] .structureBubbleControl label {
+.structureTransformSliders {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(201, 239, 247, 0.12);
+  border-bottom: 1px solid rgba(201, 239, 247, 0.12);
+}
+
+.structureTransformSliders label {
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.structureTransformSliders input {
+  width: 100%;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureBubbleControl label,
+.molstarWorkspace[data-spatial-theme="light"] .structureTransformSliders label {
   color: #122124;
 }
 
+.molstarWorkspace[data-spatial-theme="light"] .structureTransformSliders {
+  border-color: rgba(24, 45, 49, 0.12);
+}
+
 .molstarWorkspace[data-spatial-theme="light"] .structureControls {
-  border-color: rgba(24, 45, 49, 0.16);
-  background: rgba(246, 248, 246, 0.64);
+  color: #122124;
+}
+
+.molstarWorkspace[data-spatial-theme="light"] .structureToolbarPopover {
+  border-color: rgba(24, 45, 49, 0.2);
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 18px 60px rgba(49, 63, 66, 0.18);
 }
 
 .structureControls button,
+.structureToolbarMenu summary,
 .structureSelectionReadout button,
 .structureInspector button {
   appearance: none;
@@ -1981,6 +2163,7 @@ body:has(.spatialWorkspace) .siteHeader {
 }
 
 .molstarWorkspace[data-spatial-theme="light"] .structureControls button,
+.molstarWorkspace[data-spatial-theme="light"] .structureToolbarMenu summary,
 .molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout button,
 .molstarWorkspace[data-spatial-theme="light"] .structureInspector button {
   border-color: rgba(25, 52, 57, 0.24);
@@ -1992,8 +2175,14 @@ body:has(.spatialWorkspace) .siteHeader {
   padding: 8px 10px;
 }
 
+.structureToolbarMenu summary {
+  padding: 9px 11px;
+}
+
 .structureControls button.isSelected,
 .structureControls button:hover,
+.structureToolbarMenu[open] summary,
+.structureToolbarMenu summary:hover,
 .structureSelectionReadout button:hover,
 .structureInspector button:hover {
   border-color: rgba(109, 240, 184, 0.5);
@@ -2002,6 +2191,8 @@ body:has(.spatialWorkspace) .siteHeader {
 
 .molstarWorkspace[data-spatial-theme="light"] .structureControls button.isSelected,
 .molstarWorkspace[data-spatial-theme="light"] .structureControls button:hover,
+.molstarWorkspace[data-spatial-theme="light"] .structureToolbarMenu[open] summary,
+.molstarWorkspace[data-spatial-theme="light"] .structureToolbarMenu summary:hover,
 .molstarWorkspace[data-spatial-theme="light"] .structureSelectionReadout button:hover,
 .molstarWorkspace[data-spatial-theme="light"] .structureInspector button:hover {
   border-color: rgba(16, 112, 99, 0.48);
@@ -2012,7 +2203,7 @@ body:has(.spatialWorkspace) .siteHeader {
   position: absolute;
   z-index: 4;
   left: clamp(14px, 2vw, 24px);
-  bottom: clamp(14px, 2vw, 24px);
+  bottom: clamp(108px, 12vw, 132px);
   display: grid;
   gap: 12px;
   width: min(360px, calc(100vw - 28px));
@@ -2187,5 +2378,9 @@ body:has(.spatialWorkspace) .siteHeader {
   .structureBubbleControl label,
   .structureBubbleControl input {
     flex: 1 1 160px;
+  }
+
+  .structureTransformSliders {
+    grid-template-columns: 1fr;
   }
 }

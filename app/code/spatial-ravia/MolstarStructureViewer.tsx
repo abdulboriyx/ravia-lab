@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import type {
+  DnaTransformationState,
+  StructureCameraPreset,
   StructureColorMode,
   StructureIsolationMode,
   StructureSource,
@@ -12,10 +14,12 @@ import type {
 type LoadState = "loading" | "ready" | "error";
 type SelectionReadout = {
   title: string;
+  base: string;
   residue: string;
   nucleotide: string;
   chain: string;
-  atom: string;
+  atoms: string;
+  pairingPartner: string;
   orientation: string;
 };
 type MolstarSelector = unknown;
@@ -94,6 +98,9 @@ type MolstarViewerInstance = {
     };
     canvas3d?: {
       setProps: (props: Record<string, unknown>) => void;
+      camera: {
+        getSnapshot: () => MolstarCameraSnapshot;
+      };
     };
     managers: {
       interactivity: {
@@ -103,10 +110,20 @@ type MolstarViewerInstance = {
         };
       };
       camera: {
-        reset: () => void;
+        reset: (snapshot?: Partial<MolstarCameraSnapshot>, durationMs?: number) => void;
+        setSnapshot: (snapshot: Partial<MolstarCameraSnapshot>, durationMs?: number) => void;
       };
     };
   };
+};
+
+type MolstarCameraSnapshot = {
+  position: [number, number, number];
+  target: [number, number, number];
+  up: [number, number, number];
+  radius: number;
+  radiusMax: number;
+  [key: string]: unknown;
 };
 
 type MolstarGlobal = {
@@ -211,17 +228,23 @@ let molstarQueryPromise: Promise<MolstarQueryRuntime> | null = null;
 
 export default function MolstarStructureViewer({
   bubbleProgress,
+  cameraCommand,
   colorMode,
+  focusedBasePair,
   isolationMode,
   source,
   theme,
+  transformation,
   viewMode
 }: {
   bubbleProgress: number;
+  cameraCommand: { preset: StructureCameraPreset; nonce: number };
   colorMode: StructureColorMode;
+  focusedBasePair: number;
   isolationMode: StructureIsolationMode;
   source: StructureSource;
   theme: StructureTheme;
+  transformation: DnaTransformationState;
   viewMode: StructureViewMode;
 }) {
   const mountRef = useRef<HTMLDivElement | null>(null);
@@ -313,6 +336,15 @@ export default function MolstarStructureViewer({
 
   useEffect(() => {
     const viewer = viewerRef.current;
+    if (!viewerReady || !viewer || cameraCommand.nonce === 0) {
+      return;
+    }
+
+    frameStructure(viewer, cameraCommand.preset);
+  }, [cameraCommand, viewerReady]);
+
+  useEffect(() => {
+    const viewer = viewerRef.current;
     if (!viewerReady || !viewer) {
       return;
     }
@@ -341,9 +373,10 @@ export default function MolstarStructureViewer({
     async function loadStructure() {
       const viewer = viewerRef.current;
       const Color = colorRef.current;
-      const bubbleFrame = source === "idealized" ? Math.round(bubbleProgress * 25) / 25 : 0;
-      const baseVisualKey = `${source}:${viewMode}:${colorMode}:${isolationMode}`;
-      const visualKey = `${baseVisualKey}:${bubbleFrame}`;
+      const transformationFrame = quantizedTransformation(transformation, bubbleProgress);
+      const bubbleFrame = source === "idealized" ? transformationFrame.bubbleProgress : 0;
+      const baseVisualKey = `${source}:${viewMode}:${colorMode}:${isolationMode}:${focusedBasePair}`;
+      const visualKey = `${baseVisualKey}:${transformationKey(transformationFrame)}`;
       const isBubbleFrameUpdate =
         source === "idealized" && lastBaseVisualRef.current === baseVisualKey && lastVisualRef.current !== null;
 
@@ -402,7 +435,7 @@ export default function MolstarStructureViewer({
           format = "pdb";
           data = await viewer.plugin.builders.data.rawData(
             {
-              data: generateIdealBDnaPdb(bubbleFrame),
+              data: generateIdealBDnaPdb(transformationFrame),
               label: "Idealized canonical B-DNA duplex"
             },
             { state: { isGhost: true } }
@@ -438,13 +471,14 @@ export default function MolstarStructureViewer({
 
       try {
         if (isolationMode === "all") {
-          await viewer.plugin.builders.structure.hierarchy.applyPreset(trajectory, "default", {
-            representationPreset: representationPreset(viewMode),
-            representationPresetParams: representationParams(viewMode, colorMode)
+          await applySemanticRepresentation(viewer, trajectory, {
+            colorMode,
+            viewMode
           });
         } else {
           await applyIsolatedRepresentation(viewer, trajectory, {
             colorMode,
+            focusedBasePair,
             isolationMode,
             viewMode
           });
@@ -452,7 +486,7 @@ export default function MolstarStructureViewer({
 
         setMolstarBackground(viewer, Color, theme);
         if (!isBubbleFrameUpdate) {
-          viewer.plugin.managers.camera.reset();
+          frameStructure(viewer, "reset");
         }
       } catch (error) {
         console.error("[Spatial Ravia] structure-preset failure", {
@@ -476,7 +510,7 @@ export default function MolstarStructureViewer({
     return () => {
       cancelled = true;
     };
-  }, [bubbleProgress, colorMode, isolationMode, source, theme, viewMode, viewerReady]);
+  }, [bubbleProgress, colorMode, focusedBasePair, isolationMode, source, theme, transformation, viewMode, viewerReady]);
 
   return (
     <>
@@ -497,6 +531,10 @@ export default function MolstarStructureViewer({
           </header>
           <dl>
             <div>
+              <dt>Base</dt>
+              <dd>{selection.base}</dd>
+            </div>
+            <div>
               <dt>Residue</dt>
               <dd>{selection.residue}</dd>
             </div>
@@ -509,8 +547,12 @@ export default function MolstarStructureViewer({
               <dd>{selection.chain}</dd>
             </div>
             <div>
-              <dt>Atom</dt>
-              <dd>{selection.atom}</dd>
+              <dt>Atoms</dt>
+              <dd>{selection.atoms}</dd>
+            </div>
+            <div>
+              <dt>Partner</dt>
+              <dd>{selection.pairingPartner}</dd>
             </div>
             <div>
               <dt>5&apos;/3&apos;</dt>
@@ -534,6 +576,10 @@ function representationPreset(mode: StructureViewMode) {
   }
 
   return "atomic-detail";
+}
+
+function representationType(mode: StructureViewMode) {
+  return mode === "cartoon" ? "cartoon" : "ball-and-stick";
 }
 
 function readSelection(
@@ -566,7 +612,9 @@ function readSelection(
   const atomElement = safeValue(() => props.atom.type_symbol(location), "");
   const chemType = safeValue(() => props.residue.chem_comp_type(location), "");
   const position = Number.isFinite(labelSeqId) ? labelSeqId : authSeqId;
-  const terminal = terminalOrientation(position, chemType);
+  const terminal = terminalOrientation(position, chemType, labelChain);
+  const atomCategory = atomClass(atomName);
+  const partner = pairingPartner(labelChain, position, residueCode);
   const chainSuffix = [
     authChain && authChain !== labelChain ? `auth ${authChain}` : "",
     operator && operator !== "1_555" ? `operator ${operator}` : "",
@@ -577,10 +625,14 @@ function readSelection(
 
   return {
     title: `${residueName} ${Number.isFinite(position) ? position : ""}`.trim(),
+    base: `${residueCode.replace(/^D/, "") || "Unknown"} - ${residueName}`,
     residue: `${residueCode} - ${residueName}`,
     nucleotide: Number.isFinite(position) ? `Nucleotide ${position} of ${dnaLength}` : "Unavailable",
     chain: chainSuffix ? `${labelChain} (${chainSuffix})` : labelChain,
-    atom: atomName ? `${atomName}${atomElement ? ` (${atomElement})` : ""}` : "Residue/base selection",
+    atoms: atomName
+      ? `${atomName}${atomElement ? ` (${atomElement})` : ""}; ${atomCategory}`
+      : `Residue selection; ${atomCategory}`,
+    pairingPartner: partner,
     orientation: terminal
   };
 }
@@ -615,33 +667,83 @@ function nucleotideName(code: string) {
   }
 }
 
-function terminalOrientation(position: number, chemType: string) {
+function terminalOrientation(position: number, chemType: string, chain: string) {
   if (!Number.isFinite(position)) {
     return chemType.includes("3 prime") || chemType.includes("5 prime")
       ? chemType.replace(/prime/g, "'")
       : "Unavailable";
   }
 
+  if (chain === "B") {
+    if (position <= 1 || chemType.includes("3 prime")) {
+      return "3' terminus on antiparallel strand B; positions increase toward 5'";
+    }
+
+    if (position >= dnaLength || chemType.includes("5 prime")) {
+      return "5' terminus on antiparallel strand B; positions increase away from 3'";
+    }
+
+    return "Internal nucleotide on strand B; positions increase 3' -> 5'";
+  }
+
   if (position <= 1 || chemType.includes("5 prime")) {
-    return "5' terminus; sequence runs 5' -> 3' as positions increase";
+    return "5' terminus on strand A; positions increase 5' -> 3'";
   }
 
   if (position >= dnaLength || chemType.includes("3 prime")) {
-    return "3' terminus; sequence runs 5' -> 3' as positions increase";
+    return "3' terminus on strand A; positions increase from 5'";
   }
 
-  return "Internal nucleotide; upstream toward 5', downstream toward 3'";
+  return "Internal nucleotide on strand A; positions increase 5' -> 3'";
 }
 
-function generateIdealBDnaPdb(bubbleProgress = 0) {
+function pairingPartner(chain: string, position: number, residueCode: string) {
+  if (!Number.isFinite(position) || (chain !== "A" && chain !== "B")) {
+    return "Unavailable";
+  }
+
+  const partnerChain = chain === "A" ? "B" : "A";
+  const partnerPosition = dnaLength - position + 1;
+  const base = residueCode.replace(/^D/, "");
+  const partnerBase = complementBase(base);
+
+  return `${partnerBase} ${partnerPosition} on chain ${partnerChain} (inferred Watson-Crick partner)`;
+}
+
+function atomClass(atomName: string) {
+  if (!atomName) {
+    return "nucleotide atom set";
+  }
+
+  if (phosphateAtoms.includes(atomName)) {
+    return "phosphate atom";
+  }
+
+  if (sugarAtoms.includes(atomName)) {
+    return "sugar atom";
+  }
+
+  if (nucleicBackboneAtoms.includes(atomName)) {
+    return "backbone atom";
+  }
+
+  return "base atom";
+}
+
+type DnaTransformationFrame = DnaTransformationState & {
+  bubbleProgress: number;
+};
+
+function generateIdealBDnaPdb(transformation: DnaTransformationFrame) {
   const sequence = "CCAGCGCTGG";
-  const progress = clamp01(bubbleProgress);
+  const progress = clamp01(transformation.bubbleProgress);
   const lines: string[] = [
     "HEADER    IDEALIZED PARAMETRIC B-DNA DUPLEX",
     "TITLE     CANONICAL B-DNA MODEL GENERATED IN SPATIAL RAVIA",
     "REMARK   SOURCE: IDEALIZED STRUCTURAL MODEL, NOT EXPERIMENTAL COORDINATES",
     "REMARK   PARAMETERS: RISE 3.38 ANGSTROM, TWIST 36 DEGREES, 10 BP/TURN",
-    "REMARK   BUBBLE: CONTROLLED STRAND-OPENING TRANSFORMATION, NOT MOLECULAR DYNAMICS"
+    "REMARK   BUBBLE: CONTROLLED STRAND-OPENING TRANSFORMATION, NOT MOLECULAR DYNAMICS",
+    "REMARK   TRANSFORMS: STRAND SEPARATION, LOCAL BUBBLE, BEND, BASE EXPOSURE PRESERVE CHAIN ORDER"
   ];
   let serial = 1;
 
@@ -649,7 +751,7 @@ function generateIdealBDnaPdb(bubbleProgress = 0) {
     const base = sequence[i];
     const theta = (i * 36 * Math.PI) / 180;
     const z = (i - (sequence.length - 1) / 2) * 3.38;
-    serial = addIdealNucleotide(lines, serial, "A", i + 1, base, theta, z, 1, progress, i);
+    serial = addIdealNucleotide(lines, serial, "A", i + 1, base, theta, z, 1, progress, i, transformation);
   }
 
   for (let i = 0; i < sequence.length; i += 1) {
@@ -657,7 +759,7 @@ function generateIdealBDnaPdb(bubbleProgress = 0) {
     const base = complementBase(sequence[pairedIndex]);
     const theta = ((pairedIndex * 36 + 180) * Math.PI) / 180;
     const z = (pairedIndex - (sequence.length - 1) / 2) * 3.38;
-    serial = addIdealNucleotide(lines, serial, "B", i + 1, base, theta, z, -1, progress, pairedIndex);
+    serial = addIdealNucleotide(lines, serial, "B", i + 1, base, theta, z, -1, progress, pairedIndex, transformation);
   }
 
   lines.push("TER");
@@ -675,12 +777,13 @@ function addIdealNucleotide(
   z: number,
   handedness: 1 | -1,
   bubbleProgress: number,
-  pairedIndex: number
+  pairedIndex: number,
+  transformation: DnaTransformationFrame
 ) {
   const residue = `D${base}`;
   const radial = vector(Math.cos(theta), Math.sin(theta), 0);
   const tangent = vector(-Math.sin(theta) * handedness, Math.cos(theta) * handedness, 0);
-  const bubble = bubbleEnvelope(pairedIndex) * smoothStep(bubbleProgress);
+  const bubble = bubbleEnvelope(pairedIndex, transformation.bubbleBasePairs) * smoothStep(bubbleProgress);
   const baseLift = bubble * 3.35;
   const backboneLift = bubble * 1.28;
   const shear = bubble * 1.72 * handedness;
@@ -698,7 +801,17 @@ function addIdealNucleotide(
     atomPoint("C2'", "C", radial, tangent, 6.12 + backboneLift, -0.84 + shear * 0.52, z - 0.08 + zShear * 0.82),
     atomPoint("C1'", "C", radial, tangent, 5.88 + backboneLift, 0.52 + shear * 0.58, z - 0.48 + zShear * 0.85),
     ...baseAtoms(base, radial, tangent, z + zShear, baseLift, shear)
-  ];
+  ].map((atom) =>
+    transformIdealAtom(atom, {
+      chain,
+      handedness,
+      isBase: !nucleicBackboneAtoms.includes(atom.name),
+      pairedIndex,
+      radial,
+      tangent,
+      transformation
+    })
+  );
 
   let serial = startSerial;
   for (const atom of atoms) {
@@ -724,6 +837,46 @@ function atomPoint(
     x: radial.x * radialDistance + tangent.x * tangentialOffset,
     y: radial.y * radialDistance + tangent.y * tangentialOffset,
     z
+  };
+}
+
+type IdealAtom = ReturnType<typeof atomPoint>;
+
+function transformIdealAtom(
+  atom: IdealAtom,
+  context: {
+    chain: string;
+    handedness: 1 | -1;
+    isBase: boolean;
+    pairedIndex: number;
+    radial: Vec3;
+    tangent: Vec3;
+    transformation: DnaTransformationFrame;
+  }
+) {
+  const strandSign = context.chain === "A" ? 1 : -1;
+  const separation = smoothStep(context.transformation.strandSeparation) * 4.4;
+  const expose = context.isBase ? smoothStep(context.transformation.exposeBases) : 0;
+  const baseExposure = expose * 2.4;
+  const bend = smoothStep(context.transformation.bend);
+  const centeredZ = atom.z / 16;
+  const bendOffset = bend * 5.8 * centeredZ * centeredZ;
+  const bendTilt = bend * 0.18 * atom.z;
+
+  return {
+    ...atom,
+    x:
+      atom.x +
+      strandSign * separation +
+      context.radial.x * baseExposure +
+      context.tangent.x * expose * 1.1 * context.handedness +
+      bendOffset,
+    y:
+      atom.y +
+      context.radial.y * baseExposure +
+      context.tangent.y * expose * 1.1 * context.handedness +
+      bendTilt,
+    z: atom.z - bend * 0.08 * atom.x
   };
 }
 
@@ -851,10 +1004,41 @@ function smoothStep(value: number) {
   return x * x * (3 - 2 * x);
 }
 
-function bubbleEnvelope(pairedIndex: number) {
+function quantizedTransformation(
+  transformation: DnaTransformationState,
+  bubbleProgress: number
+): DnaTransformationFrame {
+  const quantize = (value: number) => Math.round(clamp01(value) * 25) / 25;
+  const bubbleBasePairs = Math.max(0, Math.min(6, Math.round(transformation.bubbleBasePairs)));
+
+  return {
+    strandSeparation: quantize(transformation.strandSeparation),
+    bubbleBasePairs,
+    bubbleProgress: Math.max(quantize(bubbleProgress), bubbleBasePairs > 0 ? Math.min(1, bubbleBasePairs / 6) : 0),
+    bend: quantize(transformation.bend),
+    exposeBases: quantize(transformation.exposeBases)
+  };
+}
+
+function transformationKey(transformation: DnaTransformationFrame) {
+  return [
+    transformation.bubbleProgress,
+    transformation.bubbleBasePairs,
+    transformation.strandSeparation,
+    transformation.bend,
+    transformation.exposeBases
+  ].join(":");
+}
+
+function bubbleEnvelope(pairedIndex: number, bubbleBasePairs: number) {
+  if (bubbleBasePairs <= 0) {
+    return 0;
+  }
+
   const center = 4.5;
+  const halfWidth = Math.max(1, Math.min(3, bubbleBasePairs / 2));
   const distance = Math.abs(pairedIndex - center);
-  return clamp01(1 - Math.max(0, distance - 1.35) / 1.75);
+  return clamp01(1 - Math.max(0, distance - halfWidth) / 1.4);
 }
 
 type Vec3 = {
@@ -865,11 +1049,144 @@ type Vec3 = {
 
 type BaseAtomTuple = [string, string, number, number, number];
 
+const semanticColors = {
+  strandA: 0x1d4ed8,
+  strandB: 0xdc2626,
+  bases: 0x16a34a,
+  backbone: 0x475569,
+  phosphates: 0xd97706,
+  sugars: 0x7c3aed,
+  hydrogenBonds: 0x0891b2
+};
+
+async function applySemanticRepresentation(
+  viewer: MolstarViewerInstance,
+  trajectory: MolstarSelector,
+  options: {
+    colorMode: StructureColorMode;
+    viewMode: StructureViewMode;
+  }
+) {
+  const runtime = await loadMolstarQueryRuntime();
+  const model = await viewer.plugin.builders.structure.createModel(trajectory, { modelIndex: 0 });
+  const structure = await viewer.plugin.builders.structure.createStructure(model, {
+    name: "model",
+    params: {}
+  });
+  const structureWithProps =
+    (await viewer.plugin.builders.structure.insertStructureProperties(structure)) ?? structure;
+
+  const strandA = await createComponent(viewer, runtime, structureWithProps, "semantic-strand-a", "Strand A", {
+    "chain-test": runtime.MolScriptBuilder.core.rel.eq([runtime.MolScriptBuilder.ammp("label_asym_id"), "A"])
+  });
+  const strandB = await createComponent(viewer, runtime, structureWithProps, "semantic-strand-b", "Strand B", {
+    "chain-test": runtime.MolScriptBuilder.core.rel.eq([runtime.MolScriptBuilder.ammp("label_asym_id"), "B"])
+  });
+  const bases = await createComponent(viewer, runtime, structureWithProps, "semantic-bases", "Bases", {
+    "atom-test": runtime.MolScriptBuilder.core.logic.not([atomNameIn(runtime.MolScriptBuilder, nucleicBackboneAtoms)])
+  });
+  const phosphates = await createComponent(viewer, runtime, structureWithProps, "semantic-phosphates", "Phosphates", {
+    "atom-test": atomNameIn(runtime.MolScriptBuilder, phosphateAtoms)
+  });
+  const sugars = await createComponent(viewer, runtime, structureWithProps, "semantic-sugars", "Sugars", {
+    "atom-test": atomNameIn(runtime.MolScriptBuilder, sugarAtoms)
+  });
+
+  const update = viewer.plugin.state.data.build();
+  const strandTrace = {
+    type: "cartoon",
+    typeParams: {
+      sizeFactor: 0.82,
+      visuals: ["polymer-trace", "polymer-gap"]
+    },
+    color: "chain-id",
+    colorParams: {}
+  };
+
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    strandA,
+    { ...strandTrace, color: "uniform", colorParams: uniformColor(semanticColors.strandA) },
+    { tag: "spatial-ravia-strand-a-trace" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    strandB,
+    { ...strandTrace, color: "uniform", colorParams: uniformColor(semanticColors.strandB) },
+    { tag: "spatial-ravia-strand-b-trace" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    bases,
+    {
+      type: options.viewMode === "cartoon" ? "ball-and-stick" : representationType(options.viewMode),
+      typeParams: {
+        sizeFactor: options.viewMode === "atomic" ? 0.24 : 0.3,
+        sizeAspectRatio: 0.72,
+        aromaticBonds: true
+      },
+      color: options.colorMode === "base" ? "residue-name" : semanticColorName(options.colorMode, "bases"),
+      colorParams:
+        options.colorMode === "base" ? {} : semanticColorParams(options.colorMode, semanticColors.bases)
+    },
+    { tag: "spatial-ravia-bases" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    phosphates,
+    {
+      type: "ball-and-stick",
+      typeParams: {
+        sizeFactor: 0.34,
+        sizeAspectRatio: 0.76,
+        aromaticBonds: false
+      },
+      color: "uniform",
+      colorParams: uniformColor(semanticColors.phosphates)
+    },
+    { tag: "spatial-ravia-phosphates" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    sugars,
+    {
+      type: "ball-and-stick",
+      typeParams: {
+        sizeFactor: 0.28,
+        sizeAspectRatio: 0.74,
+        aromaticBonds: false
+      },
+      color: "uniform",
+      colorParams: uniformColor(semanticColors.sugars)
+    },
+    { tag: "spatial-ravia-sugars" }
+  );
+  viewer.plugin.builders.structure.representation.buildRepresentation(
+    update,
+    structureWithProps,
+    {
+      type: "interactions",
+      typeParams: {
+        sizeFactor: 0.42,
+        visuals: ["intra-unit", "inter-unit", "bridge"]
+      },
+      color: "uniform",
+      colorParams: uniformColor(semanticColors.hydrogenBonds),
+      size: "uniform",
+      sizeParams: {}
+    },
+    { tag: "spatial-ravia-hydrogen-bonds-semantic" }
+  );
+
+  await update.commit();
+}
+
 async function applyIsolatedRepresentation(
   viewer: MolstarViewerInstance,
   trajectory: MolstarSelector,
   options: {
     colorMode: StructureColorMode;
+    focusedBasePair: number;
     isolationMode: StructureIsolationMode;
     viewMode: StructureViewMode;
   }
@@ -883,7 +1200,7 @@ async function applyIsolatedRepresentation(
   const structureWithProps =
     (await viewer.plugin.builders.structure.insertStructureProperties(structure)) ?? structure;
 
-  const expression = isolationExpression(runtime, options.isolationMode);
+  const expression = isolationExpression(runtime, options.isolationMode, options.focusedBasePair);
   const component = expression
     ? await viewer.plugin.builders.structure.tryCreateComponentFromExpression(
         structureWithProps,
@@ -944,15 +1261,19 @@ function isolationRepresentation(
   isolationMode: StructureIsolationMode
 ) {
   const color = isolationColor(colorMode, isolationMode);
+  const params =
+    color === "uniform"
+      ? uniformColor(isolationMode === "strand-b" ? semanticColors.strandB : semanticColors.strandA)
+      : colorParams(color);
 
   if (isolationMode === "backbone") {
     return {
       type: "backbone",
       typeParams: {
-        sizeFactor: 0.42
+        sizeFactor: 0.56
       },
-      color,
-      colorParams: colorParams(color)
+      color: "uniform",
+      colorParams: uniformColor(semanticColors.backbone)
     };
   }
 
@@ -960,14 +1281,12 @@ function isolationRepresentation(
     return {
       type: "ball-and-stick",
       typeParams: {
-        sizeFactor: 0.36,
+        sizeFactor: 0.42,
         sizeAspectRatio: 0.74,
         aromaticBonds: false
       },
-      color: "element-symbol",
-      colorParams: {
-        carbonColor: { name: "element-symbol", params: {} }
-      }
+      color: "uniform",
+      colorParams: uniformColor(semanticColors.phosphates)
     };
   }
 
@@ -975,12 +1294,12 @@ function isolationRepresentation(
     return {
       type: "ball-and-stick",
       typeParams: {
-        sizeFactor: isolationMode === "bases" ? 0.26 : 0.3,
+        sizeFactor: isolationMode === "bases" ? 0.32 : 0.36,
         sizeAspectRatio: 0.72,
         aromaticBonds: isolationMode === "bases"
       },
-      color,
-      colorParams: colorParams(color)
+      color: isolationMode === "bases" ? color : "uniform",
+      colorParams: isolationMode === "bases" ? colorParams(color) : uniformColor(semanticColors.sugars)
     };
   }
 
@@ -1002,19 +1321,23 @@ function isolationRepresentation(
     type: viewMode === "ball-stick" ? "ball-and-stick" : "cartoon",
     typeParams:
       viewMode === "ball-stick"
-        ? { sizeFactor: 0.24, sizeAspectRatio: 0.72 }
-        : { visuals: ["polymer-trace", "polymer-gap", "nucleotide-ring", "nucleotide-atomic-bond"] },
+        ? { sizeFactor: 0.32, sizeAspectRatio: 0.72 }
+        : { sizeFactor: 0.62, visuals: ["polymer-trace", "polymer-gap", "nucleotide-ring", "nucleotide-atomic-bond"] },
     color,
-    colorParams: colorParams(color)
+    colorParams: params
   };
 }
 
 function isolationColor(colorMode: StructureColorMode, isolationMode: StructureIsolationMode) {
+  if (isolationMode === "strand-a" || isolationMode === "strand-b") {
+    return "uniform";
+  }
+
   if (colorMode === "element" || isolationMode === "phosphates") {
     return "element-symbol";
   }
 
-  if (colorMode === "strand" || isolationMode === "strand-a" || isolationMode === "strand-b") {
+  if (colorMode === "strand") {
     return "chain-id";
   }
 
@@ -1022,6 +1345,10 @@ function isolationColor(colorMode: StructureColorMode, isolationMode: StructureI
 }
 
 function colorParams(color: string) {
+  if (color === "uniform") {
+    return uniformColor(semanticColors.strandA);
+  }
+
   if (color === "element-symbol") {
     return {
       carbonColor: { name: "chain-id", params: {} }
@@ -1031,11 +1358,65 @@ function colorParams(color: string) {
   return {};
 }
 
-function isolationExpression(runtime: MolstarQueryRuntime, isolationMode: StructureIsolationMode) {
+function uniformColor(hex: number) {
+  return { value: hex };
+}
+
+function semanticColorName(colorMode: StructureColorMode, fallback: "bases") {
+  if (colorMode === "element") {
+    return "element-symbol";
+  }
+
+  if (colorMode === "strand") {
+    return "chain-id";
+  }
+
+  if (fallback === "bases") {
+    return "uniform";
+  }
+
+  return "uniform";
+}
+
+function semanticColorParams(colorMode: StructureColorMode, fallbackHex: number) {
+  if (colorMode === "element") {
+    return {
+      carbonColor: { name: "element-symbol", params: {} }
+    };
+  }
+
+  if (colorMode === "strand") {
+    return {};
+  }
+
+  return uniformColor(fallbackHex);
+}
+
+function isolationExpression(
+  runtime: MolstarQueryRuntime,
+  isolationMode: StructureIsolationMode,
+  focusedBasePair: number
+) {
   const { MolScriptBuilder: MS } = runtime;
 
   if (isolationMode === "all" || isolationMode === "hydrogen-bonds") {
     return undefined;
+  }
+
+  if (isolationMode === "base-pair") {
+    const pair = Math.min(dnaLength, Math.max(1, Math.round(focusedBasePair)));
+    const partner = dnaLength - pair + 1;
+
+    return MS.struct.modifier.union([
+        MS.struct.generator.atomGroups({
+          "chain-test": MS.core.rel.eq([MS.ammp("label_asym_id"), "A"]),
+          "residue-test": MS.core.rel.eq([MS.ammp("label_seq_id"), pair])
+        }),
+        MS.struct.generator.atomGroups({
+          "chain-test": MS.core.rel.eq([MS.ammp("label_asym_id"), "B"]),
+          "residue-test": MS.core.rel.eq([MS.ammp("label_seq_id"), partner])
+        })
+      ]);
   }
 
   if (isolationMode === "strand-a") {
@@ -1080,6 +1461,22 @@ function atomGroups(
   return MS.struct.modifier.union([MS.struct.generator.atomGroups(params)]);
 }
 
+function createComponent(
+  viewer: MolstarViewerInstance,
+  runtime: MolstarQueryRuntime,
+  structure: MolstarSelector,
+  key: string,
+  label: string,
+  params: Record<string, unknown>
+) {
+  return viewer.plugin.builders.structure.tryCreateComponentFromExpression(
+    structure,
+    atomGroups(runtime.MolScriptBuilder, params),
+    `spatial-ravia-${key}`,
+    { label, tags: ["spatial-ravia-semantic"] }
+  );
+}
+
 function atomNameIn(MS: MolstarQueryRuntime["MolScriptBuilder"], atoms: string[]) {
   return MS.core.set.has([MS.set(...atoms), MS.ammp("label_atom_id")]);
 }
@@ -1090,6 +1487,8 @@ function isolationLabel(mode: StructureIsolationMode) {
       return "Strand A";
     case "strand-b":
       return "Strand B";
+    case "base-pair":
+      return "Focused base pair";
     case "bases":
       return "Bases";
     case "backbone":
@@ -1189,6 +1588,36 @@ function setMolstarBackground(
     cameraClipping: { radius: 80 },
     renderer: { backgroundColor: Color ? Color(hex) : hex }
   });
+}
+
+function frameStructure(viewer: MolstarViewerInstance, preset: StructureCameraPreset) {
+  viewer.plugin.managers.camera.reset(undefined, 0);
+  window.setTimeout(() => {
+    const snapshot = viewer.plugin.canvas3d?.camera.getSnapshot();
+
+    if (!snapshot) {
+      return;
+    }
+
+    const radiusScale = preset === "base-pair" ? 0.32 : preset === "groove" ? 0.48 : 0.58;
+    const nextSnapshot: Partial<MolstarCameraSnapshot> = {
+      ...snapshot,
+      radius: Math.max(snapshot.radius * radiusScale, preset === "base-pair" ? 4 : 8),
+      radiusMax: Math.max(snapshot.radiusMax * 0.58, 24)
+    };
+
+    if (preset === "groove") {
+      const radius = snapshot.radius;
+      nextSnapshot.position = [
+        snapshot.target[0] + radius * 0.18,
+        snapshot.target[1] - radius * 1.9,
+        snapshot.target[2] + radius * 0.38
+      ];
+      nextSnapshot.up = [0, 0, 1];
+    }
+
+    viewer.plugin.managers.camera.setSnapshot(nextSnapshot, 250);
+  }, 40);
 }
 
 function themeBackground(theme: StructureTheme) {
