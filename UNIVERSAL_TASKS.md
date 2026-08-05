@@ -21,12 +21,16 @@
 - Tightened the shared workspace layout and SVG label rules so the process scene remains visible at 1440x900, 1280x800, 1024x768, and 390x844 without horizontal overflow.
 - Added a reviewed static Hodgkin-Huxley benchmark trace fixture for action potential with declared `ms`/`mV` units and D3-scaled SVG path rendering.
 - Added focused trace tests proving ordered physical trace points, D3 path generation, scene provenance, and source wiring.
+- Introduced `PhenomenonPack` as the generalized pack contract with `BiologicalProcessPack` retained as a deprecated compatibility alias.
+- Added generalized equation/spatial component kinds for future equation-model and orbital/spatial packs.
+- Exposed `phenomenonPacks` from the process registry while preserving the existing `processPacks` route.
+- Added tests proving existing packs compile through the new `PhenomenonPack` API and that schema validation accepts generalized component kinds.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 141/141.
+- `npm run test:spatial`: pass, 144/144.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -35,7 +39,7 @@
 
 ## Next Recommended Task
 
-Generalize `BiologicalProcessPack` to `PhenomenonPack` and add equation-model and spatial component kinds, per `UNIVERSAL_RAVIA_SPEC.md` milestone 9. Completion requires migrating existing DNA/action-potential behavior without regressions, keeping the HH trace fixture source- and unit-validated, and preserving schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
+Add the two-body orbit pack, offline generated benchmark fixture, JPL comparison data, and R3F renderer path, per `UNIVERSAL_RAVIA_SPEC.md` milestone 10. Completion requires physical units, equation-derived classification, benchmark tolerances, no regressions in DNA/action-potential behavior, and preservation of schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
 
 ## External Validation Still Needed
 

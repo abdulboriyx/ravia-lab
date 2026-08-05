@@ -6,13 +6,20 @@ import type { PhenomenonSpec } from "./phenomenon-spec.ts";
 import { validatePrimitive } from "./primitives.ts";
 import { validatePhenomenonSpec } from "./phenomenon-spec.ts";
 
-export type ScientificEntityKind =
+export type PhenomenonComponentKind =
   | "molecule"
   | "enzyme"
   | "protein"
   | "strand"
   | "fragment"
-  | "process";
+  | "process"
+  | "equation-model"
+  | "equation-state"
+  | "spatial-body"
+  | "spatial-reference-frame"
+  | "spatial-vector";
+
+export type ScientificEntityKind = PhenomenonComponentKind;
 
 export type RepresentationMode =
   | "scene"
@@ -264,7 +271,7 @@ export type PromptIncompatibilityRule = {
   }>;
 };
 
-export type BiologicalProcessPack = {
+export type PhenomenonPack = {
   id: string;
   phenomenonSpec?: PhenomenonSpec;
   process: string;
@@ -291,6 +298,9 @@ export type BiologicalProcessPack = {
   unsupportedMessage: string;
   scaleDistortions: string[];
 };
+
+/** @deprecated Use PhenomenonPack for new Spatial RAVIA packs. */
+export type BiologicalProcessPack = PhenomenonPack;
 
 export type ScientificModel = {
   phenomenonSpec?: PhenomenonSpec;
@@ -577,10 +587,10 @@ export type SpatialSessionState = {
 };
 
 export function createScientificModelFromPack(
-  pack: BiologicalProcessPack,
+  pack: PhenomenonPack,
   biologicalContext = pack.defaultContext
 ): ScientificModel {
-  const result = compileBiologicalProcessPack(pack, { biologicalContext });
+  const result = compilePhenomenonPack(pack, { biologicalContext });
 
   if (!result.ok) {
     throw new Error(formatCompilationErrors(result.errors));
@@ -589,8 +599,8 @@ export function createScientificModelFromPack(
   return result.model;
 }
 
-export function compileBiologicalProcessPack(
-  pack: BiologicalProcessPack,
+export function compilePhenomenonPack(
+  pack: PhenomenonPack,
   options: { biologicalContext?: string } = {}
 ): CompilationResult {
   if (pack.phenomenonSpec) {
@@ -661,7 +671,14 @@ export function compileBiologicalProcessPack(
   return { ok: true, model, renderPlan };
 }
 
-function deriveRenderPlan(pack: BiologicalProcessPack): RenderPlan {
+export function compileBiologicalProcessPack(
+  pack: BiologicalProcessPack,
+  options: { biologicalContext?: string } = {}
+): CompilationResult {
+  return compilePhenomenonPack(pack, options);
+}
+
+function deriveRenderPlan(pack: PhenomenonPack): RenderPlan {
   return {
     id: pack.animation.planId,
     title: pack.animation.title,
@@ -674,7 +691,7 @@ function deriveRenderPlan(pack: BiologicalProcessPack): RenderPlan {
   };
 }
 
-export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
+export function validatePhenomenonPack(pack: PhenomenonPack) {
   const errors = validateProcessPackStrict(pack);
 
   return {
@@ -683,8 +700,12 @@ export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
   };
 }
 
-export function validateBiologicalProcessPackLayered(
-  pack: BiologicalProcessPack
+export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
+  return validatePhenomenonPack(pack);
+}
+
+export function validatePhenomenonPackLayered(
+  pack: PhenomenonPack
 ): LayeredValidationResult {
   const genericErrors = validateProcessPackStrict(pack);
   const issues = [
@@ -712,7 +733,13 @@ export function validateBiologicalProcessPackLayered(
   };
 }
 
-export function validateProcessPackStrict(pack: BiologicalProcessPack) {
+export function validateBiologicalProcessPackLayered(
+  pack: BiologicalProcessPack
+): LayeredValidationResult {
+  return validatePhenomenonPackLayered(pack);
+}
+
+export function validateProcessPackStrict(pack: PhenomenonPack) {
   const errors: CompilationError[] = [];
   const entityIds = new Set(pack.entities.map((entityItem) => entityItem.id));
   const stateIds = new Set(pack.states.map((stateItem) => stateItem.id));

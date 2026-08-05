@@ -61,7 +61,19 @@ const GeometryReferenceSchema = z.object({
 export const ComponentSchema = z.object({
   id: idSchema,
   label: z.string().min(1),
-  kind: z.enum(["molecule", "enzyme", "protein", "strand", "fragment", "process"]),
+  kind: z.enum([
+    "molecule",
+    "enzyme",
+    "protein",
+    "strand",
+    "fragment",
+    "process",
+    "equation-model",
+    "equation-state",
+    "spatial-body",
+    "spatial-reference-frame",
+    "spatial-vector"
+  ]),
   description: z.string().min(1),
   claimIds: z.array(idSchema).nonempty(),
   evidenceMode: EvidenceModeSchema,

@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type {
   BiologicalProcessPack,
-  CompilationErrorCode
+  CompilationErrorCode,
+  PhenomenonPack,
+  ScientificEntityKind
 } from "./model.ts";
 import {
   applyFollowUpCommand,
   applyCounterfactualIntervention,
   compareActiveBranchToBaseline,
   compileBiologicalProcessPack,
+  compilePhenomenonPack,
   createCounterfactualBranch,
   createInitialSession,
   deserializeScientificSession,
@@ -23,10 +26,12 @@ import {
   switchScientificBranch,
   undoScientificSessionEvent,
   validateBiologicalProcessPack,
-  validateBiologicalProcessPackLayered
+  validateBiologicalProcessPackLayered,
+  validatePhenomenonPack,
+  validatePhenomenonPackLayered
 } from "./model.ts";
 import { dnaReplicationPack, validateDnaReplicationPack } from "./dna-process.ts";
-import { processPacks } from "./process-registry.ts";
+import { phenomenonPacks, processPacks } from "./process-registry.ts";
 import {
   actionPotentialPack,
   validateActionPotentialPack
@@ -40,6 +45,37 @@ test("generic process-pack validation catches invalid references", () => {
   const validation = validateBiologicalProcessPack(dnaReplicationPack);
 
   assert.equal(validation.valid, true, validation.errors.join(", "));
+});
+
+test("PhenomenonPack is the primary compatible pack contract", () => {
+  const packs: PhenomenonPack[] = phenomenonPacks;
+
+  assert.equal(packs.length, processPacks.length);
+
+  for (const pack of packs) {
+    const validation = validatePhenomenonPack(pack);
+    const layered = validatePhenomenonPackLayered(pack);
+    const compiled = compilePhenomenonPack(pack);
+
+    assert.equal(validation.valid, true, validation.errors.join(", "));
+    assert.equal(layered.valid, true, layered.errors.map((error) => error.message).join(", "));
+    assert.equal(compiled.ok, true);
+  }
+});
+
+test("PhenomenonPack supports equation-model and spatial component kinds", () => {
+  const pack = clonePack();
+  const equationKind: ScientificEntityKind = "equation-model";
+  const spatialKind: ScientificEntityKind = "spatial-body";
+
+  pack.entities[0] = { ...pack.entities[0], kind: equationKind };
+  pack.entities[1] = { ...pack.entities[1], kind: spatialKind };
+
+  const validation = validatePhenomenonPack(pack);
+  const compiled = compilePhenomenonPack(pack);
+
+  assert.equal(validation.valid, true, validation.errors.join(", "));
+  assert.equal(compiled.ok, true);
 });
 
 test("process-specific validation owns pack invariants", () => {

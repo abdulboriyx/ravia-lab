@@ -14,6 +14,16 @@ test("DNA replication PhenomenonSpec validates against the runtime contract", ()
   assert.equal(dnaReplicationPhenomenonSpec.views[1].structureMapping?.pdbId, "1ZF5");
 });
 
+test("PhenomenonSpec accepts generalized equation and spatial component kinds", () => {
+  const spec = cloneSpec();
+  spec.components[0].kind = "equation-model";
+  spec.components[1].kind = "spatial-body";
+
+  const validation = validatePhenomenonSpec(spec);
+
+  assert.equal(validation.valid, true, validation.valid ? "" : validation.errors.map((error) => error.message).join(", "));
+});
+
 test("compilation rejects a pack with an invalid PhenomenonSpec before scene compilation", () => {
   const spec = cloneSpec();
   spec.components[0].claimIds = ["missing-claim"];

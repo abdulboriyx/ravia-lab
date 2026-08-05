@@ -54,6 +54,14 @@ Decision: representation selection merges caller-provided availability with evid
 
 Reason: the schema is now the authoritative place for approved renderer/evidence combinations. Molecular 3D is enabled only by manually supplied structural availability or a literal molecular-structure view with an approved deposited mapping. Schema default views may influence ranking, but explicit user requests still win when the requested representation has supporting evidence.
 
+## PhenomenonPack Generalization
+
+Decision: introduce `PhenomenonPack` as the primary pack contract and retain `BiologicalProcessPack` as a deprecated compatibility alias.
+
+Reason: the spec needs equation-model and spatial-scene milestones after biology. A compatibility alias lets existing DNA, transcription, action-potential, evaluation, and UI behavior keep working while new orbit-oriented kinds are added.
+
+Constraint: this milestone does not make `PhenomenonSpec` the sole authoring source. The DNA adapter remains temporary until all packs can be authored directly from the schema without duplicating content.
+
 ## Next Decision Needed
 
-The next architecture decision is how to migrate `BiologicalProcessPack` to `PhenomenonPack` without duplicating legacy process data or weakening the existing `PhenomenonSpec` validation boundary.
+The next architecture decision is how to represent the two-body orbit pack: whether the equation-derived state should be compiled through the existing SVG primitives first, or whether the R3F renderer path should be introduced at the same time as the physical benchmark fixture.

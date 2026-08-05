@@ -29,11 +29,15 @@ The runtime path is:
 
 The schema is the validation authority for versioned phenomenon data. It checks unique IDs, claim and source coverage, component references, relation endpoints, state and transition references, parameter bounds, units, timeline ordering, view references, renderer/evidence combinations, deposited molecular structure mappings, and supported follow-up declarations.
 
-## Compatibility Boundary
+## PhenomenonPack Boundary
 
-The current renderer still consumes `BiologicalProcessPack`. To avoid a UI rewrite in this milestone, `app/code/spatial-ravia/phenomenon-adapter.ts` derives a validated `PhenomenonSpec` from the existing DNA replication pack and attaches it to `dnaReplicationPack.phenomenonSpec`.
+`app/code/spatial-ravia/model.ts` now exposes `PhenomenonPack` as the generalized curated-pack contract. The old `BiologicalProcessPack` name remains as a deprecated compatibility alias so existing DNA, transcription, action-potential, evaluation, and UI paths do not regress.
 
-Compilation in `model.ts` now validates `pack.phenomenonSpec` before the legacy process-pack compiler runs. This makes the DNA contract executable without changing visible behavior, session events, scene compilation, routing, or Mol* lazy loading.
+`compilePhenomenonPack`, `validatePhenomenonPack`, and `validatePhenomenonPackLayered` are the new primary APIs. The prior biological function names delegate to them for compatibility.
+
+The current DNA `PhenomenonSpec` adapter remains temporary: `app/code/spatial-ravia/phenomenon-adapter.ts` derives a validated `PhenomenonSpec` from the existing DNA replication pack and attaches it to `dnaReplicationPack.phenomenonSpec`. Compilation validates `pack.phenomenonSpec` before scene compilation.
+
+`PhenomenonComponentKind` now includes the prior biological kinds plus `equation-model`, `equation-state`, `spatial-body`, `spatial-reference-frame`, and `spatial-vector`. These are type/schema scaffolding for the orbit milestone; no new orbit pack is present yet.
 
 ## Pack-Owned Incompatibility Rules
 
@@ -63,4 +67,4 @@ The action-potential workspace is also classified as a schematic explanatory mod
 
 ## Deferred Architecture Work
 
-The adapter is intentionally temporary. The next schema migration should make `PhenomenonSpec` the direct authoring source for all process packs, then retire legacy-only fields once additional packs consume the schema directly.
+The adapter is intentionally temporary. A later migration should make `PhenomenonSpec` the direct authoring source for all phenomenon packs, then retire legacy-only fields once additional packs consume the schema directly.
