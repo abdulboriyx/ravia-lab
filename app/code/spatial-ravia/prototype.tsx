@@ -347,7 +347,7 @@ function DnaForkScene({
         <span>Evidence mode: schematic explanatory model</span>
       </div>
 
-      <svg viewBox={scene.viewBox} role="img" aria-label={scene.ariaLabel}>
+      <svg viewBox={scene.viewBox} preserveAspectRatio="xMidYMid meet" role="img" aria-label={scene.ariaLabel}>
         <PrimitiveSvgDefs />
         <g>
           {scene.nodes
@@ -389,6 +389,8 @@ function PrimitiveSvgElement({
     "scientificPrimitive",
     `primitive-${node.kind}`,
     `primitive-${node.styleToken}`,
+    node.stageVisibility.entityActiveInStage === true ? "isStageActive" : "",
+    node.stageVisibility.entityActiveInStage === false ? "isStageInactive" : "",
     isSelected ? "isActive" : ""
   ]
     .filter(Boolean)
@@ -424,17 +426,35 @@ function PrimitiveSvgElement({
       {node.entityId && node.selectable ? renderPrimitiveHitTarget(node.geometry) : null}
       {renderPrimitiveShape(node.geometry, node.kind, className)}
       {node.labels
-        .filter((label) => label.visible)
+        .filter((label) => shouldRenderNodeLabel(node, label.visible))
         .map((label) => (
-          <text
-            className="renderLabel"
-            key={label.id}
-            x={label.x}
-            y={label.y}
-          >
-            {label.text}
-          </text>
+          <PrimitiveLabel key={label.id} text={label.text} x={label.x} y={label.y} />
         ))}
+    </g>
+  );
+}
+
+function shouldRenderNodeLabel(node: CompiledSceneNode, visible: boolean) {
+  return visible && (node.stageVisibility.entityActiveInStage !== false || node.selected || node.isolated);
+}
+
+function PrimitiveLabel({
+  text,
+  x,
+  y
+}: {
+  text: string;
+  x: number;
+  y: number;
+}) {
+  const width = Math.max(48, text.length * 13.5);
+
+  return (
+    <g className="renderLabelGroup">
+      <rect x={x - 7} y={y - 25} width={width} height={32} rx={3} />
+      <text className="renderLabel" x={x} y={y}>
+        {text}
+      </text>
     </g>
   );
 }

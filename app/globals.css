@@ -531,9 +531,9 @@ main {
 
 .workspaceShell {
   display: grid;
-  grid-template-columns: minmax(240px, 0.74fr) minmax(520px, 1.7fr) minmax(270px, 0.82fr);
-  gap: 14px;
-  min-height: 620px;
+  grid-template-columns: minmax(190px, 0.46fr) minmax(680px, 2.45fr) minmax(220px, 0.58fr);
+  gap: 10px;
+  min-height: 0;
 }
 
 .workspaceShell.inspectorClosed {
@@ -550,8 +550,8 @@ main {
 .workspacePanel {
   display: grid;
   align-content: start;
-  gap: 18px;
-  padding: 16px;
+  gap: 12px;
+  padding: 12px;
   overflow: auto;
 }
 
@@ -661,6 +661,43 @@ main {
   gap: 4px;
 }
 
+.componentActions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.componentActions button {
+  appearance: none;
+  min-width: 0;
+  padding: 8px 6px;
+  border: 1px solid var(--line);
+  color: var(--fg);
+  background: transparent;
+  font: inherit;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.componentActions button:disabled {
+  opacity: 0.34;
+  cursor: default;
+}
+
+.scaleMode {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.scaleMode button {
+  text-align: center;
+  white-space: normal;
+}
+
 .claimItem > span,
 .provenanceDetails summary {
   color: var(--muted);
@@ -721,7 +758,7 @@ main {
 
 .simulationCanvas {
   position: relative;
-  min-height: 560px;
+  min-height: 500px;
   overflow: hidden;
   background:
     linear-gradient(to right, var(--line) 1px, transparent 1px),
@@ -731,7 +768,11 @@ main {
 
 .dnaForkCanvas,
 .molecularScaleView {
-  min-height: 560px;
+  min-height: 500px;
+}
+
+.dnaForkCanvas {
+  height: clamp(500px, calc(100svh - 260px), 760px);
 }
 
 .molecularScaleView {
@@ -978,7 +1019,12 @@ main {
   display: block;
   width: 100%;
   height: 100%;
-  min-height: 560px;
+  min-height: 0;
+}
+
+.dnaForkCanvas svg {
+  height: 100%;
+  min-height: 0;
 }
 
 .simulationCanvas g[role="button"] {
@@ -996,7 +1042,7 @@ main {
   fill: none;
   stroke: var(--fg);
   stroke-width: 4;
-  transition: opacity 160ms ease, stroke-width 160ms ease;
+  transition: opacity 160ms ease, stroke 160ms ease, stroke-width 160ms ease, fill 160ms ease;
 }
 
 .scientificPrimitive text,
@@ -1004,9 +1050,15 @@ main {
   fill: var(--fg);
   stroke: none;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 18px;
+  font-size: 22px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.renderLabelGroup rect {
+  fill: rgba(2, 3, 5, 0.78);
+  stroke: rgba(235, 248, 252, 0.16);
+  stroke-width: 1;
 }
 
 .primitive-primary {
@@ -1014,7 +1066,7 @@ main {
 }
 
 .primitive-secondary {
-  stroke: var(--muted);
+  stroke: #7fb7c7;
 }
 
 .primitive-muted,
@@ -1024,18 +1076,32 @@ main {
 
 .primitive-accent,
 .primitive-warning {
-  stroke: var(--fg);
+  stroke: #f2f7f8;
 }
 
 .primitive-surface,
 .primitive-field {
-  fill: rgba(255, 255, 255, 0.04);
-  stroke: var(--muted);
+  fill: rgba(127, 183, 199, 0.12);
+  stroke: #7fb7c7;
 }
 
 .scientificPrimitive:is(polygon, circle, rect, ellipse),
 .scientificPrimitive :is(polygon, circle, rect, ellipse) {
   fill: var(--bg);
+}
+
+.scientificPrimitive.isStageInactive {
+  opacity: 0.28;
+}
+
+.scientificPrimitive.isStageActive {
+  opacity: 1;
+  stroke: #f5fbff;
+}
+
+.scientificPrimitive.isStageActive:is(circle, rect, polygon, ellipse),
+.scientificPrimitive.isStageActive :is(circle, rect, polygon, ellipse) {
+  fill: rgba(236, 248, 252, 0.1);
 }
 
 .scientificPrimitive:is(line) {
@@ -1121,10 +1187,11 @@ g.isActive,
   position: absolute;
   right: 14px;
   bottom: 14px;
-  width: min(330px, calc(100% - 28px));
-  padding: 12px;
+  width: min(280px, calc(100% - 28px));
+  padding: 10px;
   border: 1px solid var(--line);
-  background: var(--surface);
+  background: rgba(2, 3, 5, 0.76);
+  backdrop-filter: blur(12px);
 }
 
 .selectionReadout p {
@@ -1152,6 +1219,11 @@ g.isActive,
 .segmentedControl {
   display: inline-grid;
   grid-template-columns: 1fr 1fr;
+}
+
+.scaleMode {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
 }
 
 .segmentedControl button {
@@ -1329,6 +1401,18 @@ g.isActive,
     grid-template-columns: minmax(0, 1fr);
   }
 
+  .simulationColumn {
+    grid-row: 1;
+  }
+
+  .leftPanel {
+    grid-row: 2;
+  }
+
+  .rightPanel {
+    grid-row: 3;
+  }
+
   .rightPanel {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1336,6 +1420,11 @@ g.isActive,
   .simulationCanvas,
   .simulationCanvas svg {
     min-height: 480px;
+  }
+
+  .dnaForkCanvas {
+    height: min(64svh, 560px);
+    min-height: 440px;
   }
 }
 
@@ -1399,6 +1488,17 @@ g.isActive,
   .simulationCanvas,
   .simulationCanvas svg {
     min-height: 420px;
+  }
+
+  .dnaForkCanvas {
+    height: 430px;
+    min-height: 430px;
+  }
+
+  .selectionReadout {
+    right: 10px;
+    bottom: 10px;
+    width: min(250px, calc(100% - 20px));
   }
 
   .canvasToolbar {

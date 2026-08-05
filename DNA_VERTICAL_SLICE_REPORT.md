@@ -58,6 +58,16 @@
 - The route supports the first DNA vertical slice only; additional process packs are intentionally not exposed in the visible workspace yet.
 - Next.js dev verification must use `localhost:3003`; `127.0.0.1:3003` is blocked by Next dev-origin protection unless `allowedDevOrigins` is configured.
 
+## Visual Regression Fix
+
+- Root cause: the visible DNA workspace rendered the process-pack scene with a fixed `0 0 920 560` viewBox, while animated DNA primitives and labels moved outside or near the edges of that coordinate system. The CSS then stretched the SVG inside a center column that was too narrow, producing clipped and compressed geometry.
+- Fix: the scene compiler now derives the rendered viewBox from visible compiled primitives and actually rendered labels, including path geometry and realistic text bounds.
+- Layout fix: the center representation column now has priority over side metadata panels, the SVG preserves aspect ratio, mobile stacks the primary scene before panels, and the DNA canvas has stable responsive dimensions.
+- Interaction fix: active-stage membership now changes primitive emphasis, labels are stage-aware, and the label/direction controls visibly alter the scene without overlap in the checked default states.
+- Before measurement at 1440x900: center column was 736px wide and the primitive union extended outside the SVG left edge.
+- After measurement at 1440x900: center column is 995px wide, SVG is inside the canvas, primitive union is inside SVG, label overlaps are 0, and horizontal overflow is false.
+- After measurement at 390x844: primary scene is first in the stack, center width is 390px, SVG is inside the canvas, primitive union is inside SVG, label overlaps are 0, and horizontal overflow is false.
+
 ## Exact Next Recommended Task
 
 Implement a second visible curated process vertical slice after product approval of the target process. Recommended next slice: transcription, using the existing transcription process pack and the same generic session/compiler/control/evidence UI contract proven by the DNA slice.

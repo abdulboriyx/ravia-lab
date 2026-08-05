@@ -178,9 +178,10 @@ export function compileScene(
   const nodes = applyRelativeAnchors(initialNodes, plan.primitives, progress);
   const labels = nodes.flatMap((node) => node.labels);
   const visibleNodes = nodes.filter((node) => node.visible);
+  const sceneViewBox = viewBoxForNodes(visibleNodes) ?? plan.viewBox;
   const groups = compileGroups(plan, nodes);
   const overlays = compileInterventionOverlays(model, options.activeIntervention ?? "baseline");
-  const camera = compileCameraFocus(plan, visibleNodes, selected, isolatedGroup);
+  const camera = compileCameraFocus(plan, visibleNodes, selected, isolatedGroup, sceneViewBox);
   const indicators = compileIndicators(nodes, model.scaleDistortions);
 
   return {
@@ -188,7 +189,7 @@ export function compileScene(
     title: plan.title,
     subtitle: plan.subtitle,
     ariaLabel: plan.ariaLabel,
-    viewBox: plan.viewBox,
+    viewBox: sceneViewBox,
     progress,
     nodes,
     labels,
@@ -623,7 +624,8 @@ function compileCameraFocus(
   plan: RenderPlan,
   visibleNodes: CompiledSceneNode[],
   selected: Set<string>,
-  isolatedGroup: Set<string> | null
+  isolatedGroup: Set<string> | null,
+  fullSceneViewBox = plan.viewBox
 ): SceneCameraFocus {
   const focusEntityIds = selected.size > 0
     ? Array.from(selected)
@@ -634,7 +636,7 @@ function compileCameraFocus(
   if (focusEntityIds.length === 0) {
     return {
       targetEntityIds: [],
-      viewBox: plan.viewBox,
+      viewBox: fullSceneViewBox,
       reason: "full-scene"
     };
   }
@@ -651,7 +653,12 @@ function compileCameraFocus(
 
 function viewBoxForNodes(nodes: CompiledSceneNode[]) {
   const boxes = nodes
-    .map((node) => geometryBounds(node.geometry))
+    .flatMap((node) => [
+      geometryBounds(node.geometry),
+      ...node.labels
+        .filter((label) => shouldIncludeLabelInViewBox(node, label.visible))
+        .map((label) => labelBounds(label.text, label.x, label.y))
+    ])
     .filter((box): box is NonNullable<ReturnType<typeof geometryBounds>> => box !== null);
 
   if (boxes.length === 0) {
@@ -662,7 +669,7 @@ function viewBoxForNodes(nodes: CompiledSceneNode[]) {
   const minY = Math.min(...boxes.map((box) => box.minY));
   const maxX = Math.max(...boxes.map((box) => box.maxX));
   const maxY = Math.max(...boxes.map((box) => box.maxY));
-  const padding = 80;
+  const padding = 64;
 
   return [
     round(minX - padding),
@@ -673,6 +680,23 @@ function viewBoxForNodes(nodes: CompiledSceneNode[]) {
 }
 
 function geometryBounds(geometry: ResolvedGeometry) {
+  if (geometry.type === "path") {
+    const values = Array.from(geometry.d.matchAll(/-?\d+(?:\.\d+)?/g), (match) => Number(match[0]));
+    const xs = values.filter((_, index) => index % 2 === 0);
+    const ys = values.filter((_, index) => index % 2 === 1);
+
+    if (xs.length === 0 || ys.length === 0) {
+      return null;
+    }
+
+    return {
+      minX: Math.min(...xs),
+      minY: Math.min(...ys),
+      maxX: Math.max(...xs),
+      maxY: Math.max(...ys)
+    };
+  }
+
   if (geometry.type === "line" || geometry.type === "graph-edge") {
     return {
       minX: Math.min(geometry.x1, geometry.x2),
@@ -718,12 +742,16 @@ function geometryBounds(geometry: ResolvedGeometry) {
     };
   }
 
-  if (geometry.type === "text" || geometry.type === "graph-node") {
+  if (geometry.type === "text") {
+    return labelBounds(geometry.text, geometry.x, geometry.y);
+  }
+
+  if (geometry.type === "graph-node") {
     return {
-      minX: geometry.x - ("radius" in geometry ? geometry.radius : 20),
-      minY: geometry.y - ("radius" in geometry ? geometry.radius : 12),
-      maxX: geometry.x + ("radius" in geometry ? geometry.radius : 160),
-      maxY: geometry.y + ("radius" in geometry ? geometry.radius : 12)
+      minX: geometry.x - geometry.radius,
+      minY: geometry.y - geometry.radius,
+      maxX: geometry.x + Math.max(geometry.radius, geometry.label.length * 12 + 28),
+      maxY: geometry.y + geometry.radius
     };
   }
 
@@ -737,6 +765,19 @@ function geometryBounds(geometry: ResolvedGeometry) {
   }
 
   return null;
+}
+
+function shouldIncludeLabelInViewBox(node: CompiledSceneNode, visible: boolean) {
+  return visible && (node.stageVisibility.entityActiveInStage !== false || node.selected || node.isolated);
+}
+
+function labelBounds(text: string, x: number, y: number) {
+  return {
+    minX: x,
+    minY: y - 18,
+    maxX: x + Math.max(48, text.length * 13.5),
+    maxY: y + 8
+  };
 }
 
 function anchorPoint(

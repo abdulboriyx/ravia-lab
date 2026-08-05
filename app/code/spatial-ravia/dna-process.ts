@@ -472,6 +472,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
           geometryType: "path",
           semanticRole: "template polymer",
           styleToken: "primary",
+          labels: [{ text: "template 5'->3'", at: [132, 246], visibility: { mode: "labels" } }],
           classification: "mixed",
           animationBindings: [{ property: "path", parameter: "fork-position" }],
           provenance: [{ sourceId: "alberts-essential-cell-biology", note: "Template strand role." }]
@@ -491,6 +492,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
           geometryType: "path",
           semanticRole: "template polymer",
           styleToken: "primary",
+          labels: [{ text: "template 3'->5'", at: [132, 350], visibility: { mode: "labels" } }],
           classification: "mixed",
           animationBindings: [{ property: "path", parameter: "fork-position" }],
           provenance: [{ sourceId: "alberts-essential-cell-biology", note: "Template strand role." }]
@@ -777,7 +779,7 @@ function directionalityLabels(): ScientificPrimitive[] {
     ["direction-right-top", 812, 76, "3'"],
     ["direction-left-bottom", 88, 328, "3'"],
     ["direction-right-bottom", 812, 494, "5'"],
-    ["direction-synthesis", { base: 270 - 18, progress: 310 }, 372, "5' -> 3'"]
+    ["direction-synthesis", { base: 270 + 18, progress: 310 }, 414, "5' -> 3'"]
   ];
 
   return labels.map(([id, x, y, text]) => ({
