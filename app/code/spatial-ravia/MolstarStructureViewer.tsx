@@ -9,7 +9,7 @@ import type {
   StructureSource,
   StructureTheme,
   StructureViewMode
-} from "./prototype";
+} from "./DnaMolecularView";
 
 type LoadState = "loading" | "ready" | "error";
 type SelectionReadout = {
