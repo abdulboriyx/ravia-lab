@@ -348,7 +348,11 @@ function validateQuantity(
     "nt",
     "angstrom",
     "nm",
-    "mV"
+    "mV",
+    "AU",
+    "day",
+    "AU/day",
+    "AU^3/day^2"
   ]);
 
   if (!allowedUnits.has(quantity.unit)) {

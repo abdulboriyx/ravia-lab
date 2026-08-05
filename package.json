@@ -12,6 +12,7 @@
     "eval:spatial": "node app/code/spatial-ravia/evaluation.ts"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.7.0",
     "d3-scale": "^4.0.2",
     "d3-shape": "^3.2.0",
     "molstar": "^5.11.0",

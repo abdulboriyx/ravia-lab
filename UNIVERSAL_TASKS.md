@@ -25,12 +25,17 @@
 - Added generalized equation/spatial component kinds for future equation-model and orbital/spatial packs.
 - Exposed `phenomenonPacks` from the process registry while preserving the existing `processPacks` route.
 - Added tests proving existing packs compile through the new `PhenomenonPack` API and that schema validation accepts generalized component kinds.
+- Added the two-body orbit process pack with a direct `PhenomenonSpec`, physical timeline, equation/spatial component kinds, and pack-owned N-body refusal rules.
+- Added the offline Sun-Earth benchmark fixture with JPL Horizons vectors, fixed two-body model points, AU/AU-per-day/AU^3-per-day^2 units, and a declared `0.000025 AU` position-error tolerance.
+- Added the React Three Fiber orbit renderer path with responsive camera fitting, benchmark markers, central-gravity vector, labels, selection, hide, isolate, directionality, and shared playback controls.
+- Added focused orbit fixture, pack validation, scene compilation, prompt, unsupported-scope, and workspace source-contract tests.
+- Verified Chromium screenshots and layout measurements for the orbit workspace at 1440x900, 1280x800, 1024x768, and 390x844.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 144/144.
+- `npm run test:spatial`: pass, 152/152.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -39,7 +44,7 @@
 
 ## Next Recommended Task
 
-Add the two-body orbit pack, offline generated benchmark fixture, JPL comparison data, and R3F renderer path, per `UNIVERSAL_RAVIA_SPEC.md` milestone 10. Completion requires physical units, equation-derived classification, benchmark tolerances, no regressions in DNA/action-potential behavior, and preservation of schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
+Add the server-side structured-output LLM adapter that emits only registered intent IDs, per `UNIVERSAL_RAVIA_SPEC.md` milestone 11. Completion requires invalid or unavailable providers to fall back or abstain deterministically, with no general web agent, retrieval, or client-exposed API key.
 
 ## External Validation Still Needed
 

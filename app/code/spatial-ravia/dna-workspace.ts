@@ -8,7 +8,7 @@ export type SpatialWorkspaceResult = {
 };
 
 export const spatialWorkspacePacks = processPacks.filter((pack) =>
-  ["dna-replication", "action-potential"].includes(pack.id)
+  ["dna-replication", "action-potential", "two-body-orbit"].includes(pack.id)
 );
 
 export function startSpatialWorkspaceFromPrompt(

@@ -62,6 +62,22 @@ Reason: the spec needs equation-model and spatial-scene milestones after biology
 
 Constraint: this milestone does not make `PhenomenonSpec` the sole authoring source. The DNA adapter remains temporary until all packs can be authored directly from the schema without duplicating content.
 
+## Two-Body Orbit Renderer
+
+Decision: add the orbit slice as a reviewed `PhenomenonPack` with a direct `PhenomenonSpec`, an offline JPL benchmark fixture, and a React Three Fiber spatial renderer.
+
+Reason: the governing spec requires the MVP to exercise reusable 3D spatial rendering, physical units, equation-derived classification, and validation against JPL Horizons. The existing SVG scene compiler still receives selectable orbit primitives for session state, while the visible orbit representation uses R3F.
+
+Constraint: the orbit slice is limited to a Sun-Earth two-body benchmark over a stored five-day window. It does not expose an arbitrary equation solver, N-body mission simulation, live retrieval, or spacecraft-navigation workflow.
+
+## Orbit Benchmark Data
+
+Decision: store the Horizons comparison data and two-body model points as a local fixture instead of querying JPL at runtime.
+
+Reason: Spatial RAVIA packs must be curated and reproducible. Live external records may inform authoring, but runtime rendering and tests must consume allowlisted local data with declared units, provenance, and tolerance.
+
+Constraint: the fixture tolerance is valid only for the checked 2026-01-01 through 2026-01-06 TDB benchmark interval.
+
 ## Next Decision Needed
 
-The next architecture decision is how to represent the two-body orbit pack: whether the equation-derived state should be compiled through the existing SVG primitives first, or whether the R3F renderer path should be introduced at the same time as the physical benchmark fixture.
+The next architecture decision is how to introduce the server-side structured-output LLM adapter while preserving deterministic fallback, registered-intent-only output, and no client-side API key exposure.
