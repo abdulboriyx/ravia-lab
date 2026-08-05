@@ -99,7 +99,7 @@ export function SpatialRaviaPrototype() {
   const [isolationMode, setIsolationMode] = useState<StructureIsolationMode>("all");
   const [bubbleProgress, setBubbleProgress] = useState(0);
   const [bubblePlaying, setBubblePlaying] = useState(false);
-  const [theme, setTheme] = useState<StructureTheme>("dark");
+  const [theme, setTheme] = useState<StructureTheme>("light");
   const [inspectorOpen, setInspectorOpen] = useState(false);
 
   useEffect(() => {
@@ -224,8 +224,12 @@ export function SpatialRaviaPrototype() {
             </button>
           ))}
         </div>
-        <button type="button" onClick={() => setTheme((value) => (value === "dark" ? "light" : "dark"))}>
-          {theme === "dark" ? "Light" : "Dark"}
+        <button
+          type="button"
+          className="structureThemeToggle"
+          onClick={() => setTheme((value) => (value === "dark" ? "light" : "dark"))}
+        >
+          {theme === "dark" ? "Light theme" : "Dark theme"}
         </button>
         <button type="button" onClick={() => setInspectorOpen((open) => !open)}>
           {inspectorOpen ? "Hide metadata" : "Metadata"}

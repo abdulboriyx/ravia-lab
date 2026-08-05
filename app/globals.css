@@ -1797,7 +1797,7 @@ body:has(.spatialWorkspace) .siteHeader {
 }
 
 .molstarWorkspace[data-spatial-theme="light"] {
-  background: #f6f8f6;
+  background: #ffffff;
 }
 
 .molstarStage,
@@ -1817,7 +1817,7 @@ body:has(.spatialWorkspace) .siteHeader {
 }
 
 .molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-plugin {
-  background: #f6f8f6;
+  background: #ffffff;
 }
 
 .molstarMount .msp-layout-main,
@@ -1829,7 +1829,7 @@ body:has(.spatialWorkspace) .siteHeader {
 .molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-layout-main,
 .molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-viewport,
 .molstarWorkspace[data-spatial-theme="light"] .molstarMount .msp-canvas3d {
-  background: #f6f8f6 !important;
+  background: #ffffff !important;
 }
 
 .molstarMount .msp-layout-left,
@@ -1870,7 +1870,7 @@ body:has(.spatialWorkspace) .siteHeader {
 
 .molstarWorkspace[data-spatial-theme="light"] .molstarLoadState {
   color: rgba(20, 31, 34, 0.74);
-  background: #f6f8f6;
+  background: #ffffff;
 }
 
 .structureIdentity {

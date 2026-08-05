@@ -271,7 +271,7 @@ export default function MolstarStructureViewer({
           viewportShowScreenshotControls: false,
           viewportShowToggleFullscreen: false,
           viewportShowReset: true,
-          viewportBackgroundColor: themeBackground("dark"),
+          viewportBackgroundColor: themeBackground("light"),
           illumination: true
         });
 
@@ -1183,7 +1183,7 @@ function setMolstarBackground(
   Color: MolstarGlobal["Color"] | null,
   theme: StructureTheme
 ) {
-  const hex = theme === "light" ? 0xf6f8f6 : 0x020305;
+  const hex = theme === "light" ? 0xffffff : 0x020305;
 
   viewer.plugin.canvas3d?.setProps({
     cameraClipping: { radius: 80 },
@@ -1192,7 +1192,7 @@ function setMolstarBackground(
 }
 
 function themeBackground(theme: StructureTheme) {
-  return theme === "light" ? "#f6f8f6" : "#020305";
+  return theme === "light" ? "#ffffff" : "#020305";
 }
 
 function loadMolstarAssets() {
