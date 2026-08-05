@@ -58,7 +58,11 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     "transcription",
     "eukaryotic transcription",
     "dna copied into rna",
+    "rna polymerase ii",
     "rna polymerase moving along dna",
+    "promoter escape",
+    "transcription bubble",
+    "growing rna transcript",
     "template strand transcription"
   ],
   examples: [
@@ -228,9 +232,29 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     },
     {
       id: "polymerase-motion",
-      hints: ["rna polymerase moving along dna", "polymerase moving along dna"],
+      hints: ["rna polymerase moving along dna", "polymerase moving along dna", "rna polymerase ii"],
       context: "eukaryotic protein-coding gene transcription",
       intent: "show-polymerase-motion"
+    },
+    {
+      id: "promoter-escape",
+      hints: ["promoter escape", "visualize promoter escape"],
+      context: "eukaryotic protein-coding gene transcription",
+      intent: "show-promoter-escape"
+    },
+    {
+      id: "transcription-bubble",
+      hints: ["transcription bubble", "display transcription bubble"],
+      context: "eukaryotic protein-coding gene transcription",
+      intent: "show-transcription-bubble",
+      suggestedCommandId: "show-transcription-bubble"
+    },
+    {
+      id: "growing-rna-transcript",
+      hints: ["growing rna transcript", "display growing rna transcript"],
+      context: "eukaryotic protein-coding gene transcription",
+      intent: "show-growing-rna",
+      suggestedCommandId: "show-growing-rna"
     },
     {
       id: "template-strand-why",

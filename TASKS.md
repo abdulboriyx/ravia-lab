@@ -38,7 +38,7 @@
 - Suspected root cause: Process scoring accepts partial entity overlap too easily and lacks contradiction/misconception gates; process packs lack some prompt and command phrases.
 - Files likely involved: `app/code/spatial-ravia/model.ts`, `app/code/spatial-ravia/dna-process.ts`, `app/code/spatial-ravia/transcription-process.ts`, `app/code/spatial-ravia/action-potential-process.ts`, related tests.
 - Validation command: `npm run eval:spatial`; `npm run test:spatial`; `npm run typecheck`.
-- Completion status: pending.
+- Completion status: completed. Scientific evaluation improved from 78/108 to 108/108 by adding valid aliases/context rules, rejecting known cross-process contradictions and misconceptions, fixing follow-up command support, and preventing short-token false-positive process scoring.
 
 ## Task 6: Map visible Spatial RAVIA UI versus tested process-pack engine
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ChapterBioEmbed } from "./ChapterBioEmbed";
 
 export const metadata: Metadata = {
   title: "Chapter 7: DNA, RNA, Protein | Ravia Lab",
@@ -9,9 +10,7 @@ export const metadata: Metadata = {
 export default function ChapterBioPage() {
   return (
     <main className="chapterBioHost" aria-label="ChapterBio figure studio">
-      <link rel="stylesheet" href="/chapterbio/assets/index-Jp-0-yMw.css" />
-      <div id="root" />
-      <script type="module" src="/chapterbio/assets/index-DPg_OcaF.js" />
+      <ChapterBioEmbed />
     </main>
   );
 }

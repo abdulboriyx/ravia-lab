@@ -50,6 +50,10 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     "dna copying",
     "dna replication",
     "replication fork",
+    "lagging strand copied",
+    "helicase opening fork",
+    "ligase finish replication",
+    "template strand during replication",
     "okazaki fragments",
     "bacterial dna replication"
   ],
@@ -61,14 +65,16 @@ export const dnaReplicationPack: BiologicalProcessPack = {
   ],
   biologicalContexts: [
     "general DNA replication",
+    "bacterial DNA replication",
     "bacterial chromosome replication",
+    "eukaryotic DNA replication",
     "eukaryotic chromosome replication"
   ],
   defaultContext: "bacterial chromosome replication",
   unsupportedMessage: "This prototype currently supports DNA replication and eukaryotic transcription.",
   entities: [
-    entity("parental-strand-5to3", "Parental strand 5'->3'", ["template strand"], "strand", "Original DNA template running 5' to 3' in the schematic."),
-    entity("parental-strand-3to5", "Parental strand 3'->5'", ["opposite template"], "strand", "Original DNA template running 3' to 5' in the schematic."),
+    entity("parental-strand-5to3", "Parental strand 5'->3'", ["opposite template"], "strand", "Original DNA template running 5' to 3' in the schematic."),
+    entity("parental-strand-3to5", "Parental strand 3'->5'", ["template strand", "replication template strand"], "strand", "Original DNA template running 3' to 5' in the schematic."),
     entity("helicase", "Helicase", ["dna helicase"], "enzyme", "Unwinds the parental duplex at the replication fork."),
     entity("ssb", "Single-strand binding proteins", ["ssb proteins"], "protein", "Stabilize exposed single-stranded DNA."),
     entity("primase", "Primase", ["rna primase"], "enzyme", "Synthesizes short RNA primers."),
@@ -117,6 +123,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     intervention("isolate-lagging-strand", "Isolate lagging strand", "Dim all entities except the lagging-strand path.", ["lagging-strand", "okazaki-fragments", "rna-primers"]),
     intervention("hide-leading-strand", "Hide leading strand", "Remove the continuous leading-strand path.", ["leading-strand"]),
     intervention("show-rna-primers", "Show RNA primers", "Reveal primer segments on the lagging strand.", ["rna-primers"]),
+    intervention("hide-helicase", "Hide helicase", "Hide helicase from the schematic view.", ["helicase"]),
     intervention("remove-ligase", "Remove ligase", "Show unresolved nicks between Okazaki fragments.", ["ligase", "okazaki-fragments"], dnaCounterfactualDelta("ligase-absent")),
     intervention("compare-no-ligase", "Compare normal vs no ligase", "Render baseline and no-ligase outcome together.", ["ligase", "okazaki-fragments"], dnaCounterfactualDelta("ligase-absent")),
     intervention("helicase-stopped", "Helicase stopped", "Stop fork opening before strand extension can proceed.", ["helicase", "parental-strand-5to3", "parental-strand-3to5"], dnaCounterfactualDelta("helicase-stopped")),
@@ -261,15 +268,21 @@ export const dnaReplicationPack: BiologicalProcessPack = {
   promptRules: [
     {
       id: "dna-copying",
-      hints: ["dna copied", "dna copy"],
+      hints: ["dna copied", "dna copy", "lagging strand copied"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },
     {
       id: "replication-fork",
-      hints: ["dna replication", "replication fork"],
+      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork"],
       context: "general DNA replication",
       intent: "show-replication-fork"
+    },
+    {
+      id: "replication-template-strand",
+      hints: ["template strand during replication", "template strand replication"],
+      context: "general DNA replication",
+      intent: "show-template-strand"
     },
     {
       id: "okazaki-why",
@@ -280,12 +293,18 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     {
       id: "bacterial-replication",
       hints: ["bacterial dna replication"],
-      context: "bacterial chromosome replication",
+      context: "bacterial DNA replication",
+      intent: "show-replication-fork"
+    },
+    {
+      id: "eukaryotic-replication",
+      hints: ["eukaryotic dna replication"],
+      context: "eukaryotic DNA replication",
       intent: "show-replication-fork"
     },
     {
       id: "without-ligase",
-      hints: ["without ligase", "no ligase"],
+      hints: ["without ligase", "no ligase", "ligase finish replication", "ligase finishes replication"],
       context: "general DNA replication",
       intent: "compare-no-ligase",
       suggestedCommandId: "compare-no-ligase"
@@ -310,6 +329,15 @@ export const dnaReplicationPack: BiologicalProcessPack = {
         activeIntervention: "hide-leading-strand"
       },
       response: "Hid the leading strand."
+    },
+    {
+      id: "hide-helicase",
+      phrases: ["hide helicase", "hide the helicase"],
+      patch: {
+        hiddenEntities: { add: ["helicase"] },
+        activeIntervention: "hide-helicase"
+      },
+      response: "Hid helicase."
     },
     {
       id: "show-rna-primers",
