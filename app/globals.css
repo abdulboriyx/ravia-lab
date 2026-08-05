@@ -451,7 +451,7 @@ main {
   grid-template-columns: minmax(340px, 0.7fr) minmax(0, 1fr) auto;
   gap: 18px;
   align-items: center;
-  padding-bottom: 12px;
+  padding: 8px 0 12px;
   border-bottom: 1px solid var(--fg);
 }
 
@@ -531,7 +531,7 @@ main {
 
 .workspaceShell {
   display: grid;
-  grid-template-columns: minmax(190px, 0.46fr) minmax(680px, 2.45fr) minmax(220px, 0.58fr);
+  grid-template-columns: minmax(178px, 0.38fr) minmax(720px, 2.8fr) minmax(204px, 0.46fr);
   gap: 10px;
   min-height: 0;
 }
@@ -772,7 +772,7 @@ main {
 }
 
 .dnaForkCanvas {
-  height: clamp(500px, calc(100svh - 260px), 760px);
+  height: clamp(540px, calc(100svh - 226px), 820px);
 }
 
 .molecularScaleView {
@@ -1013,6 +1013,7 @@ main {
   left: 14px;
   display: grid;
   gap: 5px;
+  max-width: min(560px, calc(100% - 28px));
 }
 
 .simulationCanvas svg {
@@ -1050,9 +1051,13 @@ main {
   fill: var(--fg);
   stroke: none;
   font-family: var(--font-display), var(--font-sans), sans-serif;
-  font-size: 22px;
+  font-size: 17px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.primitive-timeline-event text {
+  font-size: 13px;
 }
 
 .renderLabelGroup rect {
@@ -1341,7 +1346,7 @@ g.isActive,
   }
 
   .workspaceShell {
-    grid-template-columns: minmax(220px, 0.72fr) minmax(480px, 1.45fr);
+    grid-template-columns: minmax(190px, 0.55fr) minmax(520px, 1.55fr);
   }
 
   .rightPanel {
@@ -1419,12 +1424,12 @@ g.isActive,
 
   .simulationCanvas,
   .simulationCanvas svg {
-    min-height: 480px;
+    min-height: 500px;
   }
 
   .dnaForkCanvas {
-    height: min(64svh, 560px);
-    min-height: 440px;
+    height: min(68svh, 600px);
+    min-height: 470px;
   }
 }
 
@@ -1487,7 +1492,7 @@ g.isActive,
 
   .simulationCanvas,
   .simulationCanvas svg {
-    min-height: 420px;
+    min-height: 430px;
   }
 
   .dnaForkCanvas {
@@ -1508,6 +1513,15 @@ g.isActive,
   .canvasToolbar button,
   .canvasToolbar label {
     flex: 1 1 120px;
+  }
+
+  .scientificPrimitive text,
+  .renderLabel {
+    font-size: 22px;
+  }
+
+  .primitive-timeline-event text {
+    font-size: 17px;
   }
 }
 

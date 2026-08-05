@@ -26,9 +26,13 @@ Decision: only numeric legacy DNA parameters are migrated into `PhenomenonSpec.p
 
 Reason: `PhenomenonSpec` parameters are quantity-based and require numeric values, units, bounds, and claim IDs. Legacy boolean and categorical DNA flags remain in `BiologicalProcessPack` until the general pack migration defines typed categorical parameters.
 
-## Next Decision Needed
+## Visible Action-Potential Workspace
 
-The next architecture decision is how the visible route should expose the existing action-potential process pack without adding DNA-specific UI branches.
+Decision: expose the existing action-potential process pack in the same visible Spatial RAVIA route and shared session controls used by DNA, while keeping the B-DNA Mol* scale selector DNA-only.
+
+Reason: the process registry, session reducer, and scene compiler are already generic. The route should not require a parallel action-potential UI or a new process pack to make the existing reviewed pack visible.
+
+Constraint: the current action-potential trace remains a schematic normalized voltage trace. It is not yet the reviewed Hodgkin-Huxley trace required by the strict milestone-8 completion check.
 
 ## Pack-Owned Incompatibility Rules
 
@@ -43,3 +47,7 @@ Constraint: a true sealed holdout prompt set cannot be created by the same imple
 Decision: representation selection merges caller-provided availability with evidence derived from `PhenomenonSpec`.
 
 Reason: the schema is now the authoritative place for approved renderer/evidence combinations. Molecular 3D is enabled only by manually supplied structural availability or a literal molecular-structure view with an approved deposited mapping. Schema default views may influence ranking, but explicit user requests still win when the requested representation has supporting evidence.
+
+## Next Decision Needed
+
+The next architecture decision is whether to introduce D3 as a dependency for the Hodgkin-Huxley trace renderer now, or keep using the current SVG primitive compiler with an offline trace fixture until the broader `PhenomenonPack` migration.

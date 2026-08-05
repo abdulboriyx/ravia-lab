@@ -342,7 +342,7 @@ function actionPotentialPrimitives(): ScientificPrimitive[] {
       styleToken: "field",
       classification: "schematic",
       geometry: { d: () => "M70 92 H890 V214 H70 Z" },
-      labels: [{ text: "outside", at: [84, 118], visibility: { mode: "labels" } }]
+      labels: [{ text: "outside", at: [84, 172], visibility: { mode: "labels" } }]
     }),
     primitiveBase({
       id: "intracellular-field",
@@ -364,7 +364,7 @@ function actionPotentialPrimitives(): ScientificPrimitive[] {
       styleToken: "primary",
       classification: "schematic",
       geometry: { d: () => "M70 232 C220 216 330 248 480 232 S740 216 890 232 M70 252 C220 236 330 268 480 252 S740 236 890 252" },
-      labels: [{ text: "membrane", at: [82, 225], visibility: { mode: "labels" } }]
+      labels: [{ text: "membrane", at: [84, 274], visibility: { mode: "labels" } }]
     }),
     ...channelPrimitives(),
     ...ionFlowPrimitives(),
@@ -477,10 +477,10 @@ function arrow(
 function timelinePrimitives(): ScientificPrimitive[] {
   return [
     timelineEvent("timeline-resting", "resting-potential", 0.06, 0, "rest"),
-    timelineEvent("timeline-depolarization", "depolarization", 0.32, 0, "depolarization"),
-    timelineEvent("timeline-repolarization", "repolarization", 0.58, 0, "repolarization"),
-    timelineEvent("timeline-hyperpolarization", "hyperpolarization", 0.76, 0, "hyperpolarization"),
-    timelineEvent("timeline-refractory", "refractory-period", 0.9, 0, "refractory")
+    timelineEvent("timeline-depolarization", "depolarization", 0.32, 0, "depol."),
+    timelineEvent("timeline-repolarization", "repolarization", 0.58, 0, "repol."),
+    timelineEvent("timeline-hyperpolarization", "hyperpolarization", 0.76, 0, "hyperpol."),
+    timelineEvent("timeline-refractory", "refractory-period", 0.9, 0, "refract.")
   ];
 }
 

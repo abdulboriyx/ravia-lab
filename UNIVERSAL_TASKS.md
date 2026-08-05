@@ -16,21 +16,24 @@
 - Added tests proving malformed incompatibility rules fail validation and prompt refusals resolve from pack metadata.
 - Made representation selection consume `PhenomenonSpec` evidence availability from declared views, renderer/evidence classifications, normalized timelines, and approved deposited structure mappings.
 - Added tests proving approved schema molecular evidence can enable molecular 3D and unapproved schema molecular evidence is rejected.
+- Exposed the existing action-potential pack in the visible `/code/spatial-ravia/` workspace through the shared session engine and scene compiler.
+- Kept the DNA B-DNA/Mol* structure view DNA-only while allowing action-potential prompts to render the primary schematic SVG workspace.
+- Tightened the shared workspace layout and SVG label rules so the process scene remains visible at 1440x900, 1280x800, 1024x768, and 390x844 without horizontal overflow.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 136/136.
+- `npm run test:spatial`: pass, 138/138.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
 - `chapterbio npm run build`: pass.
-- Chromium desktop/mobile verification: pass on `http://localhost:3003/code/spatial-ravia/`.
+- Chromium desktop/mobile verification: pass on `http://localhost:3001/code/spatial-ravia/`.
 
 ## Next Recommended Task
 
-Connect the action-potential pack to a visible SVG+D3 workspace using a reviewed Hodgkin-Huxley trace, per `UNIVERSAL_RAVIA_SPEC.md` milestone 8. Completion requires shared controls and session state to work without DNA-specific code, with no regression in DNA behavior, schema validation, pack-owned incompatibility rules, Spatial tests, or the 108-case scientific evaluation.
+Complete the strict Hodgkin-Huxley part of `UNIVERSAL_RAVIA_SPEC.md` milestone 8 by adding a reviewed offline trace fixture and D3-scaled voltage graph path for the already visible action-potential workspace. Completion requires retaining the current shared controls and state behavior, no DNA regressions, schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
 
 ## External Validation Still Needed
 
