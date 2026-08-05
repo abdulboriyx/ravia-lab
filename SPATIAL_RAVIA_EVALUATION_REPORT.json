@@ -1,6 +1,6 @@
 {
   "suite": "spatial-ravia-scientific-evaluation",
-  "generatedAt": "2026-08-05T17:26:48.478Z",
+  "generatedAt": "2026-08-05T18:53:33.051Z",
   "totalCases": 108,
   "passedCases": 108,
   "failedCases": 0,
@@ -1997,7 +1997,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "actual": "DNA polymerase synthesis direction claim is unsupported.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -2043,7 +2043,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "actual": "Leading-strand discontinuous synthesis claim is unsupported.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -2204,7 +2204,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "RNA polymerase II is not an intervention target for DNA replication in this model.",
+          "actual": "DNA replication and RNA polymerase II transcription are distinct process packs; the request is conflicting.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -2273,7 +2273,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "actual": "Potassium channels are action-potential components, not DNA ligases.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -3077,7 +3077,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "actual": "Ligase does not transcribe RNA in this model.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],

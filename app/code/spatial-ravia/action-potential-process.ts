@@ -165,6 +165,52 @@ export const actionPotentialPack: BiologicalProcessPack = {
       ]
     }
   ],
+  incompatibilityRules: [
+    incompatibility(
+      "ap-sodium-repolarization",
+      [
+        ["sodium channel"],
+        ["driving", "drive", "cause", "causing"],
+        ["repolarization"]
+      ],
+      "Sodium channels drive depolarization, not repolarization, in this action-potential model."
+    ),
+    incompatibility(
+      "ap-potassium-depolarization",
+      [
+        ["potassium channel"],
+        ["driving", "drive", "cause", "causing"],
+        ["depolarization"]
+      ],
+      "Potassium channels drive repolarization and hyperpolarization, not depolarization, in this model."
+    ),
+    incompatibility(
+      "ap-sodium-synthesizes-rna",
+      [
+        ["sodium channel"],
+        ["synthesize", "synthesizes", "synthesizing", "transcribe", "transcribes"],
+        ["rna"]
+      ],
+      "Sodium channels do not synthesize RNA in this model."
+    ),
+    incompatibility(
+      "ap-okazaki-fragments",
+      [
+        ["action potential"],
+        ["okazaki"]
+      ],
+      "Okazaki fragments are DNA replication entities, not action-potential entities."
+    ),
+    incompatibility(
+      "ap-proven-drug-dosing",
+      [
+        ["bypass provenance", "mark"],
+        ["drug dosing"],
+        ["proven"]
+      ],
+      "Bypassing provenance or marking unsupported drug dosing as proven is not allowed."
+    )
+  ],
   promptRules: [
     {
       id: "action-potential",
@@ -586,6 +632,18 @@ function intervention(
   modelDelta?: ScientificModelDelta
 ): ScientificIntervention {
   return { id, label, description, affectedEntities, modelDelta };
+}
+
+function incompatibility(
+  id: string,
+  match: Array<[string, ...string[]]>,
+  reason: string
+) {
+  return {
+    id,
+    reason,
+    match: match.map((any) => ({ any: [...any] }))
+  };
 }
 
 function claim(

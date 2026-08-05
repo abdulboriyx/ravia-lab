@@ -28,4 +28,12 @@ Reason: `PhenomenonSpec` parameters are quantity-based and require numeric value
 
 ## Next Decision Needed
 
-The next architecture decision is how to replace global contradiction regexes with pack-owned capability and incompatibility declarations without weakening the existing scientific evaluation suite.
+The next architecture decision is how representation selection should consume `PhenomenonSpec` evidence availability without duplicating legacy `BiologicalProcessPack` fields.
+
+## Pack-Owned Incompatibility Rules
+
+Decision: prompt-level scientific contradictions now belong to process packs as typed `incompatibilityRules`, not to a global regex list in `model.ts`.
+
+Reason: process packs are the scientific authority for their own misconceptions, impossible interventions, and cross-process conflicts. This keeps rejection logic reviewable with the relevant entities, sources, relations, and validation rules.
+
+Constraint: a true sealed holdout prompt set cannot be created by the same implementation pass and still be called sealed. It needs to be supplied or generated outside the tuning loop.

@@ -35,10 +35,16 @@ The current renderer still consumes `BiologicalProcessPack`. To avoid a UI rewri
 
 Compilation in `model.ts` now validates `pack.phenomenonSpec` before the legacy process-pack compiler runs. This makes the DNA contract executable without changing visible behavior, session events, scene compilation, routing, or Mol* lazy loading.
 
+## Pack-Owned Incompatibility Rules
+
+Process-specific prompt refusals live on each process pack as typed `incompatibilityRules`. Each rule declares an ID, a refusal reason, and phrase requirements expressed as groups of acceptable terms. `parsePromptWithPacks` evaluates these rules from the candidate packs before accepting a prompt.
+
+This replaces the prior global contradiction regex table in `model.ts`. DNA, transcription, and action-potential packs now own their own misconceptions, cross-process conflicts, and unsafe prompt boundaries.
+
 ## Evidence Model
 
 The DNA fork view is classified as a schematic explanatory model with normalized time. The B-DNA Mol* view is classified as a literal molecular-structure view only because it declares approved deposited PDB `1ZF5` coordinates. The contract rejects molecular-structure views without approved deposited mappings and rejects schematic process views mislabeled as literal.
 
 ## Deferred Architecture Work
 
-The adapter is intentionally temporary. The next schema migration should make `PhenomenonSpec` the direct authoring source for all process packs, then retire legacy-only fields once representation selection and incompatibility rules consume the schema directly.
+The adapter is intentionally temporary. The next schema migration should make `PhenomenonSpec` the direct authoring source for all process packs, then retire legacy-only fields once representation selection consumes the schema directly.

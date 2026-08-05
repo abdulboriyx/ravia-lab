@@ -173,6 +173,29 @@ test("intent resolver extracts intervention commands from pack metadata", () => 
   }
 });
 
+test("prompt incompatibilities are owned by process packs", () => {
+  const dnaResult = parsePromptWithPacks("Make ligase copy the leading strand.", processPacks);
+  const transcriptionResult = parsePromptWithPacks("Show RNA polymerase reading the coding strand.", processPacks);
+  const actionPotentialResult = parsePromptWithPacks("Show sodium channels driving repolarization.", processPacks);
+
+  assert.equal(dnaResult.supported, false);
+  assert.equal(transcriptionResult.supported, false);
+  assert.equal(actionPotentialResult.supported, false);
+
+  assert.equal(
+    dnaReplicationPack.incompatibilityRules.some((rule) => rule.reason === dnaResult.reason),
+    true
+  );
+  assert.equal(
+    eukaryoticTranscriptionPack.incompatibilityRules.some((rule) => rule.reason === transcriptionResult.reason),
+    true
+  );
+  assert.equal(
+    actionPotentialPack.incompatibilityRules.some((rule) => rule.reason === actionPotentialResult.reason),
+    true
+  );
+});
+
 test("intent resolver abstains on unsupported biology", () => {
   const result = parsePromptWithPacks("Visualize protein folding in a chaperonin", processPacks);
 
@@ -268,6 +291,20 @@ test("compiler reports unsupported interventions", () => {
   ];
 
   assertCompileError(pack, "unsupported_intervention");
+});
+
+test("compiler reports malformed pack-owned incompatibility rules", () => {
+  const pack = clonePack();
+  pack.incompatibilityRules = [
+    ...pack.incompatibilityRules,
+    {
+      id: "malformed-incompatibility",
+      reason: "",
+      match: [{ any: [] }]
+    }
+  ];
+
+  assertCompileError(pack, "missing_required_field");
 });
 
 test("compiler reports malformed source metadata", () => {
@@ -751,6 +788,10 @@ function clonePackFrom(pack: BiologicalProcessPack): BiologicalProcessPack {
       requiredClaimText: rule.requiredClaimText?.map((textRule) => ({ ...textRule })),
       forbiddenClaimText: rule.forbiddenClaimText?.map((textRule) => ({ ...textRule })),
       forbiddenVerifiedClaimPatterns: rule.forbiddenVerifiedClaimPatterns?.map((pattern) => ({ ...pattern }))
+    })),
+    incompatibilityRules: pack.incompatibilityRules.map((rule) => ({
+      ...rule,
+      match: rule.match.map((requirement) => ({ any: [...requirement.any] }))
     })),
     promptRules: pack.promptRules.map((rule) => ({
       ...rule,

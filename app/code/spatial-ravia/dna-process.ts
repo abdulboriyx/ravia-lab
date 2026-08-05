@@ -249,6 +249,118 @@ export const dnaReplicationPack: BiologicalProcessPack = {
       requiredLimitations: ["molecularly exact"]
     }
   ],
+  incompatibilityRules: [
+    incompatibility(
+      "dna-ligase-synthesis",
+      [
+        ["ligase"],
+        ["synthesize", "synthesizes", "synthesizing", "copy"],
+        ["okazaki", "fragment", "leading strand"]
+      ],
+      "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model."
+    ),
+    incompatibility(
+      "dna-rna-polymerase-conflict",
+      [
+        ["dna replication"],
+        ["rna polymerase ii"]
+      ],
+      "DNA replication and RNA polymerase II transcription are distinct process packs; the request is conflicting."
+    ),
+    incompatibility(
+      "dna-rna-polymerase-together",
+      [
+        ["dna"],
+        ["rna polymerase"],
+        ["together"]
+      ],
+      "The request mixes DNA replication and RNA polymerase processes and needs clarification."
+    ),
+    incompatibility(
+      "dna-block-rna-polymerase",
+      [
+        ["block", "remove", "delete"],
+        ["rna polymerase ii"],
+        ["dna replication"]
+      ],
+      "RNA polymerase II is not an intervention target for DNA replication in this model."
+    ),
+    incompatibility(
+      "dna-wrong-synthesis-direction",
+      [
+        ["dna synthesis"],
+        ["3 prime to 5 prime", "3' to 5'"]
+      ],
+      "DNA polymerase synthesis direction claim is unsupported."
+    ),
+    incompatibility(
+      "dna-template-reading-direction",
+      [
+        ["template reading direction", "read template strand", "reads template strand"],
+        ["5 prime to 3 prime", "5' to 3'"]
+      ],
+      "DNA template reading direction claim is unsupported."
+    ),
+    incompatibility(
+      "dna-leading-discontinuous",
+      [
+        ["leading strand"],
+        ["discontinuous"]
+      ],
+      "Leading-strand discontinuous synthesis claim is unsupported."
+    ),
+    incompatibility(
+      "dna-lagging-continuous",
+      [
+        ["lagging strand"],
+        ["continuous"]
+      ],
+      "Lagging-strand continuous synthesis claim is unsupported."
+    ),
+    incompatibility(
+      "dna-okazaki-leading",
+      [
+        ["okazaki"],
+        ["leading strand"]
+      ],
+      "Okazaki fragments on the leading strand is unsupported."
+    ),
+    incompatibility(
+      "dna-normal-without-polymerase",
+      [
+        ["dna replication"],
+        ["without dna polymerase"],
+        ["normal"]
+      ],
+      "DNA replication cannot keep normal synthesis while removing DNA polymerase in this model."
+    ),
+    incompatibility(
+      "dna-potassium-seals-nicks",
+      [
+        ["potassium channel"],
+        ["seal"],
+        ["dna nick"]
+      ],
+      "Potassium channels are action-potential components, not DNA ligases."
+    ),
+    incompatibility(
+      "dna-ligase-transcribes-rna",
+      [
+        ["ligase"],
+        ["transcribe"],
+        ["rna"]
+      ],
+      "Ligase does not transcribe RNA in this model."
+    ),
+    incompatibility(
+      "dna-invent-pdb",
+      [
+        ["invent", "exact replication fork"],
+        ["pdb"]
+      ],
+      "The system must not invent PDB structures for uncurated exact molecular scenes."
+    )
+  ],
   assumptions: [
     claim("dna-assumption-one-fork", "One replication fork is shown.", "model-assumption", "ncbi-dna-replication"),
     claim("dna-assumption-mocked-time", "Timing and distances are mocked for clarity.", "model-assumption", "ncbi-dna-replication"),
@@ -947,6 +1059,18 @@ function intervention(
   modelDelta?: ScientificModelDelta
 ): ScientificIntervention {
   return { id, label, description, affectedEntities, modelDelta };
+}
+
+function incompatibility(
+  id: string,
+  match: Array<[string, ...string[]]>,
+  reason: string
+) {
+  return {
+    id,
+    reason,
+    match: match.map((any) => ({ any: [...any] }))
+  };
 }
 
 function dnaCounterfactualDelta(

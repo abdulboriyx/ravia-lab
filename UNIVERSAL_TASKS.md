@@ -12,12 +12,14 @@
 - Added the Zod 4 `PhenomenonSpec` runtime contract for Spatial RAVIA.
 - Migrated the DNA replication pack through a controlled `PhenomenonSpec` adapter and validate it at module load, in tests, and before scene compilation.
 - Added negative PhenomenonSpec fixtures for invalid references, duplicate IDs, bad units, invalid bounds, invalid timelines, renderer/evidence mismatches, missing molecular coordinates, and unsupported interaction targets.
+- Replaced the global prompt contradiction table with pack-owned typed incompatibility rules for DNA replication, eukaryotic transcription, and action potential.
+- Added tests proving malformed incompatibility rules fail validation and prompt refusals resolve from pack metadata.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 132/132.
+- `npm run test:spatial`: pass, 134/134.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -26,4 +28,8 @@
 
 ## Next Recommended Task
 
-Replace global contradiction regexes with pack-owned capabilities and typed incompatibility rules, per `UNIVERSAL_RAVIA_SPEC.md` milestone 6. Completion requires the current 108 fixed evaluation cases to keep passing, a sealed holdout prompt set to reach the declared threshold, and every unsafe or adversarial case to abstain without mutating the active scene.
+Make representation selection consume `PhenomenonSpec` evidence availability directly. Completion requires molecular and quantitative requests to pass through schema-backed evidence gates instead of legacy process-pack fields, with no regression in the DNA workspace, Mol* lazy loading, Spatial tests, or the 108-case scientific evaluation.
+
+## External Validation Still Needed
+
+A true sealed 100-prompt holdout set remains a product/research asset to create outside the implementation loop. The repository now has pack-owned incompatibility rules and the fixed 108-case suite still passes, but an in-repo holdout would not be sealed.
