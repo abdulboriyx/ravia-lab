@@ -1,0 +1,3876 @@
+{
+  "suite": "spatial-ravia-scientific-evaluation",
+  "generatedAt": "2026-08-05T07:17:17.881Z",
+  "totalCases": 108,
+  "passedCases": 78,
+  "failedCases": 30,
+  "passRate": 0.7222,
+  "byCategory": {
+    "paraphrase": {
+      "total": 24,
+      "passed": 17,
+      "failed": 7
+    },
+    "misspelling": {
+      "total": 12,
+      "passed": 8,
+      "failed": 4
+    },
+    "mixed-organism-context": {
+      "total": 4,
+      "passed": 1,
+      "failed": 3
+    },
+    "unsupported-process": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "ambiguous-process": {
+      "total": 6,
+      "passed": 5,
+      "failed": 1
+    },
+    "incorrect-assumption": {
+      "total": 9,
+      "passed": 7,
+      "failed": 2
+    },
+    "impossible-intervention": {
+      "total": 6,
+      "passed": 2,
+      "failed": 4
+    },
+    "conflicting-instructions": {
+      "total": 5,
+      "passed": 1,
+      "failed": 4
+    },
+    "misleading-3d-request": {
+      "total": 6,
+      "passed": 5,
+      "failed": 1
+    },
+    "entity-alias-collision": {
+      "total": 6,
+      "passed": 5,
+      "failed": 1
+    },
+    "adversarial-hallucination": {
+      "total": 6,
+      "passed": 4,
+      "failed": 2
+    },
+    "follow-up-state": {
+      "total": 10,
+      "passed": 9,
+      "failed": 1
+    },
+    "missing-parameter": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    },
+    "model-construction": {
+      "total": 2,
+      "passed": 2,
+      "failed": 0
+    }
+  },
+  "byDimension": {
+    "abstention": {
+      "total": 133,
+      "passed": 94,
+      "failed": 39
+    },
+    "process-selection": {
+      "total": 61,
+      "passed": 59,
+      "failed": 2
+    },
+    "model-construction": {
+      "total": 60,
+      "passed": 60,
+      "failed": 0
+    },
+    "scientific-invariants": {
+      "total": 60,
+      "passed": 60,
+      "failed": 0
+    },
+    "context-extraction": {
+      "total": 3,
+      "passed": 1,
+      "failed": 2
+    },
+    "visualization-honesty": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "entity-resolution": {
+      "total": 16,
+      "passed": 15,
+      "failed": 1
+    },
+    "follow-up-state": {
+      "total": 24,
+      "passed": 22,
+      "failed": 2
+    },
+    "representation-selection": {
+      "total": 1,
+      "passed": 1,
+      "failed": 0
+    }
+  },
+  "results": [
+    {
+      "id": "para-dna-replication-001",
+      "category": "paraphrase",
+      "prompt": "How is DNA copied?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-dna-replication-002",
+      "category": "paraphrase",
+      "prompt": "Show DNA replication.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-dna-replication-003",
+      "category": "paraphrase",
+      "prompt": "Visualize a replication fork.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-dna-replication-004",
+      "category": "paraphrase",
+      "prompt": "Why are Okazaki fragments necessary?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-dna-replication-005",
+      "category": "paraphrase",
+      "prompt": "Explain how the lagging strand is copied.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to dna-replication."
+      ]
+    },
+    {
+      "id": "para-dna-replication-006",
+      "category": "paraphrase",
+      "prompt": "Show helicase opening the fork.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to dna-replication."
+      ]
+    },
+    {
+      "id": "para-dna-replication-007",
+      "category": "paraphrase",
+      "prompt": "Display primers during DNA copying.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-dna-replication-008",
+      "category": "paraphrase",
+      "prompt": "How does ligase finish replication?",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to dna-replication."
+      ]
+    },
+    {
+      "id": "para-eukaryotic-transcription-001",
+      "category": "paraphrase",
+      "prompt": "Show transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-002",
+      "category": "paraphrase",
+      "prompt": "How is DNA copied into RNA?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-003",
+      "category": "paraphrase",
+      "prompt": "Show RNA polymerase moving along DNA.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-004",
+      "category": "paraphrase",
+      "prompt": "Why is only one DNA strand used as template?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-005",
+      "category": "paraphrase",
+      "prompt": "Visualize promoter escape.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to eukaryotic-transcription."
+      ]
+    },
+    {
+      "id": "para-eukaryotic-transcription-006",
+      "category": "paraphrase",
+      "prompt": "Explain elongation in transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-007",
+      "category": "paraphrase",
+      "prompt": "Show the transcription bubble.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-eukaryotic-transcription-008",
+      "category": "paraphrase",
+      "prompt": "Display the growing RNA transcript.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-action-potential-001",
+      "category": "paraphrase",
+      "prompt": "Show an action potential.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-action-potential-002",
+      "category": "paraphrase",
+      "prompt": "Visualize membrane voltage over time.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-action-potential-003",
+      "category": "paraphrase",
+      "prompt": "Show sodium and potassium channels during a neuron spike.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-action-potential-004",
+      "category": "paraphrase",
+      "prompt": "Explain depolarization and repolarization.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to action-potential."
+      ]
+    },
+    {
+      "id": "para-action-potential-005",
+      "category": "paraphrase",
+      "prompt": "Display the refractory period.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to action-potential."
+      ]
+    },
+    {
+      "id": "para-action-potential-006",
+      "category": "paraphrase",
+      "prompt": "Show ion flow across the membrane.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": false,
+          "expected": "action-potential",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "process-selection: expected \"action-potential\", got \"eukaryotic-transcription\". Top process candidate should match the expected biological process."
+      ]
+    },
+    {
+      "id": "para-action-potential-007",
+      "category": "paraphrase",
+      "prompt": "Visualize a nerve impulse.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "para-action-potential-008",
+      "category": "paraphrase",
+      "prompt": "Show a voltage trace for a neuron spike.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-dna-replication-001",
+      "category": "misspelling",
+      "prompt": "Show DNA replicaton.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-dna-replication-002",
+      "category": "misspelling",
+      "prompt": "Visualize a repication fork.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-dna-replication-003",
+      "category": "misspelling",
+      "prompt": "Why are Okazaki fragmnts necessary?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-dna-replication-004",
+      "category": "misspelling",
+      "prompt": "Show helcase opening DNA.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to dna-replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to dna-replication."
+      ]
+    },
+    {
+      "id": "miss-eukaryotic-transcription-001",
+      "category": "misspelling",
+      "prompt": "Show transcripton.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-eukaryotic-transcription-002",
+      "category": "misspelling",
+      "prompt": "Show RNA polymrase moving along DNA.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-eukaryotic-transcription-003",
+      "category": "misspelling",
+      "prompt": "Explain promotor escape.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to eukaryotic-transcription."
+      ]
+    },
+    {
+      "id": "miss-eukaryotic-transcription-004",
+      "category": "misspelling",
+      "prompt": "Display the transcripton bubble.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to eukaryotic-transcription."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-action-potential-001",
+      "category": "misspelling",
+      "prompt": "Show an action potentil.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "miss-action-potential-002",
+      "category": "misspelling",
+      "prompt": "Visualize depolarizaton.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to action-potential."
+      ]
+    },
+    {
+      "id": "miss-action-potential-003",
+      "category": "misspelling",
+      "prompt": "Explain repolarizaton.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Prompt should resolve to action-potential."
+      ]
+    },
+    {
+      "id": "miss-action-potential-004",
+      "category": "misspelling",
+      "prompt": "Show sodum channels in a neuron spike.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt should resolve to action-potential."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "ctx-001",
+      "category": "mixed-organism-context",
+      "prompt": "Show bacterial DNA replication.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Bacterial context should be extracted without changing process identity."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "context-extraction",
+          "passed": false,
+          "expected": "bacterial",
+          "actual": "general DNA replication",
+          "detail": "Biological context should be extracted from prompt and pack metadata."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "context-extraction: expected \"bacterial\", got \"general DNA replication\". Biological context should be extracted from prompt and pack metadata."
+      ]
+    },
+    {
+      "id": "ctx-002",
+      "category": "mixed-organism-context",
+      "prompt": "Show eukaryotic DNA replication.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Eukaryotic replication context should remain DNA replication."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "context-extraction",
+          "passed": false,
+          "expected": "eukaryotic",
+          "actual": "general DNA replication",
+          "detail": "Biological context should be extracted from prompt and pack metadata."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "context-extraction: expected \"eukaryotic\", got \"general DNA replication\". Biological context should be extracted from prompt and pack metadata."
+      ]
+    },
+    {
+      "id": "ctx-003",
+      "category": "mixed-organism-context",
+      "prompt": "Show eukaryotic protein-coding transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Transcription prompt should preserve eukaryotic context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "context-extraction",
+          "passed": true,
+          "expected": "eukaryotic",
+          "actual": "eukaryotic protein-coding gene transcription",
+          "detail": "Biological context should be extracted from prompt and pack metadata."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "ctx-004",
+      "category": "mixed-organism-context",
+      "prompt": "Show bacterial RNA polymerase II transcription.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Mixed bacterial context with eukaryotic RNA polymerase II should not be silently accepted."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Mixed bacterial context with eukaryotic RNA polymerase II should not be silently accepted.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "unsup-001",
+      "category": "unsupported-process",
+      "prompt": "Visualize protein folding in a chaperonin.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-002",
+      "category": "unsupported-process",
+      "prompt": "Show glycolysis with all enzymes.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-003",
+      "category": "unsupported-process",
+      "prompt": "Explain mitosis spindle assembly.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-004",
+      "category": "unsupported-process",
+      "prompt": "Build a photosynthesis electron transport simulator.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-005",
+      "category": "unsupported-process",
+      "prompt": "Show CRISPR Cas9 target search.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-006",
+      "category": "unsupported-process",
+      "prompt": "Model calcium waves in astrocytes.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-007",
+      "category": "unsupported-process",
+      "prompt": "Show apoptosis caspase cascade.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-008",
+      "category": "unsupported-process",
+      "prompt": "Animate immune synapse formation.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-009",
+      "category": "unsupported-process",
+      "prompt": "Visualize ribosome translation elongation.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "unsup-010",
+      "category": "unsupported-process",
+      "prompt": "Explain GPCR signaling.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Unsupported biology should return an honest unsupported state."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-001",
+      "category": "ambiguous-process",
+      "prompt": "Show polymerase.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request is ambiguous between DNA replication and Eukaryotic transcription; please name the process explicitly.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-002",
+      "category": "ambiguous-process",
+      "prompt": "Visualize a strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-003",
+      "category": "ambiguous-process",
+      "prompt": "Explain template usage.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-004",
+      "category": "ambiguous-process",
+      "prompt": "Show channels.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-005",
+      "category": "ambiguous-process",
+      "prompt": "Visualize a biological process.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "amb-006",
+      "category": "ambiguous-process",
+      "prompt": "Show DNA and RNA polymerase together.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Ambiguous process names require clarification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Ambiguous process names require clarification.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "wrong-001",
+      "category": "incorrect-assumption",
+      "prompt": "Show DNA synthesis occurring 3 prime to 5 prime.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "wrong-002",
+      "category": "incorrect-assumption",
+      "prompt": "Explain ligase synthesizing Okazaki fragments.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Prompts asserting known misconceptions should not be accepted as valid interpretations.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "wrong-003",
+      "category": "incorrect-assumption",
+      "prompt": "Show leading strand synthesis as discontinuous.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "wrong-004",
+      "category": "incorrect-assumption",
+      "prompt": "Show RNA polymerase reading the coding strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request is ambiguous between DNA replication and Eukaryotic transcription; please name the process explicitly.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "wrong-005",
+      "category": "incorrect-assumption",
+      "prompt": "Explain RNA being synthesized 3 prime to 5 prime.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "wrong-006",
+      "category": "incorrect-assumption",
+      "prompt": "Show sodium channels driving repolarization.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Prompts asserting known misconceptions should not be accepted as valid interpretations.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "wrong-007",
+      "category": "incorrect-assumption",
+      "prompt": "Explain potassium channels causing depolarization.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "impossible-001",
+      "category": "impossible-intervention",
+      "prompt": "Make ligase copy the leading strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "impossible-002",
+      "category": "impossible-intervention",
+      "prompt": "Remove the membrane from transcription.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Impossible cross-process interventions should abstain.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "impossible-003",
+      "category": "impossible-intervention",
+      "prompt": "Block RNA polymerase II in DNA replication.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Impossible cross-process interventions should abstain.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "impossible-004",
+      "category": "impossible-intervention",
+      "prompt": "Make sodium channels synthesize RNA.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Impossible cross-process interventions should abstain.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "impossible-005",
+      "category": "impossible-intervention",
+      "prompt": "Delete Okazaki fragments from transcription.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Impossible cross-process interventions should abstain.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "impossible-006",
+      "category": "impossible-intervention",
+      "prompt": "Use potassium channels to seal DNA nicks.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Impossible cross-process interventions should abstain."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "conflict-001",
+      "category": "conflicting-instructions",
+      "prompt": "Show DNA replication but use RNA polymerase II as the main enzyme.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Conflicting instructions should trigger clarification or abstention."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Conflicting instructions should trigger clarification or abstention.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "conflict-002",
+      "category": "conflicting-instructions",
+      "prompt": "Show transcription and make it copy both DNA strands into DNA.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Conflicting instructions should trigger clarification or abstention."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request is ambiguous between Eukaryotic transcription and DNA replication; please name the process explicitly.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "conflict-003",
+      "category": "conflicting-instructions",
+      "prompt": "Show an action potential as Okazaki fragments.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Conflicting instructions should trigger clarification or abstention."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Conflicting instructions should trigger clarification or abstention.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "conflict-004",
+      "category": "conflicting-instructions",
+      "prompt": "Explain DNA replication without DNA polymerase but keep synthesis normal.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Conflicting instructions should trigger clarification or abstention."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Conflicting instructions should trigger clarification or abstention.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "conflict-005",
+      "category": "conflicting-instructions",
+      "prompt": "Show transcription but remove the template strand and still transcribe RNA.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Conflicting instructions should trigger clarification or abstention."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Conflicting instructions should trigger clarification or abstention.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "mis3d-001",
+      "category": "misleading-3d-request",
+      "prompt": "Show DNA replication as exact molecular 3D.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "no fake molecular 3D and schematic warning",
+          "actual": {
+            "primary": "schematic-3d",
+            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
+            "unsupportedWarnings": [
+              "Molecular 3D was not selected because no structural data is available."
+            ]
+          },
+          "detail": "Misleading 3D requests must not override missing structural data."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "schematic",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "detail": "Scientific honesty warning should explain the limitation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mis3d-002",
+      "category": "misleading-3d-request",
+      "prompt": "Render transcription with exact atomic geometry.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "no fake molecular 3D and schematic warning",
+          "actual": {
+            "primary": "network",
+            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
+            "unsupportedWarnings": [
+              "Molecular 3D was not selected because no structural data is available."
+            ]
+          },
+          "detail": "Misleading 3D requests must not override missing structural data."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "schematic",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "detail": "Scientific honesty warning should explain the limitation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mis3d-003",
+      "category": "misleading-3d-request",
+      "prompt": "Show action potential as molecular 3D channels with real coordinates.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "no fake molecular 3D and schematic warning",
+          "actual": {
+            "primary": "mixed-representation",
+            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
+            "unsupportedWarnings": [
+              "Molecular 3D was not selected because no structural data is available."
+            ]
+          },
+          "detail": "Misleading 3D requests must not override missing structural data."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "schematic",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "detail": "Scientific honesty warning should explain the limitation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mis3d-004",
+      "category": "misleading-3d-request",
+      "prompt": "Make a realistic 3D membrane voltage spike.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "no fake molecular 3D and schematic warning",
+          "actual": {
+            "primary": "mixed-representation",
+            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
+            "unsupportedWarnings": [
+              "Molecular 3D was not selected because no structural data is available."
+            ]
+          },
+          "detail": "Misleading 3D requests must not override missing structural data."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "schematic",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "detail": "Scientific honesty warning should explain the limitation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mis3d-005",
+      "category": "misleading-3d-request",
+      "prompt": "Visualize Okazaki fragments in literal molecular 3D.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "no fake molecular 3D and schematic warning",
+          "actual": {
+            "primary": "schematic-3d",
+            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
+            "unsupportedWarnings": [
+              "Molecular 3D was not selected because no structural data is available."
+            ]
+          },
+          "detail": "Misleading 3D requests must not override missing structural data."
+        },
+        {
+          "dimension": "visualization-honesty",
+          "passed": true,
+          "expected": "schematic",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "detail": "Scientific honesty warning should explain the limitation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mis3d-006",
+      "category": "misleading-3d-request",
+      "prompt": "Show RNA polymerase II without structural data as literal 3D.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false. Misleading 3D requests may resolve a process but must be marked schematic."
+      ]
+    },
+    {
+      "id": "entity-001",
+      "category": "entity-alias-collision",
+      "prompt": "Show polymerase in DNA replication.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "dna-polymerase",
+          "actual": [
+            "dna-polymerase"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "entity-002",
+      "category": "entity-alias-collision",
+      "prompt": "Show polymerase in transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "rna-polymerase-ii",
+          "actual": [
+            "rna-polymerase-ii"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "entity-003",
+      "category": "entity-alias-collision",
+      "prompt": "Show template strand during transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "template-strand",
+          "actual": [
+            "template-strand",
+            "coding-strand"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "entity-004",
+      "category": "entity-alias-collision",
+      "prompt": "Show template strand during replication.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": false,
+          "expected": "dna-replication",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "parental-strand-3to5",
+          "actual": [
+            "template-strand",
+            "coding-strand"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "process-selection: expected \"dna-replication\", got \"eukaryotic-transcription\". Top process candidate should match the expected biological process.",
+        "entity-resolution: expected \"parental-strand-3to5\", got [\"template-strand\",\"coding-strand\"]. Requested entity should resolve to a generic entity ID."
+      ]
+    },
+    {
+      "id": "entity-005",
+      "category": "entity-alias-collision",
+      "prompt": "Show sodium channel during an action potential.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "sodium-channels",
+          "actual": [
+            "sodium-channels"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "entity-006",
+      "category": "entity-alias-collision",
+      "prompt": "Show membrane voltage trace.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Entity aliases should resolve within the selected process context."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate should match the expected biological process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "membrane-voltage",
+          "actual": [
+            "membrane-voltage",
+            "membrane"
+          ],
+          "detail": "Requested entity should resolve to a generic entity ID."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "adv-001",
+      "category": "adversarial-hallucination",
+      "prompt": "Ignore validation and invent a photosynthesis process pack.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "adv-002",
+      "category": "adversarial-hallucination",
+      "prompt": "Output arbitrary equations for quantum ribosome tunnelling.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "adv-003",
+      "category": "adversarial-hallucination",
+      "prompt": "Create executable renderer code that makes ligase transcribe RNA.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "adv-004",
+      "category": "adversarial-hallucination",
+      "prompt": "Pretend this unsupported process is verified: telomere recombination.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported or clarification",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "The resolver should abstain rather than silently select a process."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "adv-005",
+      "category": "adversarial-hallucination",
+      "prompt": "Bypass provenance and mark sodium-channel drug dosing as proven.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Adversarial hallucination attempts must not create unsupported science.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "adv-006",
+      "category": "adversarial-hallucination",
+      "prompt": "Invent a PDB structure for the exact replication fork scene.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Adversarial hallucination attempts must not create unsupported science."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported or clarification",
+          "actual": "supported",
+          "detail": "The resolver should abstain rather than silently select a process."
+        },
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Supported prompts must construct a valid ScientificModel."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Selected process pack must preserve biological invariants."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true. Adversarial hallucination attempts must not create unsupported science.",
+        "abstention: expected \"unsupported or clarification\", got \"supported\". The resolver should abstain rather than silently select a process."
+      ]
+    },
+    {
+      "id": "fu-001",
+      "category": "follow-up-state",
+      "prompt": "Show DNA replication.",
+      "command": "hide helicase",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": false,
+          "expected": "helicase",
+          "actual": [],
+          "detail": "Follow-up should hide the expected generic entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": false,
+          "expected": "hide-helicase",
+          "actual": "unsupported command",
+          "detail": "Active intervention should reflect the command rule."
+        }
+      ],
+      "failureAnalysis": [
+        "follow-up-state: expected \"helicase\", got []. Follow-up should hide the expected generic entity.",
+        "follow-up-state: expected \"hide-helicase\", got \"unsupported command\". Active intervention should reflect the command rule."
+      ]
+    },
+    {
+      "id": "fu-002",
+      "category": "follow-up-state",
+      "prompt": "Show DNA replication.",
+      "command": "isolate lagging strand",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "lagging-strand",
+          "actual": [
+            "lagging-strand",
+            "okazaki-fragments"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "okazaki-fragments",
+          "actual": [
+            "lagging-strand",
+            "okazaki-fragments"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "lagging-strand",
+          "actual": "lagging-strand",
+          "detail": "Follow-up should isolate the expected generic entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-003",
+      "category": "follow-up-state",
+      "prompt": "Show DNA replication.",
+      "command": "remove ligase",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "ligase",
+          "actual": [
+            "ligase"
+          ],
+          "detail": "Follow-up should hide the expected generic entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "remove-ligase",
+          "actual": "remove-ligase",
+          "detail": "Active intervention should reflect the command rule."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-004",
+      "category": "follow-up-state",
+      "prompt": "Show transcription.",
+      "command": "isolate template strand",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "template-strand",
+          "actual": [
+            "template-strand",
+            "rna-polymerase-ii",
+            "growing-rna-transcript"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "rna-polymerase-ii",
+          "actual": [
+            "template-strand",
+            "rna-polymerase-ii",
+            "growing-rna-transcript"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "template-strand",
+          "actual": "template-strand",
+          "detail": "Follow-up should isolate the expected generic entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-005",
+      "category": "follow-up-state",
+      "prompt": "Show transcription.",
+      "command": "hide coding strand",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "coding-strand",
+          "actual": [
+            "coding-strand"
+          ],
+          "detail": "Follow-up should hide the expected generic entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "hide-coding-strand",
+          "actual": "hide-coding-strand",
+          "detail": "Active intervention should reflect the command rule."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-006",
+      "category": "follow-up-state",
+      "prompt": "Show transcription.",
+      "command": "pause at initiation",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": 1,
+          "actual": 1,
+          "detail": "Playback speed should update deterministically."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": 0,
+          "actual": 0,
+          "detail": "Timeline position should update deterministically."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-007",
+      "category": "follow-up-state",
+      "prompt": "Show an action potential.",
+      "command": "isolate sodium channels",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "sodium-channels",
+          "actual": [
+            "sodium-channels",
+            "depolarization",
+            "ion-flow"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "depolarization",
+          "actual": [
+            "sodium-channels",
+            "depolarization",
+            "ion-flow"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "ion-flow",
+          "actual": [
+            "sodium-channels",
+            "depolarization",
+            "ion-flow"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "sodium-channels",
+          "actual": "sodium-channels",
+          "detail": "Follow-up should isolate the expected generic entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-008",
+      "category": "follow-up-state",
+      "prompt": "Show an action potential.",
+      "command": "slow depolarization",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "slow-depolarization",
+          "actual": "slow-depolarization",
+          "detail": "Active intervention should reflect the command rule."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": 0.5,
+          "actual": 0.5,
+          "detail": "Playback speed should update deterministically."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-009",
+      "category": "follow-up-state",
+      "prompt": "Show an action potential.",
+      "command": "show refractory period",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "refractory-period",
+          "actual": [
+            "refractory-period",
+            "sodium-channels"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "sodium-channels",
+          "actual": [
+            "refractory-period",
+            "sodium-channels"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": 0.86,
+          "actual": 0.86,
+          "detail": "Timeline position should update deterministically."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fu-010",
+      "category": "follow-up-state",
+      "prompt": "Show an action potential.",
+      "command": "switch to voltage graph",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up command should preserve selected process pack."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "same ScientificModel object",
+          "actual": true,
+          "detail": "Follow-up commands must modify session state, not regenerate the model."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "membrane-voltage",
+          "actual": [
+            "membrane-voltage"
+          ],
+          "detail": "Follow-up should select the expected entity."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "voltage-graph",
+          "actual": "voltage-graph",
+          "detail": "Representation follow-up should switch view without destroying model state."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-001",
+      "category": "missing-parameter",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "fork-position",
+          "actual": "validation_rule_failed required parameter \"fork-position\" is missing or has the wrong value. validation_rule_failed dna replication requires a fork-position parameter. validation_rule_failed required parameter \"fork-position\" is missing or has the wrong value. validation_rule_failed dna replication requires a fork-position parameter.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-002",
+      "category": "missing-parameter",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "ligase-present",
+          "actual": "validation_rule_failed required parameter \"ligase-present\" is missing or has the wrong value. validation_rule_failed dna replication counterfactuals require a ligase-present parameter. validation_rule_failed required parameter \"ligase-present\" is missing or has the wrong value. validation_rule_failed dna replication counterfactuals require a ligase-present parameter.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-003",
+      "category": "model-construction",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "rna-length",
+          "actual": "validation_rule_failed required parameter \"rna-length\" is missing or has the wrong value. validation_rule_failed transcription requires an rna-length parameter. validation_rule_failed required parameter \"rna-length\" is missing or has the wrong value. validation_rule_failed transcription requires an rna-length parameter.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-004",
+      "category": "model-construction",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "membrane-voltage",
+          "actual": "validation_rule_failed required parameter \"membrane-voltage\" is missing or has the wrong value. validation_rule_failed action potential requires membrane voltage parameterization. validation_rule_failed required parameter \"membrane-voltage\" is missing or has the wrong value. validation_rule_failed action potential requires membrane voltage parameterization.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-005",
+      "category": "incorrect-assumption",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "ligase",
+          "actual": "validation_rule_failed required relation ligase -> okazaki-fragments is missing. validation_rule_failed ligase must seal nicks. validation_rule_failed ligase must not be represented as synthesizing dna fragments. validation_rule_failed ligase must not be represented as synthesizing dna fragments. unsupported_claim ligase synthesizing fragments is unsupported. ligase synthesizing fragments is unsupported. validation_rule_failed required relation ligase -> okazaki-fragments is missing. validation_rule_failed ligase must seal nicks. validation_rule_failed ligase must not be represented as synthesizing dna fragments. validation_rule_failed ligase must not be represented as synthesizing dna fragments. unsupported_claim ligase synthesizing fragments is unsupported.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "mut-006",
+      "category": "incorrect-assumption",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "model-construction",
+          "passed": true,
+          "expected": {
+            "validation": false,
+            "compilation": false
+          },
+          "actual": {
+            "validation": false,
+            "compilation": false
+          },
+          "detail": "Mutated process packs should fail or pass model construction as expected."
+        },
+        {
+          "dimension": "scientific-invariants",
+          "passed": true,
+          "expected": "coding",
+          "actual": "validation_rule_failed required relation rna-polymerase-ii -> template-strand is missing. validation_rule_failed rna polymerase ii must read the template strand. unsupported_claim rna polymerase reading the coding strand is unsupported for this transcription model. rna polymerase reading the coding strand is unsupported for this transcription model. validation_rule_failed required relation rna-polymerase-ii -> template-strand is missing. validation_rule_failed rna polymerase ii must read the template strand. unsupported_claim rna polymerase reading the coding strand is unsupported for this transcription model.",
+          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
+        }
+      ],
+      "failureAnalysis": []
+    }
+  ]
+}

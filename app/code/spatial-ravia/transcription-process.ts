@@ -174,11 +174,37 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     {
       id: "template-and-direction-rules",
       description: "The pack must encode template-strand use and 5' -> 3' RNA synthesis.",
-      requiredParameters: [{ id: "rna-synthesis-direction", value: "5' -> 3'" }],
+      requiredParameters: [
+        { id: "rna-length", message: "Transcription requires an rna-length parameter." },
+        { id: "rna-synthesis-direction", value: "5' -> 3'", message: "RNA synthesis must be encoded as 5' -> 3'." }
+      ],
       requiredRelations: [
-        { source: "rna-polymerase-ii", target: "template-strand", relation: "reads" },
-        { source: "template-strand", target: "growing-rna-transcript", relation: "templates" },
+        { source: "rna-polymerase-ii", target: "template-strand", relation: "reads", message: "RNA polymerase II must read the template strand." },
+        { source: "template-strand", target: "growing-rna-transcript", relation: "templates", message: "RNA sequence must be complementary to the template strand." },
+        { source: "coding-strand", target: "growing-rna-transcript", relation: "corresponds to", message: "Coding strand must correspond to RNA except T/U." },
         { source: "rna-polymerase-ii", target: "growing-rna-transcript", relation: "synthesizes 5' -> 3'" }
+      ],
+      requiredClaimText: [
+        {
+          path: "relations",
+          entityId: "coding-strand",
+          includes: "except thymine is replaced by uracil",
+          message: "Coding strand/RNA relation must state the T/U difference."
+        }
+      ],
+      forbiddenVerifiedClaimPatterns: [
+        {
+          pattern: "rna.*synthesized.*3'? to 5'?|rna synthesis.*3'? to 5'?",
+          message: "RNA synthesis 3' to 5' is unsupported."
+        },
+        {
+          pattern: "polymerase.*reads.*coding strand|coding strand.*read by.*polymerase",
+          message: "RNA polymerase reading the coding strand is unsupported for this transcription model."
+        },
+        {
+          pattern: "rna.*identical.*template",
+          message: "RNA identical to template strand is unsupported."
+        }
       ]
     },
     {

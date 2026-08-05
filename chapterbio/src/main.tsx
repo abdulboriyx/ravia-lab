@@ -120,6 +120,7 @@ function App() {
       <FigureNavigator figure={selectedFigure} onSelect={setSelectedFigureId} />
       <div className="figureSpread">
         <figure className="figureImage">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={selectedFigure.asset} alt={`Original textbook Figure ${selectedFigure.chapterFigure}`} />
           <figcaption>Original textbook figure retained locally for private educational reference.</figcaption>
         </figure>

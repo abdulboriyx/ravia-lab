@@ -131,6 +131,12 @@ function scoreRepresentations(
     addScore(candidates, "mixed-representation", 2.8, "The request combines process, relation, or quantitative views.");
   }
 
+  if (features.needsSynchronizedMixedView) {
+    addScore(candidates, "mixed-representation", 4.6, "The model explicitly requires synchronized schematic, graph, and timeline views.");
+    addScore(candidates, "time-series-graph", 1.8, "A quantitative trace remains synchronized inside the mixed view.");
+    addScore(candidates, "timeline", 1.2, "Timeline events remain synchronized inside the mixed view.");
+  }
+
   if (features.isAbstract) {
     addScore(candidates, "process-diagram", 1.2, "The process is abstract and should be shown as a schematic projection.");
     addScore(candidates, "network", 0.8, "Abstract relations may be clearer as a network.");
@@ -245,6 +251,13 @@ function inferRepresentationFeatures(input: RepresentationSelectionInput) {
     (input.quantitativeData.timeSeries && input.model.relations.length > 0) ||
     (isReactionNetwork && input.model.transitions.length > 0) ||
     input.userIntent.requestedRepresentation === "json";
+  const needsSynchronizedMixedView = hasAny(text, [
+    "mixed representation",
+    "synchronized mixed",
+    "synchronized membrane",
+    "voltage graph",
+    "membrane voltage"
+  ]);
 
   return {
     hasStateSpace,
@@ -253,7 +266,8 @@ function inferRepresentationFeatures(input: RepresentationSelectionInput) {
     isTimeDependent,
     hasSpatialFocus,
     isAbstract,
-    needsMultipleViews
+    needsMultipleViews,
+    needsSynchronizedMixedView
   };
 }
 
@@ -266,8 +280,11 @@ function mapRequestedRepresentation(
 
   const map: Record<RepresentationType, ScientificRepresentation> = {
     scene: "schematic-3d",
+    mixed: "mixed-representation",
+    "molecular-structure": "molecular-3d",
     timeline: "timeline",
     graph: "network",
+    "voltage-graph": "time-series-graph",
     explanation: "process-diagram",
     json: "mixed-representation"
   };

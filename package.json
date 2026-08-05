@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
-    "test:spatial": "node --test app/code/spatial-ravia/*.test.ts"
+    "test:spatial": "node --test app/code/spatial-ravia/*.test.ts",
+    "eval:spatial": "node app/code/spatial-ravia/evaluation.ts"
   },
   "dependencies": {
     "next": "^16.2.10",

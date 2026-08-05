@@ -713,6 +713,7 @@ main {
 .alternateView,
 .graphView,
 .explanationView,
+.structureView,
 .jsonView {
   min-height: 560px;
   overflow: auto;
@@ -788,6 +789,104 @@ main {
 
 .jsonView {
   white-space: pre-wrap;
+}
+
+.structureView {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(260px, 0.72fr);
+  gap: 14px;
+  padding: 0;
+  background: #030303;
+}
+
+.structureView.structureUnavailable {
+  display: grid;
+  align-items: center;
+  padding: clamp(18px, 3vw, 34px);
+}
+
+.structureView.structureUnavailable section {
+  display: grid;
+  gap: 12px;
+  max-width: 620px;
+}
+
+.structureViewer {
+  min-height: 560px;
+  border-right: 1px solid var(--line);
+  background:
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+}
+
+.structureViewer iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 560px;
+  border: 0;
+  filter: grayscale(1) contrast(1.06);
+}
+
+.structureMetadata {
+  display: grid;
+  align-content: start;
+  gap: 16px;
+  padding: 16px;
+  overflow: auto;
+  border-left: 1px solid var(--line);
+}
+
+.structureMetadata p,
+.structureMetadata dd,
+.structureUnavailable p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.38;
+}
+
+.structureMetadata > p,
+.structureMetadata h2,
+.structureMetadata h3,
+.structureMetadata dt,
+.structureUnavailable > section > p:first-child,
+.structureUnavailable h2 {
+  margin: 0;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.structureMetadata > p,
+.structureMetadata h3,
+.structureMetadata dt,
+.structureUnavailable > section > p:first-child {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.structureMetadata h2,
+.structureUnavailable h2 {
+  color: var(--fg);
+  font-size: clamp(1.1rem, 2vw, 1.7rem);
+  line-height: 1;
+}
+
+.structureMetadata dl,
+.structureMetadata section {
+  display: grid;
+  gap: 8px;
+  padding-top: 12px;
+  margin: 0;
+  border-top: 1px solid var(--line);
+}
+
+.structureMetadata dl div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
 }
 
 .canvasMeta {
@@ -1102,6 +1201,16 @@ g.isActive,
 
   .bottomPanel {
     grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .structureView {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .structureViewer,
+  .structureMetadata {
+    border-right: 0;
+    border-left: 0;
   }
 
   .representationSelect,

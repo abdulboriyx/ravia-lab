@@ -21,6 +21,10 @@ import type { ScientificClaim, ScientificClaimProvenance } from "./model";
 import { initialExamples, processPacks } from "./process-registry";
 import type { CompiledSceneNode, ResolvedGeometry } from "./scene-compiler";
 import { compileSceneFromSession } from "./scene-compiler";
+import {
+  resolveStructureForSession,
+  structureClaimProvenance
+} from "./structure-visualization";
 
 export function SpatialRaviaPrototype() {
   const [session, setSession] = useState<SpatialSessionState>(() => createInitialSession());
@@ -332,6 +336,10 @@ function RepresentationView({
 
   if (session.representationMode === "graph") {
     return <ProcessGraphView session={session} />;
+  }
+
+  if (session.representationMode === "molecular-structure") {
+    return <MolecularStructureView session={session} />;
   }
 
   if (session.representationMode === "explanation") {
@@ -718,6 +726,107 @@ function ExplanationView({ session }: { session: SpatialSessionState }) {
   );
 }
 
+function MolecularStructureView({ session }: { session: SpatialSessionState }) {
+  const structure = resolveStructureForSession(session);
+
+  if (!structure.supported) {
+    return (
+      <div className="structureView structureUnavailable">
+        <section>
+          <p>Molecular structure</p>
+          <h2>no suitable reviewed structure selected</h2>
+          <p>{structure.reason}</p>
+          {structure.warnings.map((warning) => (
+            <p key={warning.code}><b>{warning.code}</b> {warning.message}</p>
+          ))}
+        </section>
+      </div>
+    );
+  }
+
+  const metadata = structure.record.structure;
+  const provenance = structureClaimProvenance(structure);
+
+  return (
+    <div className="structureView">
+      <div className="structureViewer">
+        <iframe
+          title={`Molstar view of PDB ${structure.mapping.pdbId}`}
+          src={structure.viewerUrl}
+          loading="lazy"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+
+      <aside className="structureMetadata" aria-label="Structure metadata and warnings">
+        <p>Molecular structure / Mol*</p>
+        <h2>{structure.mapping.entityLabel}</h2>
+        <dl>
+          <div>
+            <dt>PDB</dt>
+            <dd>{structure.mapping.pdbId}</dd>
+          </div>
+          <div>
+            <dt>Assembly</dt>
+            <dd>
+              {structure.mapping.useBiologicalAssembly
+                ? `biological assembly ${structure.mapping.assemblyId}`
+                : "asymmetric unit"}
+            </dd>
+          </div>
+          <div>
+            <dt>Method</dt>
+            <dd>{metadata?.method}</dd>
+          </div>
+          <div>
+            <dt>Resolution</dt>
+            <dd>{metadata?.resolutionAngstrom ? `${metadata.resolutionAngstrom} A` : "not reported"}</dd>
+          </div>
+          <div>
+            <dt>Organism</dt>
+            <dd>{metadata?.organism}</dd>
+          </div>
+          <div>
+            <dt>Evidence</dt>
+            <dd>
+              {structure.record.evidence.experimental ? "experimentally determined" : "not experimental"}
+              {structure.record.evidence.predicted ? " / predicted" : ""}
+            </dd>
+          </div>
+        </dl>
+
+        <section>
+          <h3>Chains</h3>
+          {metadata?.chains.map((chain) => (
+            <p key={chain.id}>{chain.id}: {chain.label} / {chain.moleculeType}</p>
+          ))}
+        </section>
+
+        <section>
+          <h3>Ligands</h3>
+          {metadata?.ligands.map((ligand) => (
+            <p key={ligand.id}>{ligand.id}: {ligand.name} / {ligand.native ? "native or physiological ion" : "non-native"}</p>
+          ))}
+        </section>
+
+        <section>
+          <h3>Warnings</h3>
+          {structure.warnings.map((warning) => (
+            <p key={warning.code}><b>{warning.code}</b> {warning.message}</p>
+          ))}
+        </section>
+
+        <section>
+          <h3>Provenance</h3>
+          <p>{provenance.title}</p>
+          <p>{provenance.urlOrDoi}</p>
+          <p>{provenance.supportedClaim}</p>
+        </section>
+      </aside>
+    </div>
+  );
+}
+
 function JsonView({ session }: { session: SpatialSessionState }) {
   return (
     <pre className="jsonView">
@@ -809,8 +918,11 @@ function BottomPanel({
           }
         >
           <option value="scene">scene</option>
+          <option value="mixed">mixed workspace</option>
+          <option value="molecular-structure">molecular structure</option>
           <option value="timeline">process timeline</option>
           <option value="graph">process graph</option>
+          <option value="voltage-graph">voltage graph</option>
           <option value="explanation">explanation</option>
           <option value="json">developer JSON</option>
         </select>

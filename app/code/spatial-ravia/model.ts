@@ -14,8 +14,11 @@ export type ScientificEntityKind =
 
 export type RepresentationMode =
   | "scene"
+  | "mixed"
+  | "molecular-structure"
   | "timeline"
   | "graph"
+  | "voltage-graph"
   | "explanation"
   | "json";
 
@@ -196,11 +199,34 @@ export type ValidationRule = {
     source: string;
     target: string;
     relation?: string;
+    message?: string;
   }>;
   requiredLimitations?: string[];
   requiredParameters?: Array<{
     id: string;
     value?: ScientificParameter["value"];
+    message?: string;
+  }>;
+  requiredStageOrder?: Array<{
+    before: string;
+    after: string;
+    message?: string;
+  }>;
+  requiredClaimText?: Array<{
+    path: "relations" | "claims";
+    entityId?: string;
+    includes: string;
+    message?: string;
+  }>;
+  forbiddenClaimText?: Array<{
+    path: "relations" | "claims";
+    entityId?: string;
+    includes: string;
+    message: string;
+  }>;
+  forbiddenVerifiedClaimPatterns?: Array<{
+    pattern: string;
+    message: string;
   }>;
 };
 
@@ -1002,8 +1028,11 @@ const representationKeywords: Array<{
   terms: string[];
 }> = [
   { representation: "scene", terms: ["show", "visualize", "animation", "moving", "scene", "3d"] },
+  { representation: "mixed", terms: ["mixed", "workspace", "synchronized"] },
+  { representation: "molecular-structure", terms: ["structure", "pdb", "molstar", "experimental"] },
   { representation: "timeline", terms: ["timeline", "stages", "steps", "sequence"] },
   { representation: "graph", terms: ["graph", "network", "relations", "causal"] },
+  { representation: "voltage-graph", terms: ["voltage graph", "voltage trace", "voltage over time"] },
   { representation: "explanation", terms: ["why", "explain", "how", "describe"] },
   { representation: "json", terms: ["json", "developer", "structured model"] }
 ];
@@ -2811,54 +2840,71 @@ function validateStageOrderLayer(pack: BiologicalProcessPack): LayeredValidation
 }
 
 function validateBiologicalInvariantLayer(pack: BiologicalProcessPack): LayeredValidationIssue[] {
-  if (pack.id === "dna-replication") {
-    return validateDnaInvariantLayer(pack);
-  }
-
-  if (pack.id === "eukaryotic-transcription") {
-    return validateTranscriptionInvariantLayer(pack);
-  }
-
-  return [];
-}
-
-function validateDnaInvariantLayer(pack: BiologicalProcessPack): LayeredValidationIssue[] {
   const issues: LayeredValidationIssue[] = [];
+  const orderByState = new Map(pack.states.map((state) => [state.id, state.order]));
 
-  requireParameterValue(pack, issues, "directionality", "5' -> 3'", "DNA synthesis must be encoded as 5' -> 3'.");
-  requireParameterValue(pack, issues, "template-reading-direction", "3' -> 5'", "Template reading must be encoded as 3' -> 5'.");
-  requireRelation(pack, issues, "dna-polymerase", "leading-strand", "extends continuously", "Leading-strand synthesis must be continuous.");
-  requireRelation(pack, issues, "dna-polymerase", "lagging-strand", "extends discontinuously", "Lagging-strand synthesis must be discontinuous.");
-  requireRelation(pack, issues, "okazaki-fragments", "lagging-strand", undefined, "Okazaki fragments must occur on the lagging strand.");
-  requireRelation(pack, issues, "ligase", "okazaki-fragments", "seals nicks", "Ligase must seal nicks.");
+  for (const rule of pack.validationRules) {
+    for (const parameter of rule.requiredParameters ?? []) {
+      requireParameterValue(
+        pack,
+        issues,
+        parameter.id,
+        parameter.value,
+        parameter.message ?? `Required parameter "${parameter.id}" must be present with the expected value.`
+      );
+    }
 
-  if (relationText(pack).includes("ligase synthesizes") || relationText(pack).includes("ligase synthesize")) {
-    issues.push(layerIssue("biological_invariants", "validation_rule_failed", "relations.ligase", "Ligase must not be represented as synthesizing DNA fragments."));
-  }
+    for (const relation of rule.requiredRelations ?? []) {
+      requireRelation(
+        pack,
+        issues,
+        relation.source,
+        relation.target,
+        relation.relation,
+        relation.message ?? `Required relation "${relation.source}" -> "${relation.target}" must be present.`
+      );
+    }
 
-  const primed = pack.states.find((state) => state.id === "primed");
-  const extension = pack.states.find((state) => state.id === "extension");
-  if (!primed || !extension || primed.order >= extension.order) {
-    issues.push(layerIssue("biological_invariants", "validation_rule_failed", "states.primed", "Primers must precede DNA extension."));
-  }
+    for (const ordering of rule.requiredStageOrder ?? []) {
+      const beforeOrder = orderByState.get(ordering.before);
+      const afterOrder = orderByState.get(ordering.after);
+      if (beforeOrder === undefined || afterOrder === undefined || beforeOrder >= afterOrder) {
+        issues.push(layerIssue(
+          "biological_invariants",
+          "validation_rule_failed",
+          `states.${ordering.before}.${ordering.after}`,
+          ordering.message ?? `Stage "${ordering.before}" must precede "${ordering.after}".`
+        ));
+      }
+    }
 
-  return issues;
-}
+    for (const textRule of rule.requiredClaimText ?? []) {
+      const corpus = textRule.path === "relations"
+        ? relationText(pack, textRule.entityId)
+        : claimCorpus(pack);
+      if (!normalizeText(corpus).includes(normalizeText(textRule.includes))) {
+        issues.push(layerIssue(
+          "biological_invariants",
+          "validation_rule_failed",
+          textRule.entityId ? `${textRule.path}.${textRule.entityId}` : textRule.path,
+          textRule.message ?? `Required scientific text "${textRule.includes}" is missing.`
+        ));
+      }
+    }
 
-function validateTranscriptionInvariantLayer(pack: BiologicalProcessPack): LayeredValidationIssue[] {
-  const issues: LayeredValidationIssue[] = [];
-
-  requireParameterValue(pack, issues, "rna-synthesis-direction", "5' -> 3'", "RNA synthesis must be encoded as 5' -> 3'.");
-  requireRelation(pack, issues, "rna-polymerase-ii", "template-strand", "reads", "RNA polymerase II must read the template strand.");
-  requireRelation(pack, issues, "template-strand", "growing-rna-transcript", "templates", "RNA sequence must be complementary to the template strand.");
-  requireRelation(pack, issues, "coding-strand", "growing-rna-transcript", "corresponds to", "Coding strand must correspond to RNA except T/U.");
-
-  const codingRelation = pack.relations.find((relationItem) =>
-    relationItem.source === "coding-strand" &&
-    relationItem.target === "growing-rna-transcript"
-  );
-  if (codingRelation && !normalizeText(codingRelation.description).includes("except thymine is replaced by uracil")) {
-    issues.push(layerIssue("biological_invariants", "validation_rule_failed", `relations.${codingRelation.id}`, "Coding strand/RNA relation must state the T/U difference."));
+    for (const textRule of rule.forbiddenClaimText ?? []) {
+      const corpus = textRule.path === "relations"
+        ? relationText(pack, textRule.entityId)
+        : claimCorpus(pack);
+      if (normalizeText(corpus).includes(normalizeText(textRule.includes))) {
+        issues.push(layerIssue(
+          "biological_invariants",
+          "validation_rule_failed",
+          textRule.entityId ? `${textRule.path}.${textRule.entityId}` : textRule.path,
+          textRule.message
+        ));
+      }
+    }
   }
 
   return issues;
@@ -2903,7 +2949,12 @@ function validateVisualizationHonestyLayer(pack: BiologicalProcessPack): Layered
 }
 
 function validateUnsupportedClaimLayer(pack: BiologicalProcessPack): LayeredValidationIssue[] {
-  const unsupportedPatterns = unsupportedClaimPatternsForPack(pack);
+  const unsupportedPatterns = pack.validationRules.flatMap((rule) =>
+    (rule.forbiddenVerifiedClaimPatterns ?? []).map((patternRule) => ({
+      pattern: new RegExp(patternRule.pattern, "i"),
+      message: patternRule.message
+    }))
+  );
   const issues: LayeredValidationIssue[] = [];
 
   if (unsupportedPatterns.length === 0) {
@@ -2936,64 +2987,16 @@ function validateUnsupportedClaimLayer(pack: BiologicalProcessPack): LayeredVali
   return issues;
 }
 
-function unsupportedClaimPatternsForPack(pack: BiologicalProcessPack) {
-  if (pack.id === "dna-replication") {
-    return [
-      {
-        pattern: /dna polymerase synthesizes.*3'? to 5'?|dna synthesis.*3'? to 5'?/i,
-        message: "DNA polymerase synthesis direction claim is unsupported."
-      },
-      {
-        pattern: /template reading direction\s+5'? (?:->|to) 3'?|reads? (?:the )?template strand 5'? (?:->|to) 3'?/i,
-        message: "DNA template reading direction claim is unsupported."
-      },
-      {
-        pattern: /leading.*discontinuous/i,
-        message: "Leading-strand discontinuous synthesis claim is unsupported."
-      },
-      {
-        pattern: /lagging.*continuous/i,
-        message: "Lagging-strand continuous synthesis claim is unsupported."
-      },
-      {
-        pattern: /okazaki.*leading/i,
-        message: "Okazaki fragments on the leading strand is unsupported."
-      },
-      {
-        pattern: /ligase.*synthesizes.*fragment|ligase.*synthesize.*fragment/i,
-        message: "Ligase synthesizing fragments is unsupported."
-      }
-    ];
-  }
-
-  if (pack.id === "eukaryotic-transcription") {
-    return [
-      {
-        pattern: /rna.*synthesized.*3'? to 5'?|rna synthesis.*3'? to 5'?/i,
-        message: "RNA synthesis 3' to 5' is unsupported."
-      },
-      {
-        pattern: /polymerase.*reads.*coding strand|coding strand.*read by.*polymerase/i,
-        message: "RNA polymerase reading the coding strand is unsupported for this transcription model."
-      },
-      {
-        pattern: /rna.*identical.*template/i,
-        message: "RNA identical to template strand is unsupported."
-      }
-    ];
-  }
-
-  return [];
-}
-
 function requireParameterValue(
   pack: BiologicalProcessPack,
   issues: LayeredValidationIssue[],
   id: string,
-  value: ScientificParameter["value"],
+  value: ScientificParameter["value"] | undefined,
   message: string
 ) {
-  if (!pack.parameters.some((parameterItem) => parameterItem.id === id && parameterItem.value === value)) {
+  if (!pack.parameters.some((parameterItem) =>
+    parameterItem.id === id && (value === undefined || parameterItem.value === value)
+  )) {
     issues.push(layerIssue("biological_invariants", "validation_rule_failed", `parameters.${id}`, message));
   }
 }
@@ -3043,9 +3046,12 @@ function createEmptyLayerMap(): Record<ValidationLayer, LayeredValidationIssue[]
   };
 }
 
-function relationText(pack: BiologicalProcessPack) {
+function relationText(pack: BiologicalProcessPack, entityId?: string) {
   return pack.relations
-    .map((relationItem) => `${relationItem.relation} ${relationItem.description}`)
+    .filter((relationItem) =>
+      !entityId || relationItem.source === entityId || relationItem.target === entityId
+    )
+    .map((relationItem) => `${relationItem.source} ${relationItem.relation} ${relationItem.target} ${relationItem.description}`)
     .join(" ")
     .toLowerCase();
 }

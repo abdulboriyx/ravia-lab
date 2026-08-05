@@ -158,28 +158,79 @@ export const dnaReplicationPack: BiologicalProcessPack = {
       id: "directionality-and-strand-rules",
       description: "The pack must encode 5' -> 3' synthesis, continuous leading synthesis, and discontinuous lagging synthesis.",
       requiredParameters: [
-        { id: "directionality", value: "5' -> 3'" },
-        { id: "template-reading-direction", value: "3' -> 5'" }
+        { id: "fork-position", message: "DNA replication requires a fork-position parameter." },
+        { id: "ligase-present", message: "DNA replication counterfactuals require a ligase-present parameter." },
+        { id: "directionality", value: "5' -> 3'", message: "DNA synthesis must be encoded as 5' -> 3'." },
+        { id: "template-reading-direction", value: "3' -> 5'", message: "Template reading must be encoded as 3' -> 5'." }
       ],
       requiredRelations: [
         {
           source: "dna-polymerase",
           target: "leading-strand",
-          relation: "extends continuously"
+          relation: "extends continuously",
+          message: "Leading-strand synthesis must be continuous."
         },
         {
           source: "dna-polymerase",
           target: "lagging-strand",
-          relation: "extends discontinuously"
+          relation: "extends discontinuously",
+          message: "Lagging-strand synthesis must be discontinuous."
         },
         {
           source: "okazaki-fragments",
-          target: "lagging-strand"
+          target: "lagging-strand",
+          message: "Okazaki fragments must occur on the lagging strand."
         },
         {
           source: "ligase",
           target: "okazaki-fragments",
-          relation: "seals nicks"
+          relation: "seals nicks",
+          message: "Ligase must seal nicks."
+        }
+      ],
+      requiredStageOrder: [
+        { before: "primed", after: "extension", message: "Primers must precede DNA extension." }
+      ],
+      requiredClaimText: [
+        {
+          path: "relations",
+          entityId: "ligase",
+          includes: "seals nicks",
+          message: "Ligase must not be represented as synthesizing DNA fragments."
+        }
+      ],
+      forbiddenClaimText: [
+        {
+          path: "relations",
+          entityId: "ligase",
+          includes: "ligase synthesizes",
+          message: "Ligase must not be represented as synthesizing DNA fragments."
+        }
+      ],
+      forbiddenVerifiedClaimPatterns: [
+        {
+          pattern: "dna polymerase synthesizes.*3'? to 5'?|dna synthesis.*3'? to 5'?",
+          message: "DNA polymerase synthesis direction claim is unsupported."
+        },
+        {
+          pattern: "template reading direction\\s+5'? (?:->|to) 3'?|reads? (?:the )?template strand 5'? (?:->|to) 3'?",
+          message: "DNA template reading direction claim is unsupported."
+        },
+        {
+          pattern: "leading.*discontinuous",
+          message: "Leading-strand discontinuous synthesis claim is unsupported."
+        },
+        {
+          pattern: "lagging.*continuous",
+          message: "Lagging-strand continuous synthesis claim is unsupported."
+        },
+        {
+          pattern: "okazaki.*leading",
+          message: "Okazaki fragments on the leading strand is unsupported."
+        },
+        {
+          pattern: "ligase.*synthesizes.*fragment|ligase.*synthesize.*fragment",
+          message: "Ligase synthesizing fragments is unsupported."
         }
       ]
     },

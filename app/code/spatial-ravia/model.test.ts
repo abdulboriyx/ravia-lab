@@ -28,6 +28,10 @@ import {
 import { dnaReplicationPack, validateDnaReplicationPack } from "./dna-process.ts";
 import { processPacks } from "./process-registry.ts";
 import {
+  actionPotentialPack,
+  validateActionPotentialPack
+} from "./action-potential-process.ts";
+import {
   eukaryoticTranscriptionPack,
   validateEukaryoticTranscriptionPack
 } from "./transcription-process.ts";
@@ -50,6 +54,23 @@ test("transcription process-specific validation owns pack invariants", () => {
   assert.equal(validation.valid, true, validation.errors.join(", "));
 });
 
+test("action potential pack validates as a non-strand mixed representation", () => {
+  const validation = validateActionPotentialPack();
+  const compiled = compileBiologicalProcessPack(actionPotentialPack);
+
+  assert.equal(validation.valid, true, validation.errors.join(", "));
+  assert.equal(compiled.ok, true);
+
+  if (compiled.ok) {
+    const kinds = new Set(compiled.renderPlan.primitives.map((primitive) => primitive.kind));
+    assert.ok(kinds.has("membrane"));
+    assert.ok(kinds.has("molecular-complex"));
+    assert.ok(kinds.has("surface"));
+    assert.ok(kinds.has("timeline-event"));
+    assert.equal(kinds.has("strand"), false);
+  }
+});
+
 test("layered validation returns structured layer results", () => {
   const validation = validateBiologicalProcessPackLayered(dnaReplicationPack);
 
@@ -68,6 +89,17 @@ test("generic prompt parser maps registered pack prompts and abstains on unsuppo
 
   const unsupported = parsePromptWithPacks("Show protein folding", processPacks);
   assert.equal(unsupported.supported, false);
+});
+
+test("action potential prompt resolves through the shared process registry", () => {
+  const result = parsePromptWithPacks("Show an action potential.", processPacks);
+
+  assert.equal(result.supported, true);
+
+  if (result.supported) {
+    assert.equal(result.model.process, actionPotentialPack.process);
+    assert.equal(result.model.renderPlan.id, "action-potential-mixed");
+  }
 });
 
 test("overlapping DNA-to-RNA prompt resolves to transcription through the shared parser", () => {
@@ -463,6 +495,26 @@ test("transcription follow-up commands use the same session reducer", () => {
   assert.equal(paused.playback.timelinePosition, 0);
 });
 
+test("action potential follow-up commands use generic session state", () => {
+  const session = startSessionFromPrompt(
+    createInitialSession(),
+    "Show an action potential.",
+    processPacks
+  );
+  const isolated = applyFollowUpCommand(session, "isolate sodium channels");
+  const slowed = applyFollowUpCommand(isolated, "slow depolarization");
+  const refractory = applyFollowUpCommand(slowed, "show refractory period");
+  const voltage = applyFollowUpCommand(refractory, "switch to voltage graph");
+
+  assert.equal(session.activeModel?.process, actionPotentialPack.process);
+  assert.equal(isolated.isolatedEntity, "sodium-channels");
+  assert.deepEqual(isolated.selectedEntities, ["sodium-channels", "depolarization", "ion-flow"]);
+  assert.equal(slowed.playback.speed, 0.5);
+  assert.ok(refractory.selectedEntities.includes("refractory-period"));
+  assert.equal(voltage.representationMode, "voltage-graph");
+  assert.deepEqual(voltage.selectedEntities, ["membrane-voltage"]);
+});
+
 test("event-sourced session replay reproduces current scientific state", () => {
   const started = startSessionFromPrompt(
     createInitialSession(),
@@ -642,6 +694,21 @@ test("counterfactual branches serialize, replay, undo, and redo", () => {
   assert.equal(redone.activeModel?.entities.find((entity) => entity.id === "promoter")?.description.includes("Counterfactual state"), true);
 });
 
+test("action potential blocked sodium counterfactual is a typed model delta", () => {
+  const session = createCounterfactualBranch(
+    startSessionFromPrompt(createInitialSession(), "Show an action potential.", processPacks),
+    "Blocked sodium"
+  );
+  const blocked = applyCounterfactualIntervention(session, "blocked-sodium-channels");
+  const differences = compareActiveBranchToBaseline(blocked);
+
+  assert.equal(blocked.activeModel?.parameters.find((parameter) => parameter.id === "sodium-channel-available")?.value, false);
+  assert.ok(blocked.hiddenEntities.includes("sodium-channels"));
+  assert.ok(differences.some((difference) => difference.source === "direct-intervention"));
+  assert.ok(differences.some((difference) => difference.source === "predicted-downstream"));
+  assert.ok(differences.some((difference) => difference.source === "unsupported-outcome"));
+});
+
 function clonePack(): BiologicalProcessPack {
   return clonePackFrom(dnaReplicationPack);
 }
@@ -679,7 +746,11 @@ function clonePackFrom(pack: BiologicalProcessPack): BiologicalProcessPack {
       requiredEntities: rule.requiredEntities ? [...rule.requiredEntities] : undefined,
       requiredRelations: rule.requiredRelations?.map((relation) => ({ ...relation })),
       requiredLimitations: rule.requiredLimitations ? [...rule.requiredLimitations] : undefined,
-      requiredParameters: rule.requiredParameters?.map((parameter) => ({ ...parameter }))
+      requiredParameters: rule.requiredParameters?.map((parameter) => ({ ...parameter })),
+      requiredStageOrder: rule.requiredStageOrder?.map((ordering) => ({ ...ordering })),
+      requiredClaimText: rule.requiredClaimText?.map((textRule) => ({ ...textRule })),
+      forbiddenClaimText: rule.forbiddenClaimText?.map((textRule) => ({ ...textRule })),
+      forbiddenVerifiedClaimPatterns: rule.forbiddenVerifiedClaimPatterns?.map((pattern) => ({ ...pattern }))
     })),
     promptRules: pack.promptRules.map((rule) => ({
       ...rule,
