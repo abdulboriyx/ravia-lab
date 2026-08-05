@@ -293,6 +293,7 @@ export type BiologicalProcessPack = {
 };
 
 export type ScientificModel = {
+  phenomenonSpec?: PhenomenonSpec;
   process: string;
   aliases: string[];
   biologicalContext: string;
@@ -634,6 +635,7 @@ export function compileBiologicalProcessPack(
 
   const renderPlan = deriveRenderPlan(pack);
   const model: ScientificModel = {
+    phenomenonSpec: pack.phenomenonSpec,
     process: pack.process,
     aliases: pack.aliases,
     biologicalContext,

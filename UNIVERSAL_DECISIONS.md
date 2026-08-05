@@ -28,7 +28,7 @@ Reason: `PhenomenonSpec` parameters are quantity-based and require numeric value
 
 ## Next Decision Needed
 
-The next architecture decision is how representation selection should consume `PhenomenonSpec` evidence availability without duplicating legacy `BiologicalProcessPack` fields.
+The next architecture decision is how the visible route should expose the existing action-potential process pack without adding DNA-specific UI branches.
 
 ## Pack-Owned Incompatibility Rules
 
@@ -37,3 +37,9 @@ Decision: prompt-level scientific contradictions now belong to process packs as 
 Reason: process packs are the scientific authority for their own misconceptions, impossible interventions, and cross-process conflicts. This keeps rejection logic reviewable with the relevant entities, sources, relations, and validation rules.
 
 Constraint: a true sealed holdout prompt set cannot be created by the same implementation pass and still be called sealed. It needs to be supplied or generated outside the tuning loop.
+
+## Schema-Backed Representation Evidence
+
+Decision: representation selection merges caller-provided availability with evidence derived from `PhenomenonSpec`.
+
+Reason: the schema is now the authoritative place for approved renderer/evidence combinations. Molecular 3D is enabled only by manually supplied structural availability or a literal molecular-structure view with an approved deposited mapping. Schema default views may influence ranking, but explicit user requests still win when the requested representation has supporting evidence.

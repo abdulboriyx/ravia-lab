@@ -11,7 +11,8 @@ import type {
   ScientificModel
 } from "./model.ts";
 import { compileBiologicalProcessPack } from "./model.ts";
-import { dnaReplicationPack } from "./dna-process.ts";
+import { dnaReplicationPack, dnaReplicationPhenomenonSpec } from "./dna-process.ts";
+import type { PhenomenonSpec } from "./phenomenon-spec.ts";
 import { eukaryoticTranscriptionPack } from "./transcription-process.ts";
 
 const availableRenderers: ScientificRepresentation[] = [
@@ -292,6 +293,51 @@ test("molecular 3D request without structural data is prevented", () => {
   assert.ok(decision.unsupportedViewWarnings.some((warning) => warning.includes("no structural data")));
 });
 
+test("representation selection can use approved PhenomenonSpec molecular evidence", () => {
+  const decision = selectScientificRepresentation({
+    model: dnaModel,
+    phenomenonSpec: dnaReplicationPhenomenonSpec,
+    representationRules: dnaModel.representationRules,
+    userIntent: {
+      requestedFocus: ["molecular structure"],
+      requestedEntities: ["parental-strand-5to3"],
+      requestedRepresentation: "molecular-structure"
+    },
+    availableRenderers,
+    scale: "molecular",
+    quantitativeData: noQuantitativeData
+  });
+
+  assert.equal(decision.primaryRepresentation, "molecular-3d");
+  assert.ok(decision.literalVersusSchematicWarning.includes("structural data"));
+});
+
+test("representation selection rejects unapproved PhenomenonSpec molecular evidence", () => {
+  const invalidStructureSpec: PhenomenonSpec = structuredClone(dnaReplicationPhenomenonSpec);
+  const molecularView = invalidStructureSpec.views.find((view) => view.kind === "molecular-structure");
+  assert.ok(molecularView?.structureMapping);
+  molecularView.structureMapping.approved = false;
+
+  const decision = selectScientificRepresentation({
+    model: {
+      ...dnaModel,
+      phenomenonSpec: invalidStructureSpec
+    },
+    representationRules: dnaModel.representationRules,
+    userIntent: {
+      requestedFocus: ["molecular structure"],
+      requestedEntities: ["parental-strand-5to3"],
+      requestedRepresentation: "molecular-structure"
+    },
+    availableRenderers,
+    scale: "molecular",
+    quantitativeData: noQuantitativeData
+  });
+
+  assert.notEqual(decision.primaryRepresentation, "molecular-3d");
+  assert.ok(decision.unsupportedViewWarnings.some((warning) => warning.includes("no structural data")));
+});
+
 function compileModel(pack: typeof dnaReplicationPack): ScientificModel {
   const result = compileBiologicalProcessPack(pack);
   assert.equal(result.ok, true);
@@ -306,6 +352,7 @@ function compileModel(pack: typeof dnaReplicationPack): ScientificModel {
 function mockModel(process: string, rules: string[]): ScientificModel {
   return {
     ...dnaModel,
+    phenomenonSpec: undefined,
     process,
     aliases: [process.toLowerCase()],
     biologicalContext: "mock biological context",

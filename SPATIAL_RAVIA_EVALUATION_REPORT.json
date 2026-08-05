@@ -1,6 +1,6 @@
 {
   "suite": "spatial-ravia-scientific-evaluation",
-  "generatedAt": "2026-08-05T18:53:33.051Z",
+  "generatedAt": "2026-08-05T19:00:07.049Z",
   "totalCases": 108,
   "passedCases": 108,
   "failedCases": 0,
@@ -2435,9 +2435,7 @@
           "actual": {
             "primary": "schematic-3d",
             "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-            "unsupportedWarnings": [
-              "Molecular 3D was not selected because no structural data is available."
-            ]
+            "unsupportedWarnings": []
           },
           "detail": "Misleading 3D requests must not override missing structural data."
         },
@@ -2445,7 +2443,7 @@
           "dimension": "visualization-honesty",
           "passed": true,
           "expected": "schematic",
-          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
           "detail": "Scientific honesty warning should explain the limitation."
         }
       ],
@@ -2663,9 +2661,7 @@
           "actual": {
             "primary": "schematic-3d",
             "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-            "unsupportedWarnings": [
-              "Molecular 3D was not selected because no structural data is available."
-            ]
+            "unsupportedWarnings": []
           },
           "detail": "Misleading 3D requests must not override missing structural data."
         },
@@ -2673,7 +2669,7 @@
           "dimension": "visualization-honesty",
           "passed": true,
           "expected": "schematic",
-          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry. Molecular 3D was not selected because no structural data is available.",
+          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
           "detail": "Scientific honesty warning should explain the limitation."
         }
       ],

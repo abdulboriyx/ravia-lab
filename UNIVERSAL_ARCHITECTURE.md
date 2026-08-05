@@ -41,10 +41,16 @@ Process-specific prompt refusals live on each process pack as typed `incompatibi
 
 This replaces the prior global contradiction regex table in `model.ts`. DNA, transcription, and action-potential packs now own their own misconceptions, cross-process conflicts, and unsafe prompt boundaries.
 
+## Schema-Backed Representation Selection
+
+`representation-selection.ts` now derives evidence availability from `PhenomenonSpec` when a compiled model carries one. Declared schema views can prove approved deposited molecular structure availability, declared graph views can provide network evidence, and physical timelines can provide quantitative time-series evidence.
+
+For DNA, the schema-backed B-DNA structure view enables molecular 3D when specifically requested, but the declared schematic mechanistic-process view keeps the fork mechanism as the default primary representation.
+
 ## Evidence Model
 
 The DNA fork view is classified as a schematic explanatory model with normalized time. The B-DNA Mol* view is classified as a literal molecular-structure view only because it declares approved deposited PDB `1ZF5` coordinates. The contract rejects molecular-structure views without approved deposited mappings and rejects schematic process views mislabeled as literal.
 
 ## Deferred Architecture Work
 
-The adapter is intentionally temporary. The next schema migration should make `PhenomenonSpec` the direct authoring source for all process packs, then retire legacy-only fields once representation selection consumes the schema directly.
+The adapter is intentionally temporary. The next schema migration should make `PhenomenonSpec` the direct authoring source for all process packs, then retire legacy-only fields once additional packs consume the schema directly.

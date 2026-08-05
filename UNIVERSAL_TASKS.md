@@ -14,12 +14,14 @@
 - Added negative PhenomenonSpec fixtures for invalid references, duplicate IDs, bad units, invalid bounds, invalid timelines, renderer/evidence mismatches, missing molecular coordinates, and unsupported interaction targets.
 - Replaced the global prompt contradiction table with pack-owned typed incompatibility rules for DNA replication, eukaryotic transcription, and action potential.
 - Added tests proving malformed incompatibility rules fail validation and prompt refusals resolve from pack metadata.
+- Made representation selection consume `PhenomenonSpec` evidence availability from declared views, renderer/evidence classifications, normalized timelines, and approved deposited structure mappings.
+- Added tests proving approved schema molecular evidence can enable molecular 3D and unapproved schema molecular evidence is rejected.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 134/134.
+- `npm run test:spatial`: pass, 136/136.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -28,7 +30,7 @@
 
 ## Next Recommended Task
 
-Make representation selection consume `PhenomenonSpec` evidence availability directly. Completion requires molecular and quantitative requests to pass through schema-backed evidence gates instead of legacy process-pack fields, with no regression in the DNA workspace, Mol* lazy loading, Spatial tests, or the 108-case scientific evaluation.
+Connect the action-potential pack to a visible SVG+D3 workspace using a reviewed Hodgkin-Huxley trace, per `UNIVERSAL_RAVIA_SPEC.md` milestone 8. Completion requires shared controls and session state to work without DNA-specific code, with no regression in DNA behavior, schema validation, pack-owned incompatibility rules, Spatial tests, or the 108-case scientific evaluation.
 
 ## External Validation Still Needed
 

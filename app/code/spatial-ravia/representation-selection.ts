@@ -4,6 +4,10 @@ import type {
   ScientificClaim,
   ScientificModel
 } from "./model.ts";
+import type {
+  PhenomenonSpec,
+  RepresentationKind
+} from "./phenomenon-spec.ts";
 
 export type ScientificRepresentation =
   | "schematic-3d"
@@ -34,6 +38,7 @@ export type QuantitativeDataAvailability = {
 
 export type RepresentationSelectionInput = {
   model: ScientificModel;
+  phenomenonSpec?: PhenomenonSpec;
   representationRules: Array<string | ScientificClaim>;
   userIntent: Pick<
     PromptIntentResolution,
@@ -74,28 +79,31 @@ export function selectScientificRepresentation(
 ): RepresentationSelectionDecision {
   const requested = mapRequestedRepresentation(input.userIntent.requestedRepresentation);
   const available = new Set(input.availableRenderers);
-  const features = inferRepresentationFeatures(input);
+  const evidence = deriveEvidenceAvailability(input);
+  const features = inferRepresentationFeatures(input, evidence);
   const unsupportedViewWarnings: string[] = [];
-  const candidates = scoreRepresentations(input, features);
+  const candidates = scoreRepresentations(input, features, evidence, requested);
 
   applyUserPreference(candidates, requested, input, unsupportedViewWarnings);
-  preventMisleadingChoices(candidates, input, features, unsupportedViewWarnings);
+  preventMisleadingChoices(candidates, input, features, evidence, unsupportedViewWarnings);
 
   const primaryRepresentation = chooseAvailablePrimary(candidates, available);
-  const synchronizedSecondaryViews = chooseSecondaryViews(primaryRepresentation, candidates, available, input);
+  const synchronizedSecondaryViews = chooseSecondaryViews(primaryRepresentation, candidates, available, input, evidence);
 
   return {
     primaryRepresentation,
     synchronizedSecondaryViews,
-    explanation: explainDecision(primaryRepresentation, candidates, features, input),
-    literalVersusSchematicWarning: literalSchematicWarning(primaryRepresentation, input, features),
+    explanation: explainDecision(primaryRepresentation, candidates, features, input, evidence),
+    literalVersusSchematicWarning: literalSchematicWarning(primaryRepresentation, input, features, evidence),
     unsupportedViewWarnings
   };
 }
 
 function scoreRepresentations(
   input: RepresentationSelectionInput,
-  features: ReturnType<typeof inferRepresentationFeatures>
+  features: ReturnType<typeof inferRepresentationFeatures>,
+  evidence: QuantitativeDataAvailability,
+  requested: ScientificRepresentation | undefined
 ): CandidateScore[] {
   const candidates = allRepresentations.map((representation): CandidateScore => ({
     representation,
@@ -106,22 +114,31 @@ function scoreRepresentations(
   addScore(candidates, "process-diagram", 1.8, "The model contains ordered biological mechanism stages.");
   addScore(candidates, "timeline", input.model.transitions.length > 0 ? 1.7 : 0, "Transitions can be synchronized as stages.");
 
-  if (features.isReactionNetwork || features.isRegulatoryNetwork || input.quantitativeData.networkEdges) {
+  if (hasSchemaView(input, "mechanistic-process")) {
+    addScore(candidates, "schematic-3d", 1.5, "The schema declares a schematic mechanistic-process view.");
+  }
+
+  if (features.isReactionNetwork || features.isRegulatoryNetwork || evidence.networkEdges) {
     addScore(candidates, "network", 4.4, "Relations dominate the model, so a network view avoids fake spatial geometry.");
     addScore(candidates, "process-diagram", 0.8, "A process diagram can show causal order alongside the network.");
   }
 
-  if (features.isTimeDependent && input.quantitativeData.timeSeries) {
+  if (features.isTimeDependent && evidence.timeSeries) {
     addScore(candidates, "time-series-graph", 3.8, "Time-dependent quantitative data is available.");
     addScore(candidates, "timeline", 1.4, "Timeline stages provide process context for the graph.");
   }
 
-  if (features.hasStateSpace || input.quantitativeData.stateVariables) {
+  if (features.hasStateSpace || evidence.stateVariables) {
     addScore(candidates, "state-space-view", 3.7, "State variables or state-space focus are present.");
   }
 
-  if (input.quantitativeData.structuralData && input.scale === "molecular") {
-    addScore(candidates, "molecular-3d", 4.2, "Molecular-scale structural data is available.");
+  if (evidence.structuralData && input.scale === "molecular") {
+    addScore(
+      candidates,
+      "molecular-3d",
+      input.quantitativeData.structuralData || requested === "molecular-3d" || !hasSchemaView(input, "mechanistic-process") ? 4.2 : 1.4,
+      "Molecular-scale structural data is available."
+    );
     addScore(candidates, "schematic-3d", 1.6, "A schematic 3D view can stay synchronized with structural context.");
   } else if (features.hasSpatialFocus || input.scale === "molecular" || input.scale === "cellular") {
     addScore(candidates, "schematic-3d", 2.6, "Spatial intuition is useful, but structural geometry is not established.");
@@ -160,23 +177,29 @@ function applyUserPreference(
     return;
   }
 
-  addScore(candidates, requested, 2.7, "The user explicitly requested this representation.");
+  addScore(
+    candidates,
+    requested,
+    requested === "schematic-3d" ? 2.7 : 3.6,
+    "The user explicitly requested this representation."
+  );
 }
 
 function preventMisleadingChoices(
   candidates: CandidateScore[],
   input: RepresentationSelectionInput,
   features: ReturnType<typeof inferRepresentationFeatures>,
+  evidence: QuantitativeDataAvailability,
   warnings: string[]
 ) {
-  if (!input.quantitativeData.structuralData) {
+  if (!evidence.structuralData) {
     suppress(candidates, "molecular-3d", "Molecular 3D requires structural data.");
     if (input.availableRenderers.includes("molecular-3d")) {
       warnings.push("Molecular 3D was not selected because no structural data is available.");
     }
   }
 
-  if (features.isReactionNetwork && !input.quantitativeData.structuralData) {
+  if (features.isReactionNetwork && !evidence.structuralData) {
     suppress(candidates, "molecular-3d", "Reaction networks must not default to fake molecular 3D.");
     addScore(candidates, "network", 1.0, "Reaction-network processes should preserve relation topology.");
   }
@@ -185,7 +208,7 @@ function preventMisleadingChoices(
     suppress(candidates, "molecular-3d", "Abstract biological processes cannot be shown as literal molecular geometry.");
   }
 
-  if (features.isTimeDependent && input.quantitativeData.timeSeries) {
+  if (features.isTimeDependent && evidence.timeSeries) {
     suppressBelow(candidates, "time-series-graph", 2.5);
   }
 }
@@ -205,7 +228,8 @@ function chooseSecondaryViews(
   primary: ScientificRepresentation,
   candidates: CandidateScore[],
   available: Set<ScientificRepresentation>,
-  input: RepresentationSelectionInput
+  input: RepresentationSelectionInput,
+  evidence: QuantitativeDataAvailability
 ) {
   const secondary = new Set<ScientificRepresentation>();
 
@@ -227,10 +251,22 @@ function chooseSecondaryViews(
     secondary.add("network");
   }
 
+  if (
+    evidence.structuralData &&
+    primary !== "molecular-3d" &&
+    available.has("molecular-3d") &&
+    !secondary.has("molecular-3d")
+  ) {
+    secondary.add("molecular-3d");
+  }
+
   return [...secondary].slice(0, 3);
 }
 
-function inferRepresentationFeatures(input: RepresentationSelectionInput) {
+function inferRepresentationFeatures(
+  input: RepresentationSelectionInput,
+  evidence: QuantitativeDataAvailability
+) {
   const text = [
     input.model.process,
     input.model.biologicalContext,
@@ -248,7 +284,7 @@ function inferRepresentationFeatures(input: RepresentationSelectionInput) {
   const hasSpatialFocus = hasAny(text, ["3d", "spatial", "geometry", "structure", "molecular", "membrane", "compartment"]);
   const isAbstract = input.scale === "abstract" || hasAny(text, ["abstract", "projection"]);
   const needsMultipleViews =
-    (input.quantitativeData.timeSeries && input.model.relations.length > 0) ||
+    (evidence.timeSeries && input.model.relations.length > 0) ||
     (isReactionNetwork && input.model.transitions.length > 0) ||
     input.userIntent.requestedRepresentation === "json";
   const needsSynchronizedMixedView = hasAny(text, [
@@ -296,14 +332,15 @@ function explainDecision(
   primary: ScientificRepresentation,
   candidates: CandidateScore[],
   features: ReturnType<typeof inferRepresentationFeatures>,
-  input: RepresentationSelectionInput
+  input: RepresentationSelectionInput,
+  evidence: QuantitativeDataAvailability
 ) {
   const candidate = candidates.find((item) => item.representation === primary);
   const reasons = candidate?.reasons.slice(0, 3) ?? [];
-  const dataNote = input.quantitativeData.structuralData
+  const dataNote = evidence.structuralData
     ? "Structural data is available."
     : "No structural data was provided.";
-  const featureNote = features.isTimeDependent && input.quantitativeData.timeSeries
+  const featureNote = features.isTimeDependent && evidence.timeSeries
     ? "Quantitative time-series data is available."
     : "The selection prioritizes the curated model structure and representation rules.";
 
@@ -313,9 +350,10 @@ function explainDecision(
 function literalSchematicWarning(
   primary: ScientificRepresentation,
   input: RepresentationSelectionInput,
-  features: ReturnType<typeof inferRepresentationFeatures>
+  features: ReturnType<typeof inferRepresentationFeatures>,
+  evidence: QuantitativeDataAvailability
 ) {
-  if (primary === "molecular-3d" && input.quantitativeData.structuralData) {
+  if (primary === "molecular-3d" && evidence.structuralData) {
     return "Uses structural data where available; omitted or uncertain parts must remain marked as modeled or schematic.";
   }
 
@@ -371,4 +409,46 @@ function suppressBelow(
 
 function hasAny(text: string, terms: string[]) {
   return terms.some((term) => text.includes(term));
+}
+
+function deriveEvidenceAvailability(input: RepresentationSelectionInput): QuantitativeDataAvailability {
+  const spec = input.phenomenonSpec ?? input.model.phenomenonSpec;
+  const schemaEvidence: QuantitativeDataAvailability = {
+    timeSeries: false,
+    kineticParameters: false,
+    stateVariables: false,
+    structuralData: false,
+    networkEdges: false
+  };
+
+  if (spec) {
+    schemaEvidence.structuralData = spec.views.some((view) =>
+      view.kind === "molecular-structure" &&
+      view.renderer === "molstar" &&
+      view.evidenceMode === "literal" &&
+      view.structureMapping?.approved === true &&
+      view.structureMapping.deposited === true
+    );
+    schemaEvidence.timeSeries = spec.timeline.basis === "physical";
+    schemaEvidence.kineticParameters = spec.timeline.basis === "physical";
+    schemaEvidence.networkEdges = hasSchemaView(spec, "graph");
+    schemaEvidence.stateVariables = hasSchemaView(spec, "equation-model");
+  }
+
+  return {
+    timeSeries: input.quantitativeData.timeSeries || schemaEvidence.timeSeries,
+    kineticParameters: input.quantitativeData.kineticParameters || schemaEvidence.kineticParameters,
+    stateVariables: input.quantitativeData.stateVariables || schemaEvidence.stateVariables,
+    structuralData: input.quantitativeData.structuralData || schemaEvidence.structuralData,
+    networkEdges: input.quantitativeData.networkEdges || schemaEvidence.networkEdges
+  };
+}
+
+function hasSchemaView(
+  input: RepresentationSelectionInput | PhenomenonSpec,
+  kind: RepresentationKind
+) {
+  const spec = "views" in input ? input : input.phenomenonSpec ?? input.model.phenomenonSpec;
+
+  return spec?.views.some((view) => view.kind === kind) ?? false;
 }
