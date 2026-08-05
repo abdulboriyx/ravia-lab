@@ -19,12 +19,14 @@
 - Exposed the existing action-potential pack in the visible `/code/spatial-ravia/` workspace through the shared session engine and scene compiler.
 - Kept the DNA B-DNA/Mol* structure view DNA-only while allowing action-potential prompts to render the primary schematic SVG workspace.
 - Tightened the shared workspace layout and SVG label rules so the process scene remains visible at 1440x900, 1280x800, 1024x768, and 390x844 without horizontal overflow.
+- Added a reviewed static Hodgkin-Huxley benchmark trace fixture for action potential with declared `ms`/`mV` units and D3-scaled SVG path rendering.
+- Added focused trace tests proving ordered physical trace points, D3 path generation, scene provenance, and source wiring.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 138/138.
+- `npm run test:spatial`: pass, 141/141.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -33,7 +35,7 @@
 
 ## Next Recommended Task
 
-Complete the strict Hodgkin-Huxley part of `UNIVERSAL_RAVIA_SPEC.md` milestone 8 by adding a reviewed offline trace fixture and D3-scaled voltage graph path for the already visible action-potential workspace. Completion requires retaining the current shared controls and state behavior, no DNA regressions, schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
+Generalize `BiologicalProcessPack` to `PhenomenonPack` and add equation-model and spatial component kinds, per `UNIVERSAL_RAVIA_SPEC.md` milestone 9. Completion requires migrating existing DNA/action-potential behavior without regressions, keeping the HH trace fixture source- and unit-validated, and preserving schema validation, pack-owned incompatibility rules, Spatial tests, and the 108-case scientific evaluation.
 
 ## External Validation Still Needed
 

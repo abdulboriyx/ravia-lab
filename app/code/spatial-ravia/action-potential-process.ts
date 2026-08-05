@@ -15,8 +15,23 @@ import type {
 import { validateBiologicalProcessPack } from "./model.ts";
 import type { ScientificPrimitive } from "./primitives.ts";
 import { primitiveBase } from "./primitives.ts";
+import {
+  actionPotentialTracePath,
+  actionPotentialTraceSource
+} from "./action-potential-trace.ts";
 
 const actionPotentialSources: ScientificSource[] = [
+  {
+    id: "hodgkin-huxley-1952",
+    title: "A quantitative description of membrane current and its application to conduction and excitation in nerve",
+    authors: "Hodgkin and Huxley",
+    locator: "Membrane equation and action-potential response",
+    note: "Primary source for the reviewed Hodgkin-Huxley voltage-trace fixture.",
+    urlOrDoi: "https://doi.org/10.1113/jphysiol.1952.sp004764",
+    publicationType: "primary-literature",
+    accessDate: "2026-08-06",
+    license: "Publisher-hosted primary literature metadata; trace values are a local benchmark fixture."
+  },
   {
     id: "openstax-neuron-action-potential",
     title: "Anatomy and Physiology: The Action Potential",
@@ -67,7 +82,7 @@ export const actionPotentialPack: BiologicalProcessPack = {
     "excitable cell membrane"
   ],
   defaultContext: "generic neuron axon membrane",
-  unsupportedMessage: "This prototype only supports a schematic action potential, not a full conductance model.",
+  unsupportedMessage: "This prototype supports a reviewed Hodgkin-Huxley trace fixture inside a schematic action-potential workspace, not arbitrary electrophysiology.",
   entities: [
     entity("resting-potential", "Resting potential", ["resting membrane potential"], "process", "The membrane starts polarized near a negative resting voltage."),
     entity("membrane", "Membrane", ["axon membrane", "cell membrane"], "process", "Lipid membrane separating intracellular and extracellular ion compartments."),
@@ -77,7 +92,7 @@ export const actionPotentialPack: BiologicalProcessPack = {
     entity("repolarization", "Repolarization", ["falling phase"], "process", "Membrane voltage returns downward as potassium conductance dominates."),
     entity("hyperpolarization", "Hyperpolarization", ["undershoot"], "process", "Membrane voltage transiently falls below resting level."),
     entity("refractory-period", "Refractory period", ["refractory"], "process", "Period of reduced excitability after sodium-channel inactivation."),
-    entity("membrane-voltage", "Membrane voltage over time", ["voltage trace", "voltage graph"], "process", "A schematic time series of membrane voltage during the spike."),
+    entity("membrane-voltage", "Membrane voltage over time", ["voltage trace", "voltage graph"], "process", "A reviewed Hodgkin-Huxley benchmark voltage trace displayed inside the schematic workspace."),
     entity("ion-flow", "Ion-flow direction", ["ion flow", "current direction"], "process", "Direction of sodium influx and potassium efflux in the schematic.")
   ],
   relations: [
@@ -92,11 +107,11 @@ export const actionPotentialPack: BiologicalProcessPack = {
     relation("ion-flow", "potassium-channels", "shows efflux through", "Potassium ions flow outward through open potassium channels.")
   ],
   states: [
-    state("resting", "Resting potential", 0, "Membrane is polarized and voltage-gated channels are mostly closed.", ["resting-potential", "membrane"]),
-    state("depolarizing", "Depolarization", 1, "Sodium channels open and voltage rises quickly.", ["sodium-channels", "depolarization", "ion-flow"]),
-    state("repolarizing", "Repolarization", 2, "Sodium channels inactivate while potassium channels drive voltage downward.", ["potassium-channels", "repolarization", "ion-flow"]),
-    state("hyperpolarized", "Hyperpolarization", 3, "Potassium channels close slowly, producing a schematic undershoot.", ["potassium-channels", "hyperpolarization"]),
-    state("refractory", "Refractory period", 4, "Excitability is reduced before the system returns toward rest.", ["refractory-period", "sodium-channels"])
+    state("resting", "Resting potential", 0, "Membrane is polarized and voltage-gated channels are mostly closed.", ["resting-potential", "membrane", "membrane-voltage"]),
+    state("depolarizing", "Depolarization", 1, "Sodium channels open and voltage rises quickly.", ["sodium-channels", "depolarization", "ion-flow", "membrane-voltage"]),
+    state("repolarizing", "Repolarization", 2, "Sodium channels inactivate while potassium channels drive voltage downward.", ["potassium-channels", "repolarization", "ion-flow", "membrane-voltage"]),
+    state("hyperpolarized", "Hyperpolarization", 3, "Potassium channels close slowly, producing a schematic undershoot.", ["potassium-channels", "hyperpolarization", "membrane-voltage"]),
+    state("refractory", "Refractory period", 4, "Excitability is reduced before the system returns toward rest.", ["refractory-period", "sodium-channels", "membrane-voltage"])
   ],
   transitions: [
     transition("threshold-crossed", "resting", "depolarizing", "threshold stimulus", "sodium_channel_open_probability increases"),
@@ -105,7 +120,7 @@ export const actionPotentialPack: BiologicalProcessPack = {
     transition("recovery", "hyperpolarized", "refractory", "channel recovery", "sodium channels recover from inactivation over the refractory period")
   ],
   parameters: [
-    parameter("membrane-voltage", "Membrane voltage", -70, "mV", "Mocked voltage at the current timeline position."),
+    parameter("membrane-voltage", "Membrane voltage", -65, "mV", `Voltage fixture uses ${actionPotentialTraceSource.voltageUnit} over ${actionPotentialTraceSource.timeUnit}.`),
     parameter("depolarization-rate", "Depolarization rate", 1, "relative", "Schematic speed of the rising phase."),
     parameter("sodium-channel-available", "Sodium channel available", true, undefined, "Whether sodium channels can open in this model."),
     parameter("potassium-channel-delay", "Potassium channel delay", 1, "relative", "Schematic delay of potassium-channel closure.")
@@ -120,15 +135,16 @@ export const actionPotentialPack: BiologicalProcessPack = {
   assumptions: [
     claim("ap-assumption-schematic", "The membrane and channels are schematic, not molecularly exact.", "schematic-simplification", "openstax-neuron-action-potential"),
     claim("ap-assumption-normalized-time", "Time and channel state transitions are normalized for explanation.", "model-assumption", "ncbi-neuroscience-action-potential"),
-    claim("ap-assumption-generic-neuron", "A generic neuron axon membrane is shown without cell-type-specific conductance values.", "model-assumption", "openstax-neuron-action-potential")
+    claim("ap-assumption-generic-neuron", "A generic neuron axon membrane is shown without cell-type-specific conductance values.", "model-assumption", "openstax-neuron-action-potential"),
+    claim("ap-assumption-hh-trace-fixture", "The voltage graph is a fixed Hodgkin-Huxley benchmark trace fixture, not a live browser-side numerical solve.", "model-assumption", "hodgkin-huxley-1952")
   ],
   limitations: [
-    claim("ap-limitation-not-hh", "This is not a Hodgkin-Huxley quantitative simulation.", "schematic-simplification", "ncbi-neuroscience-action-potential"),
+    claim("ap-limitation-not-live-hh-solver", "The workspace does not expose an editable Hodgkin-Huxley equation solver.", "schematic-simplification", "hodgkin-huxley-1952"),
     claim("ap-limitation-no-spatial-propagation", "Axonal propagation, myelination, and synaptic integration are not modeled.", "schematic-simplification", "openstax-neuron-action-potential")
   ],
   representationRules: [
     claim("ap-rule-mixed", "Use a synchronized mixed representation with membrane schematic, channel-state animation, voltage graph, and timeline.", "schematic-simplification", "openstax-neuron-action-potential"),
-    claim("ap-rule-voltage", "Expose membrane voltage over time as a graph rather than a strand animation.", "interpretation", "ncbi-neuroscience-action-potential"),
+    claim("ap-rule-voltage", "Expose membrane voltage over time as a D3-scaled graph rather than a strand animation.", "interpretation", "hodgkin-huxley-1952"),
     claim("ap-rule-ion-flow", "Show sodium influx and potassium efflux direction as schematic arrows.", "interpretation", "openstax-neuron-action-potential")
   ],
   commonMisconceptions: [
@@ -307,13 +323,13 @@ export const actionPotentialPack: BiologicalProcessPack = {
   ],
   scaleDistortions: [
     "Channel size and ion arrows are enlarged for readability.",
-    "Voltage trace shape is schematic and normalized to the workspace."
+    "Voltage trace is a fixed Hodgkin-Huxley benchmark fixture scaled into the workspace."
   ],
   animation: {
     planId: "action-potential-mixed",
     title: "Action potential / synchronized mixed representation",
     subtitle: "Schematic membrane, channel states, voltage graph, and timeline.",
-    ariaLabel: "Schematic action potential mixed representation with ion channels and voltage graph",
+    ariaLabel: "Schematic action potential mixed representation with ion channels and D3-scaled Hodgkin-Huxley voltage graph",
     viewBox: "0 0 960 620",
     progressDurationMs: 9000,
     isolationGroups: {
@@ -390,25 +406,15 @@ function actionPotentialPrimitives(): ScientificPrimitive[] {
     }),
     primitiveBase({
       id: "voltage-trace",
-      kind: "surface",
+      kind: "connector",
       entityId: "membrane-voltage",
-      geometryType: "polygon",
+      geometryType: "path",
       semanticRole: "membrane voltage over time",
       styleToken: "accent",
       classification: "mixed",
-      geometry: {
-        points: [
-          [96, 538],
-          [220, 538],
-          [340, 452],
-          [455, 438],
-          [584, 512],
-          [700, 552],
-          [828, 538]
-        ]
-      },
+      geometry: { d: () => actionPotentialTracePath() },
       labels: [{ text: "membrane voltage", at: [96, 418], visibility: { mode: "always" } }],
-      provenance: [{ sourceId: "openstax-neuron-action-potential", note: "Schematic voltage trace stages." }]
+      provenance: [{ sourceId: "hodgkin-huxley-1952", note: actionPotentialTraceSource.note }]
     }),
     ...timelinePrimitives()
   ];

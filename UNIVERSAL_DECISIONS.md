@@ -32,7 +32,13 @@ Decision: expose the existing action-potential process pack in the same visible 
 
 Reason: the process registry, session reducer, and scene compiler are already generic. The route should not require a parallel action-potential UI or a new process pack to make the existing reviewed pack visible.
 
-Constraint: the current action-potential trace remains a schematic normalized voltage trace. It is not yet the reviewed Hodgkin-Huxley trace required by the strict milestone-8 completion check.
+Constraint: the action-potential membrane/channel scene remains schematic and normalized. The voltage graph uses a reviewed static Hodgkin-Huxley benchmark fixture, but the route does not expose an editable Hodgkin-Huxley solver.
+
+## D3 Trace Dependency
+
+Decision: add `d3-scale` and `d3-shape` for the action-potential voltage graph instead of hand-scaling the trace.
+
+Reason: milestone 8 explicitly calls for SVG+D3, and graph axes should use a conventional deterministic scaling path. Keeping only the focused D3 packages avoids pulling in unrelated rendering machinery.
 
 ## Pack-Owned Incompatibility Rules
 
@@ -50,4 +56,4 @@ Reason: the schema is now the authoritative place for approved renderer/evidence
 
 ## Next Decision Needed
 
-The next architecture decision is whether to introduce D3 as a dependency for the Hodgkin-Huxley trace renderer now, or keep using the current SVG primitive compiler with an offline trace fixture until the broader `PhenomenonPack` migration.
+The next architecture decision is how to migrate `BiologicalProcessPack` to `PhenomenonPack` without duplicating legacy process data or weakening the existing `PhenomenonSpec` validation boundary.

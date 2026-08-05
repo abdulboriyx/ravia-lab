@@ -65,9 +65,10 @@ test("action potential pack validates as a non-strand mixed representation", () 
     const kinds = new Set(compiled.renderPlan.primitives.map((primitive) => primitive.kind));
     assert.ok(kinds.has("membrane"));
     assert.ok(kinds.has("molecular-complex"));
-    assert.ok(kinds.has("surface"));
+    assert.ok(kinds.has("connector"));
     assert.ok(kinds.has("timeline-event"));
     assert.equal(kinds.has("strand"), false);
+    assert.equal(compiled.renderPlan.primitives.find((primitive) => primitive.id === "voltage-trace")?.geometryType, "path");
   }
 });
 

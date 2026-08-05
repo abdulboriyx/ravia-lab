@@ -51,13 +51,15 @@ For DNA, the schema-backed B-DNA structure view enables molecular 3D when specif
 
 `app/code/spatial-ravia/dna-workspace.ts` now exposes `spatialWorkspacePacks` for the public route while preserving the prior DNA-named exports as compatibility aliases. The visible route supports DNA replication and action-potential prompts through the same session reducer, playback clock, labels, directionality toggle, selection, hide, and isolate controls.
 
-The action-potential view is currently the existing curated schematic mixed representation: membrane compartments, voltage-gated channel states, ion-flow arrows, normalized stage strip, and voltage-trace geometry. The workspace intentionally does not expose the B-DNA Mol* scale selector for non-DNA processes.
+The action-potential view is the existing curated schematic mixed representation: membrane compartments, voltage-gated channel states, ion-flow arrows, normalized stage strip, and a D3-scaled voltage-trace graph. The workspace intentionally does not expose the B-DNA Mol* scale selector for non-DNA processes.
+
+`app/code/spatial-ravia/action-potential-trace.ts` contains the static Hodgkin-Huxley benchmark trace fixture. It declares `ms` time units, `mV` voltage units, graph domains, viewport ranges, and a D3 path builder consumed by the action-potential process pack. The fixture is reviewed static data, not a live browser-side equation solver.
 
 ## Evidence Model
 
 The DNA fork view is classified as a schematic explanatory model with normalized time. The B-DNA Mol* view is classified as a literal molecular-structure view only because it declares approved deposited PDB `1ZF5` coordinates. The contract rejects molecular-structure views without approved deposited mappings and rejects schematic process views mislabeled as literal.
 
-The action-potential workspace is also classified as a schematic explanatory model with normalized time. Its voltage trace is not yet a reviewed Hodgkin-Huxley quantitative trace and must not be labeled as an equation-derived simulation.
+The action-potential workspace is also classified as a schematic explanatory model with normalized time. Its voltage graph uses a fixed reviewed Hodgkin-Huxley benchmark trace, but the membrane/channel scene remains schematic and must not be labeled as an editable Hodgkin-Huxley simulation.
 
 ## Deferred Architecture Work
 

@@ -8,6 +8,7 @@ Date: 2026-08-06
 - The visible action-potential workspace renders the existing process pack through `compileSceneFromSession`.
 - Shared controls work for action potential: play/pause, restart, timeline scrub, 0.25x/0.5x/1x/2x speed, labels, directionality toggle, component selection, hide, and isolate.
 - The DNA structure scale option remains available only for DNA replication. Action potential shows only the process mechanism scale.
+- The voltage graph uses a reviewed static Hodgkin-Huxley benchmark trace fixture scaled with D3.
 - Unsupported prompts still preserve the last valid scene and playback state.
 
 ## Architecture Changes
@@ -16,6 +17,7 @@ Date: 2026-08-06
 - `app/code/spatial-ravia/prototype.tsx` now renders a generic Spatial RAVIA process workspace instead of a DNA-only shell.
 - The route still uses the existing process registry, event-sourced session reducer, and scene compiler.
 - The B-DNA Mol* viewer remains lazy-loaded and reachable only through the DNA molecular-scale view.
+- `app/code/spatial-ravia/action-potential-trace.ts` declares HH trace points, `ms`/`mV` units, graph domains, viewport ranges, and the D3 path builder.
 
 ## Visual Layout Fixes
 
@@ -34,6 +36,8 @@ Chromium screenshots inspected:
 - `/tmp/action-potential-workspace-1280x800.png`
 - `/tmp/action-potential-workspace-1024x768.png`
 - `/tmp/action-potential-workspace-390x844.png`
+- `/tmp/action-potential-hh-trace-1440x900.png`
+- `/tmp/action-potential-hh-trace-390x844.png`
 - `/tmp/dna-workspace-regression-1440x900.png`
 
 Measured after fixes:
@@ -42,18 +46,21 @@ Measured after fixes:
 - `1280x800`: SVG box `876x574`, label overlaps `0`, horizontal overflow `0`.
 - `1024x768`: SVG box `746.4375x542`, label overlaps `0`, horizontal overflow `0`.
 - `390x844`: SVG box `388x430`, label overlaps `0`, horizontal overflow `0`.
+- HH trace desktop refresh: trace class `isStageActive`, horizontal overflow `0`.
 
 ## Scientific Classification
 
 - Action potential is currently a schematic explanatory model with normalized time.
-- The membrane, channel states, ion-flow arrows, stage strip, and voltage trace are schematic.
-- The current voltage trace is not a Hodgkin-Huxley quantitative simulation and is not equation-derived.
+- The membrane, channel states, ion-flow arrows, and stage strip are schematic.
+- The voltage graph is a fixed Hodgkin-Huxley benchmark trace fixture with declared physical units.
+- The workspace is not an editable Hodgkin-Huxley equation solver.
 
 ## Tests Added
 
 - The visible workspace starts action potential through the shared process engine.
 - DNA molecular-scale controls remain DNA-only.
 - Layout source guards cover the central-canvas grid, SVG fit behavior, mobile stacking, and timeline-label sizing.
+- HH trace tests prove ordered physical trace points, D3 path generation, scene provenance, and source wiring.
 
 ## Validation Performed
 
@@ -69,10 +76,10 @@ Measured after fixes:
 
 ## Known Limitations
 
-- The strict Hodgkin-Huxley part of `UNIVERSAL_RAVIA_SPEC.md` milestone 8 is not complete because the repository does not yet contain a reviewed offline HH trace fixture.
-- The action-potential workspace uses the SVG primitive compiler, not a D3-scaled quantitative trace renderer.
+- The action-potential workspace does not expose editable Hodgkin-Huxley parameters or solve equations in the browser.
+- The HH trace is a fixed benchmark fixture rather than a generated per-session simulation.
 - Mobile keeps the primary representation usable, but the evidence and scale panels stack below the canvas.
 
 ## Exact Next Recommended Task
 
-Add a reviewed offline Hodgkin-Huxley trace fixture, declare its units and provenance, and render it with deterministic graph scaling in the existing action-potential workspace without changing session controls or adding a new process pack.
+Generalize `BiologicalProcessPack` to `PhenomenonPack` and migrate DNA/action-potential behavior without regressions.
