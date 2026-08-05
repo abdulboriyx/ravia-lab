@@ -729,6 +729,63 @@ main {
   background-size: 72px 72px;
 }
 
+.dnaForkCanvas,
+.molecularScaleView {
+  min-height: 560px;
+}
+
+.molecularScaleView {
+  position: relative;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.molecularScaleNotice {
+  position: relative;
+  z-index: 7;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  text-transform: uppercase;
+}
+
+.molecularScaleNotice strong {
+  color: var(--fg);
+  font-size: 0.76rem;
+  line-height: 1;
+}
+
+.molecularScaleNotice span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.22;
+}
+
+.molecularScaleView .molstarWorkspace {
+  position: relative;
+  min-height: 520px;
+  padding: 0;
+}
+
+.molecularScaleView .structurePromptBar,
+.molecularScaleView .structurePromptBar.isDocked {
+  width: min(420px, calc(100% - 28px));
+}
+
+.molecularScaleView .structureControls,
+.molecularScaleView .structureToolbarPopover,
+.molecularScaleView .structureSelectionReadout,
+.molecularScaleView .structureInspector,
+.molecularScaleView .structureIdentity,
+.molecularScaleView .structureScaleBadge,
+.molecularScaleView .structureEndpointBadge {
+  max-width: calc(100% - 28px);
+}
+
 .alternateView,
 .graphView,
 .explanationView,
@@ -927,6 +984,12 @@ main {
 .simulationCanvas g[role="button"] {
   cursor: pointer;
   outline: none;
+}
+
+.primitiveHitTarget {
+  fill: transparent;
+  stroke: none;
+  pointer-events: all;
 }
 
 .scientificPrimitive {

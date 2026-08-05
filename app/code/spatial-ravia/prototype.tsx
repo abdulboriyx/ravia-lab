@@ -271,11 +271,10 @@ function PlaybackControls({
           max="100"
           step="1"
           value={Math.round(session.playback.timelinePosition * 100)}
-          onChange={(event) =>
-            setSession((current) =>
-              setTimelinePosition(current, Number(event.currentTarget.value) / 100)
-            )
-          }
+          onChange={(event) => {
+            const nextTimelinePosition = Number(event.currentTarget.value) / 100;
+            setSession((current) => setTimelinePosition(current, nextTimelinePosition));
+          }}
         />
       </label>
       <div className="segmentedControl speedControl" aria-label="Playback speed">
@@ -422,6 +421,7 @@ function PrimitiveSvgElement({
 
   return (
     <g className={isSelected ? "isActive" : undefined} transform={node.transform.svg || undefined} {...interactiveProps}>
+      {node.entityId && node.selectable ? renderPrimitiveHitTarget(node.geometry) : null}
       {renderPrimitiveShape(node.geometry, node.kind, className)}
       {node.labels
         .filter((label) => label.visible)
@@ -437,6 +437,108 @@ function PrimitiveSvgElement({
         ))}
     </g>
   );
+}
+
+function renderPrimitiveHitTarget(geometry: ResolvedGeometry) {
+  const bounds = geometryBounds(geometry);
+
+  if (!bounds) {
+    return null;
+  }
+
+  return (
+    <rect
+      className="primitiveHitTarget"
+      x={bounds.x}
+      y={bounds.y}
+      width={bounds.width}
+      height={bounds.height}
+    />
+  );
+}
+
+function geometryBounds(geometry: ResolvedGeometry) {
+  const padding = 20;
+
+  if (geometry.type === "line" || geometry.type === "graph-edge") {
+    const x = Math.min(geometry.x1, geometry.x2) - padding;
+    const y = Math.min(geometry.y1, geometry.y2) - padding;
+    return {
+      x,
+      y,
+      width: Math.abs(geometry.x2 - geometry.x1) + padding * 2,
+      height: Math.abs(geometry.y2 - geometry.y1) + padding * 2
+    };
+  }
+
+  if (geometry.type === "rect") {
+    return {
+      x: geometry.x - padding,
+      y: geometry.y - padding,
+      width: geometry.width + padding * 2,
+      height: geometry.height + padding * 2
+    };
+  }
+
+  if (geometry.type === "circle" || geometry.type === "graph-node") {
+    const radius = geometry.type === "circle" ? geometry.r : geometry.radius;
+    const x = geometry.type === "circle" ? geometry.cx : geometry.x;
+    const y = geometry.type === "circle" ? geometry.cy : geometry.y;
+    return {
+      x: x - radius - padding,
+      y: y - radius - padding,
+      width: (radius + padding) * 2,
+      height: (radius + padding) * 2
+    };
+  }
+
+  if (geometry.type === "ellipse") {
+    return {
+      x: geometry.cx - geometry.rx - padding,
+      y: geometry.cy - geometry.ry - padding,
+      width: (geometry.rx + padding) * 2,
+      height: (geometry.ry + padding) * 2
+    };
+  }
+
+  if (geometry.type === "polygon") {
+    const xs = geometry.points.map(([x]) => x);
+    const ys = geometry.points.map(([, y]) => y);
+    return {
+      x: Math.min(...xs) - padding,
+      y: Math.min(...ys) - padding,
+      width: Math.max(...xs) - Math.min(...xs) + padding * 2,
+      height: Math.max(...ys) - Math.min(...ys) + padding * 2
+    };
+  }
+
+  if (geometry.type === "path") {
+    const values = Array.from(geometry.d.matchAll(/-?\d+(?:\.\d+)?/g), (match) => Number(match[0]));
+    const xs = values.filter((_, index) => index % 2 === 0);
+    const ys = values.filter((_, index) => index % 2 === 1);
+
+    if (xs.length === 0 || ys.length === 0) {
+      return null;
+    }
+
+    return {
+      x: Math.min(...xs) - padding,
+      y: Math.min(...ys) - padding,
+      width: Math.max(...xs) - Math.min(...xs) + padding * 2,
+      height: Math.max(...ys) - Math.min(...ys) + padding * 2
+    };
+  }
+
+  if (geometry.type === "text" || geometry.type === "timeline-event") {
+    return {
+      x: geometry.x - padding,
+      y: geometry.y - padding,
+      width: 220,
+      height: 64
+    };
+  }
+
+  return null;
 }
 
 function renderPrimitiveShape(
