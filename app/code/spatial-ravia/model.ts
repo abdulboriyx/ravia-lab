@@ -2,15 +2,24 @@ import type {
   Coord,
   ScientificPrimitive
 } from "./primitives.ts";
+import type { PhenomenonSpec } from "./phenomenon-spec.ts";
 import { validatePrimitive } from "./primitives.ts";
+import { validatePhenomenonSpec } from "./phenomenon-spec.ts";
 
-export type ScientificEntityKind =
+export type PhenomenonComponentKind =
   | "molecule"
   | "enzyme"
   | "protein"
   | "strand"
   | "fragment"
-  | "process";
+  | "process"
+  | "equation-model"
+  | "equation-state"
+  | "spatial-body"
+  | "spatial-reference-frame"
+  | "spatial-vector";
+
+export type ScientificEntityKind = PhenomenonComponentKind;
 
 export type RepresentationMode =
   | "scene"
@@ -254,8 +263,17 @@ export type CommandRule = {
   response: string;
 };
 
-export type BiologicalProcessPack = {
+export type PromptIncompatibilityRule = {
   id: string;
+  reason: string;
+  match: Array<{
+    any: string[];
+  }>;
+};
+
+export type PhenomenonPack = {
+  id: string;
+  phenomenonSpec?: PhenomenonSpec;
   process: string;
   aliases: string[];
   examples: string[];
@@ -272,6 +290,7 @@ export type BiologicalProcessPack = {
   representationRules: ScientificClaim[];
   commonMisconceptions: ScientificClaim[];
   validationRules: ValidationRule[];
+  incompatibilityRules: PromptIncompatibilityRule[];
   promptRules: PromptRule[];
   commandRules: CommandRule[];
   animation: AnimationInstructions;
@@ -280,7 +299,11 @@ export type BiologicalProcessPack = {
   scaleDistortions: string[];
 };
 
+/** @deprecated Use PhenomenonPack for new Spatial RAVIA packs. */
+export type BiologicalProcessPack = PhenomenonPack;
+
 export type ScientificModel = {
+  phenomenonSpec?: PhenomenonSpec;
   process: string;
   aliases: string[];
   biologicalContext: string;
@@ -564,10 +587,10 @@ export type SpatialSessionState = {
 };
 
 export function createScientificModelFromPack(
-  pack: BiologicalProcessPack,
+  pack: PhenomenonPack,
   biologicalContext = pack.defaultContext
 ): ScientificModel {
-  const result = compileBiologicalProcessPack(pack, { biologicalContext });
+  const result = compilePhenomenonPack(pack, { biologicalContext });
 
   if (!result.ok) {
     throw new Error(formatCompilationErrors(result.errors));
@@ -576,10 +599,25 @@ export function createScientificModelFromPack(
   return result.model;
 }
 
-export function compileBiologicalProcessPack(
-  pack: BiologicalProcessPack,
+export function compilePhenomenonPack(
+  pack: PhenomenonPack,
   options: { biologicalContext?: string } = {}
 ): CompilationResult {
+  if (pack.phenomenonSpec) {
+    const phenomenonValidation = validatePhenomenonSpec(pack.phenomenonSpec);
+
+    if (!phenomenonValidation.valid) {
+      return {
+        ok: false,
+        errors: phenomenonValidation.errors.map((error) => ({
+          code: "validation_rule_failed",
+          path: `phenomenonSpec.${error.path}`,
+          message: error.message
+        }))
+      };
+    }
+  }
+
   const validation = validateBiologicalProcessPackLayered(pack);
   const errors = [
     ...validation.errors,
@@ -607,6 +645,7 @@ export function compileBiologicalProcessPack(
 
   const renderPlan = deriveRenderPlan(pack);
   const model: ScientificModel = {
+    phenomenonSpec: pack.phenomenonSpec,
     process: pack.process,
     aliases: pack.aliases,
     biologicalContext,
@@ -632,7 +671,14 @@ export function compileBiologicalProcessPack(
   return { ok: true, model, renderPlan };
 }
 
-function deriveRenderPlan(pack: BiologicalProcessPack): RenderPlan {
+export function compileBiologicalProcessPack(
+  pack: BiologicalProcessPack,
+  options: { biologicalContext?: string } = {}
+): CompilationResult {
+  return compilePhenomenonPack(pack, options);
+}
+
+function deriveRenderPlan(pack: PhenomenonPack): RenderPlan {
   return {
     id: pack.animation.planId,
     title: pack.animation.title,
@@ -645,7 +691,7 @@ function deriveRenderPlan(pack: BiologicalProcessPack): RenderPlan {
   };
 }
 
-export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
+export function validatePhenomenonPack(pack: PhenomenonPack) {
   const errors = validateProcessPackStrict(pack);
 
   return {
@@ -654,8 +700,12 @@ export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
   };
 }
 
-export function validateBiologicalProcessPackLayered(
-  pack: BiologicalProcessPack
+export function validateBiologicalProcessPack(pack: BiologicalProcessPack) {
+  return validatePhenomenonPack(pack);
+}
+
+export function validatePhenomenonPackLayered(
+  pack: PhenomenonPack
 ): LayeredValidationResult {
   const genericErrors = validateProcessPackStrict(pack);
   const issues = [
@@ -683,7 +733,13 @@ export function validateBiologicalProcessPackLayered(
   };
 }
 
-export function validateProcessPackStrict(pack: BiologicalProcessPack) {
+export function validateBiologicalProcessPackLayered(
+  pack: BiologicalProcessPack
+): LayeredValidationResult {
+  return validatePhenomenonPackLayered(pack);
+}
+
+export function validateProcessPackStrict(pack: PhenomenonPack) {
   const errors: CompilationError[] = [];
   const entityIds = new Set(pack.entities.map((entityItem) => entityItem.id));
   const stateIds = new Set(pack.states.map((stateItem) => stateItem.id));
@@ -717,6 +773,7 @@ export function validateProcessPackStrict(pack: BiologicalProcessPack) {
   collectDuplicateIds(pack.sources, "sources", errors);
   collectDuplicateIds(pack.promptRules, "promptRules", errors);
   collectDuplicateIds(pack.commandRules, "commandRules", errors);
+  collectDuplicateIds(pack.incompatibilityRules, "incompatibilityRules", errors);
   collectDuplicateIds(pack.animation.primitives, "animation.primitives", errors);
 
   for (const entityItem of pack.entities) {
@@ -887,6 +944,19 @@ export function validateProcessPackStrict(pack: BiologicalProcessPack) {
     }
   }
 
+  for (const incompatibilityRule of pack.incompatibilityRules) {
+    requireText(incompatibilityRule.reason, `incompatibilityRules.${incompatibilityRule.id}.reason`, errors);
+    requireNonEmptyArray(incompatibilityRule.match, `incompatibilityRules.${incompatibilityRule.id}.match`, errors);
+
+    for (const [index, requirement] of incompatibilityRule.match.entries()) {
+      requireNonEmptyArray(requirement.any, `incompatibilityRules.${incompatibilityRule.id}.match.${index}.any`, errors);
+
+      for (const phrase of requirement.any) {
+        requireText(phrase, `incompatibilityRules.${incompatibilityRule.id}.match.${index}.any`, errors);
+      }
+    }
+  }
+
   for (const validationRule of pack.validationRules) {
     for (const entityId of validationRule.requiredEntities ?? []) {
       if (!entityIds.has(entityId)) {
@@ -950,7 +1020,7 @@ export function parsePromptWithPacks(
 ): SpatialPromptResult {
   const resolution = resolvePromptIntent(prompt, packs);
   const normalized = normalizePrompt(prompt);
-  const unsupportedReason = unsupportedScientificPromptReason(normalized);
+  const unsupportedReason = resolvePromptIncompatibility(normalized, packs, resolution);
 
   if (!normalized) {
     return {
@@ -1079,87 +1149,6 @@ const normalizedTerminology: Record<string, string> = {
   dna: "dna"
 };
 
-const unsupportedPromptPatterns: Array<{ pattern: RegExp; reason: string }> = [
-  {
-    pattern: /\bbacterial\b.*\brna polymerase ii\b|\brna polymerase ii\b.*\bbacterial\b/,
-    reason: "RNA polymerase II is eukaryotic in this model; bacterial RNA polymerase II transcription is unsupported."
-  },
-  {
-    pattern: /\bdna\b.*\brna polymerase\b.*\btogether\b|\bdna\b.*\brna polymerase\b.*\bpolymerase\b/,
-    reason: "The request mixes DNA replication and RNA polymerase processes and needs clarification."
-  },
-  {
-    pattern: /\bligase\b.*\b(synthesize|synthesizes|synthesizing|copy|copies|copying)\b.*\b(okazaki|fragment|leading strand)\b/,
-    reason: "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model."
-  },
-  {
-    pattern: /\bsodium channel\b.*\b(driving|drive|drives|causing|cause|causes)\b.*\brepolarization\b/,
-    reason: "Sodium channels drive depolarization, not repolarization, in this action-potential model."
-  },
-  {
-    pattern: /\bpotassium channel\b.*\b(driving|drive|drives|causing|cause|causes)\b.*\bdepolarization\b/,
-    reason: "Potassium channels drive repolarization and hyperpolarization, not depolarization, in this model."
-  },
-  {
-    pattern: /\brna polymerase\b.*\b(read|reads|reading)\b.*\bcoding strand\b/,
-    reason: "RNA polymerase reads the template strand, not the coding strand, in this transcription model."
-  },
-  {
-    pattern: /\bremove\b.*\bmembrane\b.*\btranscription\b/,
-    reason: "Removing a membrane from transcription is a cross-process intervention and is unsupported."
-  },
-  {
-    pattern: /\b(block|remove|delete)\b.*\brna polymerase ii\b.*\bdna replication\b/,
-    reason: "RNA polymerase II is not an intervention target for DNA replication in this model."
-  },
-  {
-    pattern: /\bsodium channel\b.*\b(synthesize|synthesizes|transcribe|transcribes)\b.*\brna\b/,
-    reason: "Sodium channels do not synthesize RNA in this model."
-  },
-  {
-    pattern: /\b(delete|remove)\b.*\bokazaki\b.*\btranscription\b/,
-    reason: "Okazaki fragments are DNA replication entities, not transcription entities."
-  },
-  {
-    pattern: /\bdna replication\b.*\brna polymerase ii\b|\brna polymerase ii\b.*\bdna replication\b/,
-    reason: "DNA replication and RNA polymerase II transcription are distinct process packs; the request is conflicting."
-  },
-  {
-    pattern: /\btranscription\b.*\bcopy\b.*\bboth\b.*\bdna strand\b.*\bdna\b/,
-    reason: "Transcription does not copy both DNA strands into DNA in this model."
-  },
-  {
-    pattern: /\baction potential\b.*\bokazaki\b|\bokazaki\b.*\baction potential\b/,
-    reason: "Okazaki fragments are DNA replication entities, not action-potential entities."
-  },
-  {
-    pattern: /\bdna replication\b.*\bwithout dna polymerase\b.*\bnormal\b/,
-    reason: "DNA replication cannot keep normal synthesis while removing DNA polymerase in this model."
-  },
-  {
-    pattern: /\btranscription\b.*\bremove\b.*\btemplate strand\b.*\bstill\b.*\btranscribe\b/,
-    reason: "Template-strand removal conflicts with continued transcription in this model."
-  },
-  {
-    pattern: /\bbypass provenance\b|\bmark\b.*\bdrug dosing\b.*\bproven\b/,
-    reason: "Bypassing provenance or marking unsupported drug dosing as proven is not allowed."
-  },
-  {
-    pattern: /\binvent\b.*\bpdb\b|\bexact replication fork\b.*\bpdb\b/,
-    reason: "The system must not invent PDB structures for uncurated exact molecular scenes."
-  }
-];
-
-function unsupportedScientificPromptReason(normalizedPrompt: string) {
-  for (const { pattern, reason } of unsupportedPromptPatterns) {
-    if (pattern.test(normalizedPrompt)) {
-      return reason;
-    }
-  }
-
-  return null;
-}
-
 export function resolvePromptIntent(
   prompt: string,
   packs: BiologicalProcessPack[]
@@ -1197,6 +1186,37 @@ export function resolvePromptIntent(
     confidence,
     ambiguity
   };
+}
+
+function resolvePromptIncompatibility(
+  normalizedPrompt: string,
+  packs: BiologicalProcessPack[],
+  resolution: PromptIntentResolution
+) {
+  const candidateIds = resolution.processCandidates.map((candidate) => candidate.packId);
+  const orderedPacks = [
+    ...candidateIds.flatMap((id) => packs.filter((pack) => pack.id === id)),
+    ...packs.filter((pack) => !candidateIds.includes(pack.id))
+  ];
+
+  for (const pack of orderedPacks) {
+    for (const rule of pack.incompatibilityRules) {
+      if (incompatibilityRuleMatches(normalizedPrompt, rule)) {
+        return rule.reason;
+      }
+    }
+  }
+
+  return null;
+}
+
+function incompatibilityRuleMatches(
+  normalizedPrompt: string,
+  rule: PromptIncompatibilityRule
+) {
+  return rule.match.every((requirement) =>
+    requirement.any.some((phrase) => normalizedPrompt.includes(normalizePrompt(phrase)))
+  );
 }
 
 function scoreProcessPack(

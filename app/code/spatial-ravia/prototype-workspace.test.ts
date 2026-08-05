@@ -20,6 +20,51 @@ test("DNA workspace starts DNA replication through the shared process engine", (
   assert.ok(scene.nodes.some((node) => node.entityId === "helicase"));
 });
 
+test("visible Spatial RAVIA shell starts action potential through the shared process engine", () => {
+  const result = startDnaWorkspaceFromPrompt(createInitialSession(), "Show an action potential.");
+  const scene = compileSceneFromSession(result.session);
+
+  assert.equal(result.unsupportedReason, null);
+  assert.equal(result.session.selectedProcessPackId, "action-potential");
+  assert.equal(result.session.activeModel?.process, "Action potential");
+  assert.ok(scene);
+  assert.equal(scene.title, "Action potential / synchronized mixed representation");
+  assert.ok(scene.nodes.some((node) => node.entityId === "sodium-channels"));
+  assert.ok(scene.nodes.some((node) => node.entityId === "membrane-voltage"));
+});
+
+test("visible Spatial RAVIA shell starts two-body orbit through the shared process engine", () => {
+  const result = startDnaWorkspaceFromPrompt(createInitialSession(), "Show Earth orbit.");
+  const scene = compileSceneFromSession(result.session);
+
+  assert.equal(result.unsupportedReason, null);
+  assert.equal(result.session.selectedProcessPackId, "two-body-orbit");
+  assert.equal(result.session.activeModel?.process, "Two-body orbit");
+  assert.equal(result.session.activeModel?.phenomenonSpec?.views[0]?.renderer, "r3f");
+  assert.ok(scene);
+  assert.equal(scene.title, "Two-body orbit / Sun-Earth benchmark");
+  assert.ok(scene.nodes.some((node) => node.entityId === "earth"));
+  assert.ok(scene.nodes.some((node) => node.entityId === "jpl-benchmark"));
+});
+
+test("visible Spatial RAVIA shell refuses unsupported orbit scope without discarding state", () => {
+  const loaded = startDnaWorkspaceFromPrompt(createInitialSession(), "Show Earth orbit.");
+  const positioned = dispatchScientificSessionEvent(loaded.session, {
+    type: "PLAYBACK_CHANGED",
+    playback: { playing: false, timelinePosition: 0.4, speed: 0.5 }
+  });
+  const unsupported = startDnaWorkspaceFromPrompt(positioned, "Plan an N-body spacecraft mission.");
+  const scene = compileSceneFromSession(unsupported.session);
+
+  assert.ok(unsupported.unsupportedReason);
+  assert.match(unsupported.unsupportedReason, /two-body benchmark/i);
+  assert.equal(unsupported.session.activeModel?.process, "Two-body orbit");
+  assert.equal(unsupported.session.playback.timelinePosition, 0.4);
+  assert.equal(unsupported.session.playback.speed, 0.5);
+  assert.ok(scene);
+  assert.equal(scene.title, "Two-body orbit / Sun-Earth benchmark");
+});
+
 test("DNA workspace preserves the last valid scene for unsupported prompts", () => {
   const loaded = startDnaWorkspaceFromPrompt(createInitialSession(), "Show DNA replication");
   const positioned = dispatchScientificSessionEvent(loaded.session, {
@@ -46,6 +91,16 @@ test("visible Spatial RAVIA shell keeps B-DNA as a secondary scale view", () => 
   assert.match(source, /DnaMolecularView/);
   assert.match(source, /compileSceneFromSession/);
   assert.match(source, /literal deposited PDB 1ZF5 coordinates; not a replication-fork structure/i);
+});
+
+test("visible Spatial RAVIA shell keeps DNA structure controls DNA-only", () => {
+  const source = readFileSync(new URL("./prototype.tsx", import.meta.url), "utf8");
+
+  assert.match(source, /hasDnaStructureView/);
+  assert.match(source, /Show DNA replication, an action potential, or Earth orbit/);
+  assert.match(source, /show an action potential/);
+  assert.match(source, /OrbitR3FView/);
+  assert.match(source, /Spatial RAVIA process workspace/);
 });
 
 test("DNA replication scene fits core components inside the compiled SVG viewBox", () => {
@@ -85,8 +140,9 @@ test("visible Spatial RAVIA shell includes practical visual layout guards", () =
   const css = readFileSync(new URL("../../globals.css", import.meta.url), "utf8");
 
   assert.match(source, /preserveAspectRatio="xMidYMid meet"/);
-  assert.match(css, /grid-template-columns: minmax\(190px, 0\.46fr\) minmax\(680px, 2\.45fr\) minmax\(220px, 0\.58fr\)/);
-  assert.match(css, /\.dnaForkCanvas\s*{[\s\S]*?height: clamp\(500px, calc\(100svh - 260px\), 760px\)/);
+  assert.match(css, /grid-template-columns: minmax\(178px, 0\.38fr\) minmax\(720px, 2\.8fr\) minmax\(204px, 0\.46fr\)/);
+  assert.match(css, /\.dnaForkCanvas\s*{[\s\S]*?height: clamp\(540px, calc\(100svh - 226px\), 820px\)/);
+  assert.match(css, /\.primitive-timeline-event text\s*{[\s\S]*?font-size: 13px;/);
   assert.match(css, /@media \(max-width: 900px\)[\s\S]*\.simulationColumn\s*{\s*grid-row: 1;/);
   assert.match(css, /\.dnaForkCanvas svg\s*{[\s\S]*?min-height: 0;/);
 });

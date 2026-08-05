@@ -3,10 +3,12 @@
 The compiler boundary is:
 
 ```ts
-BiologicalProcessPack -> ScientificModel -> RenderPlan
+PhenomenonPack -> ScientificModel -> RenderPlan
 ```
 
-`BiologicalProcessPack` is curated source data. `ScientificModel` is the persistent internal model used by the application. `RenderPlan` is renderer-independent drawing and animation data consumed by UI renderers.
+`PhenomenonPack` is curated source data. `ScientificModel` is the persistent internal model used by the application. `RenderPlan` is renderer-independent drawing and animation data consumed by UI renderers.
+
+`BiologicalProcessPack` remains as a deprecated compatibility alias while DNA, transcription, action-potential, tests, and evaluation code migrate.
 
 ## Required Pack Sections
 
@@ -29,7 +31,7 @@ Every pack must define:
 
 ## Compiler Behavior
 
-`compileBiologicalProcessPack(pack, options)` performs these steps:
+`compilePhenomenonPack(pack, options)` performs these steps:
 
 1. Validate the process pack strictly.
 2. Resolve the biological context from `options.biologicalContext` or `pack.defaultContext`.
@@ -38,6 +40,8 @@ Every pack must define:
 5. Return explicit `CompilationError[]` for invalid input.
 
 The compiler does not silently repair invalid data. Missing entities, bad references, duplicate IDs, malformed sources, invalid contexts, and failed validation rules return `{ ok: false, errors }`.
+
+The compatibility `compileBiologicalProcessPack(pack, options)` function delegates to `compilePhenomenonPack`.
 
 ## Extension Rules
 

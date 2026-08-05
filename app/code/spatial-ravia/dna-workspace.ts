@@ -1,20 +1,21 @@
-import { dnaReplicationPack } from "./dna-process.ts";
 import type { SpatialSessionState } from "./model.ts";
 import { startSessionFromPrompt } from "./model.ts";
 import { processPacks } from "./process-registry.ts";
 
-export type DnaWorkspaceResult = {
+export type SpatialWorkspaceResult = {
   session: SpatialSessionState;
   unsupportedReason: string | null;
 };
 
-export const dnaWorkspacePacks = processPacks.filter((pack) => pack.id === dnaReplicationPack.id);
+export const spatialWorkspacePacks = processPacks.filter((pack) =>
+  ["dna-replication", "action-potential", "two-body-orbit"].includes(pack.id)
+);
 
-export function startDnaWorkspaceFromPrompt(
+export function startSpatialWorkspaceFromPrompt(
   current: SpatialSessionState,
   prompt: string
-): DnaWorkspaceResult {
-  const next = startSessionFromPrompt(current, prompt, dnaWorkspacePacks);
+): SpatialWorkspaceResult {
+  const next = startSessionFromPrompt(current, prompt, spatialWorkspacePacks);
   const lastSystemMessage = next.conversationHistory
     .filter((turn) => turn.role === "system")
     .at(-1)?.message ?? null;
@@ -24,3 +25,6 @@ export function startDnaWorkspaceFromPrompt(
     unsupportedReason: next.activeIntervention === "unsupported prompt" ? lastSystemMessage : null
   };
 }
+
+export const dnaWorkspacePacks = spatialWorkspacePacks.filter((pack) => pack.id === "dna-replication");
+export const startDnaWorkspaceFromPrompt = startSpatialWorkspaceFromPrompt;

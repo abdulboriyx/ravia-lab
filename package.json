@@ -12,14 +12,20 @@
     "eval:spatial": "node app/code/spatial-ravia/evaluation.ts"
   },
   "dependencies": {
+    "@react-three/fiber": "^9.7.0",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
     "molstar": "^5.11.0",
     "next": "^16.2.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
-    "three": "^0.185.1"
+    "three": "^0.185.1",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
+    "@types/d3-scale": "^4.0.9",
+    "@types/d3-shape": "^3.1.8",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",

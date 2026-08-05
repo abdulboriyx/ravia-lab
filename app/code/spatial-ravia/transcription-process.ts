@@ -217,6 +217,82 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
       requiredLimitations: ["molecularly exact"]
     }
   ],
+  incompatibilityRules: [
+    incompatibility(
+      "transcription-bacterial-pol-ii",
+      [
+        ["bacterial"],
+        ["rna polymerase ii"]
+      ],
+      "RNA polymerase II is eukaryotic in this model; bacterial RNA polymerase II transcription is unsupported."
+    ),
+    incompatibility(
+      "transcription-coding-strand-read",
+      [
+        ["rna polymerase", "polymerase"],
+        ["read", "reads", "reading"],
+        ["coding strand"]
+      ],
+      "RNA polymerase reads the template strand, not the coding strand, in this transcription model."
+    ),
+    incompatibility(
+      "transcription-wrong-synthesis-direction",
+      [
+        ["rna synthesis", "rna synthesized"],
+        ["3 prime to 5 prime", "3' to 5'"]
+      ],
+      "RNA synthesis 3' to 5' is unsupported."
+    ),
+    incompatibility(
+      "transcription-rna-identical-template",
+      [
+        ["rna"],
+        ["identical"],
+        ["template"]
+      ],
+      "RNA identical to template strand is unsupported."
+    ),
+    incompatibility(
+      "transcription-remove-membrane",
+      [
+        ["remove"],
+        ["membrane"],
+        ["transcription"]
+      ],
+      "Removing a membrane from transcription is a cross-process intervention and is unsupported."
+    ),
+    incompatibility(
+      "transcription-okazaki-fragments",
+      [
+        ["delete", "remove"],
+        ["okazaki"],
+        ["transcription"]
+      ],
+      "Okazaki fragments are DNA replication entities, not transcription entities."
+    ),
+    incompatibility(
+      "transcription-copy-both-dna-strands",
+      [
+        ["transcription"],
+        ["copy"],
+        ["both"],
+        ["dna strand"],
+        ["dna"]
+      ],
+      "Transcription does not copy both DNA strands into DNA in this model."
+    ),
+    incompatibility(
+      "transcription-template-removed",
+      [
+        ["transcription"],
+        ["remove"],
+        ["template strand"],
+        ["still"],
+        ["transcribe"]
+      ],
+      "Template-strand removal conflicts with continued transcription in this model."
+    )
+  ],
   promptRules: [
     {
       id: "show-transcription",
@@ -750,6 +826,18 @@ function counterfactualClaim(
     claim: claimText,
     status,
     classification: "schematic" as const
+  };
+}
+
+function incompatibility(
+  id: string,
+  match: Array<[string, ...string[]]>,
+  reason: string
+) {
+  return {
+    id,
+    reason,
+    match: match.map((any) => ({ any: [...any] }))
   };
 }
 

@@ -2,13 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import type {
   BiologicalProcessPack,
-  CompilationErrorCode
+  CompilationErrorCode,
+  PhenomenonPack,
+  ScientificEntityKind
 } from "./model.ts";
 import {
   applyFollowUpCommand,
   applyCounterfactualIntervention,
   compareActiveBranchToBaseline,
   compileBiologicalProcessPack,
+  compilePhenomenonPack,
   createCounterfactualBranch,
   createInitialSession,
   deserializeScientificSession,
@@ -23,10 +26,12 @@ import {
   switchScientificBranch,
   undoScientificSessionEvent,
   validateBiologicalProcessPack,
-  validateBiologicalProcessPackLayered
+  validateBiologicalProcessPackLayered,
+  validatePhenomenonPack,
+  validatePhenomenonPackLayered
 } from "./model.ts";
 import { dnaReplicationPack, validateDnaReplicationPack } from "./dna-process.ts";
-import { processPacks } from "./process-registry.ts";
+import { phenomenonPacks, processPacks } from "./process-registry.ts";
 import {
   actionPotentialPack,
   validateActionPotentialPack
@@ -40,6 +45,37 @@ test("generic process-pack validation catches invalid references", () => {
   const validation = validateBiologicalProcessPack(dnaReplicationPack);
 
   assert.equal(validation.valid, true, validation.errors.join(", "));
+});
+
+test("PhenomenonPack is the primary compatible pack contract", () => {
+  const packs: PhenomenonPack[] = phenomenonPacks;
+
+  assert.equal(packs.length, processPacks.length);
+
+  for (const pack of packs) {
+    const validation = validatePhenomenonPack(pack);
+    const layered = validatePhenomenonPackLayered(pack);
+    const compiled = compilePhenomenonPack(pack);
+
+    assert.equal(validation.valid, true, validation.errors.join(", "));
+    assert.equal(layered.valid, true, layered.errors.map((error) => error.message).join(", "));
+    assert.equal(compiled.ok, true);
+  }
+});
+
+test("PhenomenonPack supports equation-model and spatial component kinds", () => {
+  const pack = clonePack();
+  const equationKind: ScientificEntityKind = "equation-model";
+  const spatialKind: ScientificEntityKind = "spatial-body";
+
+  pack.entities[0] = { ...pack.entities[0], kind: equationKind };
+  pack.entities[1] = { ...pack.entities[1], kind: spatialKind };
+
+  const validation = validatePhenomenonPack(pack);
+  const compiled = compilePhenomenonPack(pack);
+
+  assert.equal(validation.valid, true, validation.errors.join(", "));
+  assert.equal(compiled.ok, true);
 });
 
 test("process-specific validation owns pack invariants", () => {
@@ -65,9 +101,10 @@ test("action potential pack validates as a non-strand mixed representation", () 
     const kinds = new Set(compiled.renderPlan.primitives.map((primitive) => primitive.kind));
     assert.ok(kinds.has("membrane"));
     assert.ok(kinds.has("molecular-complex"));
-    assert.ok(kinds.has("surface"));
+    assert.ok(kinds.has("connector"));
     assert.ok(kinds.has("timeline-event"));
     assert.equal(kinds.has("strand"), false);
+    assert.equal(compiled.renderPlan.primitives.find((primitive) => primitive.id === "voltage-trace")?.geometryType, "path");
   }
 });
 
@@ -173,6 +210,29 @@ test("intent resolver extracts intervention commands from pack metadata", () => 
   }
 });
 
+test("prompt incompatibilities are owned by process packs", () => {
+  const dnaResult = parsePromptWithPacks("Make ligase copy the leading strand.", processPacks);
+  const transcriptionResult = parsePromptWithPacks("Show RNA polymerase reading the coding strand.", processPacks);
+  const actionPotentialResult = parsePromptWithPacks("Show sodium channels driving repolarization.", processPacks);
+
+  assert.equal(dnaResult.supported, false);
+  assert.equal(transcriptionResult.supported, false);
+  assert.equal(actionPotentialResult.supported, false);
+
+  assert.equal(
+    dnaReplicationPack.incompatibilityRules.some((rule) => rule.reason === dnaResult.reason),
+    true
+  );
+  assert.equal(
+    eukaryoticTranscriptionPack.incompatibilityRules.some((rule) => rule.reason === transcriptionResult.reason),
+    true
+  );
+  assert.equal(
+    actionPotentialPack.incompatibilityRules.some((rule) => rule.reason === actionPotentialResult.reason),
+    true
+  );
+});
+
 test("intent resolver abstains on unsupported biology", () => {
   const result = parsePromptWithPacks("Visualize protein folding in a chaperonin", processPacks);
 
@@ -268,6 +328,20 @@ test("compiler reports unsupported interventions", () => {
   ];
 
   assertCompileError(pack, "unsupported_intervention");
+});
+
+test("compiler reports malformed pack-owned incompatibility rules", () => {
+  const pack = clonePack();
+  pack.incompatibilityRules = [
+    ...pack.incompatibilityRules,
+    {
+      id: "malformed-incompatibility",
+      reason: "",
+      match: [{ any: [] }]
+    }
+  ];
+
+  assertCompileError(pack, "missing_required_field");
 });
 
 test("compiler reports malformed source metadata", () => {
@@ -751,6 +825,10 @@ function clonePackFrom(pack: BiologicalProcessPack): BiologicalProcessPack {
       requiredClaimText: rule.requiredClaimText?.map((textRule) => ({ ...textRule })),
       forbiddenClaimText: rule.forbiddenClaimText?.map((textRule) => ({ ...textRule })),
       forbiddenVerifiedClaimPatterns: rule.forbiddenVerifiedClaimPatterns?.map((pattern) => ({ ...pattern }))
+    })),
+    incompatibilityRules: pack.incompatibilityRules.map((rule) => ({
+      ...rule,
+      match: rule.match.map((requirement) => ({ any: [...requirement.any] }))
     })),
     promptRules: pack.promptRules.map((rule) => ({
       ...rule,
