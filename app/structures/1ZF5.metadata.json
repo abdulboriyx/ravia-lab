@@ -1,0 +1,13 @@
+{
+  "pdbId": "1ZF5",
+  "title": "GCT duplex B-DNA",
+  "structureType": "B-DNA duplex",
+  "experimentalMethod": "X-ray diffraction",
+  "resolutionAngstrom": 0.99,
+  "representation": "experimentally determined atomic structure",
+  "limitations": [
+    "Short DNA duplex",
+    "Static crystallographic structure",
+    "Does not represent DNA dynamics or replication"
+  ]
+}

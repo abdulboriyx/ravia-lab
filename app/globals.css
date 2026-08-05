@@ -1381,6 +1381,13 @@ body:has(.spatialWorkspace) .siteHeader {
     linear-gradient(180deg, #05070a 0%, #020305 58%, #000 100%);
 }
 
+.spatialWorkspace[data-spatial-theme="light"] {
+  color: #0d1a1f;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(105, 185, 202, 0.26), transparent 36%),
+    linear-gradient(180deg, #f5f8f9 0%, #dfe7ea 58%, #cfd9dd 100%);
+}
+
 .spatialCanvas {
   position: absolute;
   inset: 0;
@@ -1411,6 +1418,12 @@ body:has(.spatialWorkspace) .siteHeader {
     radial-gradient(circle at 50% 72%, rgba(112, 244, 190, 0.08), transparent 36%);
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .spatialPromptStage {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(45, 150, 176, 0.16), transparent 30%),
+    radial-gradient(circle at 50% 72%, rgba(56, 160, 128, 0.08), transparent 36%);
+}
+
 .spatialPrompt {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1419,6 +1432,12 @@ body:has(.spatialWorkspace) .siteHeader {
   background: rgba(2, 5, 7, 0.34);
   backdrop-filter: blur(18px);
   box-shadow: 0 0 70px rgba(65, 207, 238, 0.12);
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .spatialPrompt {
+  border-bottom-color: rgba(18, 55, 66, 0.58);
+  background: rgba(246, 250, 251, 0.56);
+  box-shadow: 0 0 80px rgba(45, 123, 143, 0.12);
 }
 
 .spatialPrompt input,
@@ -1432,6 +1451,11 @@ body:has(.spatialWorkspace) .siteHeader {
   outline: none;
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .spatialPrompt input,
+.spatialWorkspace[data-spatial-theme="light"] .scenePromptOverlay input {
+  color: #0d1a1f;
+}
+
 .spatialPrompt input {
   padding: clamp(16px, 2.6vw, 26px) clamp(14px, 2.4vw, 24px);
   font-size: clamp(1.1rem, 2.2vw, 1.8rem);
@@ -1440,7 +1464,8 @@ body:has(.spatialWorkspace) .siteHeader {
 .spatialPrompt button,
 .scenePromptOverlay button,
 .sceneControls button,
-.spatialDrawer button {
+.spatialDrawer button,
+.spatialThemeToggle {
   appearance: none;
   border: 1px solid rgba(201, 239, 247, 0.22);
   border-radius: 6px;
@@ -1455,10 +1480,29 @@ body:has(.spatialWorkspace) .siteHeader {
   cursor: pointer;
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .spatialPrompt button,
+.spatialWorkspace[data-spatial-theme="light"] .scenePromptOverlay button,
+.spatialWorkspace[data-spatial-theme="light"] .sceneControls button,
+.spatialWorkspace[data-spatial-theme="light"] .spatialDrawer button,
+.spatialWorkspace[data-spatial-theme="light"] .spatialThemeToggle {
+  border-color: rgba(20, 63, 74, 0.22);
+  color: #102329;
+  background: rgba(245, 249, 250, 0.64);
+}
+
 .spatialPrompt button {
   align-self: center;
   margin-right: 10px;
   padding: 12px 14px;
+}
+
+.spatialThemeToggle {
+  position: absolute;
+  right: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  padding: 9px 11px;
+  background: rgba(2, 5, 7, 0.42);
+  backdrop-filter: blur(14px);
 }
 
 .spatialNotice {
@@ -1495,6 +1539,11 @@ body:has(.spatialWorkspace) .siteHeader {
   pointer-events: auto;
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .scenePromptOverlay {
+  border-color: rgba(20, 63, 74, 0.16);
+  background: rgba(245, 249, 250, 0.54);
+}
+
 .scenePromptOverlay input {
   padding: 5px 8px;
   font-size: 0.86rem;
@@ -1519,6 +1568,11 @@ body:has(.spatialWorkspace) .siteHeader {
   font-weight: 700;
   text-transform: uppercase;
   text-shadow: 0 0 18px rgba(42, 207, 238, 0.24);
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .sceneTopOverlay span {
+  color: rgba(17, 52, 62, 0.72);
+  text-shadow: none;
 }
 
 .sceneControls {
@@ -1547,6 +1601,11 @@ body:has(.spatialWorkspace) .siteHeader {
   backdrop-filter: blur(18px);
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .sceneControlTray {
+  border-color: rgba(20, 63, 74, 0.14);
+  background: rgba(241, 247, 248, 0.5);
+}
+
 .sceneControls.isOpen .sceneControlTray,
 .sceneControls:focus-within .sceneControlTray,
 .sceneControls:hover .sceneControlTray {
@@ -1555,9 +1614,18 @@ body:has(.spatialWorkspace) .siteHeader {
 
 .sceneControls button:hover,
 .scenePromptOverlay button:hover,
-.spatialDrawer button:hover {
+.spatialDrawer button:hover,
+.spatialThemeToggle:hover {
   border-color: rgba(136, 236, 255, 0.45);
   background: rgba(20, 43, 49, 0.78);
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .sceneControls button:hover,
+.spatialWorkspace[data-spatial-theme="light"] .scenePromptOverlay button:hover,
+.spatialWorkspace[data-spatial-theme="light"] .spatialDrawer button:hover,
+.spatialWorkspace[data-spatial-theme="light"] .spatialThemeToggle:hover {
+  border-color: rgba(21, 106, 126, 0.38);
+  background: rgba(225, 238, 241, 0.82);
 }
 
 .timelineOverlay {
@@ -1577,10 +1645,19 @@ body:has(.spatialWorkspace) .siteHeader {
   backdrop-filter: blur(14px);
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .timelineOverlay {
+  border-color: rgba(20, 63, 74, 0.13);
+  background: rgba(244, 249, 250, 0.46);
+}
+
 .timelineOverlay span {
   color: rgba(222, 247, 252, 0.68);
   font-size: 0.68rem;
   font-weight: 700;
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .timelineOverlay span {
+  color: rgba(17, 52, 62, 0.72);
 }
 
 .timelineOverlay input {
@@ -1603,6 +1680,12 @@ body:has(.spatialWorkspace) .siteHeader {
   backdrop-filter: blur(12px);
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .hoverReadout {
+  border-left-color: rgba(16, 127, 100, 0.54);
+  color: rgba(8, 24, 29, 0.9);
+  background: rgba(245, 249, 250, 0.5);
+}
+
 .hoverReadout strong {
   font-size: 0.82rem;
   line-height: 1.15;
@@ -1613,6 +1696,10 @@ body:has(.spatialWorkspace) .siteHeader {
   color: rgba(207, 226, 230, 0.78);
   font-size: 0.78rem;
   line-height: 1.35;
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .hoverReadout span {
+  color: rgba(42, 70, 77, 0.78);
 }
 
 .spatialDrawer {
@@ -1632,6 +1719,13 @@ body:has(.spatialWorkspace) .siteHeader {
   background: rgba(2, 5, 7, 0.78);
   backdrop-filter: blur(24px);
   box-shadow: -24px 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .spatialDrawer {
+  border-left-color: rgba(20, 63, 74, 0.16);
+  color: #102329;
+  background: rgba(245, 249, 250, 0.82);
+  box-shadow: -24px 0 80px rgba(60, 82, 88, 0.22);
 }
 
 .spatialDrawer header {
@@ -1662,8 +1756,16 @@ body:has(.spatialWorkspace) .siteHeader {
   line-height: 1.44;
 }
 
+.spatialWorkspace[data-spatial-theme="light"] .drawerList p {
+  color: rgba(20, 43, 49, 0.84);
+}
+
 .drawerList span {
   color: rgba(142, 163, 169, 0.9);
+}
+
+.spatialWorkspace[data-spatial-theme="light"] .drawerList span {
+  color: rgba(72, 99, 106, 0.9);
 }
 
 @media (max-width: 720px) {
@@ -1687,5 +1789,218 @@ body:has(.spatialWorkspace) .siteHeader {
 
   .hoverReadout {
     display: none;
+  }
+}
+
+.molstarWorkspace {
+  background: #020305;
+}
+
+.molstarStage,
+.molstarMount {
+  position: absolute;
+  inset: 0;
+}
+
+.molstarMount {
+  overflow: hidden;
+}
+
+.molstarMount .msp-plugin {
+  position: absolute;
+  inset: 0;
+  background: #020305;
+}
+
+.molstarMount .msp-layout-main,
+.molstarMount .msp-viewport,
+.molstarMount .msp-canvas3d {
+  background: #020305 !important;
+}
+
+.molstarMount .msp-layout-left,
+.molstarMount .msp-layout-right,
+.molstarMount .msp-layout-bottom,
+.molstarMount .msp-layout-top,
+.molstarMount .msp-sequence-wrapper,
+.molstarMount .msp-log,
+.molstarMount .msp-controls,
+.molstarMount .msp-viewport-controls,
+.molstarMount .msp-viewport-top-left-controls,
+.molstarMount .msp-viewport-top-right-controls,
+.molstarMount .msp-viewport-bottom-left-controls,
+.molstarMount .msp-viewport-bottom-right-controls {
+  display: none !important;
+}
+
+.molstarLoadState,
+.structureIdentity,
+.structureControls,
+.structureInspector {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+.molstarLoadState {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  color: rgba(232, 248, 252, 0.72);
+  background: #020305;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.structureIdentity {
+  position: absolute;
+  z-index: 4;
+  top: clamp(14px, 2vw, 24px);
+  left: clamp(14px, 2vw, 24px);
+  display: grid;
+  gap: 4px;
+  max-width: min(420px, calc(100vw - 28px));
+  padding: 10px 12px;
+  border-left: 1px solid rgba(109, 240, 184, 0.5);
+  color: #eef7fa;
+  background: rgba(2, 5, 7, 0.34);
+  backdrop-filter: blur(14px);
+}
+
+.structureIdentity strong {
+  font-size: 0.82rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.structureIdentity span {
+  color: rgba(205, 226, 231, 0.74);
+  font-size: 0.74rem;
+  line-height: 1.25;
+}
+
+.structureControls {
+  position: absolute;
+  z-index: 4;
+  right: clamp(14px, 2vw, 24px);
+  bottom: clamp(14px, 2vw, 24px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+  max-width: min(560px, calc(100vw - 28px));
+  padding: 8px;
+  border: 1px solid rgba(201, 239, 247, 0.13);
+  border-radius: 8px;
+  background: rgba(1, 4, 6, 0.42);
+  backdrop-filter: blur(16px);
+}
+
+.structureControls button,
+.structureInspector button {
+  appearance: none;
+  border: 1px solid rgba(201, 239, 247, 0.22);
+  border-radius: 6px;
+  color: #eef7fa;
+  background: rgba(8, 16, 19, 0.62);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.structureControls button {
+  padding: 8px 10px;
+}
+
+.structureControls button.isSelected,
+.structureControls button:hover,
+.structureInspector button:hover {
+  border-color: rgba(109, 240, 184, 0.5);
+  background: rgba(22, 58, 56, 0.78);
+}
+
+.structureInspector {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  right: 0;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  width: min(390px, 100vw);
+  height: 100%;
+  padding: clamp(18px, 2.8vw, 30px);
+  overflow: auto;
+  border-left: 1px solid rgba(201, 239, 247, 0.14);
+  color: #eef7fa;
+  background: rgba(2, 5, 7, 0.78);
+  backdrop-filter: blur(24px);
+  box-shadow: -24px 0 80px rgba(0, 0, 0, 0.42);
+}
+
+.structureInspector header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.structureInspector h2,
+.structureInspector h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.structureInspector button {
+  padding: 8px 10px;
+}
+
+.structureInspector dl {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.structureInspector dl div,
+.structureInspector section {
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(201, 239, 247, 0.12);
+}
+
+.structureInspector dt {
+  color: rgba(232, 248, 252, 0.62);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.structureInspector dd,
+.structureInspector p {
+  margin: 0;
+  color: rgba(213, 231, 234, 0.82);
+  font-size: 0.86rem;
+  line-height: 1.36;
+}
+
+@media (max-width: 720px) {
+  .structureIdentity {
+    right: 14px;
+  }
+
+  .structureControls {
+    left: 14px;
+  }
+
+  .structureControls button {
+    flex: 1 1 136px;
   }
 }

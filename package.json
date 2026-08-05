@@ -12,6 +12,7 @@
     "eval:spatial": "node app/code/spatial-ravia/evaluation.ts"
   },
   "dependencies": {
+    "molstar": "^5.11.0",
     "next": "^16.2.10",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
@@ -25,6 +26,7 @@
     "@types/three": "^0.185.4",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
+    "sass": "^1.102.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
   },
