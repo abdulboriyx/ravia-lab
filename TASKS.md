@@ -6,7 +6,7 @@
 - Suspected root cause: ChapterBio is built as a static Vite app under `public/chapterbio/index.html`; Next dev serves static files but does not treat nested `public` directories as directory-index routes. Static export can emit `out/chapterbio/index.html`, creating a dev/export mismatch.
 - Files likely involved: `app/chapterbio/page.tsx`, `data/archive.ts`, `public/chapterbio/index.html`, `chapterbio/vite.config.ts`.
 - Validation command: `npm run build`; local route check for `/chapterbio/`; route-integrity test if added.
-- Completion status: completed. Added a first-class Next route at `/chapterbio/` that loads the existing ChapterBio static assets; `npm run build` now lists `/chapterbio`.
+- Completion status: completed. Added a first-class Next route at `/chapterbio/` that loads the existing ChapterBio static assets; fixed the ChapterBio Vite input so its standalone build writes `public/chapterbio/index.html`; `npm run build` now lists `/chapterbio`.
 
 ## Task 2: Archive entries point to nonexistent internal routes
 
@@ -46,7 +46,7 @@
 - Suspected root cause: Later commits replaced or redirected the route to the B-DNA viewer without removing older generic engine code/docs.
 - Files likely involved: `app/code/spatial-ravia/prototype.tsx`, `app/code/spatial-ravia/page.tsx`, `SPATIAL_RAVIA_PROGRESS.md`, `SPATIAL_RAVIA_ARCHITECTURE_AUDIT.md`, Git history.
 - Validation command: code/history inspection; `PRODUCT_DECISIONS_NEEDED.md`.
-- Completion status: pending.
+- Completion status: completed. Evidence shows the process-pack workspace existed first and the B-DNA/Mol* viewer later replaced the visible route, but no repository source defines whether that replacement is final, a module, or an experiment.
 
 ## Task 7: Implement only inferable Spatial RAVIA integration work
 
@@ -54,7 +54,7 @@
 - Suspected root cause: Route/product direction is ambiguous between B-DNA molecular viewer and generic process-pack workspace.
 - Files likely involved: `app/code/spatial-ravia/page.tsx`, `app/code/spatial-ravia/prototype.tsx`, potential documentation files.
 - Validation command: `npm run build`; `npm run test:spatial`; documented decision record.
-- Completion status: pending.
+- Completion status: completed. No product-defining UI integration was made because the canonical route behavior cannot be inferred. The decision is documented in `PRODUCT_DECISIONS_NEEDED.md`.
 
 ## Task 8: Final stabilization validation and report
 
@@ -62,4 +62,4 @@
 - Suspected root cause: Current audit is diagnostic but not an implementation closeout.
 - Files likely involved: `STABILIZATION_REPORT.md`, `PRODUCT_DECISIONS_NEEDED.md`, `TASKS.md`.
 - Validation command: `npm run lint`; `npm run typecheck`; `npm run test:spatial`; `npm run eval:spatial`; `npm run build`; `cd chapterbio && npm test && npm run build`.
-- Completion status: pending.
+- Completion status: completed. Final root lint, type-check, Spatial RAVIA tests/evaluation, root build, and ChapterBio test/build all pass.
