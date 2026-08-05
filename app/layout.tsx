@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Oxanium, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import "molstar/lib/mol-plugin-ui/skin/dark.scss";
 import "./globals.css";
 
 const oxanium = Oxanium({
