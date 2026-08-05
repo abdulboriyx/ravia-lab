@@ -15,6 +15,8 @@ import {
   validateBiologicalProcessPack
 } from "./model.ts";
 import type { Coord, ScientificPrimitive } from "./primitives.ts";
+import { phenomenonSpecFromBiologicalProcessPack } from "./phenomenon-adapter.ts";
+import { assertValidPhenomenonSpec } from "./phenomenon-spec.ts";
 import { primitiveBase } from "./primitives.ts";
 
 const dnaSources = [
@@ -653,6 +655,13 @@ export function validateDnaReplicationPack() {
   }
 
   return { valid: errors.length === 0, errors };
+}
+
+export const dnaReplicationPhenomenonSpec = phenomenonSpecFromBiologicalProcessPack(dnaReplicationPack);
+dnaReplicationPack.phenomenonSpec = dnaReplicationPhenomenonSpec;
+
+if (process.env.NODE_ENV !== "production") {
+  assertValidPhenomenonSpec(dnaReplicationPhenomenonSpec);
 }
 
 function relationExists(source: string, target: string, relationLabel?: string) {

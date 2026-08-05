@@ -2,7 +2,9 @@ import type {
   Coord,
   ScientificPrimitive
 } from "./primitives.ts";
+import type { PhenomenonSpec } from "./phenomenon-spec.ts";
 import { validatePrimitive } from "./primitives.ts";
+import { validatePhenomenonSpec } from "./phenomenon-spec.ts";
 
 export type ScientificEntityKind =
   | "molecule"
@@ -256,6 +258,7 @@ export type CommandRule = {
 
 export type BiologicalProcessPack = {
   id: string;
+  phenomenonSpec?: PhenomenonSpec;
   process: string;
   aliases: string[];
   examples: string[];
@@ -580,6 +583,21 @@ export function compileBiologicalProcessPack(
   pack: BiologicalProcessPack,
   options: { biologicalContext?: string } = {}
 ): CompilationResult {
+  if (pack.phenomenonSpec) {
+    const phenomenonValidation = validatePhenomenonSpec(pack.phenomenonSpec);
+
+    if (!phenomenonValidation.valid) {
+      return {
+        ok: false,
+        errors: phenomenonValidation.errors.map((error) => ({
+          code: "validation_rule_failed",
+          path: `phenomenonSpec.${error.path}`,
+          message: error.message
+        }))
+      };
+    }
+  }
+
   const validation = validateBiologicalProcessPackLayered(pack);
   const errors = [
     ...validation.errors,
