@@ -48,7 +48,13 @@ export const actionPotentialPack: BiologicalProcessPack = {
     "neuron spike",
     "neuronal action potential",
     "membrane voltage spike",
-    "nerve impulse"
+    "nerve impulse",
+    "depolarization repolarization",
+    "depolarization",
+    "repolarization",
+    "refractory period",
+    "ion flow across membrane",
+    "ion flow across the membrane"
   ],
   examples: [
     "Show an action potential.",
@@ -165,6 +171,26 @@ export const actionPotentialPack: BiologicalProcessPack = {
       hints: ["action potential", "neuron spike", "nerve impulse"],
       context: "generic neuron axon membrane",
       intent: "show-mixed-action-potential"
+    },
+    {
+      id: "depolarization-repolarization",
+      hints: ["depolarization", "repolarization", "depolarization repolarization", "explain depolarization repolarization"],
+      context: "generic neuron axon membrane",
+      intent: "explain-voltage-phases"
+    },
+    {
+      id: "refractory-period",
+      hints: ["refractory period", "display refractory period"],
+      context: "generic neuron axon membrane",
+      intent: "show-refractory-period",
+      suggestedCommandId: "show-refractory-period"
+    },
+    {
+      id: "ion-flow",
+      hints: ["ion flow", "ion flow across membrane", "ion flow across the membrane"],
+      context: "generic neuron axon membrane",
+      intent: "show-ion-flow",
+      suggestedCommandId: "isolate-sodium-channels"
     },
     {
       id: "voltage-trace",

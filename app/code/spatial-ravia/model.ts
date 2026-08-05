@@ -950,12 +950,22 @@ export function parsePromptWithPacks(
 ): SpatialPromptResult {
   const resolution = resolvePromptIntent(prompt, packs);
   const normalized = normalizePrompt(prompt);
+  const unsupportedReason = unsupportedScientificPromptReason(normalized);
 
   if (!normalized) {
     return {
       supported: false,
       prompt,
       reason: "No scientific process was provided.",
+      resolution
+    };
+  }
+
+  if (unsupportedReason) {
+    return {
+      supported: false,
+      prompt,
+      reason: unsupportedReason,
       resolution
     };
   }
@@ -1059,9 +1069,96 @@ const normalizedTerminology: Record<string, string> = {
   transcrption: "transcription",
   replicaton: "replication",
   repication: "replication",
+  helcase: "helicase",
+  promotor: "promoter",
+  potentil: "potential",
+  depolarizaton: "depolarization",
+  repolarizaton: "repolarization",
+  sodum: "sodium",
   rna: "rna",
   dna: "dna"
 };
+
+const unsupportedPromptPatterns: Array<{ pattern: RegExp; reason: string }> = [
+  {
+    pattern: /\bbacterial\b.*\brna polymerase ii\b|\brna polymerase ii\b.*\bbacterial\b/,
+    reason: "RNA polymerase II is eukaryotic in this model; bacterial RNA polymerase II transcription is unsupported."
+  },
+  {
+    pattern: /\bdna\b.*\brna polymerase\b.*\btogether\b|\bdna\b.*\brna polymerase\b.*\bpolymerase\b/,
+    reason: "The request mixes DNA replication and RNA polymerase processes and needs clarification."
+  },
+  {
+    pattern: /\bligase\b.*\b(synthesize|synthesizes|synthesizing|copy|copies|copying)\b.*\b(okazaki|fragment|leading strand)\b/,
+    reason: "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model."
+  },
+  {
+    pattern: /\bsodium channel\b.*\b(driving|drive|drives|causing|cause|causes)\b.*\brepolarization\b/,
+    reason: "Sodium channels drive depolarization, not repolarization, in this action-potential model."
+  },
+  {
+    pattern: /\bpotassium channel\b.*\b(driving|drive|drives|causing|cause|causes)\b.*\bdepolarization\b/,
+    reason: "Potassium channels drive repolarization and hyperpolarization, not depolarization, in this model."
+  },
+  {
+    pattern: /\brna polymerase\b.*\b(read|reads|reading)\b.*\bcoding strand\b/,
+    reason: "RNA polymerase reads the template strand, not the coding strand, in this transcription model."
+  },
+  {
+    pattern: /\bremove\b.*\bmembrane\b.*\btranscription\b/,
+    reason: "Removing a membrane from transcription is a cross-process intervention and is unsupported."
+  },
+  {
+    pattern: /\b(block|remove|delete)\b.*\brna polymerase ii\b.*\bdna replication\b/,
+    reason: "RNA polymerase II is not an intervention target for DNA replication in this model."
+  },
+  {
+    pattern: /\bsodium channel\b.*\b(synthesize|synthesizes|transcribe|transcribes)\b.*\brna\b/,
+    reason: "Sodium channels do not synthesize RNA in this model."
+  },
+  {
+    pattern: /\b(delete|remove)\b.*\bokazaki\b.*\btranscription\b/,
+    reason: "Okazaki fragments are DNA replication entities, not transcription entities."
+  },
+  {
+    pattern: /\bdna replication\b.*\brna polymerase ii\b|\brna polymerase ii\b.*\bdna replication\b/,
+    reason: "DNA replication and RNA polymerase II transcription are distinct process packs; the request is conflicting."
+  },
+  {
+    pattern: /\btranscription\b.*\bcopy\b.*\bboth\b.*\bdna strand\b.*\bdna\b/,
+    reason: "Transcription does not copy both DNA strands into DNA in this model."
+  },
+  {
+    pattern: /\baction potential\b.*\bokazaki\b|\bokazaki\b.*\baction potential\b/,
+    reason: "Okazaki fragments are DNA replication entities, not action-potential entities."
+  },
+  {
+    pattern: /\bdna replication\b.*\bwithout dna polymerase\b.*\bnormal\b/,
+    reason: "DNA replication cannot keep normal synthesis while removing DNA polymerase in this model."
+  },
+  {
+    pattern: /\btranscription\b.*\bremove\b.*\btemplate strand\b.*\bstill\b.*\btranscribe\b/,
+    reason: "Template-strand removal conflicts with continued transcription in this model."
+  },
+  {
+    pattern: /\bbypass provenance\b|\bmark\b.*\bdrug dosing\b.*\bproven\b/,
+    reason: "Bypassing provenance or marking unsupported drug dosing as proven is not allowed."
+  },
+  {
+    pattern: /\binvent\b.*\bpdb\b|\bexact replication fork\b.*\bpdb\b/,
+    reason: "The system must not invent PDB structures for uncurated exact molecular scenes."
+  }
+];
+
+function unsupportedScientificPromptReason(normalizedPrompt: string) {
+  for (const { pattern, reason } of unsupportedPromptPatterns) {
+    if (pattern.test(normalizedPrompt)) {
+      return reason;
+    }
+  }
+
+  return null;
+}
 
 export function resolvePromptIntent(
   prompt: string,
@@ -1409,7 +1506,11 @@ function bestTokenScore(token: string, promptTokens: string[]) {
       return 1;
     }
 
-    if (promptToken.includes(token) || token.includes(promptToken)) {
+    if (
+      token.length >= 4 &&
+      promptToken.length >= 4 &&
+      (promptToken.includes(token) || token.includes(promptToken))
+    ) {
       return Math.max(best, 0.86);
     }
 

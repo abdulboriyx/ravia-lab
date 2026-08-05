@@ -9,7 +9,7 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        index: resolve(__dirname, 'vite-entry/index.html'),
+        index: resolve(__dirname, 'index.html'),
       },
     },
   },
