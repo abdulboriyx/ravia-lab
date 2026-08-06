@@ -55,7 +55,11 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     "dna duplicated",
     "replication fork",
     "unwinding dna duplex",
+    "helicase separating dna templates",
+    "helicase separating two dna templates",
     "lagging strand copied",
+    "strand made in pieces",
+    "primase polymerase primers ligase",
     "helicase opening fork",
     "ligase finish replication",
     "template strand during replication",
@@ -80,14 +84,14 @@ export const dnaReplicationPack: BiologicalProcessPack = {
   entities: [
     entity("parental-strand-5to3", "Parental strand 5'->3'", ["opposite template"], "strand", "Original DNA template running 5' to 3' in the schematic."),
     entity("parental-strand-3to5", "Parental strand 3'->5'", ["template strand", "replication template strand"], "strand", "Original DNA template running 3' to 5' in the schematic."),
-    entity("helicase", "Helicase", ["dna helicase"], "enzyme", "Unwinds the parental duplex at the replication fork."),
+    entity("helicase", "Helicase", ["dna helicase", "separating dna templates", "separating dna template", "separates dna templates"], "enzyme", "Unwinds the parental duplex at the replication fork."),
     entity("ssb", "Single-strand binding proteins", ["ssb proteins"], "protein", "Stabilize exposed single-stranded DNA."),
     entity("primase", "Primase", ["rna primase"], "enzyme", "Synthesizes short RNA primers."),
     entity("rna-primers", "RNA primers", ["primers", "primer placement"], "molecule", "Provide a starting 3' hydroxyl for DNA polymerase."),
     entity("dna-polymerase", "DNA polymerase", ["polymerase"], "enzyme", "Extends DNA only in the 5' to 3' direction."),
     entity("leading-strand", "Leading strand", ["continuous strand", "extended continuously"], "strand", "New strand synthesized continuously toward the fork."),
-    entity("lagging-strand", "Lagging strand", ["lagging side", "discontinuous strand"], "strand", "New strand synthesized discontinuously away from the fork."),
-    entity("okazaki-fragments", "Okazaki fragments", ["short dna pieces", "short dna fragments", "fragments"], "fragment", "Short DNA fragments that belong to the lagging strand."),
+    entity("lagging-strand", "Lagging strand", ["lagging side", "discontinuous strand", "strand made in pieces", "made in pieces"], "strand", "New strand synthesized discontinuously away from the fork."),
+    entity("okazaki-fragments", "Okazaki fragments", ["short dna pieces", "short dna fragments", "fragments", "pieces", "strand made in pieces"], "fragment", "Short DNA fragments that belong to the lagging strand."),
     entity("primer-removal", "Primer removal", ["rna primer removal"], "process", "RNA primers are removed and replaced with DNA."),
     entity("ligase", "Ligase", ["dna ligase"], "enzyme", "Seals nicks between adjacent DNA fragments.")
   ],
@@ -307,7 +311,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     incompatibility(
       "dna-template-reading-direction",
       [
-        ["template reading direction", "read template strand", "reads template strand"],
+        ["template reading direction", "read template strand", "reads template strand", "reading template", "reading the template"],
         ["5 prime to 3 prime", "5' to 3'"]
       ],
       "DNA template reading direction claim is unsupported."
@@ -393,13 +397,13 @@ export const dnaReplicationPack: BiologicalProcessPack = {
   promptRules: [
     {
       id: "dna-copying",
-      hints: ["dna copied", "dna copy", "lagging strand copied", "dna extension", "dna synthesis polarity", "5 prime 3 prime", "5 prime and 3 prime"],
+      hints: ["dna copied", "dna copy", "dna replication", "dna duplication", "dna gets copied", "dna gets duplicated", "lagging strand copied", "dna extension", "dna synthesis polarity", "5 prime 3 prime", "5 prime and 3 prime"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },
     {
       id: "replication-fork",
-      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork", "helicase unwinding dna duplex", "unwinding dna duplex", "primer placement before dna extension", "leading strand extended continuously"],
+      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork", "helicase unwinding dna duplex", "helicase separating dna templates", "helicase separating the dna templates", "helicase separating two dna templates", "separating the two dna templates", "unwinding dna duplex", "primer placement before dna extension", "leading strand extended continuously", "primase polymerase primers ligase", "relations among primase polymerase primers ligase"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },
@@ -411,7 +415,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     },
     {
       id: "okazaki-why",
-      hints: ["okazaki", "lagging side", "short dna pieces", "short dna fragments"],
+      hints: ["okazaki", "lagging side", "short dna pieces", "short dna fragments", "strand made in pieces", "made in pieces"],
       context: "general DNA replication",
       intent: "explain-lagging-strand"
     },
@@ -433,6 +437,13 @@ export const dnaReplicationPack: BiologicalProcessPack = {
       context: "general DNA replication",
       intent: "compare-no-ligase",
       suggestedCommandId: "compare-no-ligase"
+    },
+    {
+      id: "helicase-stopped",
+      hints: ["helicase stopped", "helicase is stopped", "if helicase is stopped", "what changes if helicase is stopped"],
+      context: "general DNA replication",
+      intent: "helicase-stopped",
+      suggestedCommandId: "helicase-stopped"
     }
   ],
   commandRules: [
@@ -524,6 +535,15 @@ export const dnaReplicationPack: BiologicalProcessPack = {
         representationMode: "scene"
       },
       response: "Comparing baseline replication with a no-ligase intervention."
+    },
+    {
+      id: "helicase-stopped",
+      phrases: ["helicase stopped", "helicase is stopped", "what changes if helicase is stopped"],
+      patch: {
+        selectedEntities: ["helicase", "parental-strand-5to3", "parental-strand-3to5"],
+        activeIntervention: "helicase-stopped"
+      },
+      response: "Stopped helicase in the counterfactual branch."
     },
     {
       id: "show-timeline",

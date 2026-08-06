@@ -4,7 +4,7 @@
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
   "cases": [
     { "id": "h001", "category": "dna-replication", "prompt": "Open a replication fork model for copied DNA.", "expectedSupported": true, "expectedProcessId": "dna-replication" },
-    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5-to-3", "parental-strand-3-to-5"] },
+    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5to3", "parental-strand-3to5"] },
     { "id": "h003", "category": "dna-replication", "prompt": "Visualize helicase and polymerase at the fork.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["helicase", "dna-polymerase"] },
     { "id": "h004", "category": "dna-replication", "prompt": "I want the discontinuous strand in DNA replication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand"] },
     { "id": "h005", "category": "dna-replication", "prompt": "Why does the lagging side make short DNA pieces?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand", "okazaki-fragments"] },

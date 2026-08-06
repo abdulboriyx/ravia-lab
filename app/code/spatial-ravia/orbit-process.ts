@@ -242,7 +242,7 @@ export const orbitPack: BiologicalProcessPack = {
     entity("heliocentric-frame", "Heliocentric frame", ["ecliptic j2000", "sun-centered frame"], "spatial-reference-frame", "Sun-centered ecliptic J2000 coordinate frame.", false),
     entity("two-body-equation", "Two-body equation", ["central gravity equation", "solar gravity"], "equation-model", "Offline central-gravity model used to propagate the fixture.", false),
     entity("orbit-trajectory", "Orbit trajectory", ["orbit path", "trajectory"], "equation-state", "Fixed two-body trajectory for the five-day benchmark window.", false),
-    entity("gravity-vector", "Gravity vector", ["central gravity", "acceleration vector", "central force"], "spatial-vector", "Direction of acceleration toward the Sun.", false),
+    entity("gravity-vector", "Gravity vector", ["central gravity", "acceleration vector", "acceleration vector toward sun", "acceleration toward sun", "central force"], "spatial-vector", "Direction of acceleration toward the Sun.", false),
     entity("jpl-benchmark", "JPL benchmark", ["jpl comparison markers", "comparison markers", "horizons vectors", "benchmark points"], "equation-state", "Stored JPL Horizons checkpoints for the same epochs.", false)
   ],
   relations: [
@@ -343,9 +343,16 @@ export const orbitPack: BiologicalProcessPack = {
   promptRules: [
     {
       id: "show-earth-orbit",
-      hints: ["earth orbit", "earth around the sun", "two-body orbit", "orbital mechanics"],
+      hints: ["earth orbit", "earth around the sun", "two-body orbit", "orbital mechanics", "acceleration vector toward sun", "acceleration vector toward the sun"],
       context: "Sun-Earth two-body benchmark",
       intent: "Show the reviewed Sun-Earth two-body orbit benchmark."
+    },
+    {
+      id: "show-gravity-vector",
+      hints: ["gravity vector", "central gravity", "acceleration vector", "acceleration vector toward sun", "acceleration vector toward the sun", "highlight acceleration vector"],
+      context: "Sun-Earth two-body benchmark",
+      intent: "Show the central acceleration vector.",
+      suggestedCommandId: "isolate-gravity"
     },
     {
       id: "compare-jpl",

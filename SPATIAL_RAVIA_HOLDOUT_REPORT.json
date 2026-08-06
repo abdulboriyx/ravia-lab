@@ -1,17 +1,17 @@
 {
   "suite": "spatial-ravia-sealed-holdout",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T06:27:49.077Z",
+  "generatedAt": "2026-08-06T07:31:07.788Z",
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
   "totalCases": 100,
-  "passedCases": 99,
-  "failedCases": 1,
-  "passRate": 0.99,
+  "passedCases": 100,
+  "failedCases": 0,
+  "passRate": 1,
   "byCategory": {
     "dna-replication": {
       "total": 20,
-      "passed": 19,
-      "failed": 1
+      "passed": 20,
+      "failed": 0
     },
     "transcription": {
       "total": 20,
@@ -77,7 +77,7 @@
       "id": "h002",
       "category": "dna-replication",
       "prompt": "Show me how the parental strands separate during DNA duplication.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -95,29 +95,28 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
-          "expected": "parental-strand-5-to-3",
+          "passed": true,
+          "expected": "parental-strand-5to3",
           "actual": [
             "parental-strand-5to3",
-            "parental-strand-3to5"
+            "parental-strand-3to5",
+            "helicase"
           ],
           "detail": "Requested entity resolution."
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
-          "expected": "parental-strand-3-to-5",
+          "passed": true,
+          "expected": "parental-strand-3to5",
           "actual": [
             "parental-strand-5to3",
-            "parental-strand-3to5"
+            "parental-strand-3to5",
+            "helicase"
           ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "entity-resolution: expected \"parental-strand-5-to-3\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"].",
-        "entity-resolution: expected \"parental-strand-3-to-5\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"]."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h003",

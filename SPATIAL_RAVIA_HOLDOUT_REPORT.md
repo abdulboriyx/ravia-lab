@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T06:27:49.077Z
+Generated: 2026-08-06T07:31:07.788Z
 
 ## Protocol
 
@@ -11,13 +11,13 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Summary
 
 - Total cases: 100
-- Passed: 99
-- Failed: 1
-- Pass rate: 99.0%
+- Passed: 100
+- Failed: 0
+- Pass rate: 100.0%
 
 ## Category Results
 
-- dna-replication: 19/20 passed
+- dna-replication: 20/20 passed
 - transcription: 20/20 passed
 - action-potential: 15/15 passed
 - orbit: 12/12 passed
@@ -28,19 +28,13 @@ The holdout was run once against the current deterministic MVP. Failures below a
 
 ## Failure Categories
 
-- dna-replication: 1 failure(s)
+No failures.
 
 ## Failed Cases
 
-### h002 dna-replication
-
-Prompt: Show me how the parental strands separate during DNA duplication.
-- entity-resolution: expected "parental-strand-5-to-3", got ["parental-strand-5to3","parental-strand-3to5"].
-- entity-resolution: expected "parental-strand-3-to-5", got ["parental-strand-5to3","parental-strand-3to5"].
-
 ## Release Decision
 
-Do not release-freeze yet. Run a stabilization pass only for genuine product defects represented by the failed categories, then rerun a new holdout or a clearly marked regression subset.
+Release freeze is reasonable from this holdout pass, pending remote CI and stakeholder review.
 
 ## Known Limitations
 

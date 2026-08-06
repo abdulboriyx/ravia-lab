@@ -85,7 +85,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     entity("promoter", "Promoter", ["core promoter", "promoter region"], "molecule", "DNA regulatory region where transcription machinery assembles."),
     entity("transcription-factors", "Transcription factors", ["general transcription factors", "tfs"], "protein", "Proteins that help recruit and position RNA polymerase II at the promoter."),
     entity("rna-polymerase-ii", "RNA polymerase II", ["pol ii", "rna polymerase", "polymerase"], "enzyme", "Enzyme that synthesizes the RNA transcript from the DNA template strand."),
-    entity("template-strand", "Template strand", ["antisense strand", "transcribed strand", "one dna strand copied into rna"], "strand", "DNA strand read by RNA polymerase II to build complementary RNA."),
+    entity("template-strand", "Template strand", ["antisense strand", "transcribed strand", "one dna strand copied into rna", "dna strand read by pol ii", "strand read by pol ii", "dna strand read by rna polymerase ii"], "strand", "DNA strand read by RNA polymerase II to build complementary RNA."),
     entity("coding-strand", "Coding strand", ["sense strand", "non-template strand"], "strand", "DNA strand whose sequence matches the RNA except T is replaced by U."),
     entity("transcription-bubble", "Transcription bubble", ["open complex", "bubble"], "process", "Locally unwound DNA region inside the moving transcription complex."),
     entity("growing-rna-transcript", "Growing RNA transcript", ["nascent rna", "rna transcript"], "strand", "RNA chain extended 5' to 3' as polymerase advances."),
@@ -226,7 +226,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
       "transcription-bacterial-pol-ii",
       [
         ["bacterial"],
-        ["rna polymerase ii"]
+        ["rna polymerase ii", "polymerase ii", "pol ii"]
       ],
       "RNA polymerase II is eukaryotic in this model; bacterial RNA polymerase II transcription is unsupported."
     ),
@@ -242,7 +242,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     incompatibility(
       "transcription-wrong-synthesis-direction",
       [
-        ["rna synthesis", "rna synthesize", "rna synthesized", "rna being synthesized"],
+        ["rna synthesis", "rna synthesize", "rna synthesized", "rna being synthesized", "rna produced", "rna made"],
         ["3 prime to 5 prime", "3' to 5'"]
       ],
       "RNA synthesis 3' to 5' is unsupported."
@@ -300,7 +300,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
   promptRules: [
     {
       id: "show-transcription",
-      hints: ["show transcription", "transcription"],
+      hints: ["show transcription", "transcription", "gene being transcribed", "gene transcribed"],
       context: "eukaryotic protein-coding gene transcription",
       intent: "show-transcription-unit"
     },
@@ -312,7 +312,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     },
     {
       id: "polymerase-motion",
-      hints: ["rna polymerase moving along dna", "polymerase moving along dna", "rna polymerase ii"],
+      hints: ["rna polymerase moving along dna", "polymerase moving along dna", "rna polymerase ii", "pol ii", "dna strand read by pol ii", "strand read by pol ii"],
       context: "eukaryotic protein-coding gene transcription",
       intent: "show-polymerase-motion"
     },

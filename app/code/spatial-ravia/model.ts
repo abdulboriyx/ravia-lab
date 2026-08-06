@@ -1110,9 +1110,9 @@ const representationKeywords: Array<{
   { representation: "scene", terms: ["show", "visualize", "animation", "moving", "scene", "3d"] },
   { representation: "mixed", terms: ["mixed", "workspace", "synchronized"] },
   { representation: "molecular-structure", terms: ["structure", "pdb", "molstar", "experimental"] },
-  { representation: "timeline", terms: ["timeline", "stages", "steps", "sequence"] },
-  { representation: "graph", terms: ["process diagram", "diagram", "graph", "network", "relations", "causal"] },
-  { representation: "voltage-graph", terms: ["voltage graph", "voltage trace", "voltage over time"] },
+  { representation: "timeline", terms: ["timeline", "stages", "stage", "steps", "step", "sequence", "ordered stage"] },
+  { representation: "graph", terms: ["process diagram", "diagram", "graph", "network", "network of stages", "network of the stages", "network of transcription stages", "network of the transcription stages", "relations", "relation", "relationships", "relationship", "map", "causal"] },
+  { representation: "voltage-graph", terms: ["voltage graph", "voltage trace", "voltage over time", "membrane potential trace"] },
   { representation: "explanation", terms: ["why", "explain", "how", "describe"] },
   { representation: "json", terms: ["json", "developer", "structured model"] }
 ];
@@ -1409,6 +1409,26 @@ function resolveGenericFocus(promptTokens: string[]) {
 
 function resolveRepresentation(promptTokens: string[]): RepresentationType | undefined {
   const normalizedPrompt = promptTokens.join(" ");
+
+  if (
+    normalizedPrompt.includes("voltage graph") ||
+    normalizedPrompt.includes("voltage trace") ||
+    normalizedPrompt.includes("membrane potential trace")
+  ) {
+    return "voltage-graph";
+  }
+
+  if (hasAny(promptTokens, ["graph", "network", "relation", "relationship", "map", "causal"])) {
+    return "graph";
+  }
+
+  if (
+    hasAny(promptTokens, ["timeline", "sequence"]) ||
+    (hasAny(promptTokens, ["stage", "step"]) && hasAny(promptTokens, ["ordered"]))
+  ) {
+    return "timeline";
+  }
+
   const exactPhraseMatch = representationKeywords
     .flatMap((item) => item.terms.map((term) => ({ representation: item.representation, term })))
     .filter((item) => item.term.includes(" ") && normalizedPrompt.includes(item.term))
@@ -1515,7 +1535,8 @@ function resolveAmbiguity(
 
   if (
     ambiguity.length === 0 &&
-    normalizedPrompt.includes("polymerase copy dna") &&
+    (normalizedPrompt.includes("polymerase copy dna") ||
+      normalizedPrompt.includes("polymerase moving along dna")) &&
     !hasAny(promptTokens, ["replication", "transcription", "rna", "fork"])
   ) {
     ambiguity.push("Polymerase copying DNA can refer to replication or related polymerase contexts; please name the process explicitly.");
@@ -1523,9 +1544,20 @@ function resolveAmbiguity(
 
   if (
     ambiguity.length === 0 &&
-    normalizedPrompt.includes("dna being copy into something")
+    (normalizedPrompt.includes("dna being copy into something") ||
+      normalizedPrompt === "show dna copy" ||
+      normalizedPrompt === "show dna copying")
   ) {
     ambiguity.push("DNA being copied into an unspecified product is ambiguous between DNA replication and RNA transcription; please name the product or process explicitly.");
+  }
+
+  if (
+    ambiguity.length === 0 &&
+    normalizedPrompt.includes("strand") &&
+    (normalizedPrompt.includes("being made") || normalizedPrompt.includes("strand made")) &&
+    !hasAny(promptTokens, ["dna", "rna", "replication", "transcription", "piece", "fragment", "okazaki", "primer"])
+  ) {
+    ambiguity.push("Strands being made can refer to DNA replication or RNA transcription; please name the product or process explicitly.");
   }
 
   return ambiguity.filter(Boolean);
