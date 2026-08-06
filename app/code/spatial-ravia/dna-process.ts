@@ -51,6 +51,8 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     "dna copied",
     "dna copying",
     "dna replication",
+    "dna duplication",
+    "dna duplicated",
     "replication fork",
     "lagging strand copied",
     "helicase opening fork",
@@ -250,6 +252,14 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     }
   ],
   incompatibilityRules: [
+    incompatibility(
+      "dna-rna-polymerase-ii-replication-fork",
+      [
+        ["rna polymerase ii", "polymerase ii", "pol ii"],
+        ["replication fork", "dna replication", "fork"]
+      ],
+      "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model."
+    ),
     incompatibility(
       "dna-ligase-synthesis",
       [

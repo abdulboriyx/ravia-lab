@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T05:47:24.952Z
+Generated: 2026-08-06T05:54:50.562Z
 
 ## Protocol
 
@@ -11,17 +11,17 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Summary
 
 - Total cases: 100
-- Passed: 77
-- Failed: 23
-- Pass rate: 77.0%
+- Passed: 80
+- Failed: 20
+- Pass rate: 80.0%
 
 ## Category Results
 
 - dna-replication: 13/20 passed
-- transcription: 17/20 passed
+- transcription: 19/20 passed
 - action-potential: 9/15 passed
 - orbit: 9/12 passed
-- ambiguous: 1/5 passed
+- ambiguous: 2/5 passed
 - unsupported: 8/8 passed
 - follow-up: 17/17 passed
 - scope-boundary: 3/3 passed
@@ -29,19 +29,18 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Failure Categories
 
 - dna-replication: 7 failure(s)
-- transcription: 3 failure(s)
+- transcription: 1 failure(s)
 - action-potential: 6 failure(s)
 - orbit: 3 failure(s)
-- ambiguous: 4 failure(s)
+- ambiguous: 3 failure(s)
 
 ## Failed Cases
 
 ### h002 dna-replication
 
 Prompt: Show me how the parental strands separate during DNA duplication.
-- process-selection: expected "dna-replication", got "eukaryotic-transcription".
-- entity-resolution: expected "parental-strand-5-to-3", got [].
-- entity-resolution: expected "parental-strand-3-to-5", got [].
+- entity-resolution: expected "parental-strand-5-to-3", got ["parental-strand-5to3","parental-strand-3to5"].
+- entity-resolution: expected "parental-strand-3-to-5", got ["parental-strand-5to3","parental-strand-3to5"].
 
 ### h005 dna-replication
 
@@ -76,22 +75,11 @@ Prompt: Show hellicase unwinding the DNA duplex.
 Prompt: Explain DNA synthesis polarity with 5 prime and 3 prime ends.
 - abstention: expected true, got false.
 
-### h021 transcription
-
-Prompt: Open a model of a gene being transcribed.
-- abstention: expected true, got false.
-- process-selection: expected "eukaryotic-transcription", got null.
-
 ### h033 transcription
 
 Prompt: Why is just one DNA strand copied into RNA?
 - abstention: expected true, got false.
 - entity-resolution: expected "template-strand", got [].
-
-### h040 transcription
-
-Prompt: Show RNA made from DNA, not DNA replication.
-- process-selection: expected "eukaryotic-transcription", got "dna-replication".
 
 ### h042 action-potential
 
@@ -161,12 +149,6 @@ Prompt: Show a template strand being used.
 ### h070 ambiguous
 
 Prompt: Show DNA being copied into something.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h071 ambiguous
-
-Prompt: Show polymerase II at a replication fork.
 - abstention: expected false, got true.
 - abstention: expected "unsupported", got "supported".
 

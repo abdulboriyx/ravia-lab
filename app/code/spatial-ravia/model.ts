@@ -1135,6 +1135,10 @@ const normalizedTerminology: Record<string, string> = {
   factors: "factor",
   fragments: "fragment",
   primers: "primer",
+  duplication: "replication",
+  duplicated: "replication",
+  duplicating: "replication",
+  transcribed: "transcription",
   transcripton: "transcription",
   transcrption: "transcription",
   replicaton: "replication",
@@ -1158,6 +1162,7 @@ export function resolvePromptIntent(
   const requestedRepresentation = resolveRepresentation(tokens);
   const processScores = packs
     .map((pack) => scoreProcessPack(normalized, tokens, pack))
+    .map((candidate) => applyNegativeProcessCue(candidate, normalized, packs))
     .filter((candidate) => candidate.score > 0)
     .sort((a, b) => b.score - a.score);
   const topPack = processScores[0]
@@ -1185,6 +1190,36 @@ export function resolvePromptIntent(
     requestedIntervention,
     confidence,
     ambiguity
+  };
+}
+
+function applyNegativeProcessCue(
+  candidate: Candidate,
+  normalizedPrompt: string,
+  packs: BiologicalProcessPack[]
+): Candidate {
+  const pack = packs.find((item) => item.id === candidate.packId);
+
+  if (!pack) {
+    return candidate;
+  }
+
+  const identityPhrases = [pack.process, pack.id, ...pack.aliases]
+    .map((phrase) => normalizePrompt(phrase))
+    .filter((phrase) => phrase.length > 0);
+  const negated = identityPhrases.some((phrase) =>
+    normalizedPrompt.includes(`not ${phrase}`) ||
+    normalizedPrompt.includes(`not ${phrase.replace(/\s+/g, " ")}`)
+  );
+
+  if (!negated) {
+    return candidate;
+  }
+
+  return {
+    ...candidate,
+    score: Number(Math.max(0, candidate.score - 0.5).toFixed(3)),
+    reasons: [...candidate.reasons, "negative process cue"]
   };
 }
 

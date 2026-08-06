@@ -1,12 +1,12 @@
 {
   "suite": "spatial-ravia-sealed-holdout",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T05:47:24.952Z",
+  "generatedAt": "2026-08-06T05:54:50.562Z",
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
   "totalCases": 100,
-  "passedCases": 77,
-  "failedCases": 23,
-  "passRate": 0.77,
+  "passedCases": 80,
+  "failedCases": 20,
+  "passRate": 0.8,
   "byCategory": {
     "dna-replication": {
       "total": 20,
@@ -15,8 +15,8 @@
     },
     "transcription": {
       "total": 20,
-      "passed": 17,
-      "failed": 3
+      "passed": 19,
+      "failed": 1
     },
     "action-potential": {
       "total": 15,
@@ -30,8 +30,8 @@
     },
     "ambiguous": {
       "total": 5,
-      "passed": 1,
-      "failed": 4
+      "passed": 2,
+      "failed": 3
     },
     "unsupported": {
       "total": 8,
@@ -88,30 +88,35 @@
         },
         {
           "dimension": "process-selection",
-          "passed": false,
+          "passed": true,
           "expected": "dna-replication",
-          "actual": "eukaryotic-transcription",
+          "actual": "dna-replication",
           "detail": "Top process candidate."
         },
         {
           "dimension": "entity-resolution",
           "passed": false,
           "expected": "parental-strand-5-to-3",
-          "actual": [],
+          "actual": [
+            "parental-strand-5to3",
+            "parental-strand-3to5"
+          ],
           "detail": "Requested entity resolution."
         },
         {
           "dimension": "entity-resolution",
           "passed": false,
           "expected": "parental-strand-3-to-5",
-          "actual": [],
+          "actual": [
+            "parental-strand-5to3",
+            "parental-strand-3to5"
+          ],
           "detail": "Requested entity resolution."
         }
       ],
       "failureAnalysis": [
-        "process-selection: expected \"dna-replication\", got \"eukaryotic-transcription\".",
-        "entity-resolution: expected \"parental-strand-5-to-3\", got [].",
-        "entity-resolution: expected \"parental-strand-3-to-5\", got []."
+        "entity-resolution: expected \"parental-strand-5-to-3\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"].",
+        "entity-resolution: expected \"parental-strand-3-to-5\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"]."
       ]
     },
     {
@@ -691,27 +696,24 @@
       "id": "h021",
       "category": "transcription",
       "prompt": "Open a model of a gene being transcribed.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "process-selection",
-          "passed": false,
+          "passed": true,
           "expected": "eukaryotic-transcription",
-          "actual": null,
+          "actual": "eukaryotic-transcription",
           "detail": "Top process candidate."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false.",
-        "process-selection: expected \"eukaryotic-transcription\", got null."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h022",
@@ -1267,7 +1269,7 @@
       "id": "h040",
       "category": "transcription",
       "prompt": "Show RNA made from DNA, not DNA replication.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -1278,15 +1280,13 @@
         },
         {
           "dimension": "process-selection",
-          "passed": false,
+          "passed": true,
           "expected": "eukaryotic-transcription",
-          "actual": "dna-replication",
+          "actual": "eukaryotic-transcription",
           "detail": "Top process candidate."
         }
       ],
-      "failureAnalysis": [
-        "process-selection: expected \"eukaryotic-transcription\", got \"dna-replication\"."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h041",
@@ -2216,27 +2216,24 @@
       "id": "h071",
       "category": "ambiguous",
       "prompt": "Show polymerase II at a replication fork.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": false,
-          "actual": true,
+          "actual": false,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": "unsupported",
-          "actual": "supported",
+          "actual": "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected false, got true.",
-        "abstention: expected \"unsupported\", got \"supported\"."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h072",

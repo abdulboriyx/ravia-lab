@@ -149,6 +149,44 @@ test("overlapping DNA-to-RNA prompt resolves to transcription through the shared
   }
 });
 
+test("holdout routing regression prompts resolve or abstain correctly", () => {
+  const duplication = parsePromptWithPacks(
+    "Show me how the parental strands separate during DNA duplication.",
+    processPacks
+  );
+  const geneTranscribed = parsePromptWithPacks(
+    "Open a model of a gene being transcribed.",
+    processPacks
+  );
+  const rnaNotReplication = parsePromptWithPacks(
+    "Show RNA made from DNA, not DNA replication.",
+    processPacks
+  );
+  const polIiFork = parsePromptWithPacks(
+    "Show polymerase II at a replication fork.",
+    processPacks
+  );
+
+  assert.equal(duplication.supported, true);
+  assert.equal(geneTranscribed.supported, true);
+  assert.equal(rnaNotReplication.supported, true);
+  assert.equal(polIiFork.supported, false);
+
+  if (duplication.supported) {
+    assert.equal(duplication.model.process, dnaReplicationPack.process);
+  }
+
+  if (geneTranscribed.supported) {
+    assert.equal(geneTranscribed.model.process, eukaryoticTranscriptionPack.process);
+  }
+
+  if (rnaNotReplication.supported) {
+    assert.equal(rnaNotReplication.model.process, eukaryoticTranscriptionPack.process);
+  }
+
+  assert.match(polIiFork.reason, /RNA polymerase II/i);
+});
+
 test("intent resolver returns structured fields for a transcription prompt", () => {
   const resolution = resolvePromptIntent(
     "Show RNA polymerase moving along DNA as a timeline",
