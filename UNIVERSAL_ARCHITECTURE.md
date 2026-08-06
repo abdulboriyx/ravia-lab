@@ -67,6 +67,14 @@ The action-potential view is the existing curated schematic mixed representation
 
 `app/code/spatial-ravia/OrbitR3FView.tsx` renders the orbit scene with React Three Fiber. It consumes the same session clock and selection state as the SVG process views. The R3F camera fits from the live canvas dimensions so desktop, tablet, and mobile widths keep the orbit visible without a one-size hardcoded zoom.
 
+## Structured Intent Adapter
+
+`app/code/spatial-ravia/llm-interpretation.ts` remains the validation gate for model-produced intent. It accepts only registered process IDs, contexts, entity IDs, command IDs, intervention IDs, representation modes, and parameter IDs. Unknown fields, invented IDs, arbitrary equations, generated code, direct renderer instructions, and low-confidence process selections fail validation and fall back to deterministic prompt resolution.
+
+`app/code/spatial-ravia/llm-openai-provider.server.ts` adds the server-side OpenAI Responses adapter. It builds a strict JSON-schema request from the registered catalog and reads `OPENAI_API_KEY` only on the server side. The visible client workspace does not import this provider. Tests use an injected transport, so no live network call or API key is required for validation.
+
+The adapter is intentionally not a retrieval system or general web agent. Its authority is limited to selecting registered IDs and bounded model deltas that are revalidated before use.
+
 ## Evidence Model
 
 The DNA fork view is classified as a schematic explanatory model with normalized time. The B-DNA Mol* view is classified as a literal molecular-structure view only because it declares approved deposited PDB `1ZF5` coordinates. The contract rejects molecular-structure views without approved deposited mappings and rejects schematic process views mislabeled as literal.
@@ -77,4 +85,4 @@ The orbit workspace is classified as an equation-derived simulation with physica
 
 ## Deferred Architecture Work
 
-The adapter is intentionally temporary. A later migration should make `PhenomenonSpec` the direct authoring source for all phenomenon packs, then retire legacy-only fields once additional packs consume the schema directly.
+The DNA PhenomenonSpec compatibility adapter is intentionally temporary. A later migration should make `PhenomenonSpec` the direct authoring source for all phenomenon packs, then retire legacy-only fields once additional packs consume the schema directly.

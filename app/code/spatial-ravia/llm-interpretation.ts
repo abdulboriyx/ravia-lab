@@ -58,6 +58,10 @@ export type BiologicalIntentProviderRequest = {
       phrases: string[];
       activeIntervention?: string;
     }>;
+    parameters: Array<{
+      id: string;
+      label: string;
+    }>;
     representationModes: RepresentationType[];
   }>;
   instruction: string;
@@ -296,6 +300,10 @@ export function buildProviderRequest(
         id: rule.id,
         phrases: rule.phrases,
         activeIntervention: rule.patch.activeIntervention
+      })),
+      parameters: pack.parameters.map((parameter) => ({
+        id: parameter.id,
+        label: parameter.label
       })),
       representationModes
     }))

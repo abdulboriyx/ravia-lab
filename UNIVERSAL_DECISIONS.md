@@ -78,6 +78,14 @@ Reason: Spatial RAVIA packs must be curated and reproducible. Live external reco
 
 Constraint: the fixture tolerance is valid only for the checked 2026-01-01 through 2026-01-06 TDB benchmark interval.
 
+## Server-Side Structured Intent Adapter
+
+Decision: add a server-only OpenAI Responses adapter that requests strict JSON-schema structured output and then reuses the local `validateStructuredIntent` gate before accepting anything.
+
+Reason: the spec allows an LLM only as a bounded intent selector. The model may choose from registered IDs, but it may not invent mechanisms, equations, sources, geometry, renderer instructions, or new process packs. Revalidating the response locally keeps deterministic fallback as the authority when provider output is invalid.
+
+Constraint: this milestone does not add retrieval, a general web agent, client-side API keys, persistence, deployment changes, or a visible UI dependency on the provider. Tests inject a fake transport and do not require a live OpenAI call.
+
 ## Next Decision Needed
 
-The next architecture decision is how to introduce the server-side structured-output LLM adapter while preserving deterministic fallback, registered-intent-only output, and no client-side API key exposure.
+The next architecture decision is how to wire CI and static deployment gates without weakening the current static export, ChapterBio route, or visual verification requirements.

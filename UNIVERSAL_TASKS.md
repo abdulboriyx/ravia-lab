@@ -30,12 +30,15 @@
 - Added the React Three Fiber orbit renderer path with responsive camera fitting, benchmark markers, central-gravity vector, labels, selection, hide, isolate, directionality, and shared playback controls.
 - Added focused orbit fixture, pack validation, scene compilation, prompt, unsupported-scope, and workspace source-contract tests.
 - Verified Chromium screenshots and layout measurements for the orbit workspace at 1440x900, 1280x800, 1024x768, and 390x844.
+- Added the server-side OpenAI structured-output intent adapter for registered-ID-only process selection.
+- Added a strict JSON-schema request builder, server API-key availability gate, injected transport support for offline tests, response parsing, and deterministic fallback on provider errors or invalid output.
+- Added tests proving the visible client workspace does not import the server provider and that invented IDs still fail local validation.
 
 ## Current Gate Status
 
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 152/152.
+- `npm run test:spatial`: pass, 158/158.
 - `npm run eval:spatial`: pass, 108/108.
 - `npm run build`: pass, with the existing Next.js workspace-root warning caused by multiple lockfiles.
 - `chapterbio npm test`: pass, 3/3.
@@ -44,7 +47,7 @@
 
 ## Next Recommended Task
 
-Add the server-side structured-output LLM adapter that emits only registered intent IDs, per `UNIVERSAL_RAVIA_SPEC.md` milestone 11. Completion requires invalid or unavailable providers to fall back or abstain deterministically, with no general web agent, retrieval, or client-exposed API key.
+Add CI and deployment gates per `UNIVERSAL_RAVIA_SPEC.md` milestone 12. Completion requires lint, typecheck, Spatial tests, evaluation threshold, Playwright smoke checks, static build, ChapterBio validation, and GitHub Pages/static deployment to run only when every gate passes.
 
 ## External Validation Still Needed
 
