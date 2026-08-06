@@ -40,6 +40,7 @@ import {
   eukaryoticTranscriptionPack,
   validateEukaryoticTranscriptionPack
 } from "./transcription-process.ts";
+import { orbitPack } from "./orbit-process.ts";
 
 test("generic process-pack validation catches invalid references", () => {
   const validation = validateBiologicalProcessPack(dnaReplicationPack);
@@ -185,6 +186,61 @@ test("holdout routing regression prompts resolve or abstain correctly", () => {
   }
 
   assert.match(polIiFork.reason, /RNA polymerase II/i);
+});
+
+test("holdout entity alias regressions resolve registered components", () => {
+  const centralGravity = resolvePromptIntent(
+    "Visualize central gravity in the Earth orbit scene.",
+    processPacks
+  );
+  const jplMarkers = resolvePromptIntent(
+    "Show the JPL comparison markers for Earth orbit.",
+    processPacks
+  );
+  const membranePotential = resolvePromptIntent(
+    "Show membrane potential rising and falling.",
+    processPacks
+  );
+  const misspelledChannels = resolvePromptIntent(
+    "Visualize soduim and potasium currents in a spike.",
+    processPacks
+  );
+  const misspelledHelicase = resolvePromptIntent(
+    "Show hellicase unwinding the DNA duplex.",
+    processPacks
+  );
+  const supportedMembranePotential = parsePromptWithPacks(
+    "Show membrane potential rising and falling.",
+    processPacks
+  );
+  const supportedMisspelledChannels = parsePromptWithPacks(
+    "Visualize soduim and potasium currents in a spike.",
+    processPacks
+  );
+  const supportedMisspelledHelicase = parsePromptWithPacks(
+    "Show hellicase unwinding the DNA duplex.",
+    processPacks
+  );
+
+  assert.equal(centralGravity.processCandidates[0]?.packId, orbitPack.id);
+  assert.ok(centralGravity.requestedEntities.includes("gravity-vector"));
+
+  assert.equal(jplMarkers.processCandidates[0]?.packId, orbitPack.id);
+  assert.ok(jplMarkers.requestedEntities.includes("jpl-benchmark"));
+
+  assert.equal(membranePotential.processCandidates[0]?.packId, actionPotentialPack.id);
+  assert.ok(membranePotential.requestedEntities.includes("membrane-voltage"));
+
+  assert.equal(misspelledChannels.processCandidates[0]?.packId, actionPotentialPack.id);
+  assert.ok(misspelledChannels.requestedEntities.includes("sodium-channels"));
+  assert.ok(misspelledChannels.requestedEntities.includes("potassium-channels"));
+
+  assert.equal(misspelledHelicase.processCandidates[0]?.packId, dnaReplicationPack.id);
+  assert.ok(misspelledHelicase.requestedEntities.includes("helicase"));
+
+  assert.equal(supportedMembranePotential.supported, true);
+  assert.equal(supportedMisspelledChannels.supported, true);
+  assert.equal(supportedMisspelledHelicase.supported, true);
 });
 
 test("intent resolver returns structured fields for a transcription prompt", () => {

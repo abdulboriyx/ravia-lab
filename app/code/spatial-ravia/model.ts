@@ -1144,11 +1144,14 @@ const normalizedTerminology: Record<string, string> = {
   replicaton: "replication",
   repication: "replication",
   helcase: "helicase",
+  hellicase: "helicase",
   promotor: "promoter",
   potentil: "potential",
   depolarizaton: "depolarization",
   repolarizaton: "repolarization",
   sodum: "sodium",
+  soduim: "sodium",
+  potasium: "potassium",
   rna: "rna",
   dna: "dna"
 };

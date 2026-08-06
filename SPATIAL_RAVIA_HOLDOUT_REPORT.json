@@ -1,17 +1,17 @@
 {
   "suite": "spatial-ravia-sealed-holdout",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T05:54:50.562Z",
+  "generatedAt": "2026-08-06T05:58:35.711Z",
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
   "totalCases": 100,
-  "passedCases": 80,
-  "failedCases": 20,
-  "passRate": 0.8,
+  "passedCases": 85,
+  "failedCases": 15,
+  "passRate": 0.85,
   "byCategory": {
     "dna-replication": {
       "total": 20,
-      "passed": 13,
-      "failed": 7
+      "passed": 14,
+      "failed": 6
     },
     "transcription": {
       "total": 20,
@@ -20,13 +20,13 @@
     },
     "action-potential": {
       "total": 15,
-      "passed": 9,
-      "failed": 6
+      "passed": 11,
+      "failed": 4
     },
     "orbit": {
       "total": 12,
-      "passed": 9,
-      "failed": 3
+      "passed": 11,
+      "failed": 1
     },
     "ambiguous": {
       "total": 5,
@@ -473,13 +473,13 @@
       "id": "h013",
       "category": "dna-replication",
       "prompt": "Show hellicase unwinding the DNA duplex.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -499,9 +499,7 @@
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h014",
@@ -1315,13 +1313,13 @@
       "id": "h042",
       "category": "action-potential",
       "prompt": "Show membrane potential rising and falling.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -1333,19 +1331,17 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "membrane-voltage",
           "actual": [
+            "membrane-voltage",
             "membrane",
             "resting-potential"
           ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false.",
-        "entity-resolution: expected \"membrane-voltage\", got [\"membrane\",\"resting-potential\"]."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h043",
@@ -1601,43 +1597,44 @@
       "id": "h050",
       "category": "action-potential",
       "prompt": "Visualize soduim and potasium currents in a spike.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "process-selection",
-          "passed": false,
+          "passed": true,
           "expected": "action-potential",
-          "actual": null,
+          "actual": "action-potential",
           "detail": "Top process candidate."
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "sodium-channels",
-          "actual": [],
+          "actual": [
+            "sodium-channels",
+            "potassium-channels"
+          ],
           "detail": "Requested entity resolution."
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "potassium-channels",
-          "actual": [],
+          "actual": [
+            "sodium-channels",
+            "potassium-channels"
+          ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false.",
-        "process-selection: expected \"action-potential\", got null.",
-        "entity-resolution: expected \"sodium-channels\", got [].",
-        "entity-resolution: expected \"potassium-channels\", got []."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h051",
@@ -1859,7 +1856,7 @@
       "id": "h058",
       "category": "orbit",
       "prompt": "Visualize central gravity in the Earth orbit scene.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -1877,24 +1874,23 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "gravity-vector",
           "actual": [
+            "gravity-vector",
             "earth",
             "two-body-equation"
           ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "entity-resolution: expected \"gravity-vector\", got [\"earth\",\"two-body-equation\"]."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h059",
       "category": "orbit",
       "prompt": "Show the JPL comparison markers for Earth orbit.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -1912,17 +1908,16 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "jpl-benchmark",
           "actual": [
+            "jpl-benchmark",
             "earth"
           ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "entity-resolution: expected \"jpl-benchmark\", got [\"earth\"]."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h060",

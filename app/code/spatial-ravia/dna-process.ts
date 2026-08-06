@@ -54,6 +54,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     "dna duplication",
     "dna duplicated",
     "replication fork",
+    "unwinding dna duplex",
     "lagging strand copied",
     "helicase opening fork",
     "ligase finish replication",
@@ -398,7 +399,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     },
     {
       id: "replication-fork",
-      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork"],
+      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork", "helicase unwinding dna duplex", "unwinding dna duplex"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },

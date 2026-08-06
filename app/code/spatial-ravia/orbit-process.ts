@@ -242,8 +242,8 @@ export const orbitPack: BiologicalProcessPack = {
     entity("heliocentric-frame", "Heliocentric frame", ["ecliptic j2000", "sun-centered frame"], "spatial-reference-frame", "Sun-centered ecliptic J2000 coordinate frame.", false),
     entity("two-body-equation", "Two-body equation", ["central gravity equation", "solar gravity"], "equation-model", "Offline central-gravity model used to propagate the fixture.", false),
     entity("orbit-trajectory", "Orbit trajectory", ["orbit path", "trajectory"], "equation-state", "Fixed two-body trajectory for the five-day benchmark window.", false),
-    entity("gravity-vector", "Gravity vector", ["acceleration vector", "central force"], "spatial-vector", "Direction of acceleration toward the Sun.", false),
-    entity("jpl-benchmark", "JPL benchmark", ["horizons vectors", "benchmark points"], "equation-state", "Stored JPL Horizons checkpoints for the same epochs.", false)
+    entity("gravity-vector", "Gravity vector", ["central gravity", "acceleration vector", "central force"], "spatial-vector", "Direction of acceleration toward the Sun.", false),
+    entity("jpl-benchmark", "JPL benchmark", ["jpl comparison markers", "comparison markers", "horizons vectors", "benchmark points"], "equation-state", "Stored JPL Horizons checkpoints for the same epochs.", false)
   ],
   relations: [
     relation("sun", "earth", "gravitationally attracts", "The Sun provides the central acceleration in the two-body model."),

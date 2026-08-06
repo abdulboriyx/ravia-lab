@@ -63,6 +63,8 @@ export const actionPotentialPack: BiologicalProcessPack = {
     "neuron spike",
     "neuronal action potential",
     "membrane voltage spike",
+    "membrane potential rising and falling",
+    "sodium and potassium currents",
     "nerve impulse",
     "depolarization repolarization",
     "depolarization",
@@ -86,13 +88,13 @@ export const actionPotentialPack: BiologicalProcessPack = {
   entities: [
     entity("resting-potential", "Resting potential", ["resting membrane potential"], "process", "The membrane starts polarized near a negative resting voltage."),
     entity("membrane", "Membrane", ["axon membrane", "cell membrane"], "process", "Lipid membrane separating intracellular and extracellular ion compartments."),
-    entity("sodium-channels", "Voltage-gated sodium channels", ["na channels", "sodium channel"], "protein", "Open rapidly during depolarization, allowing inward sodium current."),
-    entity("potassium-channels", "Voltage-gated potassium channels", ["k channels", "potassium channel"], "protein", "Open more slowly and support outward potassium current during repolarization."),
+    entity("sodium-channels", "Voltage-gated sodium channels", ["na channels", "sodium channel", "sodium current"], "protein", "Open rapidly during depolarization, allowing inward sodium current."),
+    entity("potassium-channels", "Voltage-gated potassium channels", ["k channels", "potassium channel", "potassium current"], "protein", "Open more slowly and support outward potassium current during repolarization."),
     entity("depolarization", "Depolarization", ["rising phase"], "process", "Membrane voltage moves upward as sodium conductance increases."),
     entity("repolarization", "Repolarization", ["falling phase"], "process", "Membrane voltage returns downward as potassium conductance dominates."),
     entity("hyperpolarization", "Hyperpolarization", ["undershoot"], "process", "Membrane voltage transiently falls below resting level."),
     entity("refractory-period", "Refractory period", ["refractory"], "process", "Period of reduced excitability after sodium-channel inactivation."),
-    entity("membrane-voltage", "Membrane voltage over time", ["voltage trace", "voltage graph"], "process", "A reviewed Hodgkin-Huxley benchmark voltage trace displayed inside the schematic workspace."),
+    entity("membrane-voltage", "Membrane voltage over time", ["membrane potential", "voltage trace", "voltage graph"], "process", "A reviewed Hodgkin-Huxley benchmark voltage trace displayed inside the schematic workspace."),
     entity("ion-flow", "Ion-flow direction", ["ion flow", "current direction"], "process", "Direction of sodium influx and potassium efflux in the schematic.")
   ],
   relations: [
@@ -249,14 +251,14 @@ export const actionPotentialPack: BiologicalProcessPack = {
     },
     {
       id: "ion-flow",
-      hints: ["ion flow", "ion flow across membrane", "ion flow across the membrane"],
+      hints: ["ion flow", "ion flow across membrane", "ion flow across the membrane", "sodium potassium currents", "sodium and potassium currents"],
       context: "generic neuron axon membrane",
       intent: "show-ion-flow",
       suggestedCommandId: "isolate-sodium-channels"
     },
     {
       id: "voltage-trace",
-      hints: ["membrane voltage over time", "voltage graph", "voltage trace"],
+      hints: ["membrane voltage over time", "membrane potential", "membrane potential rising and falling", "voltage graph", "voltage trace"],
       context: "generic neuron axon membrane",
       intent: "show-voltage-graph",
       suggestedCommandId: "switch-voltage-graph"

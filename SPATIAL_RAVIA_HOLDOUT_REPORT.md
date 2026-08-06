@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T05:54:50.562Z
+Generated: 2026-08-06T05:58:35.711Z
 
 ## Protocol
 
@@ -11,16 +11,16 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Summary
 
 - Total cases: 100
-- Passed: 80
-- Failed: 20
-- Pass rate: 80.0%
+- Passed: 85
+- Failed: 15
+- Pass rate: 85.0%
 
 ## Category Results
 
-- dna-replication: 13/20 passed
+- dna-replication: 14/20 passed
 - transcription: 19/20 passed
-- action-potential: 9/15 passed
-- orbit: 9/12 passed
+- action-potential: 11/15 passed
+- orbit: 11/12 passed
 - ambiguous: 2/5 passed
 - unsupported: 8/8 passed
 - follow-up: 17/17 passed
@@ -28,10 +28,10 @@ The holdout was run once against the current deterministic MVP. Failures below a
 
 ## Failure Categories
 
-- dna-replication: 7 failure(s)
+- dna-replication: 6 failure(s)
 - transcription: 1 failure(s)
-- action-potential: 6 failure(s)
-- orbit: 3 failure(s)
+- action-potential: 4 failure(s)
+- orbit: 1 failure(s)
 - ambiguous: 3 failure(s)
 
 ## Failed Cases
@@ -65,11 +65,6 @@ Prompt: Animate the leading strand being extended continuously.
 Prompt: Give me a process diagram of DNA replication.
 - representation-selection: expected "graph", got null.
 
-### h013 dna-replication
-
-Prompt: Show hellicase unwinding the DNA duplex.
-- abstention: expected true, got false.
-
 ### h014 dna-replication
 
 Prompt: Explain DNA synthesis polarity with 5 prime and 3 prime ends.
@@ -81,24 +76,10 @@ Prompt: Why is just one DNA strand copied into RNA?
 - abstention: expected true, got false.
 - entity-resolution: expected "template-strand", got [].
 
-### h042 action-potential
-
-Prompt: Show membrane potential rising and falling.
-- abstention: expected true, got false.
-- entity-resolution: expected "membrane-voltage", got ["membrane","resting-potential"].
-
 ### h047 action-potential
 
 Prompt: Switch the neuron spike into a voltage graph.
 - representation-selection: expected "voltage-graph", got "graph".
-
-### h050 action-potential
-
-Prompt: Visualize soduim and potasium currents in a spike.
-- abstention: expected true, got false.
-- process-selection: expected "action-potential", got null.
-- entity-resolution: expected "sodium-channels", got [].
-- entity-resolution: expected "potassium-channels", got [].
 
 ### h053 action-potential
 
@@ -117,16 +98,6 @@ Prompt: Remove the cell membrane from an action potential.
 Prompt: Show calcium oscillations instead of a neuron spike.
 - abstention: expected false, got true.
 - abstention: expected "unsupported", got "supported".
-
-### h058 orbit
-
-Prompt: Visualize central gravity in the Earth orbit scene.
-- entity-resolution: expected "gravity-vector", got ["earth","two-body-equation"].
-
-### h059 orbit
-
-Prompt: Show the JPL comparison markers for Earth orbit.
-- entity-resolution: expected "jpl-benchmark", got ["earth"].
 
 ### h066 orbit
 
