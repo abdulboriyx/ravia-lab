@@ -1,0 +1,1774 @@
+{
+  "suite": "spatial-ravia-fresh-holdout",
+  "version": "2026-08-06-post-stabilization",
+  "generatedAt": "2026-08-06T06:35:22.306Z",
+  "rule": "Fresh sealed holdout after stabilization. Run once before tuning. Do not edit cases to improve score.",
+  "totalCases": 60,
+  "passedCases": 43,
+  "failedCases": 17,
+  "passRate": 0.7167,
+  "byCategory": {
+    "dna-replication": {
+      "total": 12,
+      "passed": 7,
+      "failed": 5
+    },
+    "transcription": {
+      "total": 12,
+      "passed": 7,
+      "failed": 5
+    },
+    "action-potential": {
+      "total": 10,
+      "passed": 6,
+      "failed": 4
+    },
+    "orbit": {
+      "total": 10,
+      "passed": 9,
+      "failed": 1
+    },
+    "ambiguous": {
+      "total": 4,
+      "passed": 2,
+      "failed": 2
+    },
+    "unsupported": {
+      "total": 4,
+      "passed": 4,
+      "failed": 0
+    },
+    "follow-up": {
+      "total": 8,
+      "passed": 8,
+      "failed": 0
+    }
+  },
+  "results": [
+    {
+      "id": "fh001",
+      "category": "dna-replication",
+      "prompt": "Show the fork where DNA gets duplicated.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh002",
+      "category": "dna-replication",
+      "prompt": "Walk me through helicase separating the two DNA templates.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": false,
+          "expected": "dna-replication",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "helicase",
+          "actual": [],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "process-selection: expected \"dna-replication\", got \"eukaryotic-transcription\".",
+        "entity-resolution: expected \"helicase\", got []."
+      ]
+    },
+    {
+      "id": "fh003",
+      "category": "dna-replication",
+      "prompt": "Focus on the strand that is made in pieces.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": false,
+          "expected": "dna-replication",
+          "actual": null,
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "lagging-strand",
+          "actual": [],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "okazaki-fragments",
+          "actual": [],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false.",
+        "process-selection: expected \"dna-replication\", got null.",
+        "entity-resolution: expected \"lagging-strand\", got [].",
+        "entity-resolution: expected \"okazaki-fragments\", got []."
+      ]
+    },
+    {
+      "id": "fh004",
+      "category": "dna-replication",
+      "prompt": "Show the continuous daughter strand during DNA copying.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "leading-strand",
+          "actual": [
+            "leading-strand",
+            "lagging-strand"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh005",
+      "category": "dna-replication",
+      "prompt": "Where do RNA primers appear at a replication fork?",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "rna-primers",
+          "actual": [
+            "rna-primers",
+            "primer-removal"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh006",
+      "category": "dna-replication",
+      "prompt": "Explain why ligase is needed after Okazaki fragments form.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "ligase",
+          "actual": [
+            "okazaki-fragments",
+            "ligase"
+          ],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "okazaki-fragments",
+          "actual": [
+            "okazaki-fragments",
+            "ligase"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh007",
+      "category": "dna-replication",
+      "prompt": "Use a stage sequence for DNA duplication.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "timeline",
+          "actual": "timeline",
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh008",
+      "category": "dna-replication",
+      "prompt": "Draw relations among primase, polymerase, primers, and ligase.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": false,
+          "expected": "graph",
+          "actual": null,
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false.",
+        "representation-selection: expected \"graph\", got null."
+      ]
+    },
+    {
+      "id": "fh009",
+      "category": "dna-replication",
+      "prompt": "Make ligase synthesize Okazaki fragments.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh010",
+      "category": "dna-replication",
+      "prompt": "Make the lagging strand continuous.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "Lagging-strand continuous synthesis claim is unsupported.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh011",
+      "category": "dna-replication",
+      "prompt": "Show DNA polymerase reading the template 5 prime to 3 prime.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported",
+          "actual": "supported",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true.",
+        "abstention: expected \"unsupported\", got \"supported\"."
+      ]
+    },
+    {
+      "id": "fh012",
+      "category": "dna-replication",
+      "prompt": "What changes if helicase is stopped?",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": false,
+          "expected": "helicase-stopped",
+          "actual": null,
+          "detail": "Prompt-level intervention resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false.",
+        "follow-up-state: expected \"helicase-stopped\", got null."
+      ]
+    },
+    {
+      "id": "fh013",
+      "category": "transcription",
+      "prompt": "Show a eukaryotic gene being copied into RNA.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh014",
+      "category": "transcription",
+      "prompt": "Visualize RNA polymerase II opening a transcription bubble.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "rna-polymerase-ii",
+          "actual": [
+            "growing-rna-transcript",
+            "rna-polymerase-ii",
+            "transcription-bubble"
+          ],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "transcription-bubble",
+          "actual": [
+            "growing-rna-transcript",
+            "rna-polymerase-ii",
+            "transcription-bubble"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh015",
+      "category": "transcription",
+      "prompt": "Focus on the DNA strand read by Pol II.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "template-strand",
+          "actual": [
+            "rna-polymerase-ii"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "entity-resolution: expected \"template-strand\", got [\"rna-polymerase-ii\"]."
+      ]
+    },
+    {
+      "id": "fh016",
+      "category": "transcription",
+      "prompt": "Show the non-template strand during transcription.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "coding-strand",
+          "actual": [
+            "template-strand",
+            "coding-strand"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh017",
+      "category": "transcription",
+      "prompt": "Display nascent RNA coming out of RNA polymerase.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "growing-rna-transcript",
+          "actual": [
+            "rna-polymerase-ii",
+            "growing-rna-transcript"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh018",
+      "category": "transcription",
+      "prompt": "Show transcription as ordered stages.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": false,
+          "expected": "timeline",
+          "actual": "scene",
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": [
+        "representation-selection: expected \"timeline\", got \"scene\"."
+      ]
+    },
+    {
+      "id": "fh019",
+      "category": "transcription",
+      "prompt": "Map the transcription stage relationships.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": false,
+          "expected": "graph",
+          "actual": null,
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": [
+        "representation-selection: expected \"graph\", got null."
+      ]
+    },
+    {
+      "id": "fh020",
+      "category": "transcription",
+      "prompt": "Use molecular structure for RNA polymerase II.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "molecular-structure",
+          "actual": "molecular-structure",
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh021",
+      "category": "transcription",
+      "prompt": "Have RNA polymerase read the coding strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "RNA polymerase reads the template strand, not the coding strand, in this transcription model.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh022",
+      "category": "transcription",
+      "prompt": "Show RNA produced 3 prime to 5 prime.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported",
+          "actual": "supported",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true.",
+        "abstention: expected \"unsupported\", got \"supported\"."
+      ]
+    },
+    {
+      "id": "fh023",
+      "category": "transcription",
+      "prompt": "Show bacterial Pol II transcription.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported",
+          "actual": "supported",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true.",
+        "abstention: expected \"unsupported\", got \"supported\"."
+      ]
+    },
+    {
+      "id": "fh024",
+      "category": "transcription",
+      "prompt": "Make RNA identical to the template DNA strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "RNA identical to template strand is unsupported.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh025",
+      "category": "action-potential",
+      "prompt": "Show a neuron firing voltage spike.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh026",
+      "category": "action-potential",
+      "prompt": "Focus on sodium channels during the rising phase.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "sodium-channels",
+          "actual": [
+            "sodium-channels",
+            "depolarization"
+          ],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "depolarization",
+          "actual": [
+            "sodium-channels",
+            "depolarization"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh027",
+      "category": "action-potential",
+      "prompt": "Show potassium current during the falling phase.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "potassium-channels",
+          "actual": [
+            "potassium-channels",
+            "repolarization"
+          ],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "repolarization",
+          "actual": [
+            "potassium-channels",
+            "repolarization"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false."
+      ]
+    },
+    {
+      "id": "fh028",
+      "category": "action-potential",
+      "prompt": "Plot the membrane potential trace.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": false,
+          "expected": "voltage-graph",
+          "actual": null,
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": [
+        "representation-selection: expected \"voltage-graph\", got null."
+      ]
+    },
+    {
+      "id": "fh029",
+      "category": "action-potential",
+      "prompt": "Show the refractory interval after the spike.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "refractory-period",
+          "actual": [
+            "refractory-period"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false."
+      ]
+    },
+    {
+      "id": "fh030",
+      "category": "action-potential",
+      "prompt": "Show sodium influx and potassium efflux arrows.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": false,
+          "expected": "ion-flow",
+          "actual": [],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "entity-resolution: expected \"ion-flow\", got []."
+      ]
+    },
+    {
+      "id": "fh031",
+      "category": "action-potential",
+      "prompt": "Compare the spike when sodium channels are unavailable.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "compare-blocked-sodium-channels",
+          "actual": {
+            "commandId": "compare-blocked-sodium-channels",
+            "interventionId": "blocked-sodium-channels",
+            "confidence": 0.75,
+            "matchedPhrase": "compare blocked sodium channels"
+          },
+          "detail": "Prompt-level intervention resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh032",
+      "category": "action-potential",
+      "prompt": "Show sodium channels causing repolarization.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "Sodium channels drive depolarization, not repolarization, in this action-potential model.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh033",
+      "category": "action-potential",
+      "prompt": "Make potassium channels cause the rising phase.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh034",
+      "category": "action-potential",
+      "prompt": "Show a calcium wave instead of an action potential.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "Calcium oscillations are not part of this action-potential slice; the pack supports a neuron spike voltage trace.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh035",
+      "category": "orbit",
+      "prompt": "Open the Sun Earth benchmark orbit.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh036",
+      "category": "orbit",
+      "prompt": "Show Earth and the Sun in the two body scene.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "earth",
+          "actual": [
+            "sun",
+            "earth",
+            "two-body-equation"
+          ],
+          "detail": "Requested entity resolution."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "sun",
+          "actual": [
+            "sun",
+            "earth",
+            "two-body-equation"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh037",
+      "category": "orbit",
+      "prompt": "Highlight the acceleration vector toward the Sun.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": true,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "gravity-vector",
+          "actual": [
+            "gravity-vector",
+            "sun"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected true, got false."
+      ]
+    },
+    {
+      "id": "fh038",
+      "category": "orbit",
+      "prompt": "Show Horizons benchmark points for the orbit.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "jpl-benchmark",
+          "actual": [
+            "jpl-benchmark"
+          ],
+          "detail": "Requested entity resolution."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh039",
+      "category": "orbit",
+      "prompt": "Use a timeline for the five day orbit benchmark.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "timeline",
+          "actual": "timeline",
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh040",
+      "category": "orbit",
+      "prompt": "Show the orbit process graph.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Top process candidate."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "graph",
+          "actual": "graph",
+          "detail": "Requested representation parsing."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh041",
+      "category": "orbit",
+      "prompt": "Simulate Jupiter disturbing the Sun Earth orbit.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "The orbit slice supports only the reviewed Sun-Earth two-body benchmark; Jupiter or other third-body perturbations are outside this model.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh042",
+      "category": "orbit",
+      "prompt": "Design a lunar transfer trajectory.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh043",
+      "category": "orbit",
+      "prompt": "Claim this is a full multi body ephemeris.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "The orbit slice only supports a reviewed Sun-Earth two-body benchmark, not N-body mission simulation or spacecraft navigation.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh044",
+      "category": "orbit",
+      "prompt": "Plan a spacecraft burn using this orbit model.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "The orbit slice only supports a reviewed Sun-Earth two-body benchmark, not N-body mission simulation or spacecraft navigation.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh045",
+      "category": "ambiguous",
+      "prompt": "Show polymerase moving along DNA.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported",
+          "actual": "supported",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true.",
+        "abstention: expected \"unsupported\", got \"supported\"."
+      ]
+    },
+    {
+      "id": "fh046",
+      "category": "ambiguous",
+      "prompt": "Show a template strand.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "Template strand is shared by replication and transcription contexts; please name the process explicitly.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh047",
+      "category": "ambiguous",
+      "prompt": "Show DNA copying.",
+      "passed": false,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": false,
+          "actual": true,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": false,
+          "expected": "unsupported",
+          "actual": "supported",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": [
+        "abstention: expected false, got true.",
+        "abstention: expected \"unsupported\", got \"supported\"."
+      ]
+    },
+    {
+      "id": "fh048",
+      "category": "ambiguous",
+      "prompt": "Show strands being made.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh049",
+      "category": "unsupported",
+      "prompt": "Show CRISPR editing a gene.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh050",
+      "category": "unsupported",
+      "prompt": "Visualize mRNA translation at a ribosome.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh051",
+      "category": "unsupported",
+      "prompt": "Build a protein folding animation.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh052",
+      "category": "unsupported",
+      "prompt": "Fetch new structures from PDB online.",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": false,
+          "actual": false,
+          "detail": "Prompt support classification."
+        },
+        {
+          "dimension": "abstention",
+          "passed": true,
+          "expected": "unsupported",
+          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "detail": "Prompt should abstain instead of inventing unsupported behavior."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh053",
+      "category": "follow-up",
+      "prompt": "Show DNA replication.",
+      "command": "hide leading strand",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "leading-strand",
+          "actual": [
+            "leading-strand"
+          ],
+          "detail": "Follow-up hidden entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh054",
+      "category": "follow-up",
+      "prompt": "Show DNA replication.",
+      "command": "show directionality",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "dna-replication",
+          "actual": "dna-replication",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": true,
+          "actual": true,
+          "detail": "Directionality display."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh055",
+      "category": "follow-up",
+      "prompt": "Show transcription.",
+      "command": "show growing rna",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "growing-rna-transcript",
+          "actual": [
+            "growing-rna-transcript"
+          ],
+          "detail": "Follow-up selected entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh056",
+      "category": "follow-up",
+      "prompt": "Show transcription.",
+      "command": "switch to timeline",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "eukaryotic-transcription",
+          "actual": "eukaryotic-transcription",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "timeline",
+          "actual": "timeline",
+          "detail": "Follow-up representation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh057",
+      "category": "follow-up",
+      "prompt": "Show an action potential.",
+      "command": "slow depolarization",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": 0.5,
+          "actual": 0.5,
+          "detail": "Playback speed."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh058",
+      "category": "follow-up",
+      "prompt": "Show an action potential.",
+      "command": "compare blocked sodium channels",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "action-potential",
+          "actual": "action-potential",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "representation-selection",
+          "passed": true,
+          "expected": "mixed",
+          "actual": "mixed",
+          "detail": "Follow-up representation."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh059",
+      "category": "follow-up",
+      "prompt": "Show Earth orbit.",
+      "command": "compare to jpl",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "entity-resolution",
+          "passed": true,
+          "expected": "jpl-benchmark",
+          "actual": [
+            "jpl-benchmark"
+          ],
+          "detail": "Follow-up selected entity."
+        }
+      ],
+      "failureAnalysis": []
+    },
+    {
+      "id": "fh060",
+      "category": "follow-up",
+      "prompt": "Show Earth orbit.",
+      "command": "remove benchmark markers",
+      "passed": true,
+      "checks": [
+        {
+          "dimension": "process-selection",
+          "passed": true,
+          "expected": "two-body-orbit",
+          "actual": "two-body-orbit",
+          "detail": "Follow-up preserves process."
+        },
+        {
+          "dimension": "follow-up-state",
+          "passed": true,
+          "expected": "jpl-benchmark",
+          "actual": [
+            "jpl-benchmark"
+          ],
+          "detail": "Follow-up hidden entity."
+        }
+      ],
+      "failureAnalysis": []
+    }
+  ]
+}
