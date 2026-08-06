@@ -64,7 +64,9 @@ type CaseResult = {
   failureAnalysis: string[];
 };
 
-const holdout = JSON.parse(readFileSync("SPATIAL_RAVIA_HOLDOUT_SET.json", "utf8")) as HoldoutSet;
+const inputPath = process.env.SPATIAL_RAVIA_HOLDOUT_INPUT ?? "SPATIAL_RAVIA_HOLDOUT_SET.json";
+const reportPrefix = process.env.SPATIAL_RAVIA_HOLDOUT_REPORT_PREFIX ?? "SPATIAL_RAVIA_HOLDOUT_REPORT";
+const holdout = JSON.parse(readFileSync(inputPath, "utf8")) as HoldoutSet;
 
 const results = holdout.cases.map(evaluateHoldoutCase);
 const passedCases = results.filter((result) => result.passed).length;
@@ -81,8 +83,8 @@ const report = {
   results
 };
 
-writeFileSync("SPATIAL_RAVIA_HOLDOUT_REPORT.json", `${JSON.stringify(report, null, 2)}\n`);
-writeFileSync("SPATIAL_RAVIA_HOLDOUT_REPORT.md", renderMarkdown(report));
+writeFileSync(`${reportPrefix}.json`, `${JSON.stringify(report, null, 2)}\n`);
+writeFileSync(`${reportPrefix}.md`, renderMarkdown(report));
 
 console.log(JSON.stringify({
   suite: report.suite,

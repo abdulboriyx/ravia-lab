@@ -11,7 +11,8 @@
     "test:spatial": "node --test app/code/spatial-ravia/*.test.ts",
     "eval:spatial": "node app/code/spatial-ravia/evaluation.ts",
     "smoke:spatial": "node scripts/spatial-ravia-smoke.ts",
-    "holdout:spatial": "node scripts/run-spatial-ravia-holdout.ts"
+    "holdout:spatial": "node scripts/run-spatial-ravia-holdout.ts",
+    "holdout:spatial:regression": "SPATIAL_RAVIA_HOLDOUT_INPUT=SPATIAL_RAVIA_HOLDOUT_REGRESSION_SET.json SPATIAL_RAVIA_HOLDOUT_REPORT_PREFIX=SPATIAL_RAVIA_HOLDOUT_REGRESSION_REPORT node scripts/run-spatial-ravia-holdout.ts"
   },
   "dependencies": {
     "@react-three/fiber": "^9.7.0",

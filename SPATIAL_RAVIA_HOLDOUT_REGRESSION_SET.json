@@ -1,0 +1,30 @@
+{
+  "suite": "spatial-ravia-holdout-regression-subset",
+  "version": "2026-08-06",
+  "rule": "Marked regression subset from the first sealed holdout failures. This is not a fresh sealed holdout and must not be used as an unbiased generalization score.",
+  "cases": [
+    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5-to-3", "parental-strand-3-to-5"] },
+    { "id": "h005", "category": "dna-replication", "prompt": "Why does the lagging side make short DNA pieces?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand", "okazaki-fragments"] },
+    { "id": "h006", "category": "dna-replication", "prompt": "Display primer placement before DNA extension.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["rna-primers"] },
+    { "id": "h008", "category": "dna-replication", "prompt": "Animate the leading strand being extended continuously.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["leading-strand"] },
+    { "id": "h009", "category": "dna-replication", "prompt": "Give me a process diagram of DNA replication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedRepresentation": "graph" },
+    { "id": "h013", "category": "dna-replication", "prompt": "Show hellicase unwinding the DNA duplex.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["helicase"] },
+    { "id": "h014", "category": "dna-replication", "prompt": "Explain DNA synthesis polarity with 5 prime and 3 prime ends.", "expectedSupported": true, "expectedProcessId": "dna-replication" },
+    { "id": "h021", "category": "transcription", "prompt": "Open a model of a gene being transcribed.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
+    { "id": "h033", "category": "transcription", "prompt": "Why is just one DNA strand copied into RNA?", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["template-strand"] },
+    { "id": "h040", "category": "transcription", "prompt": "Show RNA made from DNA, not DNA replication.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
+    { "id": "h042", "category": "action-potential", "prompt": "Show membrane potential rising and falling.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["membrane-voltage"] },
+    { "id": "h047", "category": "action-potential", "prompt": "Switch the neuron spike into a voltage graph.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedRepresentation": "voltage-graph" },
+    { "id": "h050", "category": "action-potential", "prompt": "Visualize soduim and potasium currents in a spike.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["sodium-channels", "potassium-channels"] },
+    { "id": "h053", "category": "action-potential", "prompt": "Make sodium channels open after repolarization only.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h054", "category": "action-potential", "prompt": "Remove the cell membrane from an action potential.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h055", "category": "action-potential", "prompt": "Show calcium oscillations instead of a neuron spike.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h058", "category": "orbit", "prompt": "Visualize central gravity in the Earth orbit scene.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["gravity-vector"] },
+    { "id": "h059", "category": "orbit", "prompt": "Show the JPL comparison markers for Earth orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["jpl-benchmark"] },
+    { "id": "h066", "category": "orbit", "prompt": "Show Jupiter perturbing the Earth orbit.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h068", "category": "ambiguous", "prompt": "Show polymerase copying DNA.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h069", "category": "ambiguous", "prompt": "Show a template strand being used.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h070", "category": "ambiguous", "prompt": "Show DNA being copied into something.", "expectedSupported": false, "expectedAbstention": true },
+    { "id": "h071", "category": "ambiguous", "prompt": "Show polymerase II at a replication fork.", "expectedSupported": false, "expectedAbstention": true }
+  ]
+}
