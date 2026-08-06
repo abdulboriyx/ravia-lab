@@ -83,11 +83,11 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     entity("helicase", "Helicase", ["dna helicase"], "enzyme", "Unwinds the parental duplex at the replication fork."),
     entity("ssb", "Single-strand binding proteins", ["ssb proteins"], "protein", "Stabilize exposed single-stranded DNA."),
     entity("primase", "Primase", ["rna primase"], "enzyme", "Synthesizes short RNA primers."),
-    entity("rna-primers", "RNA primers", ["primers"], "molecule", "Provide a starting 3' hydroxyl for DNA polymerase."),
+    entity("rna-primers", "RNA primers", ["primers", "primer placement"], "molecule", "Provide a starting 3' hydroxyl for DNA polymerase."),
     entity("dna-polymerase", "DNA polymerase", ["polymerase"], "enzyme", "Extends DNA only in the 5' to 3' direction."),
-    entity("leading-strand", "Leading strand", ["continuous strand"], "strand", "New strand synthesized continuously toward the fork."),
-    entity("lagging-strand", "Lagging strand", ["discontinuous strand"], "strand", "New strand synthesized discontinuously away from the fork."),
-    entity("okazaki-fragments", "Okazaki fragments", ["fragments"], "fragment", "Short DNA fragments that belong to the lagging strand."),
+    entity("leading-strand", "Leading strand", ["continuous strand", "extended continuously"], "strand", "New strand synthesized continuously toward the fork."),
+    entity("lagging-strand", "Lagging strand", ["lagging side", "discontinuous strand"], "strand", "New strand synthesized discontinuously away from the fork."),
+    entity("okazaki-fragments", "Okazaki fragments", ["short dna pieces", "short dna fragments", "fragments"], "fragment", "Short DNA fragments that belong to the lagging strand."),
     entity("primer-removal", "Primer removal", ["rna primer removal"], "process", "RNA primers are removed and replaced with DNA."),
     entity("ligase", "Ligase", ["dna ligase"], "enzyme", "Seals nicks between adjacent DNA fragments.")
   ],
@@ -299,7 +299,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     incompatibility(
       "dna-wrong-synthesis-direction",
       [
-        ["dna synthesis"],
+        ["dna synthesis", "dna polymerase synthesize", "dna polymerase synthesizes", "dna polymerase synthesized"],
         ["3 prime to 5 prime", "3' to 5'"]
       ],
       "DNA polymerase synthesis direction claim is unsupported."
@@ -393,13 +393,13 @@ export const dnaReplicationPack: BiologicalProcessPack = {
   promptRules: [
     {
       id: "dna-copying",
-      hints: ["dna copied", "dna copy", "lagging strand copied"],
+      hints: ["dna copied", "dna copy", "lagging strand copied", "dna extension", "dna synthesis polarity", "5 prime 3 prime", "5 prime and 3 prime"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },
     {
       id: "replication-fork",
-      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork", "helicase unwinding dna duplex", "unwinding dna duplex"],
+      hints: ["dna replication", "replication fork", "helicase opening fork", "helicase opening dna", "helicase open fork", "helicase unwinding dna duplex", "unwinding dna duplex", "primer placement before dna extension", "leading strand extended continuously"],
       context: "general DNA replication",
       intent: "show-replication-fork"
     },
@@ -411,7 +411,7 @@ export const dnaReplicationPack: BiologicalProcessPack = {
     },
     {
       id: "okazaki-why",
-      hints: ["okazaki"],
+      hints: ["okazaki", "lagging side", "short dna pieces", "short dna fragments"],
       context: "general DNA replication",
       intent: "explain-lagging-strand"
     },

@@ -1111,7 +1111,7 @@ const representationKeywords: Array<{
   { representation: "mixed", terms: ["mixed", "workspace", "synchronized"] },
   { representation: "molecular-structure", terms: ["structure", "pdb", "molstar", "experimental"] },
   { representation: "timeline", terms: ["timeline", "stages", "steps", "sequence"] },
-  { representation: "graph", terms: ["graph", "network", "relations", "causal"] },
+  { representation: "graph", terms: ["process diagram", "diagram", "graph", "network", "relations", "causal"] },
   { representation: "voltage-graph", terms: ["voltage graph", "voltage trace", "voltage over time"] },
   { representation: "explanation", terms: ["why", "explain", "how", "describe"] },
   { representation: "json", terms: ["json", "developer", "structured model"] }
@@ -1408,6 +1408,16 @@ function resolveGenericFocus(promptTokens: string[]) {
 }
 
 function resolveRepresentation(promptTokens: string[]): RepresentationType | undefined {
+  const normalizedPrompt = promptTokens.join(" ");
+  const exactPhraseMatch = representationKeywords
+    .flatMap((item) => item.terms.map((term) => ({ representation: item.representation, term })))
+    .filter((item) => item.term.includes(" ") && normalizedPrompt.includes(item.term))
+    .sort((a, b) => b.term.length - a.term.length)[0];
+
+  if (exactPhraseMatch) {
+    return exactPhraseMatch.representation;
+  }
+
   const scored = representationKeywords
     .map((item) => ({
       representation: item.representation,
@@ -1482,9 +1492,11 @@ function resolveAmbiguity(
   const second = candidates[1];
 
   if (top && second && top.score - second.score <= AMBIGUITY_DELTA) {
-    ambiguity.push(
-      `The request is ambiguous between ${top.process} and ${second.process}; please name the process explicitly.`
-    );
+    if (!normalizedPrompt.includes("into rna")) {
+      ambiguity.push(
+        `The request is ambiguous between ${top.process} and ${second.process}; please name the process explicitly.`
+      );
+    }
   }
 
   if (ambiguity.length === 0 && confidence > 0 && confidence < PROCESS_CONFIDENCE_THRESHOLD) {
@@ -1499,6 +1511,21 @@ function resolveAmbiguity(
     !hasAny(promptTokens, ["replication", "transcription", "rna", "dna"])
   ) {
     ambiguity.push("Template strand is shared by replication and transcription contexts; please name the process explicitly.");
+  }
+
+  if (
+    ambiguity.length === 0 &&
+    normalizedPrompt.includes("polymerase copy dna") &&
+    !hasAny(promptTokens, ["replication", "transcription", "rna", "fork"])
+  ) {
+    ambiguity.push("Polymerase copying DNA can refer to replication or related polymerase contexts; please name the process explicitly.");
+  }
+
+  if (
+    ambiguity.length === 0 &&
+    normalizedPrompt.includes("dna being copy into something")
+  ) {
+    ambiguity.push("DNA being copied into an unspecified product is ambiguous between DNA replication and RNA transcription; please name the product or process explicitly.");
   }
 
   return ambiguity.filter(Boolean);

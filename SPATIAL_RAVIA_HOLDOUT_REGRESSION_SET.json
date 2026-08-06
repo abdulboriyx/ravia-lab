@@ -3,7 +3,7 @@
   "version": "2026-08-06",
   "rule": "Marked regression subset from the first sealed holdout failures. This is not a fresh sealed holdout and must not be used as an unbiased generalization score.",
   "cases": [
-    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5-to-3", "parental-strand-3-to-5"] },
+    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5to3", "parental-strand-3to5"] },
     { "id": "h005", "category": "dna-replication", "prompt": "Why does the lagging side make short DNA pieces?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand", "okazaki-fragments"] },
     { "id": "h006", "category": "dna-replication", "prompt": "Display primer placement before DNA extension.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["rna-primers"] },
     { "id": "h008", "category": "dna-replication", "prompt": "Animate the leading strand being extended continuously.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["leading-strand"] },

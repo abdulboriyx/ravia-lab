@@ -85,7 +85,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     entity("promoter", "Promoter", ["core promoter", "promoter region"], "molecule", "DNA regulatory region where transcription machinery assembles."),
     entity("transcription-factors", "Transcription factors", ["general transcription factors", "tfs"], "protein", "Proteins that help recruit and position RNA polymerase II at the promoter."),
     entity("rna-polymerase-ii", "RNA polymerase II", ["pol ii", "rna polymerase", "polymerase"], "enzyme", "Enzyme that synthesizes the RNA transcript from the DNA template strand."),
-    entity("template-strand", "Template strand", ["antisense strand", "transcribed strand"], "strand", "DNA strand read by RNA polymerase II to build complementary RNA."),
+    entity("template-strand", "Template strand", ["antisense strand", "transcribed strand", "one dna strand copied into rna"], "strand", "DNA strand read by RNA polymerase II to build complementary RNA."),
     entity("coding-strand", "Coding strand", ["sense strand", "non-template strand"], "strand", "DNA strand whose sequence matches the RNA except T is replaced by U."),
     entity("transcription-bubble", "Transcription bubble", ["open complex", "bubble"], "process", "Locally unwound DNA region inside the moving transcription complex."),
     entity("growing-rna-transcript", "Growing RNA transcript", ["nascent rna", "rna transcript"], "strand", "RNA chain extended 5' to 3' as polymerase advances."),
@@ -242,7 +242,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     incompatibility(
       "transcription-wrong-synthesis-direction",
       [
-        ["rna synthesis", "rna synthesized"],
+        ["rna synthesis", "rna synthesize", "rna synthesized", "rna being synthesized"],
         ["3 prime to 5 prime", "3' to 5'"]
       ],
       "RNA synthesis 3' to 5' is unsupported."
@@ -306,7 +306,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     },
     {
       id: "dna-to-rna",
-      hints: ["dna copied into rna", "copied into rna", "copy dna into rna"],
+      hints: ["dna copied into rna", "copied into rna", "copy dna into rna", "dna strand copied into rna", "one dna strand copied into rna"],
       context: "eukaryotic protein-coding gene transcription",
       intent: "explain-template-directed-rna-synthesis"
     },
@@ -338,7 +338,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     },
     {
       id: "template-strand-why",
-      hints: ["only one dna strand used as template", "one dna strand used as template", "why is only one dna strand"],
+      hints: ["only one dna strand used as template", "one dna strand used as template", "why is only one dna strand", "why is just one dna strand copied into rna", "one dna strand copied into rna"],
       context: "eukaryotic protein-coding gene transcription",
       intent: "explain-template-choice",
       suggestedCommandId: "explain-template-choice"

@@ -281,6 +281,55 @@ test("holdout unsupported boundary regressions abstain", () => {
   assert.match(templateStrandAmbiguous.reason, /replication and transcription/i);
 });
 
+test("remaining holdout regression prompts resolve as expected", () => {
+  const laggingPieces = parsePromptWithPacks("Why does the lagging side make short DNA pieces?", processPacks);
+  const primerPlacement = parsePromptWithPacks("Display primer placement before DNA extension.", processPacks);
+  const leadingContinuous = parsePromptWithPacks("Animate the leading strand being extended continuously.", processPacks);
+  const synthesisPolarity = parsePromptWithPacks("Explain DNA synthesis polarity with 5 prime and 3 prime ends.", processPacks);
+  const oneStrandToRna = parsePromptWithPacks("Why is just one DNA strand copied into RNA?", processPacks);
+  const voltageGraph = parsePromptWithPacks("Switch the neuron spike into a voltage graph.", processPacks);
+  const polymeraseCopyingDna = parsePromptWithPacks("Show polymerase copying DNA.", processPacks);
+  const copiedIntoSomething = parsePromptWithPacks("Show DNA being copied into something.", processPacks);
+  const wrongDnaDirection = parsePromptWithPacks("Make DNA polymerase synthesize 3 prime to 5 prime.", processPacks);
+  const wrongRnaDirection = parsePromptWithPacks("Explain RNA being synthesized 3 prime to 5 prime.", processPacks);
+
+  assert.equal(laggingPieces.supported, true);
+  assert.equal(primerPlacement.supported, true);
+  assert.equal(leadingContinuous.supported, true);
+  assert.equal(synthesisPolarity.supported, true);
+  assert.equal(oneStrandToRna.supported, true);
+  assert.equal(voltageGraph.supported, true);
+
+  if (laggingPieces.supported) {
+    assert.equal(laggingPieces.model.process, dnaReplicationPack.process);
+    assert.ok(laggingPieces.resolution.requestedEntities.includes("lagging-strand"));
+    assert.ok(laggingPieces.resolution.requestedEntities.includes("okazaki-fragments"));
+  }
+
+  if (primerPlacement.supported) {
+    assert.ok(primerPlacement.resolution.requestedEntities.includes("rna-primers"));
+  }
+
+  if (leadingContinuous.supported) {
+    assert.ok(leadingContinuous.resolution.requestedEntities.includes("leading-strand"));
+  }
+
+  if (oneStrandToRna.supported) {
+    assert.equal(oneStrandToRna.model.process, eukaryoticTranscriptionPack.process);
+    assert.ok(oneStrandToRna.resolution.requestedEntities.includes("template-strand"));
+  }
+
+  assert.equal(voltageGraph.resolution.requestedRepresentation, "voltage-graph");
+  assert.equal(polymeraseCopyingDna.supported, false);
+  assert.match(polymeraseCopyingDna.reason, /please name the process/i);
+  assert.equal(copiedIntoSomething.supported, false);
+  assert.match(copiedIntoSomething.reason, /unspecified product|ambiguous/i);
+  assert.equal(wrongDnaDirection.supported, false);
+  assert.match(wrongDnaDirection.reason, /unsupported/i);
+  assert.equal(wrongRnaDirection.supported, false);
+  assert.match(wrongRnaDirection.reason, /unsupported/i);
+});
+
 test("intent resolver returns structured fields for a transcription prompt", () => {
   const resolution = resolvePromptIntent(
     "Show RNA polymerase moving along DNA as a timeline",

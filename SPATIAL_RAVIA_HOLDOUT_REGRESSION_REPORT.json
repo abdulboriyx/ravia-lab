@@ -1,27 +1,27 @@
 {
   "suite": "spatial-ravia-holdout-regression-subset",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T06:05:31.813Z",
+  "generatedAt": "2026-08-06T06:27:48.255Z",
   "rule": "Marked regression subset from the first sealed holdout failures. This is not a fresh sealed holdout and must not be used as an unbiased generalization score.",
   "totalCases": 23,
-  "passedCases": 13,
-  "failedCases": 10,
-  "passRate": 0.5652,
+  "passedCases": 23,
+  "failedCases": 0,
+  "passRate": 1,
   "byCategory": {
     "dna-replication": {
       "total": 7,
-      "passed": 1,
-      "failed": 6
+      "passed": 7,
+      "failed": 0
     },
     "transcription": {
       "total": 3,
-      "passed": 2,
-      "failed": 1
+      "passed": 3,
+      "failed": 0
     },
     "action-potential": {
       "total": 6,
-      "passed": 5,
-      "failed": 1
+      "passed": 6,
+      "failed": 0
     },
     "orbit": {
       "total": 3,
@@ -30,8 +30,8 @@
     },
     "ambiguous": {
       "total": 4,
-      "passed": 2,
-      "failed": 2
+      "passed": 4,
+      "failed": 0
     }
   },
   "results": [
@@ -39,7 +39,7 @@
       "id": "h002",
       "category": "dna-replication",
       "prompt": "Show me how the parental strands separate during DNA duplication.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -57,8 +57,8 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
-          "expected": "parental-strand-5-to-3",
+          "passed": true,
+          "expected": "parental-strand-5to3",
           "actual": [
             "parental-strand-5to3",
             "parental-strand-3to5"
@@ -67,8 +67,8 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
-          "expected": "parental-strand-3-to-5",
+          "passed": true,
+          "expected": "parental-strand-3to5",
           "actual": [
             "parental-strand-5to3",
             "parental-strand-3to5"
@@ -76,64 +76,62 @@
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "entity-resolution: expected \"parental-strand-5-to-3\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"].",
-        "entity-resolution: expected \"parental-strand-3-to-5\", got [\"parental-strand-5to3\",\"parental-strand-3to5\"]."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h005",
       "category": "dna-replication",
       "prompt": "Why does the lagging side make short DNA pieces?",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "process-selection",
-          "passed": false,
+          "passed": true,
           "expected": "dna-replication",
-          "actual": null,
+          "actual": "dna-replication",
           "detail": "Top process candidate."
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "lagging-strand",
-          "actual": [],
+          "actual": [
+            "okazaki-fragments",
+            "lagging-strand"
+          ],
           "detail": "Requested entity resolution."
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "okazaki-fragments",
-          "actual": [],
+          "actual": [
+            "okazaki-fragments",
+            "lagging-strand"
+          ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false.",
-        "process-selection: expected \"dna-replication\", got null.",
-        "entity-resolution: expected \"lagging-strand\", got [].",
-        "entity-resolution: expected \"okazaki-fragments\", got []."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h006",
       "category": "dna-replication",
       "prompt": "Display primer placement before DNA extension.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -153,21 +151,19 @@
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h008",
       "category": "dna-replication",
       "prompt": "Animate the leading strand being extended continuously.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -187,15 +183,13 @@
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h009",
       "category": "dna-replication",
       "prompt": "Give me a process diagram of DNA replication.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -213,15 +207,13 @@
         },
         {
           "dimension": "representation-selection",
-          "passed": false,
+          "passed": true,
           "expected": "graph",
-          "actual": null,
+          "actual": "graph",
           "detail": "Requested representation parsing."
         }
       ],
-      "failureAnalysis": [
-        "representation-selection: expected \"graph\", got null."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h013",
@@ -259,13 +251,13 @@
       "id": "h014",
       "category": "dna-replication",
       "prompt": "Explain DNA synthesis polarity with 5 prime and 3 prime ends.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -276,9 +268,7 @@
           "detail": "Top process candidate."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h021",
@@ -307,13 +297,13 @@
       "id": "h033",
       "category": "transcription",
       "prompt": "Why is just one DNA strand copied into RNA?",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": true,
-          "actual": false,
+          "actual": true,
           "detail": "Prompt support classification."
         },
         {
@@ -325,16 +315,15 @@
         },
         {
           "dimension": "entity-resolution",
-          "passed": false,
+          "passed": true,
           "expected": "template-strand",
-          "actual": [],
+          "actual": [
+            "template-strand"
+          ],
           "detail": "Requested entity resolution."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected true, got false.",
-        "entity-resolution: expected \"template-strand\", got []."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h040",
@@ -397,7 +386,7 @@
       "id": "h047",
       "category": "action-potential",
       "prompt": "Switch the neuron spike into a voltage graph.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
@@ -415,15 +404,13 @@
         },
         {
           "dimension": "representation-selection",
-          "passed": false,
+          "passed": true,
           "expected": "voltage-graph",
-          "actual": "graph",
+          "actual": "voltage-graph",
           "detail": "Requested representation parsing."
         }
       ],
-      "failureAnalysis": [
-        "representation-selection: expected \"voltage-graph\", got \"graph\"."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h050",
@@ -631,27 +618,24 @@
       "id": "h068",
       "category": "ambiguous",
       "prompt": "Show polymerase copying DNA.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": false,
-          "actual": true,
+          "actual": false,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": "unsupported",
-          "actual": "supported",
+          "actual": "Polymerase copying DNA can refer to replication or related polymerase contexts; please name the process explicitly.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected false, got true.",
-        "abstention: expected \"unsupported\", got \"supported\"."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h069",
@@ -680,27 +664,24 @@
       "id": "h070",
       "category": "ambiguous",
       "prompt": "Show DNA being copied into something.",
-      "passed": false,
+      "passed": true,
       "checks": [
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": false,
-          "actual": true,
+          "actual": false,
           "detail": "Prompt support classification."
         },
         {
           "dimension": "abstention",
-          "passed": false,
+          "passed": true,
           "expected": "unsupported",
-          "actual": "supported",
+          "actual": "DNA being copied into an unspecified product is ambiguous between DNA replication and RNA transcription; please name the product or process explicitly.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
-      "failureAnalysis": [
-        "abstention: expected false, got true.",
-        "abstention: expected \"unsupported\", got \"supported\"."
-      ]
+      "failureAnalysis": []
     },
     {
       "id": "h071",

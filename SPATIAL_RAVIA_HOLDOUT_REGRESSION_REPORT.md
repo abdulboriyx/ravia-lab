@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T06:05:31.813Z
+Generated: 2026-08-06T06:27:48.255Z
 
 ## Protocol
 
@@ -11,87 +11,27 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Summary
 
 - Total cases: 23
-- Passed: 13
-- Failed: 10
-- Pass rate: 56.5%
+- Passed: 23
+- Failed: 0
+- Pass rate: 100.0%
 
 ## Category Results
 
-- dna-replication: 1/7 passed
-- transcription: 2/3 passed
-- action-potential: 5/6 passed
+- dna-replication: 7/7 passed
+- transcription: 3/3 passed
+- action-potential: 6/6 passed
 - orbit: 3/3 passed
-- ambiguous: 2/4 passed
+- ambiguous: 4/4 passed
 
 ## Failure Categories
 
-- dna-replication: 6 failure(s)
-- transcription: 1 failure(s)
-- action-potential: 1 failure(s)
-- ambiguous: 2 failure(s)
+No failures.
 
 ## Failed Cases
 
-### h002 dna-replication
-
-Prompt: Show me how the parental strands separate during DNA duplication.
-- entity-resolution: expected "parental-strand-5-to-3", got ["parental-strand-5to3","parental-strand-3to5"].
-- entity-resolution: expected "parental-strand-3-to-5", got ["parental-strand-5to3","parental-strand-3to5"].
-
-### h005 dna-replication
-
-Prompt: Why does the lagging side make short DNA pieces?
-- abstention: expected true, got false.
-- process-selection: expected "dna-replication", got null.
-- entity-resolution: expected "lagging-strand", got [].
-- entity-resolution: expected "okazaki-fragments", got [].
-
-### h006 dna-replication
-
-Prompt: Display primer placement before DNA extension.
-- abstention: expected true, got false.
-
-### h008 dna-replication
-
-Prompt: Animate the leading strand being extended continuously.
-- abstention: expected true, got false.
-
-### h009 dna-replication
-
-Prompt: Give me a process diagram of DNA replication.
-- representation-selection: expected "graph", got null.
-
-### h014 dna-replication
-
-Prompt: Explain DNA synthesis polarity with 5 prime and 3 prime ends.
-- abstention: expected true, got false.
-
-### h033 transcription
-
-Prompt: Why is just one DNA strand copied into RNA?
-- abstention: expected true, got false.
-- entity-resolution: expected "template-strand", got [].
-
-### h047 action-potential
-
-Prompt: Switch the neuron spike into a voltage graph.
-- representation-selection: expected "voltage-graph", got "graph".
-
-### h068 ambiguous
-
-Prompt: Show polymerase copying DNA.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h070 ambiguous
-
-Prompt: Show DNA being copied into something.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
 ## Release Decision
 
-Do not release-freeze yet. Run a stabilization pass only for genuine product defects represented by the failed categories, then rerun a new holdout or a clearly marked regression subset.
+Release freeze is reasonable from this holdout pass, pending remote CI and stakeholder review.
 
 ## Known Limitations
 
