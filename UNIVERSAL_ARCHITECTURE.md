@@ -75,6 +75,14 @@ The action-potential view is the existing curated schematic mixed representation
 
 The adapter is intentionally not a retrieval system or general web agent. Its authority is limited to selecting registered IDs and bounded model deltas that are revalidated before use.
 
+## CI And Static Deployment
+
+`.github/workflows/deploy.yml` is the GitHub Pages release gate. The `validate-build` job installs root dependencies, installs Chromium for Playwright, runs lint, typecheck, Spatial RAVIA tests, the 108-case scientific evaluation at a `1.0` pass-rate threshold, ChapterBio tests/build, the Next static export build, and a static Playwright smoke test before uploading `out/`.
+
+`scripts/spatial-ravia-smoke.ts` serves the built `out/` directory locally and checks `/code/spatial-ravia/` at desktop and mobile widths for the DNA SVG and orbit R3F paths. It fails on browser console errors, undersized primary scenes, missing expected titles, unreachable controls, or horizontal page overflow.
+
+The `deploy` job depends on `validate-build`, so GitHub Pages deployment can only run after every validation and smoke gate passes.
+
 ## Evidence Model
 
 The DNA fork view is classified as a schematic explanatory model with normalized time. The B-DNA Mol* view is classified as a literal molecular-structure view only because it declares approved deposited PDB `1ZF5` coordinates. The contract rejects molecular-structure views without approved deposited mappings and rejects schematic process views mislabeled as literal.

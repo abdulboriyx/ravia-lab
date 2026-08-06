@@ -33,6 +33,9 @@
 - Added the server-side OpenAI structured-output intent adapter for registered-ID-only process selection.
 - Added a strict JSON-schema request builder, server API-key availability gate, injected transport support for offline tests, response parsing, and deterministic fallback on provider errors or invalid output.
 - Added tests proving the visible client workspace does not import the server provider and that invented IDs still fail local validation.
+- Added GitHub Actions validation and deployment gates for lint, typecheck, Spatial tests, 108-case evaluation threshold, ChapterBio tests/build, Next static build, static Playwright smoke checks, artifact upload, and GitHub Pages deployment.
+- Added a static Playwright smoke script that serves `out/` and verifies DNA SVG and orbit R3F route behavior at desktop and mobile widths.
+- Added an explicit `SPATIAL_RAVIA_EVAL_THRESHOLD` check to `npm run eval:spatial`, defaulting to a full `1.0` pass rate.
 
 ## Current Gate Status
 
@@ -44,10 +47,11 @@
 - `chapterbio npm test`: pass, 3/3.
 - `chapterbio npm run build`: pass.
 - Chromium desktop/mobile verification: pass on `http://localhost:3001/code/spatial-ravia/`.
+- Static Playwright smoke: pass against `out/`.
 
 ## Next Recommended Task
 
-Add CI and deployment gates per `UNIVERSAL_RAVIA_SPEC.md` milestone 12. Completion requires lint, typecheck, Spatial tests, evaluation threshold, Playwright smoke checks, static build, ChapterBio validation, and GitHub Pages/static deployment to run only when every gate passes.
+Create the sealed 100-prompt holdout set outside the implementation loop, then run it against the finished MVP without tuning the fixed public evaluation suite. This remains a product/research validation task rather than another implementation milestone from `UNIVERSAL_RAVIA_SPEC.md`.
 
 ## External Validation Still Needed
 

@@ -86,6 +86,14 @@ Reason: the spec allows an LLM only as a bounded intent selector. The model may 
 
 Constraint: this milestone does not add retrieval, a general web agent, client-side API keys, persistence, deployment changes, or a visible UI dependency on the provider. Tests inject a fake transport and do not require a live OpenAI call.
 
+## CI And Deployment Gate
+
+Decision: make GitHub Pages deployment depend on a single validation/build job that runs every current product gate before uploading `out/`.
+
+Reason: the spec requires a clean checkout to deploy only when typecheck, tests, evaluation, Playwright smoke, static build, and ChapterBio validation pass. Keeping deployment dependent on the validation job prevents a partial static build from being published.
+
+Constraint: deployment remains GitHub Pages static export. No account system, database, server hosting migration, or runtime LLM route is introduced in this milestone.
+
 ## Next Decision Needed
 
-The next architecture decision is how to wire CI and static deployment gates without weakening the current static export, ChapterBio route, or visual verification requirements.
+The next product decision is whether the current MVP should be release-frozen for external review or whether the sealed holdout prompt set should be created before any public launch claim.

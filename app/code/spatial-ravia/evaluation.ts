@@ -1089,6 +1089,7 @@ function clonePack(pack: BiologicalProcessPack): BiologicalProcessPack {
 
 if (process.argv[1]?.endsWith("evaluation.ts")) {
   const report = writeSpatialRaviaEvaluationReport();
+  const threshold = Number(process.env.SPATIAL_RAVIA_EVAL_THRESHOLD ?? "1");
   console.log(JSON.stringify({
     suite: report.suite,
     totalCases: report.totalCases,
@@ -1096,4 +1097,9 @@ if (process.argv[1]?.endsWith("evaluation.ts")) {
     failedCases: report.failedCases,
     passRate: report.passRate
   }, null, 2));
+
+  if (report.passRate < threshold) {
+    console.error(`Spatial RAVIA evaluation pass rate ${report.passRate} is below threshold ${threshold}.`);
+    process.exitCode = 1;
+  }
 }

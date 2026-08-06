@@ -9,7 +9,8 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test:spatial": "node --test app/code/spatial-ravia/*.test.ts",
-    "eval:spatial": "node app/code/spatial-ravia/evaluation.ts"
+    "eval:spatial": "node app/code/spatial-ravia/evaluation.ts",
+    "smoke:spatial": "node scripts/spatial-ravia-smoke.ts"
   },
   "dependencies": {
     "@react-three/fiber": "^9.7.0",
@@ -32,6 +33,7 @@
     "@types/three": "^0.185.4",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
+    "playwright": "^1.62.1",
     "sass": "^1.102.0",
     "tailwindcss": "^4.3.3",
     "typescript": "^5.9.3"
