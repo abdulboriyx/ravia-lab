@@ -1182,7 +1182,7 @@ export function resolvePromptIntent(
     ? resolveInterventionIntent(normalized, tokens, topPack)
     : undefined;
   const confidence = processScores[0]?.score ?? 0;
-  const ambiguity = resolveAmbiguity(processScores, confidence);
+  const ambiguity = resolveAmbiguity(processScores, confidence, normalized, tokens);
 
   return {
     processCandidates: processScores,
@@ -1473,7 +1473,9 @@ function resolveInterventionIntent(
 
 function resolveAmbiguity(
   candidates: Candidate[],
-  confidence: number
+  confidence: number,
+  normalizedPrompt: string,
+  promptTokens: string[]
 ) {
   const ambiguity: string[] = [];
   const top = candidates[0];
@@ -1487,6 +1489,16 @@ function resolveAmbiguity(
 
   if (ambiguity.length === 0 && confidence > 0 && confidence < PROCESS_CONFIDENCE_THRESHOLD) {
     ambiguity.push("The request matched known biology terms but not strongly enough to select a process.");
+  }
+
+  if (
+    ambiguity.length === 0 &&
+    normalizedPrompt.includes("template strand") &&
+    !normalizedPrompt.includes("coding strand") &&
+    !normalizedPrompt.includes("non template strand") &&
+    !hasAny(promptTokens, ["replication", "transcription", "rna", "dna"])
+  ) {
+    ambiguity.push("Template strand is shared by replication and transcription contexts; please name the process explicitly.");
   }
 
   return ambiguity.filter(Boolean);

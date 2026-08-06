@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T05:58:35.711Z
+Generated: 2026-08-06T06:02:31.812Z
 
 ## Protocol
 
@@ -11,17 +11,17 @@ The holdout was run once against the current deterministic MVP. Failures below a
 ## Summary
 
 - Total cases: 100
-- Passed: 85
-- Failed: 15
-- Pass rate: 85.0%
+- Passed: 90
+- Failed: 10
+- Pass rate: 90.0%
 
 ## Category Results
 
 - dna-replication: 14/20 passed
 - transcription: 19/20 passed
-- action-potential: 11/15 passed
-- orbit: 11/12 passed
-- ambiguous: 2/5 passed
+- action-potential: 14/15 passed
+- orbit: 12/12 passed
+- ambiguous: 3/5 passed
 - unsupported: 8/8 passed
 - follow-up: 17/17 passed
 - scope-boundary: 3/3 passed
@@ -30,9 +30,8 @@ The holdout was run once against the current deterministic MVP. Failures below a
 
 - dna-replication: 6 failure(s)
 - transcription: 1 failure(s)
-- action-potential: 4 failure(s)
-- orbit: 1 failure(s)
-- ambiguous: 3 failure(s)
+- action-potential: 1 failure(s)
+- ambiguous: 2 failure(s)
 
 ## Failed Cases
 
@@ -81,39 +80,9 @@ Prompt: Why is just one DNA strand copied into RNA?
 Prompt: Switch the neuron spike into a voltage graph.
 - representation-selection: expected "voltage-graph", got "graph".
 
-### h053 action-potential
-
-Prompt: Make sodium channels open after repolarization only.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h054 action-potential
-
-Prompt: Remove the cell membrane from an action potential.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h055 action-potential
-
-Prompt: Show calcium oscillations instead of a neuron spike.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h066 orbit
-
-Prompt: Show Jupiter perturbing the Earth orbit.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
 ### h068 ambiguous
 
 Prompt: Show polymerase copying DNA.
-- abstention: expected false, got true.
-- abstention: expected "unsupported", got "supported".
-
-### h069 ambiguous
-
-Prompt: Show a template strand being used.
 - abstention: expected false, got true.
 - abstention: expected "unsupported", got "supported".
 

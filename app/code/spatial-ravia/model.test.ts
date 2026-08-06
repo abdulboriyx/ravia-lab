@@ -243,6 +243,44 @@ test("holdout entity alias regressions resolve registered components", () => {
   assert.equal(supportedMisspelledHelicase.supported, true);
 });
 
+test("holdout unsupported boundary regressions abstain", () => {
+  const jupiterPerturbation = parsePromptWithPacks(
+    "Show Jupiter perturbing the Earth orbit.",
+    processPacks
+  );
+  const sodiumAfterRepolarization = parsePromptWithPacks(
+    "Make sodium channels open after repolarization only.",
+    processPacks
+  );
+  const removeMembrane = parsePromptWithPacks(
+    "Remove the cell membrane from an action potential.",
+    processPacks
+  );
+  const calciumOscillation = parsePromptWithPacks(
+    "Show calcium oscillations instead of a neuron spike.",
+    processPacks
+  );
+  const templateStrandAmbiguous = parsePromptWithPacks(
+    "Show a template strand being used.",
+    processPacks
+  );
+
+  assert.equal(jupiterPerturbation.supported, false);
+  assert.match(jupiterPerturbation.reason, /two-body benchmark|third-body/i);
+
+  assert.equal(sodiumAfterRepolarization.supported, false);
+  assert.match(sodiumAfterRepolarization.reason, /depolarization|repolarization/i);
+
+  assert.equal(removeMembrane.supported, false);
+  assert.match(removeMembrane.reason, /membrane/i);
+
+  assert.equal(calciumOscillation.supported, false);
+  assert.match(calciumOscillation.reason, /calcium oscillations/i);
+
+  assert.equal(templateStrandAmbiguous.supported, false);
+  assert.match(templateStrandAmbiguous.reason, /replication and transcription/i);
+});
+
 test("intent resolver returns structured fields for a transcription prompt", () => {
   const resolution = resolvePromptIntent(
     "Show RNA polymerase moving along DNA as a timeline",

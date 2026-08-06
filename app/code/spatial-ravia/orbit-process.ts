@@ -330,6 +330,14 @@ export const orbitPack: BiologicalProcessPack = {
       match: [
         { any: ["n-body", "n body", "three body", "multi body", "mission", "spacecraft", "trajectory design", "lunar perturbation"] }
       ]
+    },
+    {
+      id: "no-third-body-perturbation",
+      reason: "The orbit slice supports only the reviewed Sun-Earth two-body benchmark; Jupiter or other third-body perturbations are outside this model.",
+      match: [
+        { any: ["jupiter", "third body", "perturbing", "perturbation"] },
+        { any: ["earth orbit", "two-body orbit", "orbit"] }
+      ]
     }
   ],
   promptRules: [

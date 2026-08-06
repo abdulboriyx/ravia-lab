@@ -212,6 +212,32 @@ export const actionPotentialPack: BiologicalProcessPack = {
       "Sodium channels do not synthesize RNA in this model."
     ),
     incompatibility(
+      "ap-sodium-opens-after-repolarization",
+      [
+        ["sodium channel"],
+        ["open", "opens", "opening"],
+        ["after repolarization", "repolarization only"]
+      ],
+      "Sodium channels open during depolarization and then inactivate; opening only after repolarization is unsupported in this action-potential model."
+    ),
+    incompatibility(
+      "ap-remove-membrane",
+      [
+        ["remove"],
+        ["membrane"],
+        ["action potential"]
+      ],
+      "Removing the membrane conflicts with the action-potential model because membrane voltage and ion channels require a membrane."
+    ),
+    incompatibility(
+      "ap-calcium-oscillation",
+      [
+        ["calcium oscillation", "calcium oscillations", "calcium"],
+        ["instead of", "not", "rather than", "neuron spike", "action potential"]
+      ],
+      "Calcium oscillations are not part of this action-potential slice; the pack supports a neuron spike voltage trace."
+    ),
+    incompatibility(
       "ap-okazaki-fragments",
       [
         ["action potential"],
