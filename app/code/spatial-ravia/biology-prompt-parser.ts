@@ -4,74 +4,7 @@ import {
 } from "./biology-scene-spec.ts";
 import { normalizeBiologyPrompt } from "./biology-normalizer.ts";
 import { detectBiologyContext } from "./biology-context.ts";
-
-function dnaReplicationSynthesisScene(
-  focus:
-    | "polymerase"
-    | "leading-strand"
-    | "lagging-strand"
-    | "okazaki-fragment"
-    | "ligase"
-    | "directionality"
-): BiologySceneSpec {
-  const entities: BiologySceneSpec["entities"] = [
-    { id: "dna", name: "DNA replication fork", type: "dna" },
-    { id: "polymerase", name: "DNA polymerase", type: "protein" },
-    { id: "daughter-leading-strand", name: "growing leading daughter strand", type: "dna" },
-    { id: "daughter-lagging-strand", name: "growing lagging daughter strand", type: "dna" },
-    { id: "rna-primer-leading", name: "leading-strand RNA primer", type: "rna" },
-    { id: "rna-primer-lagging", name: "lagging-strand RNA primers", type: "rna" },
-    { id: "okazaki-fragment", name: "Okazaki fragment", type: "dna" },
-  ];
-
-  if (focus === "ligase") {
-    entities.push({ id: "ligase", name: "DNA ligase", type: "protein" });
-  }
-
-  if (focus === "directionality") {
-    entities.push(
-      { id: "template-5-prime", name: "5' template end", type: "other" },
-      { id: "template-3-prime", name: "3' template end", type: "other" }
-    );
-  }
-
-  return BiologySceneSpecSchema.parse({
-    intent: "mechanism",
-    scale: "complex",
-    entities,
-    relations: [
-      { subject: "polymerase", relation: "binds_to", object: "dna" },
-      { subject: "daughter-leading-strand", relation: "extends_from", object: "rna-primer-leading" },
-      { subject: "daughter-lagging-strand", relation: "extends_from", object: "rna-primer-lagging" },
-      { subject: "rna-primer-leading", relation: "placed_on", object: "leading-template" },
-      { subject: "rna-primer-lagging", relation: "placed_on", object: "lagging-template" },
-      { subject: "okazaki-fragment", relation: "part_of", object: "daughter-lagging-strand" },
-      ...(focus === "leading-strand"
-        ? [{ subject: "daughter-leading-strand", relation: "continuous_with", object: "fork" }]
-        : []),
-      ...(focus === "lagging-strand" || focus === "okazaki-fragment" || focus === "ligase"
-        ? [{ subject: "okazaki-fragment", relation: "discontinuous_on", object: "lagging-template" }]
-        : []),
-      ...(focus === "ligase"
-        ? [{ subject: "ligase", relation: "joins", object: "okazaki-fragment" }]
-        : []),
-      ...(focus === "directionality"
-        ? [
-            { subject: "daughter-leading-strand", relation: "direction", object: "5-to-3" },
-            { subject: "daughter-lagging-strand", relation: "direction", object: "5-to-3" },
-          ]
-        : []),
-    ],
-    actions: [
-      { actor: "polymerase", action: "synthesizes", target: "daughter-leading-strand" },
-      { actor: "polymerase", action: "synthesizes", target: "daughter-lagging-strand" },
-      ...(focus === "ligase"
-        ? [{ actor: "ligase", action: "ligates", target: "okazaki-fragment" }]
-        : []),
-    ],
-    renderMode: "mechanistic-3d",
-  });
-}
+import { dnaReplicationSynthesisScene } from "./biology-scene-builders.ts";
 
 export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
   const text = normalizeBiologyPrompt(prompt);
@@ -272,6 +205,8 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
   // DNA polymerase synthesis
   if (
     text.includes("polymerase") &&
+    !text.includes("rna") &&
+    !text.includes("transcription") &&
     (
       text.includes("synthes") ||
       text.includes("making") ||
@@ -311,6 +246,9 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
     text.includes("3-prime") ||
     text.includes("direction")
   ) {
+    if (text.includes("rna") || text.includes("transcription")) {
+      throw new Error("Unsupported biology prompt");
+    }
     return dnaReplicationSynthesisScene("directionality");
   }
 
@@ -348,6 +286,9 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
 
   // Helicase by itself
   if (text.includes("helicase")) {
+    if (text.includes("rna") || text.includes("making")) {
+      throw new Error("Unsupported biology prompt");
+    }
     return BiologySceneSpecSchema.parse({
       intent: "structure",
       scale: "molecular",
@@ -402,6 +343,14 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
 
   // Polymerase by itself
   if (text.includes("polymerase")) {
+    if (
+      text.includes("rna") ||
+      text.includes("transcription") ||
+      text.includes("gene") ||
+      text.includes("biology")
+    ) {
+      throw new Error("Unsupported biology prompt");
+    }
     return BiologySceneSpecSchema.parse({
       intent: "structure",
       scale: "molecular",
@@ -437,7 +386,21 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
   }
 
   // Generic DNA structure
-  if (text.includes("dna")) {
+  if (
+    text.includes("dna") &&
+    (
+      text.includes("structure") ||
+      text.includes("helix") ||
+      text.includes("b-dna") ||
+      text.includes("molecular") ||
+      text.includes("model") ||
+      /^show dna$/.test(text) ||
+      /^visualize dna$/.test(text)
+    ) &&
+    !text.includes("replication") &&
+    !text.includes("repair") &&
+    !text.includes("protein")
+  ) {
     return BiologySceneSpecSchema.parse({
       intent: "structure",
       scale: "molecular",

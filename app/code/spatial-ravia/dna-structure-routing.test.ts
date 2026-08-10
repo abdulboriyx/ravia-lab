@@ -50,5 +50,5 @@ test("Spatial Ravia route renders the mechanistic scene", async () => {
   );
 
   assert.match(source, /MechanisticScene/);
-  assert.match(source, /parseBiologyPrompt/);
+  assert.match(source, /parseBiologyScenePrompt/);
 });

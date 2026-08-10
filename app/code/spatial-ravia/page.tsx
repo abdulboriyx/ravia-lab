@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import MechanisticScene from "./MechanisticScene";
 import { DnaMolecularView } from "./DnaMolecularView";
-import { parseBiologyPrompt } from "./biology-prompt-parser";
+import { parseBiologyScenePrompt } from "./biology-parser";
 import { chooseBiologyRenderer } from "./biology-renderer-router";
 
 export default function Page() {
@@ -15,13 +15,17 @@ export default function Page() {
 
   let scene = null;
   let renderer = null;
+  let parseSource = null;
   let error: string | null = null;
 
-  try {
-    scene = parseBiologyPrompt(submittedPrompt);
+  const result = parseBiologyScenePrompt(submittedPrompt);
+
+  if (result.status === "supported") {
+    scene = result.scene;
+    parseSource = result.source;
     renderer = chooseBiologyRenderer(scene);
-  } catch {
-    error = "I cannot interpret this biology prompt yet.";
+  } else {
+    error = result.reason;
   }
 
   return (
@@ -31,7 +35,7 @@ export default function Page() {
           event.preventDefault();
           setSubmittedPrompt(prompt);
         }}
-        style={{
+          style={{
             display: "flex",
             gap: "12px",
             margin: "28px auto 18px",
@@ -39,6 +43,8 @@ export default function Page() {
             padding: "16px",
             background: "#111",
             border: "1px solid #444",
+            position: "relative",
+            zIndex: 2,
           }}
       >
         <input
@@ -74,6 +80,7 @@ export default function Page() {
     width: "100%",
     minHeight: "700px",
     position: "relative",
+    zIndex: 1,
     overflow: "hidden",
   }}
 >
@@ -88,6 +95,34 @@ export default function Page() {
   {!error && renderer === "cell-context" && (
     <p style={{ textAlign: "center" }}>
       Cell-context rendering is not implemented yet.
+    </p>
+  )}
+
+  {error && (
+    <p
+      role="status"
+      style={{
+        margin: "80px auto",
+        maxWidth: "720px",
+        color: "#f8d7a8",
+        textAlign: "center",
+      }}
+    >
+      {error}
+    </p>
+  )}
+
+  {!error && parseSource && (
+    <p
+      aria-label="Parser source"
+      style={{
+        margin: "0 auto 24px",
+        color: "#999",
+        fontSize: "12px",
+        textAlign: "center",
+      }}
+    >
+      Parsed by {parseSource}
     </p>
   )}
 </section>
