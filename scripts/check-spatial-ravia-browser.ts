@@ -62,14 +62,90 @@ async function main() {
   await page.goto("http://localhost:3000/code/spatial-ravia", {
     waitUntil: "domcontentloaded",
   });
-  await page.getByPlaceholder("Describe what you want to see...").waitFor();
+  const promptInput = page.getByRole("textbox", {
+    name: "Spatial Ravia prompt",
+  });
+
+  await promptInput.waitFor();
+  await page.waitForTimeout(1000);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_UI_EXPANDED.png",
+    caret: "initial",
+  });
+
+  const promptInputs = await promptInput.count();
+  const dockBox = await page.locator(".spatialPromptDock").boundingBox();
+  const oldPromptCount = await page
+    .getByPlaceholder("Describe what you want to see...")
+    .count();
+
+  if (promptInputs !== 1) {
+    errors.push(`expected one prompt input, found ${promptInputs}`);
+  }
+
+  if (oldPromptCount !== 0) {
+    errors.push(`old prompt input is still present: ${oldPromptCount}`);
+  }
+
+  if (!dockBox || dockBox.y < 720) {
+    errors.push(`prompt dock is not bottom positioned: ${JSON.stringify(dockBox)}`);
+  }
+
+  await promptInput.fill("show helicase opening DNA");
+  await page.getByLabel("Collapse Spatial Ravia prompt").click();
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_UI_COLLAPSED.png",
+    caret: "initial",
+  });
+  await page.getByLabel("Open Spatial Ravia prompt").click();
+  await page.waitForTimeout(100);
+  const preservedPrompt = await promptInput.inputValue();
+  const activeLabel = await page.evaluate(() =>
+    document.activeElement?.getAttribute("aria-label")
+  );
+
+  if (preservedPrompt !== "show helicase opening DNA") {
+    errors.push(`prompt text was not preserved: ${preservedPrompt}`);
+  }
+
+  if (activeLabel !== "Spatial Ravia prompt") {
+    errors.push(`prompt was not focused after expansion: ${activeLabel}`);
+  }
+
+  await page.keyboard.press("Escape");
+  await page.getByLabel("Open Spatial Ravia prompt").waitFor();
+  await page.keyboard.press("/");
+  await promptInput.waitFor();
+  const slashFocusLabel = await page.evaluate(() =>
+    document.activeElement?.getAttribute("aria-label")
+  );
+
+  if (slashFocusLabel !== "Spatial Ravia prompt") {
+    errors.push(`slash shortcut did not focus prompt: ${slashFocusLabel}`);
+  }
+
+  await promptInput.fill("show helicase opening DNA");
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(800);
+  await page.screenshot({ path: "SPATIAL_RAVIA_UI_THREE.png", caret: "initial" });
 
   const results = [];
 
   for (const [prompt, expected] of prompts) {
-    await page.getByPlaceholder("Describe what you want to see...").fill(prompt);
+    await promptInput.fill(prompt);
     await page.getByRole("button", { name: "Generate" }).click();
     await page.waitForTimeout(expected === "molstar" ? 2500 : 800);
+
+    if (prompt === "show DNA") {
+      await page
+        .locator(".molstarLoadState")
+        .waitFor({ state: "hidden", timeout: 8000 })
+        .catch(() => undefined);
+      await page.screenshot({
+        path: "SPATIAL_RAVIA_UI_MOLSTAR.png",
+        caret: "initial",
+      });
+    }
 
     const statusCount = await page.getByRole("status").count();
     const sourceText = await page
@@ -107,6 +183,15 @@ async function main() {
       unsupportedText: statusCount > 0 ? bodyText : "",
     });
   }
+
+  await page.setViewportSize({ width: 390, height: 760 });
+  await promptInput.fill("show a ribosome elongating a protein");
+  await page.getByRole("button", { name: "Generate" }).click();
+  await page.waitForTimeout(800);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_UI_MOBILE.png",
+    caret: "initial",
+  });
 
   await browser.close();
 

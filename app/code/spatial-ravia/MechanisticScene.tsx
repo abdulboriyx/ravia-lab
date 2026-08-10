@@ -1069,7 +1069,7 @@ export default function MechanisticScene({ scene }: Props) {
       a.target === "rna-primer"
       );
   return (
-    <div style={{ width: "100%", height: "700px" }}>
+    <div style={{ width: "100%", height: "100%", minHeight: "100%" }}>
       <Canvas camera={{ position: [4.5, 2.5, 7], fov: 45 }}>
         <ambientLight intensity={1.5} />
         <directionalLight position={[5, 5, 5]} intensity={2} />
