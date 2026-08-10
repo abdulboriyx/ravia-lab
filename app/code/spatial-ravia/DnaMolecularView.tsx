@@ -109,9 +109,14 @@ const sourceDetails: Record<
     ]
   }
 };
+type DnaMolecularViewProps = {
+  embedded?: boolean;
+};
 
-export function DnaMolecularView() {
-  const [sceneStarted, setSceneStarted] = useState(false);
+export function DnaMolecularView({
+  embedded = false,
+}: DnaMolecularViewProps) {
+  const [sceneStarted, setSceneStarted] = useState(embedded);
   const [prompt, setPrompt] = useState("");
   const [lastCommand, setLastCommand] = useState<SpatialSceneCommand | null>(null);
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
@@ -238,22 +243,26 @@ export function DnaMolecularView() {
         </section>
       ) : null}
 
-      <form
-        className={sceneStarted ? "structurePromptBar isDocked" : "structurePromptBar"}
-        aria-label="Spatial Ravia prompt"
-        onSubmit={handlePromptSubmit}
-      >
-        <input
-          type="text"
-          value={prompt}
-          autoFocus
-          placeholder="Show B-DNA"
-          onChange={(event) => setPrompt(event.currentTarget.value)}
-        />
-        <button type="submit">{sceneStarted ? "Update" : "Show"}</button>
-      </form>
+     {!embedded ? (
+  <form
+    className={sceneStarted ? "structurePromptBar isDocked" : "structurePromptBar"}
+    aria-label="Spatial Ravia prompt"
+    onSubmit={handlePromptSubmit}
+  >
+    <input
+      type="text"
+      value={prompt}
+      autoFocus
+      placeholder="Show B-DNA"
+      onChange={(event) => setPrompt(event.currentTarget.value)}
+    />
+    <button type="submit">
+      {sceneStarted ? "Update" : "Show"}
+    </button>
+  </form>
+) : null}
 
-      {unsupportedReason ? (
+      {!embedded && unsupportedReason ? (
         <section className="unsupportedNotice structureUnsupportedNotice" aria-label="Unsupported prompt">
           <p>{unsupportedReason}</p>
           <span>Try “show DNA structure”, “show B-DNA”, or “visualize DNA double helix”.</span>

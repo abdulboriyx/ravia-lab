@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import { parseSpatialScenePrompt } from "./dna-structure-routing.ts";
+import { readFile } from "node:fs/promises";
 
 const supportedPrompts = [
   "show DNA",
@@ -42,9 +43,12 @@ test("schematic biological process prompts are unsupported", () => {
   }
 });
 
-test("Spatial Ravia route renders the DNA molecular view directly", () => {
-  const source = readFileSync(new URL("./page.tsx", import.meta.url), "utf8");
+test("Spatial Ravia route renders the mechanistic scene", async () => {
+  const source = await readFile(
+    new URL("./page.tsx", import.meta.url),
+    "utf8"
+  );
 
-  assert.match(source, /DnaMolecularView/);
-  assert.doesNotMatch(source, /SpatialRaviaPrototype/);
+  assert.match(source, /MechanisticScene/);
+  assert.match(source, /parseBiologyPrompt/);
 });

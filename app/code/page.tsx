@@ -1,6 +1,7 @@
 import { ArchiveList } from "@/components/ArchiveList";
 import { codeEntries } from "@/data/archive";
 
+
 export default function CodePage() {
   return (
     <main className="subPage">
