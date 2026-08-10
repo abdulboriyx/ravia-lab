@@ -80,7 +80,7 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
     "general eukaryotic transcription"
   ],
   defaultContext: "eukaryotic protein-coding gene transcription",
-  unsupportedMessage: "This prototype currently supports DNA replication and eukaryotic transcription.",
+  unsupportedMessage: "This prototype currently supports eukaryotic transcription.",
   entities: [
     entity("promoter", "Promoter", ["core promoter", "promoter region"], "molecule", "DNA regulatory region where transcription machinery assembles."),
     entity("transcription-factors", "Transcription factors", ["general transcription factors", "tfs"], "protein", "Proteins that help recruit and position RNA polymerase II at the promoter."),
@@ -229,6 +229,22 @@ export const eukaryoticTranscriptionPack: BiologicalProcessPack = {
         ["rna polymerase ii", "polymerase ii", "pol ii"]
       ],
       "RNA polymerase II is eukaryotic in this model; bacterial RNA polymerase II transcription is unsupported."
+    ),
+    incompatibility(
+      "transcription-dna-and-rna-polymerase",
+      [
+        ["dna polymerase", "dna and rna polymerase"],
+        ["rna polymerase", "rna polymerase ii", "pol ii"]
+      ],
+      "Requests combining DNA polymerase with RNA polymerase are unsupported in the transcription workspace."
+    ),
+    incompatibility(
+      "transcription-replication-fork-context",
+      [
+        ["replication fork", "fork"],
+        ["rna polymerase ii", "polymerase ii", "pol ii", "transcription"]
+      ],
+      "Replication-fork requests are unsupported in Spatial RAVIA."
     ),
     incompatibility(
       "transcription-coding-strand-read",

@@ -7,7 +7,6 @@ import {
   validateStructuredIntent
 } from "./llm-interpretation.ts";
 import { compileBiologicalProcessPack } from "./model.ts";
-import { dnaReplicationPack } from "./dna-process.ts";
 import { processPacks } from "./process-registry.ts";
 import { eukaryoticTranscriptionPack } from "./transcription-process.ts";
 
@@ -72,11 +71,11 @@ test("provider validation rejects unsupported entities and direct renderer manip
   const validation = validateStructuredIntent(
     {
       processSelection: {
-        processId: dnaReplicationPack.id,
+        processId: eukaryoticTranscriptionPack.id,
         confidence: 0.9
       },
       requestedFocus: ["visualization"],
-      requestedEntities: ["helicase", "ribosome"],
+      requestedEntities: ["rna-polymerase-ii", "ribosome"],
       requestedRepresentation: "scene",
       rendererInstructions: { draw: "custom canvas command" },
       confidence: 0.9,
@@ -97,11 +96,11 @@ test("provider validation rejects arbitrary equations or executable code fields"
   const validation = validateStructuredIntent(
     {
       processSelection: {
-        processId: dnaReplicationPack.id,
+        processId: eukaryoticTranscriptionPack.id,
         confidence: 0.9
       },
       requestedFocus: ["visualization"],
-      requestedEntities: ["helicase"],
+      requestedEntities: ["rna-polymerase-ii"],
       confidence: 0.9,
       ambiguity: [],
       generatedCode: "console.log('run')",
@@ -122,12 +121,12 @@ test("provider validation rejects nested unknown fields and low-confidence proce
   const validation = validateStructuredIntent(
     {
       processSelection: {
-        processId: dnaReplicationPack.id,
+        processId: eukaryoticTranscriptionPack.id,
         confidence: 0.2,
         executableCode: "return unsafe"
       },
       requestedFocus: ["visualization"],
-      requestedEntities: ["helicase"],
+      requestedEntities: ["rna-polymerase-ii"],
       confidence: 0.2,
       ambiguity: []
     },
@@ -146,11 +145,11 @@ test("provider validation rejects arbitrary equations inside model deltas", () =
   const validation = validateStructuredIntent(
     {
       processSelection: {
-        processId: dnaReplicationPack.id,
+        processId: eukaryoticTranscriptionPack.id,
         confidence: 0.9
       },
       requestedFocus: ["visualization"],
-      requestedEntities: ["helicase"],
+      requestedEntities: ["rna-polymerase-ii"],
       confidence: 0.9,
       ambiguity: [],
       scientificModelDelta: {
@@ -184,25 +183,25 @@ test("provider retries only for format repair and accepts repaired structured da
     }),
     repairFormat: async () => ({
       processSelection: {
-        processId: dnaReplicationPack.id,
+        processId: eukaryoticTranscriptionPack.id,
         confidence: 0.86
       },
-      biologicalContext: dnaReplicationPack.defaultContext,
-      requestedFocus: ["show-replication-fork"],
-      requestedEntities: ["helicase"],
+      biologicalContext: eukaryoticTranscriptionPack.defaultContext,
+      requestedFocus: ["show-polymerase-motion"],
+      requestedEntities: ["rna-polymerase-ii"],
       requestedRepresentation: "scene",
       confidence: 0.86,
       ambiguity: []
     })
   };
 
-  const result = await interpretBiologicalIntent("Show a replication fork.", processPacks, provider);
+  const result = await interpretBiologicalIntent("Show transcription.", processPacks, provider);
 
   assert.equal(result.source, "llm");
   assert.equal(result.logs.length, 2);
   assert.equal(result.logs[0].fallbackPath, "format-repair");
   assert.equal(result.logs[1].validationResult.valid, true);
-  assert.equal(result.resolution.processCandidates[0]?.packId, dnaReplicationPack.id);
+  assert.equal(result.resolution.processCandidates[0]?.packId, eukaryoticTranscriptionPack.id);
 });
 
 test("provider falls back deterministically when unavailable or throwing", async () => {
@@ -229,7 +228,7 @@ test("provider falls back deterministically when unavailable or throwing", async
 });
 
 test("validated ScientificModel delta can update only supported model fields", () => {
-  const compiled = compileBiologicalProcessPack(dnaReplicationPack);
+  const compiled = compileBiologicalProcessPack(eukaryoticTranscriptionPack);
   assert.equal(compiled.ok, true);
 
   if (!compiled.ok) {
@@ -238,11 +237,11 @@ test("validated ScientificModel delta can update only supported model fields", (
 
   const updated = applyScientificModelDelta(compiled.model, {
     representationChoice: "graph",
-    parameterUpdates: [{ id: "fork-rate", value: 0.5 }]
+    parameterUpdates: [{ id: "polymerase-position", value: 0.5 }]
   });
 
   assert.equal(updated.representationChoice, "graph");
-  assert.equal(updated.parameters.find((parameter) => parameter.id === "fork-rate")?.value, 0.5);
+  assert.equal(updated.parameters.find((parameter) => parameter.id === "polymerase-position")?.value, 0.5);
   assert.equal(updated.renderPlan, compiled.model.renderPlan);
 });
 

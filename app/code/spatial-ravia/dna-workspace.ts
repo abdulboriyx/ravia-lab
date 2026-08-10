@@ -8,7 +8,7 @@ export type SpatialWorkspaceResult = {
 };
 
 export const spatialWorkspacePacks = processPacks.filter((pack) =>
-  ["dna-replication", "action-potential", "two-body-orbit"].includes(pack.id)
+  ["eukaryotic-transcription", "action-potential", "two-body-orbit"].includes(pack.id)
 );
 
 export function startSpatialWorkspaceFromPrompt(
@@ -25,6 +25,3 @@ export function startSpatialWorkspaceFromPrompt(
     unsupportedReason: next.activeIntervention === "unsupported prompt" ? lastSystemMessage : null
   };
 }
-
-export const dnaWorkspacePacks = spatialWorkspacePacks.filter((pack) => pack.id === "dna-replication");
-export const startDnaWorkspaceFromPrompt = startSpatialWorkspaceFromPrompt;

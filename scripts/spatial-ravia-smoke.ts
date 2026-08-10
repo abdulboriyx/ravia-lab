@@ -10,10 +10,10 @@ const baseUrl = `http://${host}:${port}`;
 
 const routes = [
   {
-    name: "DNA replication",
-    prompt: "Show DNA replication",
+    name: "Transcription",
+    prompt: "Show transcription.",
     selector: ".dnaForkCanvas svg",
-    expectedTitle: "DNA replication"
+    expectedTitle: "Eukaryotic transcription"
   },
   {
     name: "Two-body orbit",

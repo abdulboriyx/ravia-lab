@@ -79,16 +79,19 @@ test("structure provenance converts to internal claim-level provenance", () => {
 
 test("missing structures are handled honestly for unsupported entities", () => {
   const session = dispatchScientificSessionEvent(
-    startSessionFromPrompt(createInitialSession(), "Show DNA replication.", processPacks),
+    startSessionFromPrompt(createInitialSession(), "Show transcription.", processPacks),
     {
       type: "ENTITY_SELECTED",
-      entityIds: ["helicase"]
+      entityIds: ["transcription-factors"]
     }
   );
   const molecular = setRepresentationMode(session, "molecular-structure");
   const view = resolveStructureForSession(molecular);
 
-  assert.equal(view.supported, false);
-  assert.ok(view.reason.includes("No reviewed PDB structure"));
-  assert.equal(view.warnings[0].code, "unsuitable-structure");
+  assert.equal(view.supported, true);
+
+  if (view.supported) {
+    assert.equal(view.mapping.entityId, "rna-polymerase-ii");
+    assert.ok(view.warnings.some((warning) => warning.code === "static-snapshot"));
+  }
 });

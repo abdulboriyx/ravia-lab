@@ -1,24 +1,24 @@
 {
   "suite": "spatial-ravia-scientific-evaluation",
-  "generatedAt": "2026-08-06T07:31:21.770Z",
-  "totalCases": 108,
-  "passedCases": 108,
+  "generatedAt": "2026-08-10T08:46:09.933Z",
+  "totalCases": 71,
+  "passedCases": 71,
   "failedCases": 0,
   "passRate": 1,
   "byCategory": {
     "paraphrase": {
-      "total": 24,
-      "passed": 24,
+      "total": 16,
+      "passed": 16,
       "failed": 0
     },
     "misspelling": {
-      "total": 12,
-      "passed": 12,
+      "total": 8,
+      "passed": 8,
       "failed": 0
     },
     "mixed-organism-context": {
-      "total": 4,
-      "passed": 4,
+      "total": 2,
+      "passed": 2,
       "failed": 0
     },
     "unsupported-process": {
@@ -32,43 +32,38 @@
       "failed": 0
     },
     "incorrect-assumption": {
-      "total": 9,
-      "passed": 9,
-      "failed": 0
-    },
-    "impossible-intervention": {
-      "total": 6,
-      "passed": 6,
-      "failed": 0
-    },
-    "conflicting-instructions": {
       "total": 5,
       "passed": 5,
       "failed": 0
     },
+    "impossible-intervention": {
+      "total": 5,
+      "passed": 5,
+      "failed": 0
+    },
+    "conflicting-instructions": {
+      "total": 3,
+      "passed": 3,
+      "failed": 0
+    },
     "misleading-3d-request": {
-      "total": 6,
-      "passed": 6,
+      "total": 4,
+      "passed": 4,
       "failed": 0
     },
     "entity-alias-collision": {
-      "total": 6,
-      "passed": 6,
+      "total": 4,
+      "passed": 4,
       "failed": 0
     },
     "adversarial-hallucination": {
-      "total": 6,
-      "passed": 6,
+      "total": 5,
+      "passed": 5,
       "failed": 0
     },
     "follow-up-state": {
-      "total": 10,
-      "passed": 10,
-      "failed": 0
-    },
-    "missing-parameter": {
-      "total": 2,
-      "passed": 2,
+      "total": 1,
+      "passed": 1,
       "failed": 0
     },
     "model-construction": {
@@ -79,43 +74,43 @@
   },
   "byDimension": {
     "abstention": {
-      "total": 133,
-      "passed": 133,
+      "total": 101,
+      "passed": 101,
       "failed": 0
     },
     "process-selection": {
-      "total": 61,
-      "passed": 61,
+      "total": 34,
+      "passed": 34,
       "failed": 0
     },
     "model-construction": {
-      "total": 57,
-      "passed": 57,
+      "total": 36,
+      "passed": 36,
       "failed": 0
     },
     "scientific-invariants": {
-      "total": 57,
-      "passed": 57,
+      "total": 36,
+      "passed": 36,
       "failed": 0
     },
     "context-extraction": {
-      "total": 3,
-      "passed": 3,
+      "total": 1,
+      "passed": 1,
       "failed": 0
     },
     "visualization-honesty": {
-      "total": 12,
-      "passed": 12,
+      "total": 8,
+      "passed": 8,
       "failed": 0
     },
     "entity-resolution": {
-      "total": 16,
-      "passed": 16,
+      "total": 5,
+      "passed": 5,
       "failed": 0
     },
     "follow-up-state": {
-      "total": 24,
-      "passed": 24,
+      "total": 1,
+      "passed": 1,
       "failed": 0
     },
     "representation-selection": {
@@ -125,302 +120,6 @@
     }
   },
   "results": [
-    {
-      "id": "para-dna-replication-001",
-      "category": "paraphrase",
-      "prompt": "How is DNA copied?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-002",
-      "category": "paraphrase",
-      "prompt": "Show DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-003",
-      "category": "paraphrase",
-      "prompt": "Visualize a replication fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-004",
-      "category": "paraphrase",
-      "prompt": "Why are Okazaki fragments necessary?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-005",
-      "category": "paraphrase",
-      "prompt": "Explain how the lagging strand is copied.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-006",
-      "category": "paraphrase",
-      "prompt": "Show helicase opening the fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-007",
-      "category": "paraphrase",
-      "prompt": "Display primers during DNA copying.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "para-dna-replication-008",
-      "category": "paraphrase",
-      "prompt": "How does ligase finish replication?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
     {
       "id": "para-eukaryotic-transcription-001",
       "category": "paraphrase",
@@ -1014,154 +713,6 @@
       "failureAnalysis": []
     },
     {
-      "id": "miss-dna-replication-001",
-      "category": "misspelling",
-      "prompt": "Show DNA replicaton.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "miss-dna-replication-002",
-      "category": "misspelling",
-      "prompt": "Visualize a repication fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "miss-dna-replication-003",
-      "category": "misspelling",
-      "prompt": "Why are Okazaki fragmnts necessary?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "miss-dna-replication-004",
-      "category": "misspelling",
-      "prompt": "Show helcase opening DNA.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt should resolve to dna-replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
       "id": "miss-eukaryotic-transcription-001",
       "category": "misspelling",
       "prompt": "Show transcripton.",
@@ -1458,94 +1009,6 @@
       "failureAnalysis": []
     },
     {
-      "id": "ctx-001",
-      "category": "mixed-organism-context",
-      "prompt": "Show bacterial DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Bacterial context should be extracted without changing process identity."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "context-extraction",
-          "passed": true,
-          "expected": "bacterial",
-          "actual": "bacterial DNA replication",
-          "detail": "Biological context should be extracted from prompt and pack metadata."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "ctx-002",
-      "category": "mixed-organism-context",
-      "prompt": "Show eukaryotic DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Eukaryotic replication context should remain DNA replication."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "context-extraction",
-          "passed": true,
-          "expected": "eukaryotic",
-          "actual": "eukaryotic DNA replication",
-          "detail": "Biological context should be extracted from prompt and pack metadata."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
       "id": "ctx-003",
       "category": "mixed-organism-context",
       "prompt": "Show eukaryotic protein-coding transcription.",
@@ -1629,7 +1092,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1652,7 +1115,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1675,7 +1138,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1698,7 +1161,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1721,7 +1184,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1744,7 +1207,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1767,7 +1230,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1790,7 +1253,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1836,7 +1299,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1859,7 +1322,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request is ambiguous between DNA replication and Eukaryotic transcription; please name the process explicitly.",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1882,7 +1345,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1905,7 +1368,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1928,7 +1391,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1951,7 +1414,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1974,7 +1437,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "The request mixes DNA replication and RNA polymerase processes and needs clarification.",
+          "actual": "Requests combining DNA polymerase with RNA polymerase are unsupported in the transcription workspace.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -1982,75 +1445,6 @@
     },
     {
       "id": "wrong-001",
-      "category": "incorrect-assumption",
-      "prompt": "Show DNA synthesis occurring 3 prime to 5 prime.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "DNA polymerase synthesis direction claim is unsupported.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "wrong-002",
-      "category": "incorrect-assumption",
-      "prompt": "Explain ligase synthesizing Okazaki fragments.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "wrong-003",
-      "category": "incorrect-assumption",
-      "prompt": "Show leading strand synthesis as discontinuous.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompts asserting known misconceptions should not be accepted as valid interpretations."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "Leading-strand discontinuous synthesis claim is unsupported.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "wrong-004",
       "category": "incorrect-assumption",
       "prompt": "Show RNA polymerase reading the coding strand.",
       "passed": true,
@@ -2073,7 +1467,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "wrong-005",
+      "id": "wrong-002",
       "category": "incorrect-assumption",
       "prompt": "Explain RNA being synthesized 3 prime to 5 prime.",
       "passed": true,
@@ -2096,7 +1490,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "wrong-006",
+      "id": "wrong-003",
       "category": "incorrect-assumption",
       "prompt": "Show sodium channels driving repolarization.",
       "passed": true,
@@ -2119,7 +1513,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "wrong-007",
+      "id": "wrong-004",
       "category": "incorrect-assumption",
       "prompt": "Explain potassium channels causing depolarization.",
       "passed": true,
@@ -2158,7 +1552,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "DNA ligase seals nicks; it does not synthesize fragments or copy strands in this model.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -2190,29 +1584,6 @@
     {
       "id": "impossible-003",
       "category": "impossible-intervention",
-      "prompt": "Block RNA polymerase II in DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Impossible cross-process interventions should abstain."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "impossible-004",
-      "category": "impossible-intervention",
       "prompt": "Make sodium channels synthesize RNA.",
       "passed": true,
       "checks": [
@@ -2234,7 +1605,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "impossible-005",
+      "id": "impossible-004",
       "category": "impossible-intervention",
       "prompt": "Delete Okazaki fragments from transcription.",
       "passed": true,
@@ -2257,7 +1628,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "impossible-006",
+      "id": "impossible-005",
       "category": "impossible-intervention",
       "prompt": "Use potassium channels to seal DNA nicks.",
       "passed": true,
@@ -2273,7 +1644,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "Potassium channels are action-potential components, not DNA ligases.",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -2281,29 +1652,6 @@
     },
     {
       "id": "conflict-001",
-      "category": "conflicting-instructions",
-      "prompt": "Show DNA replication but use RNA polymerase II as the main enzyme.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Conflicting instructions should trigger clarification or abstention."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "conflict-002",
       "category": "conflicting-instructions",
       "prompt": "Show transcription and make it copy both DNA strands into DNA.",
       "passed": true,
@@ -2326,7 +1674,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "conflict-003",
+      "id": "conflict-002",
       "category": "conflicting-instructions",
       "prompt": "Show an action potential as Okazaki fragments.",
       "passed": true,
@@ -2349,30 +1697,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "conflict-004",
-      "category": "conflicting-instructions",
-      "prompt": "Explain DNA replication without DNA polymerase but keep synthesis normal.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Conflicting instructions should trigger clarification or abstention."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "DNA replication cannot keep normal synthesis while removing DNA polymerase in this model.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "conflict-005",
+      "id": "conflict-003",
       "category": "conflicting-instructions",
       "prompt": "Show transcription but remove the template strand and still transcribe RNA.",
       "passed": true,
@@ -2396,61 +1721,6 @@
     },
     {
       "id": "mis3d-001",
-      "category": "misleading-3d-request",
-      "prompt": "Show DNA replication as exact molecular 3D.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "no fake molecular 3D and schematic warning",
-          "actual": {
-            "primary": "schematic-3d",
-            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-            "unsupportedWarnings": []
-          },
-          "detail": "Misleading 3D requests must not override missing structural data."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "schematic",
-          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-          "detail": "Scientific honesty warning should explain the limitation."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "mis3d-002",
       "category": "misleading-3d-request",
       "prompt": "Render transcription with exact atomic geometry.",
       "passed": true,
@@ -2507,7 +1777,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "mis3d-003",
+      "id": "mis3d-002",
       "category": "misleading-3d-request",
       "prompt": "Show action potential as molecular 3D channels with real coordinates.",
       "passed": true,
@@ -2564,7 +1834,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "mis3d-004",
+      "id": "mis3d-003",
       "category": "misleading-3d-request",
       "prompt": "Make a realistic 3D membrane voltage spike.",
       "passed": true,
@@ -2621,62 +1891,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "mis3d-005",
-      "category": "misleading-3d-request",
-      "prompt": "Visualize Okazaki fragments in literal molecular 3D.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Misleading 3D requests may resolve a process but must be marked schematic."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "no fake molecular 3D and schematic warning",
-          "actual": {
-            "primary": "schematic-3d",
-            "warning": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-            "unsupportedWarnings": []
-          },
-          "detail": "Misleading 3D requests must not override missing structural data."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "schematic",
-          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-          "detail": "Scientific honesty warning should explain the limitation."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "mis3d-006",
+      "id": "mis3d-004",
       "category": "misleading-3d-request",
       "prompt": "Show RNA polymerase II without structural data as literal 3D.",
       "passed": true,
@@ -2735,52 +1950,6 @@
     {
       "id": "entity-001",
       "category": "entity-alias-collision",
-      "prompt": "Show polymerase in DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Entity aliases should resolve within the selected process context."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "dna-polymerase",
-          "actual": [
-            "dna-polymerase"
-          ],
-          "detail": "Requested entity should resolve to a generic entity ID."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "entity-002",
-      "category": "entity-alias-collision",
       "prompt": "Show polymerase in transcription.",
       "passed": true,
       "checks": [
@@ -2825,7 +1994,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "entity-003",
+      "id": "entity-002",
       "category": "entity-alias-collision",
       "prompt": "Show template strand during transcription.",
       "passed": true,
@@ -2872,53 +2041,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "entity-004",
-      "category": "entity-alias-collision",
-      "prompt": "Show template strand during replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Entity aliases should resolve within the selected process context."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate should match the expected biological process."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "parental-strand-3to5",
-          "actual": [
-            "parental-strand-3to5"
-          ],
-          "detail": "Requested entity should resolve to a generic entity ID."
-        },
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Supported prompts must construct a valid ScientificModel."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Selected process pack must preserve biological invariants."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "entity-005",
+      "id": "entity-003",
       "category": "entity-alias-collision",
       "prompt": "Show sodium channel during an action potential.",
       "passed": true,
@@ -2964,7 +2087,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "entity-006",
+      "id": "entity-004",
       "category": "entity-alias-collision",
       "prompt": "Show membrane voltage trace.",
       "passed": true,
@@ -3027,7 +2150,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -3050,7 +2173,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -3073,7 +2196,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "Ligase does not transcribe RNA in this model.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -3096,7 +2219,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported or clarification",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "The resolver should abstain rather than silently select a process."
         }
       ],
@@ -3126,445 +2249,7 @@
       "failureAnalysis": []
     },
     {
-      "id": "adv-006",
-      "category": "adversarial-hallucination",
-      "prompt": "Invent a PDB structure for the exact replication fork scene.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Adversarial hallucination attempts must not create unsupported science."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported or clarification",
-          "actual": "The system must not invent PDB structures for uncurated exact molecular scenes.",
-          "detail": "The resolver should abstain rather than silently select a process."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-001",
-      "category": "follow-up-state",
-      "prompt": "Show DNA replication.",
-      "command": "hide helicase",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "helicase",
-          "actual": [
-            "helicase"
-          ],
-          "detail": "Follow-up should hide the expected generic entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "hide-helicase",
-          "actual": "hide-helicase",
-          "detail": "Active intervention should reflect the command rule."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-002",
-      "category": "follow-up-state",
-      "prompt": "Show DNA replication.",
-      "command": "isolate lagging strand",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": [
-            "lagging-strand",
-            "okazaki-fragments"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "okazaki-fragments",
-          "actual": [
-            "lagging-strand",
-            "okazaki-fragments"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": "lagging-strand",
-          "detail": "Follow-up should isolate the expected generic entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-003",
-      "category": "follow-up-state",
-      "prompt": "Show DNA replication.",
-      "command": "remove ligase",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "ligase",
-          "actual": [
-            "ligase"
-          ],
-          "detail": "Follow-up should hide the expected generic entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "remove-ligase",
-          "actual": "remove-ligase",
-          "detail": "Active intervention should reflect the command rule."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
       "id": "fu-004",
-      "category": "follow-up-state",
-      "prompt": "Show transcription.",
-      "command": "isolate template strand",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "eukaryotic-transcription",
-          "actual": "eukaryotic-transcription",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "template-strand",
-          "actual": [
-            "template-strand",
-            "rna-polymerase-ii",
-            "growing-rna-transcript"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "rna-polymerase-ii",
-          "actual": [
-            "template-strand",
-            "rna-polymerase-ii",
-            "growing-rna-transcript"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "template-strand",
-          "actual": "template-strand",
-          "detail": "Follow-up should isolate the expected generic entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-005",
-      "category": "follow-up-state",
-      "prompt": "Show transcription.",
-      "command": "hide coding strand",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "eukaryotic-transcription",
-          "actual": "eukaryotic-transcription",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "coding-strand",
-          "actual": [
-            "coding-strand"
-          ],
-          "detail": "Follow-up should hide the expected generic entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "hide-coding-strand",
-          "actual": "hide-coding-strand",
-          "detail": "Active intervention should reflect the command rule."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-006",
-      "category": "follow-up-state",
-      "prompt": "Show transcription.",
-      "command": "pause at initiation",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "eukaryotic-transcription",
-          "actual": "eukaryotic-transcription",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": 1,
-          "actual": 1,
-          "detail": "Playback speed should update deterministically."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": 0,
-          "actual": 0,
-          "detail": "Timeline position should update deterministically."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-007",
-      "category": "follow-up-state",
-      "prompt": "Show an action potential.",
-      "command": "isolate sodium channels",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "action-potential",
-          "actual": "action-potential",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "sodium-channels",
-          "actual": [
-            "sodium-channels",
-            "depolarization",
-            "ion-flow"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "depolarization",
-          "actual": [
-            "sodium-channels",
-            "depolarization",
-            "ion-flow"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "ion-flow",
-          "actual": [
-            "sodium-channels",
-            "depolarization",
-            "ion-flow"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "sodium-channels",
-          "actual": "sodium-channels",
-          "detail": "Follow-up should isolate the expected generic entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-008",
-      "category": "follow-up-state",
-      "prompt": "Show an action potential.",
-      "command": "slow depolarization",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "action-potential",
-          "actual": "action-potential",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "slow-depolarization",
-          "actual": "slow-depolarization",
-          "detail": "Active intervention should reflect the command rule."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": 0.5,
-          "actual": 0.5,
-          "detail": "Playback speed should update deterministically."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-009",
-      "category": "follow-up-state",
-      "prompt": "Show an action potential.",
-      "command": "show refractory period",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "action-potential",
-          "actual": "action-potential",
-          "detail": "Follow-up command should preserve selected process pack."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "same ScientificModel object",
-          "actual": true,
-          "detail": "Follow-up commands must modify session state, not regenerate the model."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "refractory-period",
-          "actual": [
-            "refractory-period",
-            "sodium-channels"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "sodium-channels",
-          "actual": [
-            "refractory-period",
-            "sodium-channels"
-          ],
-          "detail": "Follow-up should select the expected entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": 0.86,
-          "actual": 0.86,
-          "detail": "Timeline position should update deterministically."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "fu-010",
       "category": "follow-up-state",
       "prompt": "Show an action potential.",
       "command": "switch to voltage graph",
@@ -3599,62 +2284,6 @@
           "expected": "voltage-graph",
           "actual": "voltage-graph",
           "detail": "Representation follow-up should switch view without destroying model state."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "mut-001",
-      "category": "missing-parameter",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": {
-            "validation": false,
-            "compilation": false
-          },
-          "actual": {
-            "validation": false,
-            "compilation": false
-          },
-          "detail": "Mutated process packs should fail or pass model construction as expected."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": "fork-position",
-          "actual": "validation_rule_failed required parameter \"fork-position\" is missing or has the wrong value. validation_rule_failed dna replication requires a fork-position parameter. validation_rule_failed required parameter \"fork-position\" is missing or has the wrong value. validation_rule_failed dna replication requires a fork-position parameter.",
-          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "mut-002",
-      "category": "missing-parameter",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": {
-            "validation": false,
-            "compilation": false
-          },
-          "actual": {
-            "validation": false,
-            "compilation": false
-          },
-          "detail": "Mutated process packs should fail or pass model construction as expected."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": "ligase-present",
-          "actual": "validation_rule_failed required parameter \"ligase-present\" is missing or has the wrong value. validation_rule_failed dna replication counterfactuals require a ligase-present parameter. validation_rule_failed required parameter \"ligase-present\" is missing or has the wrong value. validation_rule_failed dna replication counterfactuals require a ligase-present parameter.",
-          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
         }
       ],
       "failureAnalysis": []
@@ -3710,34 +2339,6 @@
           "passed": true,
           "expected": "membrane-voltage",
           "actual": "validation_rule_failed required parameter \"membrane-voltage\" is missing or has the wrong value. validation_rule_failed action potential requires membrane voltage parameterization. validation_rule_failed required parameter \"membrane-voltage\" is missing or has the wrong value. validation_rule_failed action potential requires membrane voltage parameterization.",
-          "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "mut-005",
-      "category": "incorrect-assumption",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "model-construction",
-          "passed": true,
-          "expected": {
-            "validation": false,
-            "compilation": false
-          },
-          "actual": {
-            "validation": false,
-            "compilation": false
-          },
-          "detail": "Mutated process packs should fail or pass model construction as expected."
-        },
-        {
-          "dimension": "scientific-invariants",
-          "passed": true,
-          "expected": "ligase",
-          "actual": "validation_rule_failed required relation ligase -> okazaki-fragments is missing. validation_rule_failed ligase must seal nicks. validation_rule_failed ligase must not be represented as synthesizing dna fragments. validation_rule_failed ligase must not be represented as synthesizing dna fragments. unsupported_claim ligase synthesizing fragments is unsupported. ligase synthesizing fragments is unsupported. validation_rule_failed required relation ligase -> okazaki-fragments is missing. validation_rule_failed ligase must seal nicks. validation_rule_failed ligase must not be represented as synthesizing dna fragments. validation_rule_failed ligase must not be represented as synthesizing dna fragments. unsupported_claim ligase synthesizing fragments is unsupported.",
           "detail": "Validation should expose a human-readable issue tied to the mutated scientific error."
         }
       ],

@@ -68,7 +68,7 @@ export function phenomenonSpecFromBiologicalProcessPack(pack: BiologicalProcessP
     id: pack.id,
     title: pack.process,
     modelClass: "explanatory-model",
-    description: `${pack.process} as a curated replication-fork process representation.`,
+    description: `${pack.process} as a curated process representation.`,
     aliases: pack.aliases,
     components: pack.entities.map((entity) => ({
       id: entity.id,
@@ -153,16 +153,10 @@ export function phenomenonSpecFromBiologicalProcessPack(pack: BiologicalProcessP
         description: `Set ${parameter.label}.`
       })),
       {
-        id: "change-view-fork",
+        id: `change-view-${pack.id}`,
         type: "change-view",
-        targetIds: ["dna-replication-fork-view"],
-        description: "Show the fork mechanism view."
-      },
-      {
-        id: "change-view-structure",
-        type: "change-view",
-        targetIds: ["dna-bdna-1zf5-view"],
-        description: "Show the B-DNA structure view."
+        targetIds: [`${pack.id}-process-view`],
+        description: `Show the ${pack.process} process view.`
       },
       {
         id: "playback-controls",
@@ -236,9 +230,7 @@ function claimFromLegacy(
 
 function parameterFromLegacy(parameter: ScientificParameter) {
   const bounds =
-    parameter.id === "fork-position" ? [0, 1] as [number, number] :
-    parameter.id === "fork-rate" ? [0.25, 2] as [number, number] :
-    undefined;
+    [0, 1] as [number, number];
 
   return {
     id: parameter.id,
@@ -258,30 +250,14 @@ function viewsFromPack(pack: BiologicalProcessPack): ViewSpec[] {
 
   return [
     {
-      id: "dna-replication-fork-view",
-      title: "Fork mechanism",
+      id: `${pack.id}-process-view`,
+      title: "Process mechanism",
       kind: "mechanistic-process",
       renderer: "svg",
       evidenceMode: "schematic",
       public: true,
       componentIds,
       synchronizedBy: "time"
-    },
-    {
-      id: "dna-bdna-1zf5-view",
-      title: "DNA structure",
-      kind: "molecular-structure",
-      renderer: "molstar",
-      evidenceMode: "literal",
-      public: true,
-      componentIds: ["parental-strand-5to3", "parental-strand-3to5"],
-      synchronizedBy: "selection",
-      structureMapping: {
-        pdbId: "1ZF5",
-        deposited: true,
-        approved: true,
-        componentIds: ["parental-strand-5to3", "parental-strand-3to5"]
-      }
     }
   ];
 }
@@ -292,11 +268,11 @@ function hasNumericValue(parameter: ScientificParameter) {
 
 function sourceIdsFromProvenance(provenance: ScientificClaimProvenance[]) {
   const sourceIds = Array.from(new Set(provenance.map((item) => item.sourceId)));
-  return sourceIds.length > 0 ? sourceIds : ["ncbi-dna-replication"];
+  return sourceIds;
 }
 
 function firstSourceId(sources: ScientificSource[]) {
-  return [sources[0]?.id ?? "ncbi-dna-replication"];
+  return sources[0]?.id ? [sources[0].id] : [];
 }
 
 function statusFromLegacy(status: ScientificClaim["status"]): Claim["status"] {

@@ -1,5 +1,4 @@
 import type { BiologicalProcessPack } from "./model.ts";
-import { dnaReplicationPack } from "./dna-process.ts";
 import { eukaryoticTranscriptionPack } from "./transcription-process.ts";
 
 export type ProviderNeutralIdentifiers = {
@@ -126,53 +125,6 @@ export const localBiologicalEntityRegistry: EntityResolutionRegistry = {
       note: "Broad class; requires DNA/RNA type or organism/process context to resolve specifically."
     }),
     canonicalEntity({
-      id: "dna-polymerase-general",
-      canonicalName: "DNA polymerase",
-      broad: true,
-      kind: "enzyme",
-      aliases: ["dna polymerase", "dna pol", "polymerase"],
-      identifiers: {
-        geneOntology: ["GO:0003887"],
-        internalProcessPackIds: [{ packId: "dna-replication", entityId: "dna-polymerase" }]
-      },
-      organisms: [organism("cellular organisms", "131567")],
-      contexts: ["general DNA replication", "bacterial chromosome replication", "eukaryotic chromosome replication"],
-      note: "General DNA polymerase entity used by the DNA replication process pack."
-    }),
-    canonicalEntity({
-      id: "bacterial-dna-polymerase-iii",
-      canonicalName: "Bacterial DNA polymerase III holoenzyme",
-      broad: false,
-      kind: "complex",
-      aliases: ["bacterial dna polymerase iii", "dna polymerase iii", "pol iii", "dna pol iii"],
-      identifiers: {
-        geneOntology: ["GO:0003887"],
-        ncbiTaxonomy: ["2"],
-        internalProcessPackIds: [{ packId: "dna-replication", entityId: "dna-polymerase" }]
-      },
-      organisms: [organism("Bacteria", "2"), organism("Escherichia coli", "562")],
-      contexts: ["bacterial chromosome replication"],
-      note: "Specific bacterial replication polymerase class mapped back to the pack's generic DNA polymerase entity."
-    }),
-    canonicalEntity({
-      id: "eukaryotic-polymerase-alpha",
-      canonicalName: "Eukaryotic DNA polymerase alpha-primase",
-      broad: false,
-      kind: "complex",
-      aliases: ["eukaryotic polymerase alpha", "polymerase alpha", "dna polymerase alpha", "pol alpha", "pol α", "polymerase α"],
-      identifiers: {
-        geneOntology: ["GO:0003887"],
-        ncbiTaxonomy: ["2759"],
-        internalProcessPackIds: [
-          { packId: "dna-replication", entityId: "dna-polymerase" },
-          { packId: "dna-replication", entityId: "primase" }
-        ]
-      },
-      organisms: [organism("Eukaryota", "2759")],
-      contexts: ["eukaryotic chromosome replication"],
-      note: "Specific eukaryotic polymerase alpha-primase complex represented schematically by generic replication polymerase and primase entities."
-    }),
-    canonicalEntity({
       id: "rna-polymerase-ii",
       canonicalName: "RNA polymerase II",
       broad: false,
@@ -210,21 +162,14 @@ export const localBiologicalEntityRegistry: EntityResolutionRegistry = {
       aliases: ["template strand", "antisense strand", "transcribed strand"],
       identifiers: {
         chebi: ["CHEBI:16991"],
-        internalProcessPackIds: [
-          { packId: "eukaryotic-transcription", entityId: "template-strand" },
-          { packId: "dna-replication", entityId: "parental-strand-5to3" },
-          { packId: "dna-replication", entityId: "parental-strand-3to5" }
-        ]
+        internalProcessPackIds: [{ packId: "eukaryotic-transcription", entityId: "template-strand" }]
       },
       organisms: [organism("cellular organisms", "131567")],
       contexts: [
-        "general DNA replication",
-        "bacterial chromosome replication",
-        "eukaryotic chromosome replication",
         "eukaryotic protein-coding gene transcription",
         "general eukaryotic transcription"
       ],
-      note: "Template-strand meaning depends on process context; provenance records all pack mappings."
+      note: "Template-strand concept in the transcription process pack."
     }),
     canonicalEntity({
       id: "coding-strand",
@@ -254,34 +199,6 @@ export const localBiologicalEntityRegistry: EntityResolutionRegistry = {
       contexts: ["eukaryotic protein-coding gene transcription", "general eukaryotic transcription"],
       note: "Nascent transcript in the transcription process pack."
     }),
-    canonicalEntity({
-      id: "helicase",
-      canonicalName: "DNA helicase",
-      broad: true,
-      kind: "enzyme",
-      aliases: ["helicase", "dna helicase"],
-      identifiers: {
-        geneOntology: ["GO:0003678"],
-        internalProcessPackIds: [{ packId: "dna-replication", entityId: "helicase" }]
-      },
-      organisms: [organism("cellular organisms", "131567")],
-      contexts: ["general DNA replication", "bacterial chromosome replication", "eukaryotic chromosome replication"],
-      note: "Generic DNA helicase represented in the replication pack."
-    }),
-    canonicalEntity({
-      id: "dna-ligase",
-      canonicalName: "DNA ligase",
-      broad: true,
-      kind: "enzyme",
-      aliases: ["ligase", "dna ligase"],
-      identifiers: {
-        geneOntology: ["GO:0003909"],
-        internalProcessPackIds: [{ packId: "dna-replication", entityId: "ligase" }]
-      },
-      organisms: [organism("cellular organisms", "131567")],
-      contexts: ["general DNA replication", "bacterial chromosome replication", "eukaryotic chromosome replication"],
-      note: "Generic DNA ligase represented in the replication pack."
-    })
   ],
   adapters: []
 };
@@ -590,6 +507,5 @@ function organism(label: string, ncbiTaxonomyId: string) {
 }
 
 export const canonicalEntityProcessPacks = [
-  dnaReplicationPack,
   eukaryoticTranscriptionPack
 ];

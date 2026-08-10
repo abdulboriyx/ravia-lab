@@ -2,7 +2,6 @@
 
 import type { FormEvent, KeyboardEvent, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { DnaMolecularView } from "./DnaMolecularView";
 import { OrbitR3FView } from "./OrbitR3FView";
 import {
   spatialWorkspacePacks,
@@ -32,7 +31,7 @@ const speedOptions = [0.25, 0.5, 1, 2] as const;
 
 export function SpatialRaviaPrototype() {
   const [session, setSession] = useState<SpatialSessionState>(() => createInitialSession());
-  const [prompt, setPrompt] = useState("Show DNA replication");
+  const [prompt, setPrompt] = useState("Show transcription");
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
   const [scaleView, setScaleView] = useState<ScaleView>("fork");
   const previousTick = useRef<number | null>(null);
@@ -81,16 +80,11 @@ export function SpatialRaviaPrototype() {
 
   const scene = useMemo(() => compileSceneFromSession(session), [session]);
   const hasScene = Boolean(session.activeModel && scene);
-  const isDnaReplication = session.selectedProcessPackId === "dna-replication";
   const isOrbit = session.selectedProcessPackId === "two-body-orbit";
-  const hasDnaStructureView = hasScene && isDnaReplication;
   const processViewLabel =
-    isDnaReplication ? "Fork mechanism" :
     isOrbit ? "Orbit model" :
     "Mechanism";
-  const processViewDescription = isDnaReplication
-    ? "Schematic explanatory model; normalized time; replication-fork process representation."
-    : isOrbit
+  const processViewDescription = isOrbit
       ? "Equation-derived simulation; physical time in days; Sun-Earth two-body benchmark with JPL checkpoints."
       : "Schematic explanatory model; normalized time; synchronized membrane, channel-state, voltage-trace, and timeline representation.";
 
@@ -117,7 +111,7 @@ export function SpatialRaviaPrototype() {
               id="initial-science-prompt"
               value={prompt}
               onChange={(event) => setPrompt(event.currentTarget.value)}
-              placeholder="Show DNA replication, an action potential, or Earth orbit"
+              placeholder="Show transcription, an action potential, or Earth orbit"
               autoFocus
             />
             <ExamplePromptButtons onSelect={submitPrompt} setPrompt={setPrompt} />
@@ -144,9 +138,7 @@ export function SpatialRaviaPrototype() {
               <p>{session.activeModel?.biologicalContext}</p>
             </div>
               <span>
-                {scaleView === "structure" && hasDnaStructureView
-                  ? "Literal B-DNA reference"
-                  : isOrbit
+                {isOrbit
                     ? "Equation-derived simulation"
                     : "Schematic explanatory model"}
               </span>
@@ -165,21 +157,8 @@ export function SpatialRaviaPrototype() {
                   >
                     {processViewLabel}
                   </button>
-                  {hasDnaStructureView ? (
-                    <button
-                      type="button"
-                      className={scaleView === "structure" ? "isSelected" : ""}
-                      onClick={() => setScaleView("structure")}
-                    >
-                      DNA structure
-                    </button>
-                  ) : null}
                 </div>
-                <p>
-                  {scaleView === "fork" || !hasDnaStructureView
-                    ? processViewDescription
-                    : "Existing B-DNA Mol* view; literal deposited PDB 1ZF5 coordinates; not a replication-fork structure."}
-                </p>
+                <p>{processViewDescription}</p>
               </PanelBlock>
 
               <StagePanel scene={scene} />
@@ -190,17 +169,9 @@ export function SpatialRaviaPrototype() {
               <PlaybackControls session={session} setSession={setSession} />
               {isOrbit && scene ? (
                 <OrbitR3FView scene={scene} session={session} setSession={setSession} />
-              ) : (scaleView === "fork" || !hasDnaStructureView) && scene ? (
+              ) : scene ? (
                 <DnaForkScene scene={scene} session={session} setSession={setSession} />
-              ) : (
-                <section className="molecularScaleView" aria-label="B-DNA molecular reference">
-                  <div className="molecularScaleNotice">
-                    <strong>DNA structure</strong>
-                    <span>Literal deposited PDB 1ZF5 coordinates for B-DNA only; not a replication-fork structure.</span>
-                  </div>
-                  <DnaMolecularView />
-                </section>
-              )}
+              ) : null}
             </section>
 
             <aside className="workspacePanel rightPanel" aria-label="Evidence and sources">
@@ -248,7 +219,7 @@ function UnsupportedPrompt({
   return (
     <section className={compact ? "unsupportedNotice unsupportedNoticeDocked" : "unsupportedNotice"}>
       <p>{reason}</p>
-      <span>Supported actions: show DNA replication, show an action potential, show Earth orbit, inspect components, play, pause, restart, scrub, hide, isolate, and open the B-DNA structure reference for DNA.</span>
+      <span>Supported actions: show transcription, show an action potential, show Earth orbit, inspect components, play, pause, restart, scrub, hide, and isolate.</span>
     </section>
   );
 }
@@ -801,9 +772,7 @@ function EvidencePanel({
           {model.renderPlan.title}: {isOrbit ? "equation-derived simulation" : "schematic explanatory model"}
         </p>
         <p>Time basis: {isOrbit ? "physical days" : "normalized"}</p>
-        {session.selectedProcessPackId === "dna-replication" ? (
-          <p>Structure reference: literal B-DNA coordinates only</p>
-        ) : isOrbit ? (
+        {isOrbit ? (
           <p>Benchmark reference: local JPL Horizons Earth/Sun vector fixture.</p>
         ) : (
           <p>Structure reference: no literal molecular structure view for this workspace.</p>

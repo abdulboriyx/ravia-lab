@@ -1,17 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { compileBiologicalProcessPack } from "./model.ts";
-import { dnaReplicationPack, dnaReplicationPhenomenonSpec } from "./dna-process.ts";
+import { phenomenonSpecFromBiologicalProcessPack } from "./phenomenon-adapter.ts";
 import type { PhenomenonSpec } from "./phenomenon-spec.ts";
 import { validatePhenomenonSpec } from "./phenomenon-spec.ts";
+import { eukaryoticTranscriptionPack } from "./transcription-process.ts";
 
-test("DNA replication PhenomenonSpec validates against the runtime contract", () => {
-  const validation = validatePhenomenonSpec(dnaReplicationPhenomenonSpec);
+const transcriptionPhenomenonSpec = phenomenonSpecFromBiologicalProcessPack(eukaryoticTranscriptionPack);
+
+test("transcription PhenomenonSpec validates against the runtime contract", () => {
+  const validation = validatePhenomenonSpec(transcriptionPhenomenonSpec);
 
   assert.equal(validation.valid, true, validation.valid ? "" : validation.errors.map((error) => error.message).join(", "));
-  assert.equal(dnaReplicationPhenomenonSpec.views[0].evidenceMode, "schematic");
-  assert.equal(dnaReplicationPhenomenonSpec.views[1].kind, "molecular-structure");
-  assert.equal(dnaReplicationPhenomenonSpec.views[1].structureMapping?.pdbId, "1ZF5");
+  assert.equal(transcriptionPhenomenonSpec.views[0].evidenceMode, "schematic");
+  assert.equal(transcriptionPhenomenonSpec.views[0].kind, "mechanistic-process");
 });
 
 test("PhenomenonSpec accepts generalized equation and spatial component kinds", () => {
@@ -28,7 +30,7 @@ test("compilation rejects a pack with an invalid PhenomenonSpec before scene com
   const spec = cloneSpec();
   spec.components[0].claimIds = ["missing-claim"];
   const compiled = compileBiologicalProcessPack({
-    ...dnaReplicationPack,
+    ...eukaryoticTranscriptionPack,
     phenomenonSpec: spec
   });
 
@@ -89,13 +91,6 @@ test("PhenomenonSpec rejects invalid renderer and representation pairs", () => {
   assertInvalidIncludes(spec, "not allowed");
 });
 
-test("PhenomenonSpec rejects literal molecular views without approved coordinates", () => {
-  const spec = cloneSpec();
-  delete spec.views[1].structureMapping;
-
-  assertInvalidIncludes(spec, "approved deposited structure mapping");
-});
-
 test("PhenomenonSpec rejects schematic process views mislabeled as literal", () => {
   const spec = cloneSpec();
   spec.views[0].evidenceMode = "literal";
@@ -134,7 +129,7 @@ test("PhenomenonSpec rejects unknown units where quantity meaning is required", 
 });
 
 function cloneSpec(): PhenomenonSpec {
-  return structuredClone(dnaReplicationPhenomenonSpec);
+  return structuredClone(transcriptionPhenomenonSpec);
 }
 
 function assertInvalidIncludes(spec: PhenomenonSpec, expectedMessage: string) {

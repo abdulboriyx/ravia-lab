@@ -1,18 +1,13 @@
 {
   "suite": "spatial-ravia-sealed-holdout",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T07:31:07.788Z",
+  "generatedAt": "2026-08-10T08:46:10.004Z",
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
-  "totalCases": 100,
-  "passedCases": 100,
+  "totalCases": 73,
+  "passedCases": 73,
   "failedCases": 0,
   "passRate": 1,
   "byCategory": {
-    "dna-replication": {
-      "total": 20,
-      "passed": 20,
-      "failed": 0
-    },
     "transcription": {
       "total": 20,
       "passed": 20,
@@ -39,8 +34,8 @@
       "failed": 0
     },
     "follow-up": {
-      "total": 17,
-      "passed": 17,
+      "total": 10,
+      "passed": 10,
       "failed": 0
     },
     "scope-boundary": {
@@ -50,638 +45,6 @@
     }
   },
   "results": [
-    {
-      "id": "h001",
-      "category": "dna-replication",
-      "prompt": "Open a replication fork model for copied DNA.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h002",
-      "category": "dna-replication",
-      "prompt": "Show me how the parental strands separate during DNA duplication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "parental-strand-5to3",
-          "actual": [
-            "parental-strand-5to3",
-            "parental-strand-3to5",
-            "helicase"
-          ],
-          "detail": "Requested entity resolution."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "parental-strand-3to5",
-          "actual": [
-            "parental-strand-5to3",
-            "parental-strand-3to5",
-            "helicase"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h003",
-      "category": "dna-replication",
-      "prompt": "Visualize helicase and polymerase at the fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "helicase",
-          "actual": [
-            "helicase",
-            "dna-polymerase"
-          ],
-          "detail": "Requested entity resolution."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "dna-polymerase",
-          "actual": [
-            "helicase",
-            "dna-polymerase"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h004",
-      "category": "dna-replication",
-      "prompt": "I want the discontinuous strand in DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": [
-            "leading-strand",
-            "lagging-strand",
-            "parental-strand-3to5"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h005",
-      "category": "dna-replication",
-      "prompt": "Why does the lagging side make short DNA pieces?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": [
-            "okazaki-fragments",
-            "lagging-strand"
-          ],
-          "detail": "Requested entity resolution."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "okazaki-fragments",
-          "actual": [
-            "okazaki-fragments",
-            "lagging-strand"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h006",
-      "category": "dna-replication",
-      "prompt": "Display primer placement before DNA extension.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "rna-primers",
-          "actual": [
-            "rna-primers"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h007",
-      "category": "dna-replication",
-      "prompt": "Show ligase closing remaining nicks after replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "ligase",
-          "actual": [
-            "ligase"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h008",
-      "category": "dna-replication",
-      "prompt": "Animate the leading strand being extended continuously.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "leading-strand",
-          "actual": [
-            "leading-strand"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h009",
-      "category": "dna-replication",
-      "prompt": "Give me a process diagram of DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "representation-selection",
-          "passed": true,
-          "expected": "graph",
-          "actual": "graph",
-          "detail": "Requested representation parsing."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h010",
-      "category": "dna-replication",
-      "prompt": "Switch DNA replication to a timeline style view.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "representation-selection",
-          "passed": true,
-          "expected": "timeline",
-          "actual": "timeline",
-          "detail": "Requested representation parsing."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h011",
-      "category": "dna-replication",
-      "prompt": "Show a literal atomic replication fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "schematic-3d",
-          "actual": "schematic-3d",
-          "detail": "Primary representation honesty."
-        },
-        {
-          "dimension": "visualization-honesty",
-          "passed": true,
-          "expected": "schematic",
-          "actual": "This view is a schematic projection for reasoning and should not be read as literal molecular geometry.",
-          "detail": "Honesty warning text."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h012",
-      "category": "dna-replication",
-      "prompt": "Load DNA replcation with Okazaki fragments.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "okazaki-fragments",
-          "actual": [
-            "okazaki-fragments"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h013",
-      "category": "dna-replication",
-      "prompt": "Show hellicase unwinding the DNA duplex.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "helicase",
-          "actual": [
-            "helicase"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h014",
-      "category": "dna-replication",
-      "prompt": "Explain DNA synthesis polarity with 5 prime and 3 prime ends.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h015",
-      "category": "dna-replication",
-      "prompt": "Show bacterial chromosome replication at one fork.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "context-extraction",
-          "passed": true,
-          "expected": "bacterial",
-          "actual": "bacterial chromosome replication",
-          "detail": "Context extraction."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h016",
-      "category": "dna-replication",
-      "prompt": "Show eukaryotic DNA replication fork mechanism.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "context-extraction",
-          "passed": true,
-          "expected": "eukaryotic",
-          "actual": "eukaryotic DNA replication",
-          "detail": "Context extraction."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h017",
-      "category": "dna-replication",
-      "prompt": "What happens if ligase is missing during DNA replication?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "compare-no-ligase",
-          "actual": {
-            "commandId": "compare-no-ligase",
-            "interventionId": "compare-no-ligase",
-            "confidence": 0.667,
-            "matchedPhrase": "ligase finish replication"
-          },
-          "detail": "Prompt-level intervention resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h018",
-      "category": "dna-replication",
-      "prompt": "Show DNA copied from RNA polymerase II.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported",
-          "actual": "The request is ambiguous between Eukaryotic transcription and DNA replication; please name the process explicitly.",
-          "detail": "Prompt should abstain instead of inventing unsupported behavior."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h019",
-      "category": "dna-replication",
-      "prompt": "Make DNA polymerase synthesize 3 prime to 5 prime.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported",
-          "actual": "DNA polymerase synthesis direction claim is unsupported.",
-          "detail": "Prompt should abstain instead of inventing unsupported behavior."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h020",
-      "category": "dna-replication",
-      "prompt": "Show replication without any template strand.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": "unsupported",
-          "actual": "The request is ambiguous between DNA replication and Eukaryotic transcription; please name the process explicitly.",
-          "detail": "Prompt should abstain instead of inventing unsupported behavior."
-        }
-      ],
-      "failureAnalysis": []
-    },
     {
       "id": "h021",
       "category": "transcription",
@@ -2123,7 +1486,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "Polymerase copying DNA can refer to replication or related polymerase contexts; please name the process explicitly.",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2192,7 +1555,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model.",
+          "actual": "Replication-fork requests are unsupported in Spatial RAVIA.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2215,7 +1578,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2238,7 +1601,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2261,7 +1624,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2284,7 +1647,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2307,7 +1670,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2330,7 +1693,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2353,7 +1716,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2376,7 +1739,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2399,176 +1762,8 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h081",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "isolate lagging strand",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": [
-            "lagging-strand",
-            "okazaki-fragments"
-          ],
-          "detail": "Follow-up selected entity."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "okazaki-fragments",
-          "actual": [
-            "lagging-strand",
-            "okazaki-fragments"
-          ],
-          "detail": "Follow-up selected entity."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": "lagging-strand",
-          "detail": "Follow-up isolated entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h082",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "hide helicase",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "helicase",
-          "actual": [
-            "helicase"
-          ],
-          "detail": "Follow-up hidden entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h083",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "show primers",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "rna-primers",
-          "actual": [
-            "rna-primers"
-          ],
-          "detail": "Follow-up selected entity."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h084",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "pause",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": false,
-          "actual": false,
-          "detail": "Playback playing state."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h085",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "slow down",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": 0.5,
-          "actual": 0.5,
-          "detail": "Playback speed."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h086",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "show directionality",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Directionality display."
         }
       ],
       "failureAnalysis": []
@@ -2839,30 +2034,6 @@
       "failureAnalysis": []
     },
     {
-      "id": "h097",
-      "category": "follow-up",
-      "prompt": "Show DNA replication.",
-      "command": "turn on all enzymes",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Follow-up preserves process."
-        },
-        {
-          "dimension": "follow-up-state",
-          "passed": true,
-          "expected": "unsupported command",
-          "actual": "unsupported command",
-          "detail": "Follow-up intervention state."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
       "id": "h098",
       "category": "scope-boundary",
       "prompt": "Show DNA replication, transcription, and action potential all at once.",
@@ -2879,7 +2050,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "The request is ambiguous between DNA replication and Action potential; please name the process explicitly.",
+          "actual": "The request is ambiguous between Action potential and Eukaryotic transcription; please name the process explicitly.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2902,7 +2073,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -2925,7 +2096,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "This prototype currently supports DNA replication and eukaryotic transcription.",
+          "actual": "This prototype currently supports eukaryotic transcription.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],

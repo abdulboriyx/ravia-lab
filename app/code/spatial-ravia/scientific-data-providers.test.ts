@@ -131,10 +131,8 @@ test("RCSB PDB adapter returns typed errors for invalid query, 404, and provider
 test("fixture-backed adapters return normalized records with provenance, license, and version metadata", async () => {
   const providers = createScientificDataProviders();
   const results = await Promise.all([
-    providers.uniprot.query({ text: "beta sliding clamp" }),
     providers.reactome.query({ text: "RNA Polymerase II" }),
     providers.biomodels.query({ text: "action potential model" }),
-    providers.geneOntology.query({ accession: "GO:0006260" }),
     providers.chebi.query({ text: "DNA" })
   ]);
 

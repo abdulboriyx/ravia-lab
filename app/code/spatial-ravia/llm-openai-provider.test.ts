@@ -12,8 +12,8 @@ import {
   parseStructuredIntent
 } from "./llm-openai-provider.server.ts";
 import { buildProviderRequest } from "./llm-interpretation.ts";
-import { dnaReplicationPack } from "./dna-process.ts";
 import { processPacks } from "./process-registry.ts";
+import { eukaryoticTranscriptionPack } from "./transcription-process.ts";
 
 test("OpenAI structured intent provider is unavailable without a server API key", () => {
   const provider = createOpenAiStructuredIntentProvider({ apiKey: "" });
@@ -23,7 +23,7 @@ test("OpenAI structured intent provider is unavailable without a server API key"
 });
 
 test("OpenAI structured intent request only exposes registered intent catalog", () => {
-  const request = buildProviderRequest("Show DNA replication.", processPacks);
+  const request = buildProviderRequest("Show transcription.", processPacks);
   const body = createResponsesRequestBody(request, "test-model");
   const serialized = JSON.stringify(body);
   const schema = body.text.format.schema;
@@ -33,7 +33,8 @@ test("OpenAI structured intent request only exposes registered intent catalog", 
   assert.equal(body.text.format.strict, true);
   assert.equal(schema.additionalProperties, false);
   assert.deepEqual(schema.required, ["requestedFocus", "requestedEntities", "confidence", "ambiguity"]);
-  assert.ok(serialized.includes("dna-replication"));
+  assert.ok(!serialized.includes("dna-replication"));
+  assert.ok(serialized.includes("eukaryotic-transcription"));
   assert.ok(serialized.includes("two-body-orbit"));
   assert.ok(!serialized.includes("urlOrDoi"));
   assert.ok(!serialized.includes("renderPlan"));
@@ -48,17 +49,17 @@ test("OpenAI structured intent provider parses Responses output_text", async () 
       const body = JSON.parse(String(init?.body));
       assert.equal(body.model, "test-model");
       assert.equal(body.text.format.name, "spatial_ravia_registered_intent");
-      assert.equal(body.text.format.schema.properties.processSelection.properties.processId.enum.includes("dna-replication"), true);
+      assert.equal(body.text.format.schema.properties.processSelection.properties.processId.enum.includes("dna-replication"), false);
 
       return jsonResponse({
         output_text: JSON.stringify({
           processSelection: {
-            processId: dnaReplicationPack.id,
+            processId: eukaryoticTranscriptionPack.id,
             confidence: 0.91
           },
-          biologicalContext: dnaReplicationPack.defaultContext,
-          requestedFocus: ["replication-fork"],
-          requestedEntities: ["helicase"],
+          biologicalContext: eukaryoticTranscriptionPack.defaultContext,
+          requestedFocus: ["show-polymerase-motion"],
+          requestedEntities: ["rna-polymerase-ii"],
           requestedRepresentation: "scene",
           confidence: 0.91,
           ambiguity: []
@@ -67,10 +68,10 @@ test("OpenAI structured intent provider parses Responses output_text", async () 
     }
   });
 
-  const result = await interpretBiologicalIntent("Show DNA replication.", processPacks, provider);
+  const result = await interpretBiologicalIntent("Show transcription.", processPacks, provider);
 
   assert.equal(result.source, "llm");
-  assert.equal(result.resolution.processCandidates[0]?.packId, "dna-replication");
+  assert.equal(result.resolution.processCandidates[0]?.packId, "eukaryotic-transcription");
   assert.equal(result.logs[0].fallbackPath, "none");
 });
 

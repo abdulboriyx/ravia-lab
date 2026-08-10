@@ -1,39 +1,38 @@
 # Spatial Ravia Scientific Evaluation
 
-Generated: 2026-08-06T07:31:21.770Z
+Generated: 2026-08-10T08:46:09.933Z
 
-Cases: 108
-Passed: 108
+Cases: 71
+Passed: 71
 Failed: 0
 Pass rate: 100.0%
 
 ## Category Summary
 
-- paraphrase: 24/24 passed
-- misspelling: 12/12 passed
-- mixed-organism-context: 4/4 passed
+- paraphrase: 16/16 passed
+- misspelling: 8/8 passed
+- mixed-organism-context: 2/2 passed
 - unsupported-process: 10/10 passed
 - ambiguous-process: 6/6 passed
-- incorrect-assumption: 9/9 passed
-- impossible-intervention: 6/6 passed
-- conflicting-instructions: 5/5 passed
-- misleading-3d-request: 6/6 passed
-- entity-alias-collision: 6/6 passed
-- adversarial-hallucination: 6/6 passed
-- follow-up-state: 10/10 passed
-- missing-parameter: 2/2 passed
+- incorrect-assumption: 5/5 passed
+- impossible-intervention: 5/5 passed
+- conflicting-instructions: 3/3 passed
+- misleading-3d-request: 4/4 passed
+- entity-alias-collision: 4/4 passed
+- adversarial-hallucination: 5/5 passed
+- follow-up-state: 1/1 passed
 - model-construction: 2/2 passed
 
 ## Dimension Summary
 
-- abstention: 133/133 checks passed
-- process-selection: 61/61 checks passed
-- model-construction: 57/57 checks passed
-- scientific-invariants: 57/57 checks passed
-- context-extraction: 3/3 checks passed
-- visualization-honesty: 12/12 checks passed
-- entity-resolution: 16/16 checks passed
-- follow-up-state: 24/24 checks passed
+- abstention: 101/101 checks passed
+- process-selection: 34/34 checks passed
+- model-construction: 36/36 checks passed
+- scientific-invariants: 36/36 checks passed
+- context-extraction: 1/1 checks passed
+- visualization-honesty: 8/8 checks passed
+- entity-resolution: 5/5 checks passed
+- follow-up-state: 1/1 checks passed
 - representation-selection: 1/1 checks passed
 
 ## Failure Analysis

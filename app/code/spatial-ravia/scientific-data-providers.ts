@@ -716,20 +716,6 @@ const offlineFixtures: NormalizedScientificDataRecord[] = [
     }
   }),
   fixtureRecord({
-    provider: "uniprot",
-    providerRecordId: "P24928",
-    kind: "protein",
-    canonicalName: "DNA polymerase III subunit beta",
-    aliases: ["dnaN", "beta sliding clamp", "DNA polymerase III beta"],
-    description: "Reviewed bacterial DNA replication protein fixture.",
-    identifiers: { uniprot: ["P24928"], geneOntology: ["GO:0003887"], ncbiTaxonomy: ["562"] },
-    structuralDataAvailable: false,
-    quantitativeDataAvailable: false,
-    sourceTitle: "UniProtKB P24928",
-    urlOrDoi: "https://www.uniprot.org/uniprotkb/P24928/entry",
-    license: providerMetadata.uniprot.license
-  }),
-  fixtureRecord({
     provider: "reactome",
     providerRecordId: "R-HSA-73776",
     kind: "pathway",
@@ -756,20 +742,6 @@ const offlineFixtures: NormalizedScientificDataRecord[] = [
     sourceTitle: "BioModels fixture BIOMD0000000020",
     urlOrDoi: "https://www.ebi.ac.uk/biomodels/",
     license: providerMetadata.biomodels.license
-  }),
-  fixtureRecord({
-    provider: "gene-ontology",
-    providerRecordId: "GO:0006260",
-    kind: "ontology-term",
-    canonicalName: "DNA replication",
-    aliases: ["DNA-dependent DNA replication", "replication"],
-    description: "Ontology fixture for DNA replication biological process.",
-    identifiers: { geneOntology: ["GO:0006260"] },
-    structuralDataAvailable: false,
-    quantitativeDataAvailable: false,
-    sourceTitle: "Gene Ontology GO:0006260",
-    urlOrDoi: "https://amigo.geneontology.org/amigo/term/GO:0006260",
-    license: providerMetadata["gene-ontology"].license
   }),
   fixtureRecord({
     provider: "chebi",

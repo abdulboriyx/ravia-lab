@@ -1,18 +1,13 @@
 {
   "suite": "spatial-ravia-holdout-regression-subset",
   "version": "2026-08-06",
-  "generatedAt": "2026-08-06T06:27:48.255Z",
+  "generatedAt": "2026-08-10T08:46:09.471Z",
   "rule": "Marked regression subset from the first sealed holdout failures. This is not a fresh sealed holdout and must not be used as an unbiased generalization score.",
-  "totalCases": 23,
-  "passedCases": 23,
+  "totalCases": 16,
+  "passedCases": 16,
   "failedCases": 0,
   "passRate": 1,
   "byCategory": {
-    "dna-replication": {
-      "total": 7,
-      "passed": 7,
-      "failed": 0
-    },
     "transcription": {
       "total": 3,
       "passed": 3,
@@ -35,241 +30,6 @@
     }
   },
   "results": [
-    {
-      "id": "h002",
-      "category": "dna-replication",
-      "prompt": "Show me how the parental strands separate during DNA duplication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "parental-strand-5to3",
-          "actual": [
-            "parental-strand-5to3",
-            "parental-strand-3to5"
-          ],
-          "detail": "Requested entity resolution."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "parental-strand-3to5",
-          "actual": [
-            "parental-strand-5to3",
-            "parental-strand-3to5"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h005",
-      "category": "dna-replication",
-      "prompt": "Why does the lagging side make short DNA pieces?",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "lagging-strand",
-          "actual": [
-            "okazaki-fragments",
-            "lagging-strand"
-          ],
-          "detail": "Requested entity resolution."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "okazaki-fragments",
-          "actual": [
-            "okazaki-fragments",
-            "lagging-strand"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h006",
-      "category": "dna-replication",
-      "prompt": "Display primer placement before DNA extension.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "rna-primers",
-          "actual": [
-            "rna-primers"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h008",
-      "category": "dna-replication",
-      "prompt": "Animate the leading strand being extended continuously.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "leading-strand",
-          "actual": [
-            "leading-strand"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h009",
-      "category": "dna-replication",
-      "prompt": "Give me a process diagram of DNA replication.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "representation-selection",
-          "passed": true,
-          "expected": "graph",
-          "actual": "graph",
-          "detail": "Requested representation parsing."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h013",
-      "category": "dna-replication",
-      "prompt": "Show hellicase unwinding the DNA duplex.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        },
-        {
-          "dimension": "entity-resolution",
-          "passed": true,
-          "expected": "helicase",
-          "actual": [
-            "helicase"
-          ],
-          "detail": "Requested entity resolution."
-        }
-      ],
-      "failureAnalysis": []
-    },
-    {
-      "id": "h014",
-      "category": "dna-replication",
-      "prompt": "Explain DNA synthesis polarity with 5 prime and 3 prime ends.",
-      "passed": true,
-      "checks": [
-        {
-          "dimension": "abstention",
-          "passed": true,
-          "expected": true,
-          "actual": true,
-          "detail": "Prompt support classification."
-        },
-        {
-          "dimension": "process-selection",
-          "passed": true,
-          "expected": "dna-replication",
-          "actual": "dna-replication",
-          "detail": "Top process candidate."
-        }
-      ],
-      "failureAnalysis": []
-    },
     {
       "id": "h021",
       "category": "transcription",
@@ -631,7 +391,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "Polymerase copying DNA can refer to replication or related polymerase contexts; please name the process explicitly.",
+          "actual": "The request matched known biology terms but not strongly enough to select a process.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],
@@ -700,7 +460,7 @@
           "dimension": "abstention",
           "passed": true,
           "expected": "unsupported",
-          "actual": "RNA polymerase II belongs to the eukaryotic transcription pack, not the DNA replication-fork model.",
+          "actual": "Replication-fork requests are unsupported in Spatial RAVIA.",
           "detail": "Prompt should abstain instead of inventing unsupported behavior."
         }
       ],

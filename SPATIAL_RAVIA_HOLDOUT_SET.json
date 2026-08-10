@@ -3,112 +3,613 @@
   "version": "2026-08-06",
   "rule": "Run once against the current MVP before tuning. Do not edit cases to improve the score.",
   "cases": [
-    { "id": "h001", "category": "dna-replication", "prompt": "Open a replication fork model for copied DNA.", "expectedSupported": true, "expectedProcessId": "dna-replication" },
-    { "id": "h002", "category": "dna-replication", "prompt": "Show me how the parental strands separate during DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["parental-strand-5to3", "parental-strand-3to5"] },
-    { "id": "h003", "category": "dna-replication", "prompt": "Visualize helicase and polymerase at the fork.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["helicase", "dna-polymerase"] },
-    { "id": "h004", "category": "dna-replication", "prompt": "I want the discontinuous strand in DNA replication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand"] },
-    { "id": "h005", "category": "dna-replication", "prompt": "Why does the lagging side make short DNA pieces?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand", "okazaki-fragments"] },
-    { "id": "h006", "category": "dna-replication", "prompt": "Display primer placement before DNA extension.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["rna-primers"] },
-    { "id": "h007", "category": "dna-replication", "prompt": "Show ligase closing remaining nicks after replication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["ligase"] },
-    { "id": "h008", "category": "dna-replication", "prompt": "Animate the leading strand being extended continuously.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["leading-strand"] },
-    { "id": "h009", "category": "dna-replication", "prompt": "Give me a process diagram of DNA replication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedRepresentation": "graph" },
-    { "id": "h010", "category": "dna-replication", "prompt": "Switch DNA replication to a timeline style view.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedRepresentation": "timeline" },
-    { "id": "h011", "category": "dna-replication", "prompt": "Show a literal atomic replication fork.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedPrimaryRepresentation": "schematic-3d", "expectedWarningIncludes": "schematic" },
-    { "id": "h012", "category": "dna-replication", "prompt": "Load DNA replcation with Okazaki fragments.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["okazaki-fragments"] },
-    { "id": "h013", "category": "dna-replication", "prompt": "Show hellicase unwinding the DNA duplex.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["helicase"] },
-    { "id": "h014", "category": "dna-replication", "prompt": "Explain DNA synthesis polarity with 5 prime and 3 prime ends.", "expectedSupported": true, "expectedProcessId": "dna-replication" },
-    { "id": "h015", "category": "dna-replication", "prompt": "Show bacterial chromosome replication at one fork.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedContextIncludes": "bacterial" },
-    { "id": "h016", "category": "dna-replication", "prompt": "Show eukaryotic DNA replication fork mechanism.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedContextIncludes": "eukaryotic" },
-    { "id": "h017", "category": "dna-replication", "prompt": "What happens if ligase is missing during DNA replication?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedInterventionId": "compare-no-ligase" },
-    { "id": "h018", "category": "dna-replication", "prompt": "Show DNA copied from RNA polymerase II.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h019", "category": "dna-replication", "prompt": "Make DNA polymerase synthesize 3 prime to 5 prime.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h020", "category": "dna-replication", "prompt": "Show replication without any template strand.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "h021", "category": "transcription", "prompt": "Open a model of a gene being transcribed.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
-    { "id": "h022", "category": "transcription", "prompt": "Show RNA polymerase II crossing a protein coding gene.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["rna-polymerase-ii"] },
-    { "id": "h023", "category": "transcription", "prompt": "Visualize the transcription bubble.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["transcription-bubble"] },
-    { "id": "h024", "category": "transcription", "prompt": "Show the coding strand beside the template strand.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["coding-strand", "template-strand"] },
-    { "id": "h025", "category": "transcription", "prompt": "Display the new RNA transcript as it grows.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["growing-rna-transcript"] },
-    { "id": "h026", "category": "transcription", "prompt": "Explain promoter escape in transcription.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
-    { "id": "h027", "category": "transcription", "prompt": "Show transcription initiation with factors and promoter.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["transcription-factors", "promoter"] },
-    { "id": "h028", "category": "transcription", "prompt": "Switch transcription into a timeline view.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "timeline" },
-    { "id": "h029", "category": "transcription", "prompt": "Show a network of the transcription stages.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "graph" },
-    { "id": "h030", "category": "transcription", "prompt": "Show the molecular structure for RNA polymerase II.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "molecular-structure" },
-    { "id": "h031", "category": "transcription", "prompt": "Open transcripton with the growing RNA.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["growing-rna-transcript"] },
-    { "id": "h032", "category": "transcription", "prompt": "Show RNA polymarase at a promoter.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["rna-polymerase-ii", "promoter"] },
-    { "id": "h033", "category": "transcription", "prompt": "Why is just one DNA strand copied into RNA?", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["template-strand"] },
-    { "id": "h034", "category": "transcription", "prompt": "Show eukaryotic transcription for a protein-coding gene.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedContextIncludes": "eukaryotic" },
-    { "id": "h035", "category": "transcription", "prompt": "Show bacterial RNA polymerase II transcription.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h036", "category": "transcription", "prompt": "Make RNA polymerase read the coding strand as template.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h037", "category": "transcription", "prompt": "Show RNA synthesis from 3 prime to 5 prime.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h038", "category": "transcription", "prompt": "Show RNA identical to the template strand.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h039", "category": "transcription", "prompt": "Display transcription termination after elongation.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
-    { "id": "h040", "category": "transcription", "prompt": "Show RNA made from DNA, not DNA replication.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
-
-    { "id": "h041", "category": "action-potential", "prompt": "Open a neuron spike voltage model.", "expectedSupported": true, "expectedProcessId": "action-potential" },
-    { "id": "h042", "category": "action-potential", "prompt": "Show membrane potential rising and falling.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["membrane-voltage"] },
-    { "id": "h043", "category": "action-potential", "prompt": "Visualize sodium channel opening during depolarization.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["sodium-channels", "depolarization"] },
-    { "id": "h044", "category": "action-potential", "prompt": "Show potassium channels during repolarization.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["potassium-channels", "repolarization"] },
-    { "id": "h045", "category": "action-potential", "prompt": "Display the refractory period on the neuron trace.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["refractory-period"] },
-    { "id": "h046", "category": "action-potential", "prompt": "Show ion flow across an axon membrane.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["ion-flow"] },
-    { "id": "h047", "category": "action-potential", "prompt": "Switch the neuron spike into a voltage graph.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedRepresentation": "voltage-graph" },
-    { "id": "h048", "category": "action-potential", "prompt": "Show the action potential as mixed view.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedRepresentation": "mixed" },
-    { "id": "h049", "category": "action-potential", "prompt": "Show action potentail depolarization.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["depolarization"] },
-    { "id": "h050", "category": "action-potential", "prompt": "Visualize soduim and potasium currents in a spike.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["sodium-channels", "potassium-channels"] },
-    { "id": "h051", "category": "action-potential", "prompt": "Compare an action potential when sodium channels are blocked.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedInterventionId": "compare-blocked-sodium-channels" },
-    { "id": "h052", "category": "action-potential", "prompt": "Show a literal atomic structure of an action potential.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedPrimaryRepresentation": "mixed-representation", "expectedWarningIncludes": "schematic" },
-    { "id": "h053", "category": "action-potential", "prompt": "Make sodium channels open after repolarization only.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h054", "category": "action-potential", "prompt": "Remove the cell membrane from an action potential.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h055", "category": "action-potential", "prompt": "Show calcium oscillations instead of a neuron spike.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "h056", "category": "orbit", "prompt": "Open a Sun Earth two body orbit model.", "expectedSupported": true, "expectedProcessId": "two-body-orbit" },
-    { "id": "h057", "category": "orbit", "prompt": "Show Earth moving around the Sun using the benchmark orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["earth", "sun"] },
-    { "id": "h058", "category": "orbit", "prompt": "Visualize central gravity in the Earth orbit scene.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["gravity-vector"] },
-    { "id": "h059", "category": "orbit", "prompt": "Show the JPL comparison markers for Earth orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["jpl-benchmark"] },
-    { "id": "h060", "category": "orbit", "prompt": "Display a physical timeline for the two body orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedRepresentation": "timeline" },
-    { "id": "h061", "category": "orbit", "prompt": "Show a process graph for the orbit benchmark.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedRepresentation": "graph" },
-    { "id": "h062", "category": "orbit", "prompt": "Show Earth orbit in 3D.", "expectedSupported": true, "expectedProcessId": "two-body-orbit" },
-    { "id": "h063", "category": "orbit", "prompt": "Open two-bodi orbit with the sun fixed.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["sun"] },
-    { "id": "h064", "category": "orbit", "prompt": "Plan a three body lunar mission trajectory.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h065", "category": "orbit", "prompt": "Design a spacecraft transfer burn to Mars.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h066", "category": "orbit", "prompt": "Show Jupiter perturbing the Earth orbit.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h067", "category": "orbit", "prompt": "Claim this orbit is a full n-body simulation.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "h068", "category": "ambiguous", "prompt": "Show polymerase copying DNA.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h069", "category": "ambiguous", "prompt": "Show a template strand being used.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h070", "category": "ambiguous", "prompt": "Show DNA being copied into something.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h071", "category": "ambiguous", "prompt": "Show polymerase II at a replication fork.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h072", "category": "ambiguous", "prompt": "Visualize strand synthesis.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "h073", "category": "unsupported", "prompt": "Show CRISPR Cas9 cutting DNA.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h074", "category": "unsupported", "prompt": "Visualize protein folding into a beta barrel.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h075", "category": "unsupported", "prompt": "Show MAPK signaling cascade.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h076", "category": "unsupported", "prompt": "Model glycolysis with editable enzyme rates.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h077", "category": "unsupported", "prompt": "Simulate mitosis checkpoints.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h078", "category": "unsupported", "prompt": "Show bacterial translation at the ribosome.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h079", "category": "unsupported", "prompt": "Calculate a rocket landing equation.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h080", "category": "unsupported", "prompt": "Fetch latest PDB structures from the internet.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "h081", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "isolate lagging strand", "expectedProcessId": "dna-replication", "expectedIsolatedEntity": "lagging-strand", "expectedSelectedEntities": ["lagging-strand", "okazaki-fragments"] },
-    { "id": "h082", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "hide helicase", "expectedProcessId": "dna-replication", "expectedHiddenEntities": ["helicase"] },
-    { "id": "h083", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "show primers", "expectedProcessId": "dna-replication", "expectedSelectedEntities": ["rna-primers"] },
-    { "id": "h084", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "pause", "expectedProcessId": "dna-replication", "expectedPlaybackPlaying": false },
-    { "id": "h085", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "slow down", "expectedProcessId": "dna-replication", "expectedPlaybackSpeed": 0.5 },
-    { "id": "h086", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "show directionality", "expectedProcessId": "dna-replication", "expectedDirectionality": true },
-    { "id": "h087", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "isolate template strand", "expectedProcessId": "eukaryotic-transcription", "expectedIsolatedEntity": "template-strand" },
-    { "id": "h088", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "hide coding strand", "expectedProcessId": "eukaryotic-transcription", "expectedHiddenEntities": ["coding-strand"] },
-    { "id": "h089", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "show transcription bubble", "expectedProcessId": "eukaryotic-transcription", "expectedSelectedEntities": ["transcription-bubble"] },
-    { "id": "h090", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "pause at initiation", "expectedProcessId": "eukaryotic-transcription", "expectedPlaybackPlaying": false, "expectedTimelinePosition": 0 },
-    { "id": "h091", "category": "follow-up", "initialPrompt": "Show an action potential.", "command": "isolate sodium channels", "expectedProcessId": "action-potential", "expectedIsolatedEntity": "sodium-channels" },
-    { "id": "h092", "category": "follow-up", "initialPrompt": "Show an action potential.", "command": "show refractory period", "expectedProcessId": "action-potential", "expectedSelectedEntities": ["refractory-period"], "expectedTimelinePosition": 0.86 },
-    { "id": "h093", "category": "follow-up", "initialPrompt": "Show an action potential.", "command": "show voltage graph", "expectedProcessId": "action-potential", "expectedRepresentation": "voltage-graph" },
-    { "id": "h094", "category": "follow-up", "initialPrompt": "Show Earth orbit.", "command": "select earth", "expectedProcessId": "two-body-orbit", "expectedSelectedEntities": ["earth"] },
-    { "id": "h095", "category": "follow-up", "initialPrompt": "Show Earth orbit.", "command": "hide benchmark", "expectedProcessId": "two-body-orbit", "expectedHiddenEntities": ["jpl-benchmark"] },
-    { "id": "h096", "category": "follow-up", "initialPrompt": "Show Earth orbit.", "command": "isolate gravity", "expectedProcessId": "two-body-orbit", "expectedIsolatedEntity": "gravity-vector" },
-    { "id": "h097", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "turn on all enzymes", "expectedProcessId": "dna-replication", "expectedInterventionId": "unsupported command" },
-
-    { "id": "h098", "category": "scope-boundary", "prompt": "Show DNA replication, transcription, and action potential all at once.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h099", "category": "scope-boundary", "prompt": "Add a new process pack for photosynthesis.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "h100", "category": "scope-boundary", "prompt": "Use an LLM to invent missing molecular coordinates.", "expectedSupported": false, "expectedAbstention": true }
+    {
+      "id": "h021",
+      "category": "transcription",
+      "prompt": "Open a model of a gene being transcribed.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription"
+    },
+    {
+      "id": "h022",
+      "category": "transcription",
+      "prompt": "Show RNA polymerase II crossing a protein coding gene.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "rna-polymerase-ii"
+      ]
+    },
+    {
+      "id": "h023",
+      "category": "transcription",
+      "prompt": "Visualize the transcription bubble.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "transcription-bubble"
+      ]
+    },
+    {
+      "id": "h024",
+      "category": "transcription",
+      "prompt": "Show the coding strand beside the template strand.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "coding-strand",
+        "template-strand"
+      ]
+    },
+    {
+      "id": "h025",
+      "category": "transcription",
+      "prompt": "Display the new RNA transcript as it grows.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "growing-rna-transcript"
+      ]
+    },
+    {
+      "id": "h026",
+      "category": "transcription",
+      "prompt": "Explain promoter escape in transcription.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription"
+    },
+    {
+      "id": "h027",
+      "category": "transcription",
+      "prompt": "Show transcription initiation with factors and promoter.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "transcription-factors",
+        "promoter"
+      ]
+    },
+    {
+      "id": "h028",
+      "category": "transcription",
+      "prompt": "Switch transcription into a timeline view.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "timeline"
+    },
+    {
+      "id": "h029",
+      "category": "transcription",
+      "prompt": "Show a network of the transcription stages.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "graph"
+    },
+    {
+      "id": "h030",
+      "category": "transcription",
+      "prompt": "Show the molecular structure for RNA polymerase II.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "molecular-structure"
+    },
+    {
+      "id": "h031",
+      "category": "transcription",
+      "prompt": "Open transcripton with the growing RNA.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "growing-rna-transcript"
+      ]
+    },
+    {
+      "id": "h032",
+      "category": "transcription",
+      "prompt": "Show RNA polymarase at a promoter.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "rna-polymerase-ii",
+        "promoter"
+      ]
+    },
+    {
+      "id": "h033",
+      "category": "transcription",
+      "prompt": "Why is just one DNA strand copied into RNA?",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "template-strand"
+      ]
+    },
+    {
+      "id": "h034",
+      "category": "transcription",
+      "prompt": "Show eukaryotic transcription for a protein-coding gene.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedContextIncludes": "eukaryotic"
+    },
+    {
+      "id": "h035",
+      "category": "transcription",
+      "prompt": "Show bacterial RNA polymerase II transcription.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h036",
+      "category": "transcription",
+      "prompt": "Make RNA polymerase read the coding strand as template.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h037",
+      "category": "transcription",
+      "prompt": "Show RNA synthesis from 3 prime to 5 prime.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h038",
+      "category": "transcription",
+      "prompt": "Show RNA identical to the template strand.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h039",
+      "category": "transcription",
+      "prompt": "Display transcription termination after elongation.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription"
+    },
+    {
+      "id": "h040",
+      "category": "transcription",
+      "prompt": "Show RNA made from DNA, not DNA replication.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription"
+    },
+    {
+      "id": "h041",
+      "category": "action-potential",
+      "prompt": "Open a neuron spike voltage model.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential"
+    },
+    {
+      "id": "h042",
+      "category": "action-potential",
+      "prompt": "Show membrane potential rising and falling.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "membrane-voltage"
+      ]
+    },
+    {
+      "id": "h043",
+      "category": "action-potential",
+      "prompt": "Visualize sodium channel opening during depolarization.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "sodium-channels",
+        "depolarization"
+      ]
+    },
+    {
+      "id": "h044",
+      "category": "action-potential",
+      "prompt": "Show potassium channels during repolarization.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "potassium-channels",
+        "repolarization"
+      ]
+    },
+    {
+      "id": "h045",
+      "category": "action-potential",
+      "prompt": "Display the refractory period on the neuron trace.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "refractory-period"
+      ]
+    },
+    {
+      "id": "h046",
+      "category": "action-potential",
+      "prompt": "Show ion flow across an axon membrane.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "ion-flow"
+      ]
+    },
+    {
+      "id": "h047",
+      "category": "action-potential",
+      "prompt": "Switch the neuron spike into a voltage graph.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedRepresentation": "voltage-graph"
+    },
+    {
+      "id": "h048",
+      "category": "action-potential",
+      "prompt": "Show the action potential as mixed view.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedRepresentation": "mixed"
+    },
+    {
+      "id": "h049",
+      "category": "action-potential",
+      "prompt": "Show action potentail depolarization.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "depolarization"
+      ]
+    },
+    {
+      "id": "h050",
+      "category": "action-potential",
+      "prompt": "Visualize soduim and potasium currents in a spike.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "sodium-channels",
+        "potassium-channels"
+      ]
+    },
+    {
+      "id": "h051",
+      "category": "action-potential",
+      "prompt": "Compare an action potential when sodium channels are blocked.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedInterventionId": "compare-blocked-sodium-channels"
+    },
+    {
+      "id": "h052",
+      "category": "action-potential",
+      "prompt": "Show a literal atomic structure of an action potential.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedPrimaryRepresentation": "mixed-representation",
+      "expectedWarningIncludes": "schematic"
+    },
+    {
+      "id": "h053",
+      "category": "action-potential",
+      "prompt": "Make sodium channels open after repolarization only.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h054",
+      "category": "action-potential",
+      "prompt": "Remove the cell membrane from an action potential.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h055",
+      "category": "action-potential",
+      "prompt": "Show calcium oscillations instead of a neuron spike.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h056",
+      "category": "orbit",
+      "prompt": "Open a Sun Earth two body orbit model.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit"
+    },
+    {
+      "id": "h057",
+      "category": "orbit",
+      "prompt": "Show Earth moving around the Sun using the benchmark orbit.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "earth",
+        "sun"
+      ]
+    },
+    {
+      "id": "h058",
+      "category": "orbit",
+      "prompt": "Visualize central gravity in the Earth orbit scene.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "gravity-vector"
+      ]
+    },
+    {
+      "id": "h059",
+      "category": "orbit",
+      "prompt": "Show the JPL comparison markers for Earth orbit.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "jpl-benchmark"
+      ]
+    },
+    {
+      "id": "h060",
+      "category": "orbit",
+      "prompt": "Display a physical timeline for the two body orbit.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedRepresentation": "timeline"
+    },
+    {
+      "id": "h061",
+      "category": "orbit",
+      "prompt": "Show a process graph for the orbit benchmark.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedRepresentation": "graph"
+    },
+    {
+      "id": "h062",
+      "category": "orbit",
+      "prompt": "Show Earth orbit in 3D.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit"
+    },
+    {
+      "id": "h063",
+      "category": "orbit",
+      "prompt": "Open two-bodi orbit with the sun fixed.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "sun"
+      ]
+    },
+    {
+      "id": "h064",
+      "category": "orbit",
+      "prompt": "Plan a three body lunar mission trajectory.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h065",
+      "category": "orbit",
+      "prompt": "Design a spacecraft transfer burn to Mars.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h066",
+      "category": "orbit",
+      "prompt": "Show Jupiter perturbing the Earth orbit.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h067",
+      "category": "orbit",
+      "prompt": "Claim this orbit is a full n-body simulation.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h068",
+      "category": "ambiguous",
+      "prompt": "Show polymerase copying DNA.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h069",
+      "category": "ambiguous",
+      "prompt": "Show a template strand being used.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h070",
+      "category": "ambiguous",
+      "prompt": "Show DNA being copied into something.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h071",
+      "category": "ambiguous",
+      "prompt": "Show polymerase II at a replication fork.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h072",
+      "category": "ambiguous",
+      "prompt": "Visualize strand synthesis.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h073",
+      "category": "unsupported",
+      "prompt": "Show CRISPR Cas9 cutting DNA.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h074",
+      "category": "unsupported",
+      "prompt": "Visualize protein folding into a beta barrel.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h075",
+      "category": "unsupported",
+      "prompt": "Show MAPK signaling cascade.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h076",
+      "category": "unsupported",
+      "prompt": "Model glycolysis with editable enzyme rates.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h077",
+      "category": "unsupported",
+      "prompt": "Simulate mitosis checkpoints.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h078",
+      "category": "unsupported",
+      "prompt": "Show bacterial translation at the ribosome.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h079",
+      "category": "unsupported",
+      "prompt": "Calculate a rocket landing equation.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h080",
+      "category": "unsupported",
+      "prompt": "Fetch latest PDB structures from the internet.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h087",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "isolate template strand",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedIsolatedEntity": "template-strand"
+    },
+    {
+      "id": "h088",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "hide coding strand",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedHiddenEntities": [
+        "coding-strand"
+      ]
+    },
+    {
+      "id": "h089",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "show transcription bubble",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedSelectedEntities": [
+        "transcription-bubble"
+      ]
+    },
+    {
+      "id": "h090",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "pause at initiation",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedPlaybackPlaying": false,
+      "expectedTimelinePosition": 0
+    },
+    {
+      "id": "h091",
+      "category": "follow-up",
+      "initialPrompt": "Show an action potential.",
+      "command": "isolate sodium channels",
+      "expectedProcessId": "action-potential",
+      "expectedIsolatedEntity": "sodium-channels"
+    },
+    {
+      "id": "h092",
+      "category": "follow-up",
+      "initialPrompt": "Show an action potential.",
+      "command": "show refractory period",
+      "expectedProcessId": "action-potential",
+      "expectedSelectedEntities": [
+        "refractory-period"
+      ],
+      "expectedTimelinePosition": 0.86
+    },
+    {
+      "id": "h093",
+      "category": "follow-up",
+      "initialPrompt": "Show an action potential.",
+      "command": "show voltage graph",
+      "expectedProcessId": "action-potential",
+      "expectedRepresentation": "voltage-graph"
+    },
+    {
+      "id": "h094",
+      "category": "follow-up",
+      "initialPrompt": "Show Earth orbit.",
+      "command": "select earth",
+      "expectedProcessId": "two-body-orbit",
+      "expectedSelectedEntities": [
+        "earth"
+      ]
+    },
+    {
+      "id": "h095",
+      "category": "follow-up",
+      "initialPrompt": "Show Earth orbit.",
+      "command": "hide benchmark",
+      "expectedProcessId": "two-body-orbit",
+      "expectedHiddenEntities": [
+        "jpl-benchmark"
+      ]
+    },
+    {
+      "id": "h096",
+      "category": "follow-up",
+      "initialPrompt": "Show Earth orbit.",
+      "command": "isolate gravity",
+      "expectedProcessId": "two-body-orbit",
+      "expectedIsolatedEntity": "gravity-vector"
+    },
+    {
+      "id": "h098",
+      "category": "scope-boundary",
+      "prompt": "Show DNA replication, transcription, and action potential all at once.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h099",
+      "category": "scope-boundary",
+      "prompt": "Add a new process pack for photosynthesis.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "h100",
+      "category": "scope-boundary",
+      "prompt": "Use an LLM to invent missing molecular coordinates.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    }
   ]
 }

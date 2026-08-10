@@ -3,70 +3,383 @@
   "version": "2026-08-06-post-stabilization",
   "rule": "Fresh sealed holdout after stabilization. Run once before tuning. Do not edit cases to improve score.",
   "cases": [
-    { "id": "fh001", "category": "dna-replication", "prompt": "Show the fork where DNA gets duplicated.", "expectedSupported": true, "expectedProcessId": "dna-replication" },
-    { "id": "fh002", "category": "dna-replication", "prompt": "Walk me through helicase separating the two DNA templates.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["helicase"] },
-    { "id": "fh003", "category": "dna-replication", "prompt": "Focus on the strand that is made in pieces.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["lagging-strand", "okazaki-fragments"] },
-    { "id": "fh004", "category": "dna-replication", "prompt": "Show the continuous daughter strand during DNA copying.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["leading-strand"] },
-    { "id": "fh005", "category": "dna-replication", "prompt": "Where do RNA primers appear at a replication fork?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["rna-primers"] },
-    { "id": "fh006", "category": "dna-replication", "prompt": "Explain why ligase is needed after Okazaki fragments form.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedEntities": ["ligase", "okazaki-fragments"] },
-    { "id": "fh007", "category": "dna-replication", "prompt": "Use a stage sequence for DNA duplication.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedRepresentation": "timeline" },
-    { "id": "fh008", "category": "dna-replication", "prompt": "Draw relations among primase, polymerase, primers, and ligase.", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedRepresentation": "graph" },
-    { "id": "fh009", "category": "dna-replication", "prompt": "Make ligase synthesize Okazaki fragments.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh010", "category": "dna-replication", "prompt": "Make the lagging strand continuous.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh011", "category": "dna-replication", "prompt": "Show DNA polymerase reading the template 5 prime to 3 prime.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh012", "category": "dna-replication", "prompt": "What changes if helicase is stopped?", "expectedSupported": true, "expectedProcessId": "dna-replication", "expectedInterventionId": "helicase-stopped" },
-
-    { "id": "fh013", "category": "transcription", "prompt": "Show a eukaryotic gene being copied into RNA.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription" },
-    { "id": "fh014", "category": "transcription", "prompt": "Visualize RNA polymerase II opening a transcription bubble.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["rna-polymerase-ii", "transcription-bubble"] },
-    { "id": "fh015", "category": "transcription", "prompt": "Focus on the DNA strand read by Pol II.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["template-strand"] },
-    { "id": "fh016", "category": "transcription", "prompt": "Show the non-template strand during transcription.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["coding-strand"] },
-    { "id": "fh017", "category": "transcription", "prompt": "Display nascent RNA coming out of RNA polymerase.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedEntities": ["growing-rna-transcript"] },
-    { "id": "fh018", "category": "transcription", "prompt": "Show transcription as ordered stages.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "timeline" },
-    { "id": "fh019", "category": "transcription", "prompt": "Map the transcription stage relationships.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "graph" },
-    { "id": "fh020", "category": "transcription", "prompt": "Use molecular structure for RNA polymerase II.", "expectedSupported": true, "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "molecular-structure" },
-    { "id": "fh021", "category": "transcription", "prompt": "Have RNA polymerase read the coding strand.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh022", "category": "transcription", "prompt": "Show RNA produced 3 prime to 5 prime.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh023", "category": "transcription", "prompt": "Show bacterial Pol II transcription.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh024", "category": "transcription", "prompt": "Make RNA identical to the template DNA strand.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "fh025", "category": "action-potential", "prompt": "Show a neuron firing voltage spike.", "expectedSupported": true, "expectedProcessId": "action-potential" },
-    { "id": "fh026", "category": "action-potential", "prompt": "Focus on sodium channels during the rising phase.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["sodium-channels", "depolarization"] },
-    { "id": "fh027", "category": "action-potential", "prompt": "Show potassium current during the falling phase.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["potassium-channels", "repolarization"] },
-    { "id": "fh028", "category": "action-potential", "prompt": "Plot the membrane potential trace.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedRepresentation": "voltage-graph" },
-    { "id": "fh029", "category": "action-potential", "prompt": "Show the refractory interval after the spike.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["refractory-period"] },
-    { "id": "fh030", "category": "action-potential", "prompt": "Show sodium influx and potassium efflux arrows.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedEntities": ["ion-flow"] },
-    { "id": "fh031", "category": "action-potential", "prompt": "Compare the spike when sodium channels are unavailable.", "expectedSupported": true, "expectedProcessId": "action-potential", "expectedInterventionId": "compare-blocked-sodium-channels" },
-    { "id": "fh032", "category": "action-potential", "prompt": "Show sodium channels causing repolarization.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh033", "category": "action-potential", "prompt": "Make potassium channels cause the rising phase.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh034", "category": "action-potential", "prompt": "Show a calcium wave instead of an action potential.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "fh035", "category": "orbit", "prompt": "Open the Sun Earth benchmark orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit" },
-    { "id": "fh036", "category": "orbit", "prompt": "Show Earth and the Sun in the two body scene.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["earth", "sun"] },
-    { "id": "fh037", "category": "orbit", "prompt": "Highlight the acceleration vector toward the Sun.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["gravity-vector"] },
-    { "id": "fh038", "category": "orbit", "prompt": "Show Horizons benchmark points for the orbit.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedEntities": ["jpl-benchmark"] },
-    { "id": "fh039", "category": "orbit", "prompt": "Use a timeline for the five day orbit benchmark.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedRepresentation": "timeline" },
-    { "id": "fh040", "category": "orbit", "prompt": "Show the orbit process graph.", "expectedSupported": true, "expectedProcessId": "two-body-orbit", "expectedRepresentation": "graph" },
-    { "id": "fh041", "category": "orbit", "prompt": "Simulate Jupiter disturbing the Sun Earth orbit.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh042", "category": "orbit", "prompt": "Design a lunar transfer trajectory.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh043", "category": "orbit", "prompt": "Claim this is a full multi body ephemeris.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh044", "category": "orbit", "prompt": "Plan a spacecraft burn using this orbit model.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "fh045", "category": "ambiguous", "prompt": "Show polymerase moving along DNA.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh046", "category": "ambiguous", "prompt": "Show a template strand.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh047", "category": "ambiguous", "prompt": "Show DNA copying.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh048", "category": "ambiguous", "prompt": "Show strands being made.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh049", "category": "unsupported", "prompt": "Show CRISPR editing a gene.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh050", "category": "unsupported", "prompt": "Visualize mRNA translation at a ribosome.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh051", "category": "unsupported", "prompt": "Build a protein folding animation.", "expectedSupported": false, "expectedAbstention": true },
-    { "id": "fh052", "category": "unsupported", "prompt": "Fetch new structures from PDB online.", "expectedSupported": false, "expectedAbstention": true },
-
-    { "id": "fh053", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "hide leading strand", "expectedProcessId": "dna-replication", "expectedHiddenEntities": ["leading-strand"] },
-    { "id": "fh054", "category": "follow-up", "initialPrompt": "Show DNA replication.", "command": "show directionality", "expectedProcessId": "dna-replication", "expectedDirectionality": true },
-    { "id": "fh055", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "show growing rna", "expectedProcessId": "eukaryotic-transcription", "expectedSelectedEntities": ["growing-rna-transcript"] },
-    { "id": "fh056", "category": "follow-up", "initialPrompt": "Show transcription.", "command": "switch to timeline", "expectedProcessId": "eukaryotic-transcription", "expectedRepresentation": "timeline" },
-    { "id": "fh057", "category": "follow-up", "initialPrompt": "Show an action potential.", "command": "slow depolarization", "expectedProcessId": "action-potential", "expectedPlaybackSpeed": 0.5 },
-    { "id": "fh058", "category": "follow-up", "initialPrompt": "Show an action potential.", "command": "compare blocked sodium channels", "expectedProcessId": "action-potential", "expectedRepresentation": "mixed" },
-    { "id": "fh059", "category": "follow-up", "initialPrompt": "Show Earth orbit.", "command": "compare to jpl", "expectedProcessId": "two-body-orbit", "expectedSelectedEntities": ["jpl-benchmark"] },
-    { "id": "fh060", "category": "follow-up", "initialPrompt": "Show Earth orbit.", "command": "remove benchmark markers", "expectedProcessId": "two-body-orbit", "expectedHiddenEntities": ["jpl-benchmark"] }
+    {
+      "id": "fh013",
+      "category": "transcription",
+      "prompt": "Show a eukaryotic gene being copied into RNA.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription"
+    },
+    {
+      "id": "fh014",
+      "category": "transcription",
+      "prompt": "Visualize RNA polymerase II opening a transcription bubble.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "rna-polymerase-ii",
+        "transcription-bubble"
+      ]
+    },
+    {
+      "id": "fh015",
+      "category": "transcription",
+      "prompt": "Focus on the DNA strand read by Pol II.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "template-strand"
+      ]
+    },
+    {
+      "id": "fh016",
+      "category": "transcription",
+      "prompt": "Show the non-template strand during transcription.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "coding-strand"
+      ]
+    },
+    {
+      "id": "fh017",
+      "category": "transcription",
+      "prompt": "Display nascent RNA coming out of RNA polymerase.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedEntities": [
+        "growing-rna-transcript"
+      ]
+    },
+    {
+      "id": "fh018",
+      "category": "transcription",
+      "prompt": "Show transcription as ordered stages.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "timeline"
+    },
+    {
+      "id": "fh019",
+      "category": "transcription",
+      "prompt": "Map the transcription stage relationships.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "graph"
+    },
+    {
+      "id": "fh020",
+      "category": "transcription",
+      "prompt": "Use molecular structure for RNA polymerase II.",
+      "expectedSupported": true,
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "molecular-structure"
+    },
+    {
+      "id": "fh021",
+      "category": "transcription",
+      "prompt": "Have RNA polymerase read the coding strand.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh022",
+      "category": "transcription",
+      "prompt": "Show RNA produced 3 prime to 5 prime.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh023",
+      "category": "transcription",
+      "prompt": "Show bacterial Pol II transcription.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh024",
+      "category": "transcription",
+      "prompt": "Make RNA identical to the template DNA strand.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh025",
+      "category": "action-potential",
+      "prompt": "Show a neuron firing voltage spike.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential"
+    },
+    {
+      "id": "fh026",
+      "category": "action-potential",
+      "prompt": "Focus on sodium channels during the rising phase.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "sodium-channels",
+        "depolarization"
+      ]
+    },
+    {
+      "id": "fh027",
+      "category": "action-potential",
+      "prompt": "Show potassium current during the falling phase.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "potassium-channels",
+        "repolarization"
+      ]
+    },
+    {
+      "id": "fh028",
+      "category": "action-potential",
+      "prompt": "Plot the membrane potential trace.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedRepresentation": "voltage-graph"
+    },
+    {
+      "id": "fh029",
+      "category": "action-potential",
+      "prompt": "Show the refractory interval after the spike.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "refractory-period"
+      ]
+    },
+    {
+      "id": "fh030",
+      "category": "action-potential",
+      "prompt": "Show sodium influx and potassium efflux arrows.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedEntities": [
+        "ion-flow"
+      ]
+    },
+    {
+      "id": "fh031",
+      "category": "action-potential",
+      "prompt": "Compare the spike when sodium channels are unavailable.",
+      "expectedSupported": true,
+      "expectedProcessId": "action-potential",
+      "expectedInterventionId": "compare-blocked-sodium-channels"
+    },
+    {
+      "id": "fh032",
+      "category": "action-potential",
+      "prompt": "Show sodium channels causing repolarization.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh033",
+      "category": "action-potential",
+      "prompt": "Make potassium channels cause the rising phase.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh034",
+      "category": "action-potential",
+      "prompt": "Show a calcium wave instead of an action potential.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh035",
+      "category": "orbit",
+      "prompt": "Open the Sun Earth benchmark orbit.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit"
+    },
+    {
+      "id": "fh036",
+      "category": "orbit",
+      "prompt": "Show Earth and the Sun in the two body scene.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "earth",
+        "sun"
+      ]
+    },
+    {
+      "id": "fh037",
+      "category": "orbit",
+      "prompt": "Highlight the acceleration vector toward the Sun.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "gravity-vector"
+      ]
+    },
+    {
+      "id": "fh038",
+      "category": "orbit",
+      "prompt": "Show Horizons benchmark points for the orbit.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedEntities": [
+        "jpl-benchmark"
+      ]
+    },
+    {
+      "id": "fh039",
+      "category": "orbit",
+      "prompt": "Use a timeline for the five day orbit benchmark.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedRepresentation": "timeline"
+    },
+    {
+      "id": "fh040",
+      "category": "orbit",
+      "prompt": "Show the orbit process graph.",
+      "expectedSupported": true,
+      "expectedProcessId": "two-body-orbit",
+      "expectedRepresentation": "graph"
+    },
+    {
+      "id": "fh041",
+      "category": "orbit",
+      "prompt": "Simulate Jupiter disturbing the Sun Earth orbit.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh042",
+      "category": "orbit",
+      "prompt": "Design a lunar transfer trajectory.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh043",
+      "category": "orbit",
+      "prompt": "Claim this is a full multi body ephemeris.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh044",
+      "category": "orbit",
+      "prompt": "Plan a spacecraft burn using this orbit model.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh045",
+      "category": "ambiguous",
+      "prompt": "Show polymerase moving along DNA.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh046",
+      "category": "ambiguous",
+      "prompt": "Show a template strand.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh047",
+      "category": "ambiguous",
+      "prompt": "Show DNA copying.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh048",
+      "category": "ambiguous",
+      "prompt": "Show strands being made.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh049",
+      "category": "unsupported",
+      "prompt": "Show CRISPR editing a gene.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh050",
+      "category": "unsupported",
+      "prompt": "Visualize mRNA translation at a ribosome.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh051",
+      "category": "unsupported",
+      "prompt": "Build a protein folding animation.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh052",
+      "category": "unsupported",
+      "prompt": "Fetch new structures from PDB online.",
+      "expectedSupported": false,
+      "expectedAbstention": true
+    },
+    {
+      "id": "fh055",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "show growing rna",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedSelectedEntities": [
+        "growing-rna-transcript"
+      ]
+    },
+    {
+      "id": "fh056",
+      "category": "follow-up",
+      "initialPrompt": "Show transcription.",
+      "command": "switch to timeline",
+      "expectedProcessId": "eukaryotic-transcription",
+      "expectedRepresentation": "timeline"
+    },
+    {
+      "id": "fh057",
+      "category": "follow-up",
+      "initialPrompt": "Show an action potential.",
+      "command": "slow depolarization",
+      "expectedProcessId": "action-potential",
+      "expectedPlaybackSpeed": 0.5
+    },
+    {
+      "id": "fh058",
+      "category": "follow-up",
+      "initialPrompt": "Show an action potential.",
+      "command": "compare blocked sodium channels",
+      "expectedProcessId": "action-potential",
+      "expectedRepresentation": "mixed"
+    },
+    {
+      "id": "fh059",
+      "category": "follow-up",
+      "initialPrompt": "Show Earth orbit.",
+      "command": "compare to jpl",
+      "expectedProcessId": "two-body-orbit",
+      "expectedSelectedEntities": [
+        "jpl-benchmark"
+      ]
+    },
+    {
+      "id": "fh060",
+      "category": "follow-up",
+      "initialPrompt": "Show Earth orbit.",
+      "command": "remove benchmark markers",
+      "expectedProcessId": "two-body-orbit",
+      "expectedHiddenEntities": [
+        "jpl-benchmark"
+      ]
+    }
   ]
 }

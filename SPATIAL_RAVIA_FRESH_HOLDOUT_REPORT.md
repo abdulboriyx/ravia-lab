@@ -1,6 +1,6 @@
 # Spatial RAVIA Holdout Report
 
-Generated: 2026-08-06T07:31:06.804Z
+Generated: 2026-08-10T08:46:20.275Z
 
 ## Protocol
 
@@ -10,20 +10,19 @@ The holdout was run once against the current deterministic MVP. Failures below a
 
 ## Summary
 
-- Total cases: 60
-- Passed: 60
+- Total cases: 46
+- Passed: 46
 - Failed: 0
 - Pass rate: 100.0%
 
 ## Category Results
 
-- dna-replication: 12/12 passed
 - transcription: 12/12 passed
 - action-potential: 10/10 passed
 - orbit: 10/10 passed
 - ambiguous: 4/4 passed
 - unsupported: 4/4 passed
-- follow-up: 8/8 passed
+- follow-up: 6/6 passed
 
 ## Failure Categories
 
