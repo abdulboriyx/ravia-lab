@@ -131,8 +131,7 @@ test("RCSB PDB adapter returns typed errors for invalid query, 404, and provider
 test("fixture-backed adapters return normalized records with provenance, license, and version metadata", async () => {
   const providers = createScientificDataProviders();
   const results = await Promise.all([
-    providers.reactome.query({ text: "RNA Polymerase II" }),
-    providers.biomodels.query({ text: "action potential model" }),
+    providers.rcsbPdb.query({ providerRecordId: "1ZF5", useFixture: true }),
     providers.chebi.query({ text: "DNA" })
   ]);
 
@@ -154,7 +153,7 @@ test("fixture-backed adapters return normalized records with provenance, license
 
 test("normalized external data can become internal provenance without exposing provider payloads", async () => {
   const provider = createRcsbPdbAdapter();
-  const result = await provider.query({ providerRecordId: "5XOG", useFixture: true });
+  const result = await provider.query({ providerRecordId: "1ZF5", useFixture: true });
 
   assert.equal(result.ok, true);
 

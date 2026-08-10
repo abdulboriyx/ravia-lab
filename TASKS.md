@@ -24,42 +24,10 @@
 - Validation command: `node --test app/**/*.test.ts` or existing `npm run test:spatial` if the test is placed under the current test glob.
 - Completion status: completed. Added `archive-integrity.test.ts` under the existing Spatial RAVIA test glob.
 
-## Task 4: Baseline and categorize Spatial RAVIA scientific evaluation failures
-
-- Problem: Formal evaluation currently passes 78/108 cases.
-- Suspected root cause: Prompt resolver lacks enough synonym/misspelling coverage, cross-process contradiction detection, misconception rejection, and some command aliases.
-- Files likely involved: `app/code/spatial-ravia/evaluation.ts`, `app/code/spatial-ravia/model.ts`, `app/code/spatial-ravia/*-process.ts`.
-- Validation command: `npm run eval:spatial`.
-- Completion status: completed. Baseline remains 78/108 passing, with 30 failures.
-
-## Task 5: Fix valid Spatial RAVIA scientific failures without weakening tests
-
-- Problem: Valid prompts fail or invalid prompts are accepted.
-- Suspected root cause: Process scoring accepts partial entity overlap too easily and lacks contradiction/misconception gates; process packs lack some prompt and command phrases.
-- Files likely involved: `app/code/spatial-ravia/model.ts`, `app/code/spatial-ravia/dna-process.ts`, `app/code/spatial-ravia/transcription-process.ts`, `app/code/spatial-ravia/action-potential-process.ts`, related tests.
-- Validation command: `npm run eval:spatial`; `npm run test:spatial`; `npm run typecheck`.
-- Completion status: completed. Scientific evaluation improved from 78/108 to 108/108 by adding valid aliases/context rules, rejecting known cross-process contradictions and misconceptions, fixing follow-up command support, and preventing short-token false-positive process scoring.
-
-## Task 6: Map visible Spatial RAVIA UI versus tested process-pack engine
-
-- Problem: The visible `/code/spatial-ravia` interface is a B-DNA/Mol* viewer, while the tested process-pack engine has DNA replication, transcription, and action potential capabilities that appear inaccessible.
-- Suspected root cause: Later commits replaced or redirected the route to the B-DNA viewer without removing older generic engine code/docs.
-- Files likely involved: `app/code/spatial-ravia/prototype.tsx`, `app/code/spatial-ravia/page.tsx`, `SPATIAL_RAVIA_PROGRESS.md`, `SPATIAL_RAVIA_ARCHITECTURE_AUDIT.md`, Git history.
-- Validation command: code/history inspection; `PRODUCT_DECISIONS_NEEDED.md`.
-- Completion status: completed. Evidence shows the process-pack workspace existed first and the B-DNA/Mol* viewer later replaced the visible route, but no repository source defines whether that replacement is final, a module, or an experiment.
-
-## Task 7: Implement only inferable Spatial RAVIA integration work
-
-- Problem: Tested process-pack capabilities should not be hidden if repository evidence clearly shows they were intended for the route, but product-defining assumptions must be avoided.
-- Suspected root cause: Route/product direction is ambiguous between B-DNA molecular viewer and generic process-pack workspace.
-- Files likely involved: `app/code/spatial-ravia/page.tsx`, `app/code/spatial-ravia/prototype.tsx`, potential documentation files.
-- Validation command: `npm run build`; `npm run test:spatial`; documented decision record.
-- Completion status: completed. No product-defining UI integration was made because the canonical route behavior cannot be inferred. The decision is documented in `PRODUCT_DECISIONS_NEEDED.md`.
-
-## Task 8: Final stabilization validation and report
+## Task 4: Final stabilization validation and report
 
 - Problem: Need a complete stabilization record with before/after evidence.
 - Suspected root cause: Current audit is diagnostic but not an implementation closeout.
-- Files likely involved: `STABILIZATION_REPORT.md`, `PRODUCT_DECISIONS_NEEDED.md`, `TASKS.md`.
+- Files likely involved: `TASKS.md`.
 - Validation command: `npm run lint`; `npm run typecheck`; `npm run test:spatial`; `npm run eval:spatial`; `npm run build`; `cd chapterbio && npm test && npm run build`.
 - Completion status: completed. Final root lint, type-check, Spatial RAVIA tests/evaluation, root build, and ChapterBio test/build all pass.

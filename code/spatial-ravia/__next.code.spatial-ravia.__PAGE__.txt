@@ -1,6 +1,0 @@
-1:"$Sreact.fragment"
-2:I[45884,["/_next/static/chunks/20jmuiofo648h.js","/_next/static/chunks/0cy44f6swzap-.js","/_next/static/chunks/41q-m_b1m1m18.js","/_next/static/chunks/13axnr4wlgsgw.js"],"SpatialRaviaPrototype"]
-3:I[68544,["/_next/static/chunks/20jmuiofo648h.js","/_next/static/chunks/0cy44f6swzap-.js"],"OutletBoundary"]
-4:"$Sreact.suspense"
-0:{"rsc":["$","$1","c",{"children":[["$","$L2",null,{}],[["$","script","script-0",{"src":"/_next/static/chunks/41q-m_b1m1m18.js","async":true}],["$","script","script-1",{"src":"/_next/static/chunks/13axnr4wlgsgw.js","async":true}]],["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"nOq8PglMWH-v8uBYu5ugU"}
-5:null

@@ -1,7 +1,28 @@
-import type {
-  ScientificClaimProvenance,
-  ScientificSource
-} from "./model.ts";
+export type ScientificSource = {
+  id: string;
+  title: string;
+  authors: string;
+  locator: string;
+  note: string;
+  urlOrDoi: string;
+  publicationType: "textbook" | "review" | "database" | "primary-literature" | "documentation";
+  accessDate: string;
+  license?: string;
+};
+
+export type ScientificClaimProvenance = {
+  sourceId: string;
+  title: string;
+  authorsOrInstitution: string;
+  urlOrDoi: string;
+  publicationType: ScientificSource["publicationType"];
+  accessDate: string;
+  confidence: number;
+  supportedClaim: string;
+  supportType: "direct-fact" | "model-assumption" | "interpretation";
+  claimStatus: "verified" | "unverified" | "disputed";
+  license?: string;
+};
 
 export type ScientificDataProviderId =
   | "rcsb-pdb"
@@ -672,76 +693,38 @@ const providerMetadata: Record<Exclude<ScientificDataProviderId, "rcsb-pdb">, {
 const offlineFixtures: NormalizedScientificDataRecord[] = [
   fixtureRecord({
     provider: "rcsb-pdb",
-    providerRecordId: "5XOG",
+    providerRecordId: "1ZF5",
     kind: "structure",
-    canonicalName: "RNA Polymerase II elongation complex bound with Spt5 KOW5 and Elf1",
-    aliases: ["RNA polymerase II elongation complex", "Pol II elongation complex", "5XOG"],
-    description: "Reviewed fixture for an experimentally determined RNA polymerase II elongation-complex structure.",
-    identifiers: { pdb: ["5XOG"], uniprot: ["C4R4Y0", "C4QZQ7"], ncbiTaxonomy: ["644223", "4922"] },
+    canonicalName: "B-DNA dodecamer crystal structure",
+    aliases: ["B-DNA", "DNA double helix", "1ZF5"],
+    description: "Reviewed fixture for the deposited B-DNA structure used by the Spatial Ravia molecular viewer.",
+    identifiers: { pdb: ["1ZF5"], chebi: ["CHEBI:16991"] },
     structuralDataAvailable: true,
     quantitativeDataAvailable: false,
     structure: {
       method: "X-RAY DIFFRACTION",
-      resolutionAngstrom: 3,
-      organism: "Komagataella phaffii with synthetic DNA/RNA constructs",
+      resolutionAngstrom: 1.55,
+      organism: "Synthetic DNA construct",
       biologicalAssemblyId: "1",
       biologicalAssemblyPreferred: true,
       chains: [
-        { id: "A", label: "DNA-directed RNA polymerase subunit", moleculeType: "protein" },
-        { id: "B", label: "DNA-directed RNA polymerase subunit beta", moleculeType: "protein" },
-        { id: "C-N", label: "Pol II subunits and elongation factors", moleculeType: "protein" },
-        { id: "M", label: "RNA transcript", moleculeType: "rna" },
-        { id: "N,O", label: "DNA template/coding fragments", moleculeType: "dna" }
+        { id: "A", label: "DNA strand A", moleculeType: "dna" },
+        { id: "B", label: "DNA strand B", moleculeType: "dna" }
       ],
-      ligands: [
-        { id: "APC", name: "Diphosphomethylphosphonic acid adenosyl ester", native: false },
-        { id: "ZN", name: "Zinc ion", native: true },
-        { id: "MG", name: "Magnesium ion", native: true }
-      ],
+      ligands: [],
       warnings: [
-        { code: "missing-domains", message: "Some deposited residues and flexible domains are not modeled." },
-        { code: "engineered-construct", message: "The nucleic-acid scaffold includes synthetic construct chains." },
-        { code: "non-native-ligands", message: "APC is a non-native nucleotide analog ligand." },
-        { code: "partial-complex", message: "This is an elongation-complex state, not the complete transcription process." },
-        { code: "static-snapshot", message: "The structure is a static experimental snapshot and does not represent full transcription dynamics." }
+        { code: "static-snapshot", message: "The structure is a static experimental snapshot and does not represent DNA dynamics." },
+        { code: "static-snapshot", message: "The deposited coordinates are a short B-DNA construct, not a full chromosome." }
       ]
     },
-    sourceTitle: "RCSB PDB entry 5XOG",
-    urlOrDoi: "https://doi.org/10.2210/pdb5XOG/pdb",
+    sourceTitle: "RCSB PDB entry 1ZF5",
+    urlOrDoi: "https://doi.org/10.2210/pdb1ZF5/pdb",
     license: {
       label: "CC0 1.0 / PDB archive data usage policy",
       url: "https://www.rcsb.org/pages/policies",
       requiresAttribution: true,
       commercialUse: "allowed"
     }
-  }),
-  fixtureRecord({
-    provider: "reactome",
-    providerRecordId: "R-HSA-73776",
-    kind: "pathway",
-    canonicalName: "RNA Polymerase II Transcription",
-    aliases: ["RNA Pol II transcription", "eukaryotic transcription"],
-    description: "Curated pathway fixture for RNA polymerase II transcription.",
-    identifiers: { reactome: ["R-HSA-73776"], ncbiTaxonomy: ["9606"] },
-    structuralDataAvailable: false,
-    quantitativeDataAvailable: false,
-    sourceTitle: "Reactome R-HSA-73776",
-    urlOrDoi: "https://reactome.org/content/detail/R-HSA-73776",
-    license: providerMetadata.reactome.license
-  }),
-  fixtureRecord({
-    provider: "biomodels",
-    providerRecordId: "BIOMD0000000020",
-    kind: "quantitative-model",
-    canonicalName: "Hodgkin-Huxley style membrane excitability model",
-    aliases: ["action potential model", "membrane voltage model"],
-    description: "Fixture for a quantitative membrane voltage model; not yet imported into ScientificModel.",
-    identifiers: { biomodels: ["BIOMD0000000020"] },
-    structuralDataAvailable: false,
-    quantitativeDataAvailable: true,
-    sourceTitle: "BioModels fixture BIOMD0000000020",
-    urlOrDoi: "https://www.ebi.ac.uk/biomodels/",
-    license: providerMetadata.biomodels.license
   }),
   fixtureRecord({
     provider: "chebi",

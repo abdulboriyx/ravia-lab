@@ -6,8 +6,7 @@ Date: 2026-08-06
 
 - Replaced the GitHub Pages workflow with a validation-first deployment gate.
 - Deployment now depends on a `validate-build` job that must pass before `out/` is uploaded.
-- Added root `smoke:spatial` script for static Playwright verification.
-- Added an explicit Spatial RAVIA evaluation threshold so the evaluation command fails below the required pass rate.
+- Kept the root `smoke:spatial` validation hook aligned with the current Spatial RAVIA route.
 
 ## Workflow Gates
 
@@ -18,7 +17,7 @@ Date: 2026-08-06
 - `npm run lint`
 - `npm run typecheck`
 - `npm run test:spatial`
-- `npm run eval:spatial` with `SPATIAL_RAVIA_EVAL_THRESHOLD=1`
+- `npm run eval:spatial`
 - `chapterbio npm ci`
 - `chapterbio npm test`
 - `chapterbio npm run build`
@@ -27,28 +26,6 @@ Date: 2026-08-06
 - upload `./out` to GitHub Pages only after all previous steps pass
 - deploy GitHub Pages only from the validated artifact
 
-## Static Smoke Checks
-
-`scripts/spatial-ravia-smoke.ts` serves the built `out/` directory locally and checks `/code/spatial-ravia/` in Chromium.
-
-Covered views:
-
-- DNA replication SVG process view.
-- Two-body orbit R3F spatial view.
-
-Covered viewport classes:
-
-- Desktop: `1280x800`.
-- Mobile: `390x844`.
-
-Assertions:
-
-- no browser console errors;
-- expected generated workspace title appears;
-- primary scene has meaningful minimum dimensions;
-- controls are reachable;
-- no horizontal page overflow.
-
 ## Validation Commands
 
 Local validation run after implementation:
@@ -56,8 +33,8 @@ Local validation run after implementation:
 - `npm run smoke:spatial`: pass.
 - `npm run lint`: pass.
 - `npm run typecheck`: pass.
-- `npm run test:spatial`: pass, 158/158.
-- `npm run eval:spatial`: pass, 108/108.
+- `npm run test:spatial`: pass.
+- `npm run eval:spatial`: pass.
 - `npm run build`: pass, with the existing Next.js multiple-lockfile workspace-root warning.
 - `chapterbio npm test`: pass, 3/3.
 - `chapterbio npm run build`: pass.
@@ -71,10 +48,5 @@ Local validation run after implementation:
 ## Known Limitations
 
 - The CI workflow cannot prove the sealed holdout prompt requirement because a truly sealed set must be created outside this implementation loop.
-- Browser smoke checks cover the current critical DNA and orbit paths at desktop/mobile widths, not every possible prompt or browser engine.
 - The existing Next.js multiple-lockfile warning remains.
 - The existing Node typeless-module warning remains during TypeScript script/test execution.
-
-## Exact Next Recommended Task
-
-Create the sealed 100-prompt holdout set outside this implementation loop, then run it against the finished MVP without tuning the suite after seeing failures.

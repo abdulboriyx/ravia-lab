@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SpatialRaviaPrototype } from "./prototype";
+import { DnaMolecularView } from "./DnaMolecularView";
 
 export const metadata: Metadata = {
   title: "Spatial Ravia | Ravia Lab",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SpatialRaviaPage() {
-  return <SpatialRaviaPrototype />;
+  return <DnaMolecularView />;
 }

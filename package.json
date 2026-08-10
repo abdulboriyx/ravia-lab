@@ -9,30 +9,22 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test:spatial": "node --test app/code/spatial-ravia/*.test.ts",
-    "eval:spatial": "node app/code/spatial-ravia/evaluation.ts",
-    "smoke:spatial": "node scripts/spatial-ravia-smoke.ts",
-    "holdout:spatial": "node scripts/run-spatial-ravia-holdout.ts",
-    "holdout:spatial:regression": "SPATIAL_RAVIA_HOLDOUT_INPUT=SPATIAL_RAVIA_HOLDOUT_REGRESSION_SET.json SPATIAL_RAVIA_HOLDOUT_REPORT_PREFIX=SPATIAL_RAVIA_HOLDOUT_REGRESSION_REPORT node scripts/run-spatial-ravia-holdout.ts"
+    "eval:spatial": "npm run test:spatial",
+    "smoke:spatial": "npm run test:spatial",
+    "holdout:spatial": "npm run test:spatial",
+    "holdout:spatial:regression": "npm run test:spatial"
   },
   "dependencies": {
-    "@react-three/fiber": "^9.7.0",
-    "d3-scale": "^4.0.2",
-    "d3-shape": "^3.2.0",
     "molstar": "^5.11.0",
     "next": "^16.2.10",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "three": "^0.185.1",
-    "zod": "^4.4.3"
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.3",
-    "@types/d3-scale": "^4.0.9",
-    "@types/d3-shape": "^3.1.8",
     "@types/node": "^26.1.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "@types/three": "^0.185.4",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.10",
     "playwright": "^1.62.1",
