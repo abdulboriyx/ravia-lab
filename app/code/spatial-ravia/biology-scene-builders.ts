@@ -47,6 +47,23 @@ export type SignalingFocus =
   | "mapk-cascade"
   | "signal-to-nucleus";
 
+export type ActionPotentialFocus =
+  | "full"
+  | "sodium-channel"
+  | "potassium-channel"
+  | "resting"
+  | "threshold"
+  | "depolarization"
+  | "peak"
+  | "repolarization"
+  | "hyperpolarization"
+  | "recovery"
+  | "refractory"
+  | "gradients"
+  | "sodium-flux"
+  | "potassium-flux"
+  | "positive-feedback";
+
 export function dnaStructureScene(): BiologySceneSpec {
   return BiologySceneSpecSchema.parse({
     intent: "structure",
@@ -238,6 +255,62 @@ function transcriptionPolymeraseEntity(context: BiologyContext) {
   };
 }
 
+function temporalTranscriptionPlan(currentPhase = "initiation") {
+  return {
+    currentPhase,
+    phases: [
+      {
+        id: "initiation",
+        label: "Initiation",
+        order: 0,
+        durationMs: 2200,
+        states: {
+          "rna-polymerase": "approaching-promoter",
+          "transcription-bubble": "absent",
+          "rna-transcript": "absent",
+          dna: "duplex",
+        },
+      },
+      {
+        id: "opening",
+        label: "Local opening",
+        order: 1,
+        durationMs: 2200,
+        states: {
+          "rna-polymerase": "bound-at-promoter",
+          "transcription-bubble": "opening",
+          "rna-transcript": "initiating",
+          dna: "locally-open",
+        },
+      },
+      {
+        id: "elongation",
+        label: "Elongation",
+        order: 2,
+        durationMs: 7000,
+        states: {
+          "rna-polymerase": "moving-along-gene",
+          "transcription-bubble": "moving-local-bubble",
+          "rna-transcript": "growing",
+          dna: "opens-and-recloses-locally",
+        },
+      },
+      {
+        id: "termination",
+        label: "Termination",
+        order: 3,
+        durationMs: 2600,
+        states: {
+          "rna-polymerase": "detaching",
+          "transcription-bubble": "closing",
+          "rna-transcript": "released",
+          dna: "duplex-reformed",
+        },
+      },
+    ],
+  };
+}
+
 export function transcriptionScene(
   focus: TranscriptionFocus,
   context: BiologyContext
@@ -302,6 +375,7 @@ export function transcriptionScene(
     "rna-transcript",
     "directionality",
   ].includes(focus);
+  const includeTemporal = ["transcription", "termination"].includes(focus);
 
   if (includeDna) {
     addEntity({ id: "dna", name: "DNA", type: "dna" });
@@ -414,6 +488,9 @@ export function transcriptionScene(
     relations,
     actions,
     renderMode: "mechanistic-3d",
+    temporal: includeTemporal
+      ? temporalTranscriptionPlan(focus === "termination" ? "termination" : "initiation")
+      : undefined,
   });
 }
 
@@ -695,5 +772,243 @@ export function signalingScene(focus: SignalingFocus): BiologySceneSpec {
     relations,
     actions,
     renderMode: "mechanistic-3d",
+  });
+}
+
+const actionPotentialPhaseOrder = [
+  "rest",
+  "threshold",
+  "depolarization",
+  "peak",
+  "repolarization",
+  "hyperpolarization",
+  "recovery",
+] as const;
+
+function temporalActionPotentialPlan(currentPhase: string) {
+  return {
+    currentPhase,
+    phases: [
+      {
+        id: "rest",
+        label: "Rest",
+        order: 0,
+        durationMs: 1800,
+        states: {
+          "voltage-gated-sodium-channel": "closed-available",
+          "voltage-gated-potassium-channel": "closed",
+          "membrane-potential": "resting",
+        },
+        voltage: "representative -70 mV",
+        dominantFlux: "none",
+      },
+      {
+        id: "threshold",
+        label: "Threshold",
+        order: 1,
+        durationMs: 1600,
+        states: {
+          "voltage-gated-sodium-channel": "opening",
+          "voltage-gated-potassium-channel": "closed-delayed",
+          "membrane-potential": "threshold",
+        },
+        voltage: "representative around -55 mV",
+        dominantFlux: "initial sodium influx",
+      },
+      {
+        id: "depolarization",
+        label: "Depolarization",
+        order: 2,
+        durationMs: 2200,
+        states: {
+          "voltage-gated-sodium-channel": "open",
+          "voltage-gated-potassium-channel": "mostly-closed",
+          "membrane-potential": "rising",
+        },
+        voltage: "rapidly rising",
+        dominantFlux: "sodium-current inward",
+      },
+      {
+        id: "peak",
+        label: "Peak",
+        order: 3,
+        durationMs: 1400,
+        states: {
+          "voltage-gated-sodium-channel": "inactivated",
+          "voltage-gated-potassium-channel": "opening",
+          "membrane-potential": "positive peak",
+        },
+        voltage: "representative near +30 mV",
+        dominantFlux: "potassium-current begins dominating",
+      },
+      {
+        id: "repolarization",
+        label: "Repolarization",
+        order: 4,
+        durationMs: 2400,
+        states: {
+          "voltage-gated-sodium-channel": "inactivated",
+          "voltage-gated-potassium-channel": "open",
+          "membrane-potential": "falling",
+        },
+        voltage: "falling negative",
+        dominantFlux: "potassium-current outward",
+      },
+      {
+        id: "hyperpolarization",
+        label: "Hyperpolarization",
+        order: 5,
+        durationMs: 1800,
+        states: {
+          "voltage-gated-sodium-channel": "recovering",
+          "voltage-gated-potassium-channel": "still-open-closing",
+          "membrane-potential": "below-rest",
+        },
+        voltage: "representative near -80 mV",
+        dominantFlux: "continued potassium efflux",
+      },
+      {
+        id: "recovery",
+        label: "Recovery",
+        order: 6,
+        durationMs: 1800,
+        states: {
+          "voltage-gated-sodium-channel": "closed-available",
+          "voltage-gated-potassium-channel": "closed",
+          "membrane-potential": "returning-to-rest",
+        },
+        voltage: "returns toward resting potential",
+        dominantFlux: "gradients preserved",
+      },
+    ],
+  };
+}
+
+export function actionPotentialScene(
+  focus: ActionPotentialFocus
+): BiologySceneSpec {
+  const phaseByFocus: Partial<Record<ActionPotentialFocus, string>> = {
+    resting: "rest",
+    threshold: "threshold",
+    depolarization: "depolarization",
+    peak: "peak",
+    repolarization: "repolarization",
+    hyperpolarization: "hyperpolarization",
+    recovery: "recovery",
+    refractory: "recovery",
+    "sodium-flux": "depolarization",
+    "potassium-flux": "repolarization",
+    "positive-feedback": "depolarization",
+  };
+  const currentPhase = phaseByFocus[focus] ?? "depolarization";
+
+  const entities: BiologySceneSpec["entities"] = [
+    { id: "extracellular-space", name: "extracellular space", type: "other" },
+    { id: "cytoplasm", name: "cytoplasm", type: "other" },
+    { id: "plasma-membrane", name: "plasma membrane", type: "membrane" },
+  ];
+  const addEntity = (entity: BiologySceneSpec["entities"][number]) => {
+    if (!entities.some((candidate) => candidate.id === entity.id)) {
+      entities.push(entity);
+    }
+  };
+
+  const includeNa = !["potassium-channel", "potassium-flux"].includes(focus);
+  const includeK = !["sodium-channel", "sodium-flux"].includes(focus);
+  const includeFullTemporal = !["sodium-channel", "potassium-channel"].includes(focus);
+
+  if (includeNa) {
+    addEntity({ id: "sodium-ion", name: "Na+ ions", type: "other" });
+    addEntity({ id: "sodium-gradient", name: "sodium gradient", type: "other" });
+    addEntity({ id: "voltage-gated-sodium-channel", name: "voltage-gated Na+ channel", type: "protein" });
+    addEntity({ id: "sodium-current", name: "inward sodium current", type: "other" });
+  }
+
+  if (includeK) {
+    addEntity({ id: "potassium-ion", name: "K+ ions", type: "other" });
+    addEntity({ id: "potassium-gradient", name: "potassium gradient", type: "other" });
+    addEntity({ id: "voltage-gated-potassium-channel", name: "voltage-gated K+ channel", type: "protein" });
+    addEntity({ id: "potassium-current", name: "outward potassium current", type: "other" });
+  }
+
+  if (includeFullTemporal) {
+    addEntity({ id: "membrane-potential", name: "membrane potential", type: "other" });
+    addEntity({ id: "threshold", name: "threshold", type: "other" });
+    for (const phase of actionPotentialPhaseOrder) {
+      addEntity({ id: `${phase}-phase`, name: `${phase} phase`, type: "other" });
+    }
+  }
+
+  if (focus === "positive-feedback") {
+    addEntity({ id: "positive-feedback", name: "positive feedback", type: "other" });
+  }
+
+  if (focus === "refractory") {
+    addEntity({ id: "refractory-period", name: "refractory period", type: "other" });
+  }
+
+  const relations: BiologySceneSpec["relations"] = [];
+  const addRelation = (subject: string, relation: string, object: string) => {
+    if (entities.some((entity) => entity.id === subject) && entities.some((entity) => entity.id === object)) {
+      relations.push({ subject, relation, object });
+    }
+  };
+
+  addRelation("extracellular-space", "outside_of", "plasma-membrane");
+  addRelation("cytoplasm", "inside_of", "plasma-membrane");
+  addRelation("voltage-gated-sodium-channel", "embedded_in", "plasma-membrane");
+  addRelation("voltage-gated-potassium-channel", "embedded_in", "plasma-membrane");
+  addRelation("sodium-ion", "higher_concentration_in", "extracellular-space");
+  addRelation("potassium-ion", "higher_concentration_in", "cytoplasm");
+  addRelation("sodium-gradient", "drives", "sodium-current");
+  addRelation("potassium-gradient", "drives", "potassium-current");
+  addRelation("sodium-current", "flows_into", "cytoplasm");
+  addRelation("potassium-current", "flows_out_to", "extracellular-space");
+  addRelation("sodium-current", "through", "voltage-gated-sodium-channel");
+  addRelation("potassium-current", "through", "voltage-gated-potassium-channel");
+  addRelation("threshold", "state_of", "membrane-potential");
+
+  for (let index = 0; index < actionPotentialPhaseOrder.length - 1; index += 1) {
+    addRelation(`${actionPotentialPhaseOrder[index]}-phase`, "precedes", `${actionPotentialPhaseOrder[index + 1]}-phase`);
+  }
+
+  if (includeFullTemporal) {
+    addRelation(`${currentPhase}-phase`, "current_phase_of", "membrane-potential");
+  }
+
+  if (focus === "positive-feedback") {
+    addRelation("positive-feedback", "amplifies", "sodium-current");
+    addRelation("sodium-current", "depolarizes", "membrane-potential");
+  }
+
+  if (focus === "refractory") {
+    addRelation("refractory-period", "caused_by", "voltage-gated-sodium-channel");
+    addRelation("refractory-period", "influenced_by", "voltage-gated-potassium-channel");
+  }
+
+  const actions: BiologySceneSpec["actions"] = [];
+  const addAction = (actor: string, action: string, target?: string) => {
+    if (entities.some((entity) => entity.id === actor) && (!target || entities.some((entity) => entity.id === target))) {
+      actions.push({ actor, action, target });
+    }
+  };
+
+  addAction("voltage-gated-sodium-channel", "opens", "sodium-current");
+  addAction("sodium-current", "depolarizes", "membrane-potential");
+  addAction("voltage-gated-sodium-channel", "inactivates");
+  addAction("voltage-gated-potassium-channel", "opens", "potassium-current");
+  addAction("potassium-current", "repolarizes", "membrane-potential");
+  addAction("potassium-current", "hyperpolarizes", "membrane-potential");
+  addAction("voltage-gated-potassium-channel", "closes");
+  addAction("voltage-gated-sodium-channel", "recovers");
+
+  return BiologySceneSpecSchema.parse({
+    intent: focus === "sodium-channel" || focus === "potassium-channel" ? "relation" : "process",
+    scale: "cellular",
+    entities,
+    relations,
+    actions,
+    renderMode: "mechanistic-3d",
+    temporal: includeFullTemporal ? temporalActionPotentialPlan(currentPhase) : undefined,
   });
 }

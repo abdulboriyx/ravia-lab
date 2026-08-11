@@ -1,6 +1,18 @@
 import { chromium } from "playwright";
 
 const prompts: Array<[string, "molstar" | "three" | "unsupported"]> = [
+  ["show how an action potential works", "three"],
+  ["show resting membrane potential", "three"],
+  ["show what happens at threshold", "three"],
+  ["show depolarization", "three"],
+  ["show sodium entering through voltage-gated sodium channels", "three"],
+  ["show what happens at the peak", "three"],
+  ["show repolarization", "three"],
+  ["show potassium leaving during repolarization", "three"],
+  ["show hyperpolarization", "three"],
+  ["show recovery after an action potential", "three"],
+  ["show why depolarization accelerates", "three"],
+  ["show why the neuron cannot immediately fire again", "three"],
   ["show a membrane receptor", "three"],
   ["show a ligand binding a receptor tyrosine kinase", "three"],
   ["show receptor dimerization", "three"],
@@ -129,6 +141,54 @@ async function main() {
   await page.waitForTimeout(800);
   await page.screenshot({ path: "SPATIAL_RAVIA_UI_THREE.png", caret: "initial" });
 
+  async function setTimelineTime(normalizedTime: number) {
+    const range = page.getByRole("slider", { name: "Mechanism time" });
+    await range.waitFor({ timeout: 5000 });
+    await range.evaluate((element, value) => {
+      const input = element as HTMLInputElement;
+      const max = Number(input.max);
+      input.value = String(Math.round(max * Number(value)));
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+    }, normalizedTime);
+    await page.waitForTimeout(300);
+  }
+
+  await promptInput.fill("show RNA polymerase transcribing a gene");
+  await page.getByRole("button", { name: "Generate" }).click();
+  await page.getByLabel("Mechanism timeline").waitFor({ timeout: 5000 });
+  await setTimelineTime(0);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_MOTION_TRANSCRIPTION_INITIATION.png",
+    caret: "initial",
+  });
+  await setTimelineTime(0.55);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_MOTION_TRANSCRIPTION_ELONGATION.png",
+    caret: "initial",
+  });
+  await page.getByLabel("Play mechanism").click();
+  await page.waitForTimeout(600);
+  await page.getByLabel("Pause mechanism").click();
+  await page.getByLabel("Playback speed").selectOption("2");
+  await page.getByLabel("Restart mechanism").click();
+  await page.waitForTimeout(300);
+  await page.getByLabel("Pause mechanism").click();
+  await setTimelineTime(1);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_MOTION_TRANSCRIPTION_TERMINATION.png",
+    caret: "initial",
+  });
+
+  await promptInput.fill("show how an action potential works");
+  await page.getByRole("button", { name: "Generate" }).click();
+  await page.getByLabel("Mechanism timeline").waitFor({ timeout: 5000 });
+  await setTimelineTime(0.4);
+  await page.screenshot({
+    path: "SPATIAL_RAVIA_MOTION_ACTION_POTENTIAL.png",
+    caret: "initial",
+  });
+
   const results = [];
 
   for (const [prompt, expected] of prompts) {
@@ -141,6 +201,10 @@ async function main() {
         .locator(".molstarLoadState")
         .waitFor({ state: "hidden", timeout: 8000 })
         .catch(() => undefined);
+      const timelineCount = await page.getByLabel("Mechanism timeline").count();
+      if (timelineCount !== 0) {
+        errors.push(`Molstar DNA view unexpectedly showed timeline: ${timelineCount}`);
+      }
       await page.screenshot({
         path: "SPATIAL_RAVIA_UI_MOLSTAR.png",
         caret: "initial",

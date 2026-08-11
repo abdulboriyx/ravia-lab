@@ -254,5 +254,172 @@ export function validateBiologySceneConsistency(
     };
   }
 
+  if (entityIds.has("voltage-gated-sodium-channel")) {
+    if (
+      !scene.relations.some(
+        (relation) =>
+          relation.subject === "voltage-gated-sodium-channel" &&
+          relation.relation === "embedded_in" &&
+          relation.object === "plasma-membrane"
+      )
+    ) {
+      return {
+        ok: false,
+        reason: "Voltage-gated sodium channels must be embedded in the plasma membrane.",
+      };
+    }
+  }
+
+  if (entityIds.has("voltage-gated-potassium-channel")) {
+    if (
+      !scene.relations.some(
+        (relation) =>
+          relation.subject === "voltage-gated-potassium-channel" &&
+          relation.relation === "embedded_in" &&
+          relation.object === "plasma-membrane"
+      )
+    ) {
+      return {
+        ok: false,
+        reason: "Voltage-gated potassium channels must be embedded in the plasma membrane.",
+      };
+    }
+  }
+
+  if (
+    entityIds.has("sodium-ion") &&
+    !scene.relations.some(
+      (relation) =>
+        relation.subject === "sodium-ion" &&
+        relation.relation === "higher_concentration_in" &&
+        relation.object === "extracellular-space"
+    )
+  ) {
+    return {
+      ok: false,
+      reason: "Action-potential scenes should represent Na+ as higher outside the cell.",
+    };
+  }
+
+  if (
+    entityIds.has("potassium-ion") &&
+    !scene.relations.some(
+      (relation) =>
+        relation.subject === "potassium-ion" &&
+        relation.relation === "higher_concentration_in" &&
+        relation.object === "cytoplasm"
+    )
+  ) {
+    return {
+      ok: false,
+      reason: "Action-potential scenes should represent K+ as higher inside the cell.",
+    };
+  }
+
+  if (
+    entityIds.has("sodium-current") &&
+    !scene.relations.some(
+      (relation) =>
+        relation.subject === "sodium-current" &&
+        relation.relation === "flows_into" &&
+        relation.object === "cytoplasm"
+    )
+  ) {
+    return {
+      ok: false,
+      reason: "Canonical action-potential Na+ current should flow inward.",
+    };
+  }
+
+  if (
+    entityIds.has("potassium-current") &&
+    !scene.relations.some(
+      (relation) =>
+        relation.subject === "potassium-current" &&
+        relation.relation === "flows_out_to" &&
+        relation.object === "extracellular-space"
+    )
+  ) {
+    return {
+      ok: false,
+      reason: "Canonical action-potential K+ current should flow outward.",
+    };
+  }
+
+  if (scene.temporal) {
+    const orderedPhases = [...scene.temporal.phases].sort(
+      (left, right) => left.order - right.order
+    );
+    const phaseIds = new Set(scene.temporal.phases.map((phase) => phase.id));
+
+    if (!phaseIds.has(scene.temporal.currentPhase)) {
+      return {
+        ok: false,
+        reason: "Current temporal phase must exist in the temporal phase plan.",
+      };
+    }
+
+    const expectedOrder = [
+      "rest",
+      "threshold",
+      "depolarization",
+      "peak",
+      "repolarization",
+      "hyperpolarization",
+      "recovery",
+    ];
+
+    if (
+      expectedOrder.every((phase) => phaseIds.has(phase)) &&
+      orderedPhases.map((phase) => phase.id).join("|") !== expectedOrder.join("|")
+    ) {
+      return {
+        ok: false,
+        reason: "Action-potential phases must be temporally ordered from rest through recovery.",
+      };
+    }
+
+    if (expectedOrder.every((phase) => phaseIds.has(phase))) {
+      const phaseById = new Map(scene.temporal.phases.map((phase) => [phase.id, phase]));
+      const depolarization = phaseById.get("depolarization");
+      const repolarization = phaseById.get("repolarization");
+      const peak = phaseById.get("peak");
+      const hyperpolarization = phaseById.get("hyperpolarization");
+
+      if (depolarization?.dominantFlux !== "sodium-current inward") {
+        return {
+          ok: false,
+          reason: "Depolarization should be dominated by inward Na+ current.",
+        };
+      }
+
+      if (repolarization?.dominantFlux !== "potassium-current outward") {
+        return {
+          ok: false,
+          reason: "Repolarization should be dominated by outward K+ current.",
+        };
+      }
+
+      if (
+        peak?.states["voltage-gated-sodium-channel"] !== "inactivated" ||
+        repolarization?.states["voltage-gated-sodium-channel"] !== "inactivated"
+      ) {
+        return {
+          ok: false,
+          reason: "Na+ channels should be inactivated at peak/repolarization in the canonical AP scene.",
+        };
+      }
+
+      if (
+        hyperpolarization?.states["voltage-gated-potassium-channel"] !== "still-open-closing"
+      ) {
+        return {
+          ok: false,
+          reason: "Hyperpolarization should include continued K+ conductance.",
+        };
+      }
+    }
+  }
+
   return { ok: true };
 }

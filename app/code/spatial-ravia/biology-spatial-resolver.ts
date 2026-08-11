@@ -355,6 +355,10 @@ export function resolveSpatialPlacements(
           ? -0.28
           : relation.subject === "receptor-monomer-b"
             ? 0.28
+            : relation.subject === "voltage-gated-sodium-channel"
+              ? -0.55
+              : relation.subject === "voltage-gated-potassium-channel"
+                ? 0.55
             : 0;
       addPlacement(placements, relation.subject, x, 0, 0.25);
       if (relation.subject === "receptor-dimer") addPlacement(placements, "receptor-dimer", 0, 0, 0.32);
@@ -411,6 +415,49 @@ export function resolveSpatialPlacements(
 
     if (relation.subject === "cellular-response" && relation.relation === "downstream_of") {
       addPlacement(placements, "cellular-response", 3.15, -0.22, 0.18);
+    }
+
+    if (
+      relation.subject === "sodium-ion" &&
+      relation.relation === "higher_concentration_in" &&
+      relation.object === "extracellular-space"
+    ) {
+      addPlacement(placements, "sodium-ion", -1.35, 1.15, 0.3);
+      addPlacement(placements, "sodium-gradient", -1.05, 0.72, 0.2);
+    }
+
+    if (
+      relation.subject === "potassium-ion" &&
+      relation.relation === "higher_concentration_in" &&
+      relation.object === "cytoplasm"
+    ) {
+      addPlacement(placements, "potassium-ion", 1.35, -1.15, 0.3);
+      addPlacement(placements, "potassium-gradient", 1.05, -0.72, 0.2);
+    }
+
+    if (relation.subject === "sodium-current" && relation.relation === "flows_into") {
+      addPlacement(placements, "sodium-current", -0.55, 0.42, 0.42);
+    }
+
+    if (relation.subject === "potassium-current" && relation.relation === "flows_out_to") {
+      addPlacement(placements, "potassium-current", 0.55, -0.42, 0.42);
+    }
+
+    if (relation.subject === "threshold" && relation.relation === "state_of") {
+      addPlacement(placements, "threshold", -2.05, -0.28, 0.2);
+      addPlacement(placements, "membrane-potential", -2.05, 0.18, 0.2);
+    }
+
+    if (relation.relation === "current_phase_of") {
+      addPlacement(placements, relation.subject, 1.95, 0.78, 0.2);
+    }
+
+    if (relation.subject === "positive-feedback" && relation.relation === "amplifies") {
+      addPlacement(placements, "positive-feedback", -0.95, 0.95, 0.45);
+    }
+
+    if (relation.subject === "refractory-period" && relation.relation === "caused_by") {
+      addPlacement(placements, "refractory-period", 0.05, -1.35, 0.45);
     }
   }
 

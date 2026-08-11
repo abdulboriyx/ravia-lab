@@ -46,7 +46,7 @@ export default function Page() {
         aria-label="Spatial Ravia visualization"
       >
         {!error && scene && renderer === "three" && (
-          <MechanisticScene scene={scene} />
+          <MechanisticScene key={submittedPrompt} scene={scene} />
         )}
 
         {!error && renderer === "molstar" && <DnaMolecularView embedded />}

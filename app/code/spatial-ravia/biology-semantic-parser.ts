@@ -11,6 +11,7 @@ import {
   transcriptionScene,
   signalingScene,
   translationScene,
+  actionPotentialScene,
 } from "./biology-scene-builders.ts";
 import { validateBiologySceneConsistency } from "./biology-scene-validator.ts";
 
@@ -54,7 +55,22 @@ type SemanticConcept =
   | "signaling-adaptor"
   | "signaling-ras"
   | "signaling-mapk"
-  | "signaling-nucleus";
+  | "signaling-nucleus"
+  | "action-potential-full"
+  | "action-potential-resting"
+  | "action-potential-threshold"
+  | "action-potential-depolarization"
+  | "action-potential-peak"
+  | "action-potential-repolarization"
+  | "action-potential-hyperpolarization"
+  | "action-potential-recovery"
+  | "action-potential-refractory"
+  | "action-potential-sodium-channel"
+  | "action-potential-potassium-channel"
+  | "action-potential-gradients"
+  | "action-potential-sodium-flux"
+  | "action-potential-potassium-flux"
+  | "action-potential-positive-feedback";
 
 type ConceptScore = {
   concept: SemanticConcept;
@@ -239,6 +255,70 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       "outside the cell",
       "inside the cell",
     ]);
+  const actionPotentialContext =
+    hasAny(tokens, [
+      "action",
+      "potential",
+      "spike",
+      "neuron",
+      "neuronal",
+      "nerve",
+      "impulse",
+      "voltage",
+      "voltage-gated",
+      "depolarization",
+      "depolarize",
+      "depolarizing",
+      "repolarization",
+      "repolarize",
+      "hyperpolarization",
+      "afterhyperpolarization",
+      "threshold",
+      "sodium",
+      "potassium",
+      "na",
+      "k",
+      "na+",
+      "k+",
+      "ion",
+      "ions",
+      "current",
+      "influx",
+      "efflux",
+      "inactivated",
+      "refractory",
+    ]) ||
+    hasPhrase(text, [
+      "membrane potential",
+      "resting potential",
+      "axon membrane",
+      "excitable membrane",
+      "membrane firing",
+      "membrane events",
+      "axon spike",
+      "spike mechanism",
+      "spike phases",
+      "channel sequence",
+      "channel states",
+      "voltage gates",
+      "voltage-sensitive channels",
+      "voltage gated sodium",
+      "voltage-gated sodium",
+      "voltage gated potassium",
+      "voltage-gated potassium",
+      "sodium channel",
+      "potassium channel",
+      "na channel",
+      "k channel",
+      "sodium entering",
+      "sodium influx",
+      "potassium leaving",
+      "potassium efflux",
+      "falling phase",
+      "rising phase",
+      "nerve impulse",
+      "happens at the peak",
+    ]);
   const unsupportedTranscriptionTrap = hasPhrase(text, [
     "look awesome",
     "ribosomes transcribing",
@@ -294,6 +374,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     "show cell signaling",
     "show a phosphorylated protein",
     "show protein phosphorylation",
+    "show a membrane protein",
   ]);
   const dnaStructureRequested =
     hasPhrase(text, ["show dna", "visualize dna"]) ||
@@ -950,8 +1031,275 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       "topology of rtk signaling",
       "ligand outside the cell and the adaptor beneath the membrane",
     ]);
+  const actionPotentialTrap =
+    ["show sodium", "show potassium", "show ions"].includes(text) ||
+    hasPhrase(text, [
+      "show electricity in a cell",
+      "make the neuron fire somehow",
+      "show a membrane protein",
+      "show a charged membrane object",
+      "show a cellular wave",
+      "show a channel without saying which channel",
+      "show ions doing something",
+      "show a membrane event",
+      "show the cell becoming excited",
+    ]);
+  const actionPotentialFullCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "action potential",
+      "neuronal spike",
+      "nerve impulse",
+      "membrane spike",
+      "how an action potential works",
+      "full action potential",
+      "voltage-gated channel sequence",
+      "ordered ion-channel states",
+      "excitable membrane firing",
+      "local axon spike",
+      "canonical action-potential phases",
+      "canonical action potential phases",
+      "spike phases",
+      "channel state changes across the spike",
+      "voltage-gated channel state transitions",
+      "ion channels crossing the axon membrane",
+      "open closed and inactivated channel states",
+    ]);
+  const restingCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "resting membrane",
+      "resting potential",
+      "before an action potential",
+      "before the spike",
+      "resting state",
+      "membrane at rest",
+      "before firing",
+      "minus seventy millivolt",
+      "seventy millivolt",
+      "resting ionic gradients",
+      "pre-threshold resting",
+      "at rest",
+      "before the action potential",
+      "closed sodium and potassium channels",
+      "available closed sodium channels",
+    ]);
+  const thresholdCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "threshold",
+      "triggering an action potential",
+      "trigger point",
+      "enough depolarization to fire",
+      "minus fifty-five millivolt",
+      "fifty-five millivolt",
+      "threshold before the rising phase",
+      "enough depolarization to start",
+      "threshold starts positive feedback",
+    ]);
+  const depolarizationCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    (hasAny(tokens, ["depolarization", "depolarize", "depolarizing"]) ||
+      hasPhrase(text, [
+        "rising phase",
+        "voltage rise",
+        "voltage rises",
+        "membrane voltage rise",
+        "sodium entering during",
+        "sodium entering through voltage-gated",
+        "sodium influx",
+        "na enters",
+        "why does membrane voltage rise",
+        "membrane voltage shoot upward",
+        "rising limb",
+        "sodium entry",
+        "na entering",
+        "voltage gates",
+      ]));
+  const peakCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "peak of an action potential",
+      "at the peak",
+      "happens at the peak",
+      "after the action potential reaches its peak",
+      "sodium channels after the action potential reaches its peak",
+      "positive peak",
+      "na channels inactivated",
+      "sodium channel inactivation",
+      "channel inactivation",
+      "apex of the spike",
+      "sodium current shuts down",
+      "k-channel opening at peak",
+      "na-channel inactivation",
+      "na channel inactivation",
+      "peak before the falling phase",
+      "top of the action potential",
+      "transition from rising to falling",
+      "sodium influx stops after the peak",
+      "spike reaches the top",
+      "plus thirty millivolts",
+    ]);
+  const repolarizationCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    (hasAny(tokens, ["repolarization", "repolarize", "repolarizing"]) ||
+      hasPhrase(text, [
+        "falling phase",
+        "voltage fall",
+        "voltage falls",
+        "voltage returning negative",
+        "potassium leaving during",
+        "potassium efflux",
+        "k exits",
+        "why does the voltage fall",
+        "voltage to return negative",
+        "ap falling limb",
+        "k current",
+        "delayed voltage-gated channels",
+        "open voltage-gated potassium channels after na-channel inactivation",
+        "ap falling limb",
+      ]));
+  const hyperpolarizationCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "hyperpolarization",
+      "afterhyperpolarization",
+      "undershoot",
+      "below resting",
+      "below rest",
+      "voltage below rest",
+      "too negative",
+      "below-rest membrane voltage",
+      "hyperpolarized state",
+      "continued k efflux below",
+      "membrane to become too negative",
+      "hyperpolarized state before recovery",
+    ]);
+  const recoveryCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "recovery after an action potential",
+      "return to resting",
+      "returns toward rest",
+      "after an action potential",
+      "channels recover",
+      "channels returning to the resting configuration",
+      "channel availability after the action potential",
+      "recovery without reversing",
+      "after hyperpolarization ends",
+      "potassium channels closing during recovery",
+      "sodium channel reset and potassium channel closure",
+    ]);
+  const refractoryCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "cannot immediately fire again",
+      "can't immediately fire again",
+      "refractory",
+      "reduced excitability",
+      "absolute refractory",
+      "relative refractory",
+    ]);
+  const sodiumChannelCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "voltage-gated sodium channel",
+      "voltage gated sodium channel",
+      "sodium channel",
+      "na channel",
+    ]);
+  const potassiumChannelCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "voltage-gated potassium channel",
+      "voltage gated potassium channel",
+      "potassium channel",
+      "k channel",
+    ]);
+  const gradientCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "sodium and potassium gradients",
+      "na and k gradients",
+      "ion gradients",
+      "sodium outside and potassium inside",
+      "put sodium outside and potassium mainly inside",
+      "sodium mainly outside and potassium mainly inside",
+      "na outside to inside and k inside to outside",
+      "sodium gradient and the potassium gradient",
+      "inward sodium current and outward potassium current",
+      "main ions cross the membrane",
+      "opposing ion currents",
+      "ion movement directions",
+      "na/k flux directions",
+    ]);
+  const sodiumFluxCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "which way does sodium move",
+      "sodium entering",
+      "sodium enters",
+      "sodium influx",
+      "na enters",
+      "na+ enters",
+      "sodium current inward",
+      "which direction does na+ move",
+      "which direction does na move",
+    ]);
+  const potassiumFluxCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "which way does potassium move",
+      "potassium leaving",
+      "potassium leaves",
+      "potassium efflux",
+      "k exits",
+      "k+ exits",
+      "potassium current outward",
+      "which direction does k+ move",
+      "which direction does k move",
+    ]);
+  const positiveFeedbackCue =
+    actionPotentialContext &&
+    !actionPotentialTrap &&
+    hasPhrase(text, [
+      "positive feedback",
+      "depolarization accelerates",
+      "rise so quickly after threshold",
+      "more sodium channels open",
+      "opening sodium channels causes more sodium channels to open",
+    ]);
 
   return [
+    { concept: "action-potential-positive-feedback", score: positiveFeedbackCue ? 0.98 : 0 },
+    { concept: "action-potential-refractory", score: refractoryCue ? 0.97 : 0 },
+    { concept: "action-potential-recovery", score: recoveryCue ? 0.97 : 0 },
+    { concept: "action-potential-threshold", score: thresholdCue ? 0.97 : 0 },
+    { concept: "action-potential-hyperpolarization", score: hyperpolarizationCue ? 0.96 : 0 },
+    { concept: "action-potential-repolarization", score: repolarizationCue ? 0.96 : 0 },
+    { concept: "action-potential-peak", score: peakCue ? 0.95 : 0 },
+    { concept: "action-potential-depolarization", score: depolarizationCue ? 0.96 : 0 },
+    { concept: "action-potential-resting", score: restingCue ? 0.95 : 0 },
+    { concept: "action-potential-sodium-flux", score: sodiumFluxCue ? 0.98 : 0 },
+    { concept: "action-potential-potassium-flux", score: potassiumFluxCue ? 0.98 : 0 },
+    { concept: "action-potential-gradients", score: gradientCue ? 0.97 : 0 },
+    { concept: "action-potential-sodium-channel", score: sodiumChannelCue && !depolarizationCue && !peakCue ? 0.93 : 0 },
+    { concept: "action-potential-potassium-channel", score: potassiumChannelCue && !repolarizationCue ? 0.93 : 0 },
+    { concept: "action-potential-full", score: actionPotentialFullCue ? 0.95 : 0 },
     { concept: "signaling-nucleus", score: signalingNucleusCue ? 0.97 : 0 },
     { concept: "signaling-mapk", score: signalingMapkCue ? 0.96 : 0 },
     { concept: "signaling-ras", score: signalingRasCue || signalingTopologyCue ? 0.96 : 0 },
@@ -1393,5 +1741,35 @@ function sceneForConcept(
       return signalingScene("mapk-cascade");
     case "signaling-nucleus":
       return signalingScene("signal-to-nucleus");
+    case "action-potential-full":
+      return actionPotentialScene("full");
+    case "action-potential-resting":
+      return actionPotentialScene("resting");
+    case "action-potential-threshold":
+      return actionPotentialScene("threshold");
+    case "action-potential-depolarization":
+      return actionPotentialScene("depolarization");
+    case "action-potential-peak":
+      return actionPotentialScene("peak");
+    case "action-potential-repolarization":
+      return actionPotentialScene("repolarization");
+    case "action-potential-hyperpolarization":
+      return actionPotentialScene("hyperpolarization");
+    case "action-potential-recovery":
+      return actionPotentialScene("recovery");
+    case "action-potential-refractory":
+      return actionPotentialScene("refractory");
+    case "action-potential-sodium-channel":
+      return actionPotentialScene("sodium-channel");
+    case "action-potential-potassium-channel":
+      return actionPotentialScene("potassium-channel");
+    case "action-potential-gradients":
+      return actionPotentialScene("gradients");
+    case "action-potential-sodium-flux":
+      return actionPotentialScene("sodium-flux");
+    case "action-potential-potassium-flux":
+      return actionPotentialScene("potassium-flux");
+    case "action-potential-positive-feedback":
+      return actionPotentialScene("positive-feedback");
   }
 }

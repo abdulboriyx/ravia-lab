@@ -53,6 +53,23 @@ export const BiologySceneSpecSchema = z.object({
     "mechanistic-3d",
     "cell-context",
   ]),
+
+  temporal: z
+    .object({
+      currentPhase: z.string(),
+      phases: z.array(
+        z.object({
+          id: z.string(),
+          label: z.string(),
+          order: z.number(),
+          durationMs: z.number().positive().optional(),
+          states: z.record(z.string(), z.string()),
+          voltage: z.string().optional(),
+          dominantFlux: z.string().optional(),
+        })
+      ),
+    })
+    .optional(),
 });
 
 export type BiologySceneSpec =

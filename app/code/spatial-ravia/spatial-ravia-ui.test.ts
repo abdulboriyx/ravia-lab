@@ -11,6 +11,14 @@ const molecularViewSource = readFileSync(
   new URL("./DnaMolecularView.tsx", import.meta.url),
   "utf8"
 );
+const mechanismSource = readFileSync(
+  new URL("./MechanisticScene.tsx", import.meta.url),
+  "utf8"
+);
+const timelineSource = readFileSync(
+  new URL("./SpatialTimelineControls.tsx", import.meta.url),
+  "utf8"
+);
 const globalCssSource = readFileSync(
   new URL("../../globals.css", import.meta.url),
   "utf8"
@@ -44,4 +52,21 @@ test("embedded Molstar view does not render a second Spatial Ravia prompt", () =
   assert.match(molecularViewSource, /!\s*embedded\s*\?/);
   assert.match(molecularViewSource, /structurePromptBar/);
   assert.match(pageSource, /<DnaMolecularView embedded \/>/);
+});
+
+test("temporal scenes use a separate compact timeline controller", () => {
+  assert.match(mechanismSource, /useBiologyTimeline/);
+  assert.match(mechanismSource, /timeline\.hasTemporal/);
+  assert.match(mechanismSource, /<SpatialTimelineControls/);
+  assert.match(timelineSource, /aria-label="Mechanism timeline"/);
+  assert.match(timelineSource, /aria-label="Mechanism time"/);
+  assert.match(timelineSource, /aria-label="Playback speed"/);
+  assert.doesNotMatch(pageSource, /SpatialTimelineControls/);
+});
+
+test("timeline controls are positioned separately from the bottom prompt dock", () => {
+  assert.match(globalCssSource, /\.spatialTimelineControls\s*{[\s\S]*?position:\s*fixed/);
+  assert.match(globalCssSource, /\.spatialTimelineControls\s*{[\s\S]*?bottom:\s*calc\(92px/);
+  assert.match(globalCssSource, /\.spatialTimelineControls\s*{[\s\S]*?left:\s*16px/);
+  assert.match(globalCssSource, /@media \(max-width: 560px\)[\s\S]*\.spatialTimelineControls/);
 });
