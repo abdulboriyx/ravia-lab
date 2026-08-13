@@ -72,6 +72,25 @@ test("translation elongation paraphrases resolve to ribosome protein synthesis",
   }
 });
 
+test("broad translation prompts use temporal elongation while ribosome structure stays minimal", () => {
+  for (const prompt of [
+    "show translation",
+    "show protein synthesis",
+    "show a ribosome making protein",
+    "show how mRNA becomes protein",
+    "visualize translation",
+  ]) {
+    const result = scene(prompt);
+    assert.ok(result.temporal, `${prompt} should expose temporal translation data`);
+    assertEntities(result, ["mrna", "ribosome", "a-site", "p-site", "e-site", "polypeptide"]);
+    assertAction(result, "ribosome", "synthesizes", "polypeptide");
+  }
+
+  const ribosome = scene("show a ribosome");
+  assert.equal(ribosome.intent, "structure");
+  assert.equal(ribosome.temporal, undefined);
+});
+
 test("translation initiation places initiator tRNA at the start codon and P site", () => {
   for (const prompt of [
     "show translation initiation",

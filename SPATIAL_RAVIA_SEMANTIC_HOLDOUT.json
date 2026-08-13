@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T19:05:17.210Z",
+  "generatedAt": "2026-08-11T19:34:25.076Z",
   "holdoutFrozen": true,
   "datasetVersion": "semantic-holdout-v1",
   "baselineBeforeParserImprovements": {
@@ -4163,7 +4163,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -4175,6 +4176,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -4676,7 +4682,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -4688,6 +4695,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -4779,7 +4791,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -4791,6 +4804,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -4882,7 +4900,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -4894,6 +4913,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -4985,7 +5009,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -4997,6 +5022,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5088,7 +5118,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -5100,6 +5131,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5190,7 +5226,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -5202,6 +5239,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5281,7 +5323,7 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.93,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
           "dna",
@@ -5293,9 +5335,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5305,9 +5355,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5339,9 +5409,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -5396,7 +5476,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -5408,6 +5489,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5505,7 +5591,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -5517,6 +5604,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5613,7 +5705,8 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "primase"
         ],
         "actions": [
           {
@@ -5625,6 +5718,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           }
         ],
         "relations": [
@@ -5724,6 +5822,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -5736,6 +5835,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -5838,6 +5942,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -5850,6 +5955,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -5952,6 +6062,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -5964,6 +6075,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -6066,6 +6182,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -6078,6 +6195,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -6180,6 +6302,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -6192,6 +6315,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -6297,6 +6425,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -6309,6 +6438,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -6413,6 +6547,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -6425,6 +6560,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",
@@ -6527,6 +6667,7 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "primase",
           "ligase"
         ],
         "actions": [
@@ -6539,6 +6680,11 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
           },
           {
             "actor": "ligase",

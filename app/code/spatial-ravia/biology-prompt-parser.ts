@@ -204,6 +204,17 @@ export function parseBiologyPrompt(prompt: string): BiologySceneSpec {
 
   // DNA polymerase synthesis
   if (
+    (text.includes("dna replication") ||
+      text.includes("replication fork") ||
+      text.includes("dna being copied") ||
+      text.includes("dna duplication")) &&
+    !text.includes("transcription") &&
+    !text.includes("rna polymerase")
+  ) {
+    return dnaReplicationSynthesisScene("full-replication");
+  }
+
+  if (
     text.includes("polymerase") &&
     !text.includes("rna") &&
     !text.includes("transcription") &&

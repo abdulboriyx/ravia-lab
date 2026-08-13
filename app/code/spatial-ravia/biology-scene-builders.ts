@@ -3,8 +3,10 @@ import {
   type BiologySceneSpec,
 } from "./biology-scene-spec.ts";
 import type { BiologyContext } from "./biology-context.ts";
+import type { DnaPromptSelection } from "./biology-dna-prompt-intent.ts";
 
 type SynthesisFocus =
+  | "full-replication"
   | "polymerase"
   | "leading-strand"
   | "lagging-strand"
@@ -38,6 +40,7 @@ export type TranslationFocus =
 
 export type SignalingFocus =
   | "membrane-receptor"
+  | "canonical-rtk-mapk"
   | "ligand-binding"
   | "dimerization"
   | "rtk-activation"
@@ -75,6 +78,55 @@ export function dnaStructureScene(): BiologySceneSpec {
   });
 }
 
+/**
+ * Canonical DNA scenes for families that do not require a narrower, dedicated
+ * mechanism builder. The semantic parser uses this after family selection, so
+ * vocabulary can grow without adding phrase-specific scene branches.
+ */
+export function dnaFamilyScene(selection: DnaPromptSelection): BiologySceneSpec {
+  const entity = (id: string, name: string, type: BiologySceneSpec["entities"][number]["type"]) => ({ id, name, type });
+  const dna = entity("dna", "DNA", "dna");
+
+  switch (selection.family) {
+    case "structure":
+      return dnaStructureScene();
+    case "sequence-regulation": {
+      const promoter = entity("promoter", "promoter or regulatory DNA region", "dna");
+      return BiologySceneSpecSchema.parse({
+        intent: "relation", scale: "molecular", entities: [dna, promoter],
+        relations: [{ subject: "promoter", relation: "located_on", object: "dna" }], actions: [], renderMode: "mechanistic-3d",
+      });
+    }
+    case "damage-repair": {
+      const repair = entity("repair-machinery", "DNA repair machinery", "protein");
+      const damage = entity("damage", "DNA lesion or damage site", "other");
+      return BiologySceneSpecSchema.parse({
+        intent: "mechanism", scale: "molecular", entities: [dna, repair, damage],
+        relations: [{ subject: "damage", relation: "located_on", object: "dna" }, { subject: "repair-machinery", relation: "binds_to", object: "damage" }],
+        actions: [{ actor: "repair-machinery", action: "repairs", target: "damage" }], renderMode: "mechanistic-3d",
+      });
+    }
+    case "packaging": {
+      const histone = entity("histone", "histone or packaging complex", "protein");
+      return BiologySceneSpecSchema.parse({
+        intent: "mechanism", scale: "complex", entities: [dna, histone],
+        relations: [{ subject: "dna", relation: "wrapped_around", object: "histone" }],
+        actions: [{ actor: "histone", action: "packages", target: "dna" }], renderMode: "mechanistic-3d",
+      });
+    }
+    case "local-chemistry": {
+      const basePair = entity("base-pair", "selected DNA base pair or residue", "other");
+      return BiologySceneSpecSchema.parse({
+        intent: "structure", scale: "atomic", entities: [dna, basePair],
+        relations: [{ subject: "base-pair", relation: "part_of", object: "dna" }], actions: [], renderMode: "mechanistic-3d",
+      });
+    }
+    case "replication":
+    case "transcription":
+      throw new Error("Dedicated mechanism builders are required for active DNA processes.");
+  }
+}
+
 export function helicaseMechanismScene(): BiologySceneSpec {
   return BiologySceneSpecSchema.parse({
     intent: "mechanism",
@@ -86,6 +138,7 @@ export function helicaseMechanismScene(): BiologySceneSpec {
     relations: [],
     actions: [{ actor: "helicase", action: "unwinds", target: "dna" }],
     renderMode: "mechanistic-3d",
+    temporal: temporalReplicationPlan("fork-opening"),
   });
 }
 
@@ -178,7 +231,21 @@ export function dnaReplicationSynthesisScene(
     { id: "okazaki-fragment", name: "Okazaki fragment", type: "dna" },
   ];
 
-  if (focus === "ligase") {
+  if (focus === "full-replication") {
+    entities.push({ id: "helicase", name: "Helicase", type: "protein" });
+  }
+
+  if (
+    focus === "full-replication" ||
+    focus === "lagging-strand" ||
+    focus === "okazaki-fragment" ||
+    focus === "ligase" ||
+    focus === "leading-lagging-comparison"
+  ) {
+    entities.push({ id: "primase", name: "Primase", type: "protein" });
+  }
+
+  if (focus === "full-replication" || focus === "ligase") {
     entities.push({ id: "ligase", name: "DNA ligase", type: "protein" });
   }
 
@@ -195,22 +262,31 @@ export function dnaReplicationSynthesisScene(
     scale: "complex",
     entities,
     relations: [
+      ...(focus === "full-replication"
+        ? [
+            { subject: "helicase", relation: "located_at", object: "fork" },
+            { subject: "helicase", relation: "unwinds", object: "dna" },
+          ]
+        : []),
       { subject: "polymerase", relation: "binds_to", object: "dna" },
       { subject: "daughter-leading-strand", relation: "extends_from", object: "rna-primer-leading" },
       { subject: "daughter-lagging-strand", relation: "extends_from", object: "rna-primer-lagging" },
       { subject: "rna-primer-leading", relation: "placed_on", object: "leading-template" },
       { subject: "rna-primer-lagging", relation: "placed_on", object: "lagging-template" },
       { subject: "okazaki-fragment", relation: "part_of", object: "daughter-lagging-strand" },
-      ...(focus === "leading-strand" || focus === "leading-lagging-comparison"
+      ...(focus === "leading-strand" ||
+      focus === "full-replication" ||
+      focus === "leading-lagging-comparison"
         ? [{ subject: "daughter-leading-strand", relation: "continuous_with", object: "fork" }]
         : []),
       ...(focus === "lagging-strand" ||
+      focus === "full-replication" ||
       focus === "okazaki-fragment" ||
       focus === "ligase" ||
       focus === "leading-lagging-comparison"
         ? [{ subject: "okazaki-fragment", relation: "discontinuous_on", object: "lagging-template" }]
         : []),
-      ...(focus === "ligase"
+      ...(focus === "full-replication" || focus === "ligase"
         ? [{ subject: "ligase", relation: "joins", object: "okazaki-fragment" }]
         : []),
       ...(focus === "directionality"
@@ -221,14 +297,118 @@ export function dnaReplicationSynthesisScene(
         : []),
     ],
     actions: [
+      ...(focus === "full-replication"
+        ? [{ actor: "helicase", action: "unwinds", target: "dna" }]
+        : []),
       { actor: "polymerase", action: "synthesizes", target: "daughter-leading-strand" },
       { actor: "polymerase", action: "synthesizes", target: "daughter-lagging-strand" },
-      ...(focus === "ligase"
+      ...(entities.some((entity) => entity.id === "primase")
+        ? [{ actor: "primase", action: "synthesizes", target: "rna-primer-lagging" }]
+        : []),
+      ...(focus === "full-replication" || focus === "ligase"
         ? [{ actor: "ligase", action: "ligates", target: "okazaki-fragment" }]
         : []),
     ],
     renderMode: "mechanistic-3d",
+    temporal: temporalReplicationPlan(
+      focus === "ligase"
+        ? "ligation"
+        : focus === "okazaki-fragment" || focus === "lagging-strand"
+        ? "lagging-fragment-cycle"
+        : focus === "polymerase" || focus === "leading-strand"
+        ? "elongation"
+        : "setup"
+    ),
   });
+}
+
+function temporalReplicationPlan(currentPhase = "setup") {
+  return {
+    currentPhase,
+    phases: [
+      {
+        id: "setup",
+        label: "Setup",
+        order: 0,
+        durationMs: 1800,
+        states: {
+          fork: "origin",
+          helicase: "approaching",
+          leading: "not-started",
+          lagging: "not-started",
+        },
+      },
+      {
+        id: "fork-opening",
+        label: "Fork opening",
+        order: 1,
+        durationMs: 2400,
+        states: {
+          fork: "opening",
+          helicase: "unwinding",
+          leading: "primed",
+          lagging: "exposed",
+        },
+      },
+      {
+        id: "primer-placement",
+        label: "Primer placement",
+        order: 2,
+        durationMs: 2200,
+        states: {
+          fork: "advancing",
+          primase: "placing-primer",
+          leading: "starting",
+          lagging: "primed",
+        },
+      },
+      {
+        id: "elongation",
+        label: "Elongation",
+        order: 3,
+        durationMs: 6200,
+        states: {
+          fork: "advancing",
+          helicase: "unwinding",
+          leading: "continuous-synthesis",
+          lagging: "fragment-cycling",
+        },
+      },
+      {
+        id: "lagging-fragment-cycle",
+        label: "Lagging cycle",
+        order: 4,
+        durationMs: 3600,
+        states: {
+          fork: "advancing",
+          primase: "repriming",
+          lagging: "okazaki-growth",
+        },
+      },
+      {
+        id: "ligation",
+        label: "Ligation",
+        order: 5,
+        durationMs: 2600,
+        states: {
+          fork: "late",
+          ligase: "joining-fragments",
+          lagging: "fragment-processing",
+        },
+      },
+      {
+        id: "completion",
+        label: "Completion",
+        order: 6,
+        durationMs: 1800,
+        states: {
+          fork: "complete",
+          leading: "complete",
+          lagging: "joined",
+        },
+      },
+    ],
+  };
 }
 
 function transcriptionPolymeraseEntity(context: BiologyContext) {
@@ -642,6 +822,11 @@ export function translationScene(
     addAction("ribosome", "forms_peptide_bond", "polypeptide");
     addRelation("polypeptide", "transferred_to", "aminoacyl-trna");
   }
+  if (focus === "elongation") {
+    addAction("ribosome", "forms_peptide_bond", "polypeptide");
+    addAction("ribosome", "advances_one_codon", "mrna");
+    addRelation("polypeptide", "transferred_to", "aminoacyl-trna");
+  }
   if (focus === "translocation") {
     addAction("trna", "moves_through", "a-site");
     addAction("ribosome", "advances_one_codon", "mrna");
@@ -658,7 +843,125 @@ export function translationScene(
     relations,
     actions,
     renderMode: "mechanistic-3d",
+    temporal: temporalTranslationPlan(
+      focus === "initiation"
+        ? "initiation"
+        : focus === "charged-trna"
+        ? "aminoacyl-trna-entry"
+        : focus === "codon-anticodon"
+        ? "codon-recognition"
+        : focus === "peptide-bond"
+        ? "peptide-transfer"
+        : focus === "translocation"
+        ? "translocation"
+        : focus === "termination"
+        ? "termination"
+        : "aminoacyl-trna-entry"
+    ),
   });
+}
+
+function temporalTranslationPlan(currentPhase = "aminoacyl-trna-entry") {
+  return {
+    currentPhase,
+    phases: [
+      {
+        id: "initiation",
+        label: "Initiation",
+        order: 0,
+        durationMs: 2200,
+        states: {
+          ribosome: "assembling",
+          "p-site": "initiator-trna",
+          "a-site": "empty",
+          peptide: "started",
+        },
+      },
+      {
+        id: "aminoacyl-trna-entry",
+        label: "A-site entry",
+        order: 1,
+        durationMs: 2400,
+        states: {
+          ribosome: "elongating",
+          "a-site": "incoming-aminoacyl-trna",
+          "p-site": "peptidyl-trna",
+          "e-site": "empty",
+        },
+      },
+      {
+        id: "codon-recognition",
+        label: "Codon recognition",
+        order: 2,
+        durationMs: 1800,
+        states: {
+          codon: "aligned",
+          anticodon: "paired",
+          "a-site": "aminoacyl-trna",
+          "p-site": "peptidyl-trna",
+        },
+      },
+      {
+        id: "peptide-transfer",
+        label: "Peptide transfer",
+        order: 3,
+        durationMs: 2200,
+        states: {
+          ribosome: "peptidyl-transferase-active",
+          peptide: "transferring-to-a-site",
+          "a-site": "peptidyl-trna",
+          "p-site": "deacylated-trna",
+        },
+      },
+      {
+        id: "translocation",
+        label: "Translocation",
+        order: 4,
+        durationMs: 2300,
+        states: {
+          ribosome: "advancing-one-codon",
+          "a-site": "moving-to-p-site",
+          "p-site": "moving-to-e-site",
+          mrna: "shifted-one-codon",
+        },
+      },
+      {
+        id: "trna-exit",
+        label: "tRNA exit",
+        order: 5,
+        durationMs: 1700,
+        states: {
+          "e-site": "empty-trna-exiting",
+          "p-site": "peptidyl-trna",
+          "a-site": "empty",
+        },
+      },
+      {
+        id: "elongation-cycle",
+        label: "Repeated elongation",
+        order: 6,
+        durationMs: 7200,
+        states: {
+          ribosome: "cycling",
+          "a-site": "repeated-entry",
+          "p-site": "peptidyl-trna",
+          peptide: "lengthening",
+        },
+      },
+      {
+        id: "termination",
+        label: "Termination",
+        order: 7,
+        durationMs: 2600,
+        states: {
+          "a-site": "release-factor",
+          "stop-codon": "recognized",
+          peptide: "released",
+          ribosome: "terminating",
+        },
+      },
+    ],
+  };
 }
 
 export function signalingScene(focus: SignalingFocus): BiologySceneSpec {
@@ -667,13 +970,14 @@ export function signalingScene(focus: SignalingFocus): BiologySceneSpec {
     if (!entities.some((candidate) => candidate.id === entity.id)) entities.push(entity);
   };
 
-  const includeLigand = ["ligand-binding", "rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includeDimer = ["dimerization", "rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includePhospho = ["rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includeAdaptor = ["adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includeRas = ["ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includeMapk = ["mapk-cascade", "signal-to-nucleus"].includes(focus);
-  const includeNucleus = focus === "signal-to-nucleus";
+  const isCanonical = focus === "canonical-rtk-mapk";
+  const includeLigand = isCanonical || ["ligand-binding", "rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includeDimer = isCanonical || ["dimerization", "rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includePhospho = isCanonical || ["rtk-activation", "phosphorylation", "adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includeAdaptor = isCanonical || ["adaptor-recruitment", "ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includeRas = isCanonical || ["ras-activation", "mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includeMapk = isCanonical || ["mapk-cascade", "signal-to-nucleus"].includes(focus);
+  const includeNucleus = isCanonical || focus === "signal-to-nucleus";
 
   addEntity({ id: "extracellular-space", name: "extracellular space", type: "other" });
   addEntity({ id: "cytoplasm", name: "cytoplasm", type: "other" });
@@ -772,7 +1076,28 @@ export function signalingScene(focus: SignalingFocus): BiologySceneSpec {
     relations,
     actions,
     renderMode: "mechanistic-3d",
+    temporal: isCanonical ? temporalSignalingPlan() : undefined,
   });
+}
+
+function temporalSignalingPlan() {
+  return {
+    currentPhase: "resting",
+    phases: [
+      { id: "resting", label: "Resting", order: 0, durationMs: 1400, states: { ligand: "extracellular", receptor: "monomeric", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "ligand-approach", label: "Ligand approach", order: 1, durationMs: 1800, states: { ligand: "approaching", receptor: "monomeric", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "ligand-binding", label: "Ligand binding", order: 2, durationMs: 1600, states: { ligand: "bound", receptor: "ligand-bound", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "dimerization", label: "Dimerization", order: 3, durationMs: 1800, states: { ligand: "bound", receptor: "dimerizing", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "receptor-activation", label: "RTK activation", order: 4, durationMs: 1700, states: { ligand: "bound", receptor: "phosphorylating", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "adaptor-recruitment", label: "Adaptor docking", order: 5, durationMs: 1700, states: { ligand: "bound", receptor: "phosphorylated", adaptor: "docking", sos: "recruited", ras: "gdp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "ras-activation", label: "Ras activation", order: 6, durationMs: 1800, states: { ligand: "bound", receptor: "phosphorylated", adaptor: "docked", sos: "near-ras", ras: "gdp-to-gtp", raf: "inactive", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "raf-activation", label: "Raf activation", order: 7, durationMs: 1500, states: { ras: "gtp", raf: "activating", mek: "inactive", erk: "inactive", response: "absent" } },
+      { id: "mek-activation", label: "MEK activation", order: 8, durationMs: 1500, states: { ras: "gtp", raf: "active", mek: "activating", erk: "inactive", response: "absent" } },
+      { id: "erk-activation", label: "ERK activation", order: 9, durationMs: 1500, states: { ras: "gtp", raf: "active", mek: "active", erk: "activating", response: "absent" } },
+      { id: "erk-translocation", label: "ERK translocation", order: 10, durationMs: 2300, states: { ras: "gtp", raf: "active", mek: "active", erk: "nuclear-translocation", response: "primed" } },
+      { id: "response-ready", label: "Response ready", order: 11, durationMs: 1600, states: { ras: "gtp", raf: "active", mek: "active", erk: "nuclear", response: "ready" } },
+    ],
+  };
 }
 
 const actionPotentialPhaseOrder = [

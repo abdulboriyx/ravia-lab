@@ -1,21 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore, useState } from "react";
 
 import MechanisticScene from "./MechanisticScene";
 import { DnaMolecularView } from "./DnaMolecularView";
+import { DnaPackagingView } from "./DnaPackagingView";
+import { DnaLocalChemistryView } from "./DnaLocalChemistryView";
 import { SpatialPromptDock } from "./SpatialPromptDock";
 import { parseBiologyScenePrompt } from "./biology-parser";
 import { chooseBiologyRenderer } from "./biology-renderer-router";
+import { resolveDnaTemplateRendererOwner, resolveDnaVisualTemplate } from "./biology-dna-visual-dispatcher";
+import { normalizeSpatialRaviaTheme, spatialRaviaThemeStorageKey, type SpatialRaviaTheme } from "./spatial-ravia-theme";
+
+const spatialRaviaThemeChangeEvent = "spatial-ravia-theme-change";
+
+function subscribeToSpatialRaviaTheme(onStoreChange: () => void) {
+  window.addEventListener(spatialRaviaThemeChangeEvent, onStoreChange);
+  window.addEventListener("storage", onStoreChange);
+  return () => {
+    window.removeEventListener(spatialRaviaThemeChangeEvent, onStoreChange);
+    window.removeEventListener("storage", onStoreChange);
+  };
+}
+
+function readSpatialRaviaTheme(): SpatialRaviaTheme {
+  return normalizeSpatialRaviaTheme(window.localStorage.getItem(spatialRaviaThemeStorageKey));
+}
 
 export default function Page() {
   const [prompt, setPrompt] = useState("show helicase opening DNA");
   const [submittedPrompt, setSubmittedPrompt] = useState(
     "show helicase opening DNA"
   );
+  const theme = useSyncExternalStore<SpatialRaviaTheme>(
+    subscribeToSpatialRaviaTheme,
+    readSpatialRaviaTheme,
+    () => "light"
+  );
+
+  const toggleTheme = () => {
+    const next = theme === "light" ? "dark" : "light";
+    window.localStorage.setItem(spatialRaviaThemeStorageKey, next);
+    window.dispatchEvent(new Event(spatialRaviaThemeChangeEvent));
+  };
 
   let scene = null;
   let renderer = null;
+  let dnaTemplate = null;
   let parseSource = null;
   let error: string | null = null;
 
@@ -24,7 +55,8 @@ export default function Page() {
   if (result.status === "supported") {
     scene = result.scene;
     parseSource = result.source;
-    renderer = chooseBiologyRenderer(scene);
+    dnaTemplate = resolveDnaVisualTemplate(scene, result.dnaSelection);
+    renderer = chooseBiologyRenderer(scene, dnaTemplate);
   } else {
     error = result.reason;
   }
@@ -40,16 +72,26 @@ export default function Page() {
   };
 
   return (
-    <main className="spatialRaviaWorkspace">
+    <main className="spatialRaviaWorkspace" data-spatial-theme={theme}>
       <section
         className="spatialRaviaViewport"
         aria-label="Spatial Ravia visualization"
       >
         {!error && scene && renderer === "three" && (
-          <MechanisticScene key={submittedPrompt} scene={scene} />
+          <MechanisticScene key={submittedPrompt} scene={scene} theme={theme} />
         )}
 
-        {!error && renderer === "molstar" && <DnaMolecularView embedded />}
+        {!error && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
+
+        {!error && scene && renderer === "dna-template" && dnaTemplate && (
+          resolveDnaTemplateRendererOwner(dnaTemplate) === "mechanistic-dna"
+            ? <MechanisticScene key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} scene={scene} theme={theme} />
+            : resolveDnaTemplateRendererOwner(dnaTemplate) === "packaging"
+              ? <DnaPackagingView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} prompt={submittedPrompt} theme={theme} />
+              : resolveDnaTemplateRendererOwner(dnaTemplate) === "local-chemistry"
+                ? <DnaLocalChemistryView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} subject={dnaTemplate.localChemistrySubject ?? (dnaTemplate.family === "damageRepair" ? "mismatch" : "gc-base-pair")} theme={theme} />
+                : <DnaMolecularView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} embedded theme={theme} visualTemplate={dnaTemplate} regulationPrompt={submittedPrompt} />
+        )}
 
         {!error && renderer === "cell-context" && (
           <p className="spatialRaviaStatus">
@@ -69,6 +111,12 @@ export default function Page() {
           </p>
         )}
       </section>
+
+      <button type="button" className="spatialRaviaThemeToggle" onClick={toggleTheme}
+        aria-label={theme === "light" ? "Switch to dark background" : "Switch to light background"}
+        aria-pressed={theme === "dark"} title={theme === "light" ? "Switch to dark background" : "Switch to light background"}>
+        {theme === "light" ? "DARK" : "LIGHT"}
+      </button>
 
       <SpatialPromptDock
         prompt={prompt}

@@ -268,7 +268,14 @@ export const signalingHoldoutSet: SignalingHoldoutCase[] = [
   ),
 
   unsupported("neg-1", "show a protein near the membrane"),
-  unsupported("neg-2", "show cell signaling"),
+  supported("broad-1", "mapk", "show cell signaling", {
+    supported: true,
+    domain: "signaling",
+    renderer: three,
+    requiredEntities: ["ligand", "receptor-dimer", "ras", "raf", "mek", "erk", "nucleus"],
+    requiredRelations: [{ subject: "erk", relation: "signals_to", object: "nucleus" }],
+    topologyChecks: ["ligandExtracellular", "receptorEmbedded", "rasMembrane"],
+  }),
   unsupported("neg-3", "show a phosphorylated protein"),
   unsupported("neg-4", "make the receptor cool"),
   unsupported("neg-5", "show a ligand binding DNA"),

@@ -91,6 +91,41 @@ test("transcription mechanism paraphrases converge to RNA synthesis semantics", 
   }
 });
 
+test("broad DNA to RNA transcription prompts use the canonical temporal mechanism", () => {
+  const expectedPhases = ["initiation", "opening", "elongation", "termination"];
+
+  for (const prompt of [
+    "show DNA to RNA transcription",
+    "show transcription from DNA to RNA",
+    "show RNA being made from DNA",
+    "show how DNA is transcribed into RNA",
+    "visualize DNA information being copied into RNA",
+    "show RNA polymerase transcribing DNA",
+    "show RNA polymerase transcribing a gene",
+    "show transcription elongation",
+    "show transcription",
+  ]) {
+    const result = scene(prompt);
+    assert.equal(chooseBiologyRenderer(result), "three");
+    assertEntities(result, [
+      "dna",
+      "gene",
+      "promoter",
+      "rna-polymerase",
+      "transcription-bubble",
+      "rna-transcript",
+    ]);
+    assertAction(result, "rna-polymerase", "synthesizes", "rna-transcript");
+    assertAction(result, "rna-polymerase", "locally_unwinds", "dna");
+    assertRelation(result, "rna-polymerase", "positioned_at", "transcription-bubble");
+    assert.deepEqual(
+      result.temporal?.phases.map((phase) => phase.id),
+      expectedPhases,
+      `${prompt} should use the temporal transcription mechanism`
+    );
+  }
+});
+
 test("basic transcription prompts stay minimal", () => {
   const polymerase = scene("show RNA polymerase");
   assert.equal(polymerase.renderMode, "molecular-structure");
@@ -105,6 +140,10 @@ test("basic transcription prompts stay minimal", () => {
   const promoter = scene("show a promoter");
   assertEntities(promoter, ["dna", "promoter"]);
   assertRelation(promoter, "promoter", "located_on", "dna");
+
+  const transcript = scene("show RNA transcript");
+  assertEntities(transcript, ["rna-transcript"]);
+  assert.equal(Boolean(transcript.temporal), false);
 });
 
 test("template coding strand and transcription directionality are explicit", () => {

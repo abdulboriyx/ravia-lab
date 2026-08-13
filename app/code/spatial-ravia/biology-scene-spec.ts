@@ -48,6 +48,18 @@ export const BiologySceneSpecSchema = z.object({
     })
   ),
 
+  // Sequence features belong to the DNA presentation model. They are ranges
+  // on DNA, not independent floating molecular actors.
+  dnaRegions: z.array(
+    z.object({
+      id: z.string(),
+      kind: z.enum(["enhancer", "promoter", "gene", "terminator"]),
+      label: z.string().optional(),
+      center: z.number().finite().optional(),
+      width: z.number().positive().finite().optional(),
+    })
+  ).optional(),
+
   renderMode: z.enum([
     "molecular-structure",
     "mechanistic-3d",

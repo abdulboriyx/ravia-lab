@@ -81,6 +81,35 @@ test("semantic helicase paraphrases produce equivalent unwinding scenes", () => 
   }
 });
 
+test("broad DNA replication prompts resolve to canonical temporal fork mechanism", () => {
+  const prompts = [
+    "show DNA replication",
+    "show how DNA replicates",
+    "visualize DNA being copied",
+    "show a replication fork working",
+    "show DNA duplication",
+  ];
+
+  for (const prompt of prompts) {
+    const scene = semanticScene(prompt);
+
+    assert.equal(scene.renderMode, "mechanistic-3d");
+    assert.ok(scene.temporal, `${prompt} did not include temporal data`);
+    assertEntities(scene, [
+      "dna",
+      "fork",
+      "helicase",
+      "polymerase",
+      "daughter-leading-strand",
+      "daughter-lagging-strand",
+      "okazaki-fragment",
+    ]);
+    assertAction(scene, "helicase", "unwinds", "dna");
+    assertAction(scene, "polymerase", "synthesizes", "daughter-leading-strand");
+    assertAction(scene, "polymerase", "synthesizes", "daughter-lagging-strand");
+  }
+});
+
 test("semantic ssDNA stabilization resolves organism-aware stabilizers", () => {
   const neutral = semanticScene("what keeps DNA strands apart?");
   assertEntities(neutral, ["dna", "ssdna-binding-protein"]);

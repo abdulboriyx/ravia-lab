@@ -4,6 +4,7 @@ import { parseBiologyPrompt } from "./biology-prompt-parser.ts";
 import type { BiologyParseResult } from "./biology-parse-result.ts";
 import { parseBiologyPromptSemantically } from "./biology-semantic-parser.ts";
 import { validateBiologySceneConsistency } from "./biology-scene-validator.ts";
+import { deriveDnaPromptSelection } from "./biology-dna-prompt-intent.ts";
 
 const deterministicFallbackConfidence = 0.86;
 
@@ -52,6 +53,7 @@ export function parseBiologyScenePrompt(prompt: string): BiologyParseResult {
       scene,
       confidence: deterministicFallbackConfidence,
       source: "deterministic",
+      dnaSelection: deriveDnaPromptSelection(prompt),
     };
   } catch {
     return {

@@ -1,0 +1,3531 @@
+{
+  "version": "dna-family-v1",
+  "total": 100,
+  "passed": 100,
+  "failed": 0,
+  "byFamily": {
+    "structure": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "sequence-regulation": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "replication": {
+      "total": 20,
+      "passed": 20,
+      "failed": 0
+    },
+    "transcription": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "damage-repair": {
+      "total": 15,
+      "passed": 15,
+      "failed": 0
+    },
+    "packaging": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    },
+    "local-chemistry": {
+      "total": 10,
+      "passed": 10,
+      "failed": 0
+    }
+  },
+  "byFailure": {},
+  "results": [
+    {
+      "id": "structure-01",
+      "prompt": "show a canonical B-DNA double helix",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "whole helix",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-02",
+      "prompt": "visualize the major and minor grooves of DNA",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "major/minor grooves",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-03",
+      "prompt": "display antiparallel DNA strands with 5-prime and 3-prime ends",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "strand polarity",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-04",
+      "prompt": "show Watson-Crick base pairs in a DNA helix",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "base pairing",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-05",
+      "prompt": "make a molecular model of double-stranded DNA",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "whole molecule",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.92,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-06",
+      "prompt": "show the sugar-phosphate backbones of a DNA duplex",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "backbones",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-07",
+      "prompt": "visualize one turn of right-handed B form DNA",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "helix geometry",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-08",
+      "prompt": "show how adenine pairs with thymine in DNA",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "AT base pair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-09",
+      "prompt": "show how guanine pairs with cytosine in a DNA duplex",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "GC base pair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-10",
+      "prompt": "inspect the base-pair stacking inside DNA",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "base stacking",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-11",
+      "prompt": "show a short DNA oligomer at nucleotide resolution",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "nucleotide detail",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-12",
+      "prompt": "display the double helix rather than a replication diagram",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "whole helix",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-13",
+      "prompt": "visualize the two grooves around the DNA helix",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "major/minor grooves",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "structure-14",
+      "prompt": "make DNA look cool",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna"
+      ]
+    },
+    {
+      "id": "structure-15",
+      "prompt": "show a random nucleic acid thing",
+      "expected": {
+        "sceneFamily": "structure",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna"
+      ]
+    },
+    {
+      "id": "regulation-01",
+      "prompt": "show a promoter immediately upstream of a gene",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "promoter-gene region",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-02",
+      "prompt": "visualize a transcription factor binding a DNA enhancer",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "enhancer binding",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-03",
+      "prompt": "show a repressor bound to an operator sequence",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "operator repression",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-04",
+      "prompt": "display a CpG island near a gene promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "CpG promoter",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-05",
+      "prompt": "show an enhancer looping to a promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "enhancer-promoter loop",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-06",
+      "prompt": "visualize a TATA box in a eukaryotic promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "TATA box",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-07",
+      "prompt": "show RNA polymerase recognizing a bacterial promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "promoter recognition",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-08",
+      "prompt": "compare coding and noncoding regulatory DNA around a gene",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "regulatory region",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-09",
+      "prompt": "show a silencer element recruiting a repressor",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "silencer repression",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-10",
+      "prompt": "display a response element occupied by a nuclear receptor",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "response element",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-11",
+      "prompt": "show a transcription start site and its upstream promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "transcription start",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-12",
+      "prompt": "visualize an insulator boundary between an enhancer and promoter",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "insulator boundary",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-13",
+      "prompt": "show methylated promoter DNA blocking transcription-factor binding",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "epigenetic regulation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-14",
+      "prompt": "show gene regulation with enhancers and mediator",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "enhancer regulation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "promoter"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "regulation-15",
+      "prompt": "show a gene doing regulation magic",
+      "expected": {
+        "sceneFamily": "sequence-regulation",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "promoter"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "promoter"
+      ]
+    },
+    {
+      "id": "replication-01",
+      "prompt": "show DNA replication at a replication fork",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "full fork",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-02",
+      "prompt": "visualize helicase unwinding parental DNA",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "fork opening",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-03",
+      "prompt": "show DNA polymerase extending the leading strand",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "leading synthesis",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.94,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-04",
+      "prompt": "display discontinuous lagging-strand synthesis",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "lagging synthesis",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.93,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-05",
+      "prompt": "show primase making an RNA primer at the fork",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "primer synthesis",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "rna-primer"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-06",
+      "prompt": "visualize Okazaki fragments behind the fork",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "Okazaki fragments",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-07",
+      "prompt": "show ligase sealing nicks between DNA fragments",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "ligation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-08",
+      "prompt": "show topoisomerase relieving supercoils ahead of helicase",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "torsion relief",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-09",
+      "prompt": "show DNA synthesis only in the 5-prime to 3-prime direction",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "synthesis polarity",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.97,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "template-5-prime",
+          "template-3-prime",
+          "5-to-3"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-10",
+      "prompt": "visualize a bacterial replisome copying both strands",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "bacterial replisome",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-11",
+      "prompt": "show RPA coating exposed single-stranded DNA in human cells",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "ssDNA stabilization",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.98,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "rpa"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-12",
+      "prompt": "show SSB proteins protecting bacterial single-stranded DNA",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "ssDNA stabilization",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.98,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "ssb"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-13",
+      "prompt": "show the difference between leading and lagging strand synthesis",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "leading/lagging comparison",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.94,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-14",
+      "prompt": "visualize DNA polymerase adding complementary nucleotides",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "polymerase elongation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.9,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-15",
+      "prompt": "show a daughter DNA strand growing from a primer",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "daughter-strand extension",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.93,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "rna-primer"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-16",
+      "prompt": "show the enzyme that opens the replication fork",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "helicase",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.94,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-17",
+      "prompt": "display replication fork progression over time",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "fork progression",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-18",
+      "prompt": "show semiconservative duplication of a DNA molecule",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "semiconservative replication",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "replication-19",
+      "prompt": "show the replication helper",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "fork",
+        "polymerase"
+      ]
+    },
+    {
+      "id": "replication-20",
+      "prompt": "show a fork but do not say what it is",
+      "expected": {
+        "sceneFamily": "replication",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "fork",
+          "polymerase"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "fork",
+        "polymerase"
+      ]
+    },
+    {
+      "id": "transcription-01",
+      "prompt": "show RNA polymerase transcribing a DNA template",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "elongation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-02",
+      "prompt": "visualize the transcription bubble around RNA polymerase",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "transcription bubble",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-03",
+      "prompt": "show a nascent RNA emerging from RNA polymerase",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "nascent transcript",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-04",
+      "prompt": "display RNA synthesis from a DNA template strand",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "template reading",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-05",
+      "prompt": "show RNA polymerase binding a promoter to begin transcription",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "initiation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.92,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-06",
+      "prompt": "show coding and template DNA strands during transcription",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "strand roles",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-07",
+      "prompt": "visualize 5-prime to 3-prime RNA chain growth",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "RNA directionality",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-08",
+      "prompt": "show bacterial RNA polymerase starting at a promoter",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "bacterial initiation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.92,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "bacterial-rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript",
+          "sigma-factor"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-09",
+      "prompt": "display eukaryotic RNA polymerase II transcribing a gene",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "Pol II elongation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase-ii",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-10",
+      "prompt": "show RNA polymerase moving along DNA and extending RNA",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "elongation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.95,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-11",
+      "prompt": "visualize transcription terminating at a terminator",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "termination",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript",
+          "terminator"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-12",
+      "prompt": "show the local DNA opening used to make RNA, not a replication fork",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "transcription bubble",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.84,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-13",
+      "prompt": "display a gene being copied into an RNA transcript",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "gene transcription",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.94,
+        "source": "semantic",
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "entities": [
+          "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "transcription-14",
+      "prompt": "show ribosomes transcribing DNA",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "biologically invalid",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "rna-polymerase",
+        "rna-transcript"
+      ]
+    },
+    {
+      "id": "transcription-15",
+      "prompt": "show RNA being made",
+      "expected": {
+        "sceneFamily": "transcription",
+        "scale": "complex",
+        "dnaState": "locally-open",
+        "importantEntities": [
+          "dna",
+          "rna-polymerase",
+          "rna-transcript"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "rna-polymerase",
+        "rna-transcript"
+      ]
+    },
+    {
+      "id": "repair-01",
+      "prompt": "show base excision repair removing uracil from DNA",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "base excision repair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-02",
+      "prompt": "visualize nucleotide excision repair around a UV thymine dimer",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "UV lesion repair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-03",
+      "prompt": "show mismatch repair correcting a wrongly paired base",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "mismatch repair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-04",
+      "prompt": "display a double-strand break being repaired by homologous recombination",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "homologous recombination",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-05",
+      "prompt": "show nonhomologous end joining at a DNA break",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "end joining",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-06",
+      "prompt": "visualize a DNA glycosylase recognizing an oxidized base",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "lesion recognition",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-07",
+      "prompt": "show AP endonuclease cutting at an abasic site",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "abasic-site incision",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-08",
+      "prompt": "display photolyase repairing a thymine dimer",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "photoreactivation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-09",
+      "prompt": "show a stalled repair complex at a bulky DNA adduct",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "bulky-adduct repair",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-10",
+      "prompt": "visualize repair polymerase filling a single-strand gap",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "repair synthesis",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-11",
+      "prompt": "show ligase sealing a nick after DNA repair",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "repair ligation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-12",
+      "prompt": "display ATM signaling at a broken DNA double helix",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "damage signaling",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-13",
+      "prompt": "show RAD51 filaments invading a homologous DNA template",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "strand invasion",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-14",
+      "prompt": "show DNA repair",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "unspecified repair mechanism",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "repair-15",
+      "prompt": "show the DNA damage thing",
+      "expected": {
+        "sceneFamily": "damage-repair",
+        "scale": "molecular",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "repair-machinery",
+        "damage"
+      ]
+    },
+    {
+      "id": "packaging-01",
+      "prompt": "show DNA wrapped around a histone octamer",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "nucleosome",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-02",
+      "prompt": "visualize a nucleosome core particle",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "nucleosome core",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-03",
+      "prompt": "show linker DNA between adjacent nucleosomes",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "beads on a string",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-04",
+      "prompt": "display histone H1 compacting nucleosomal DNA",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "linker-histone compaction",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-05",
+      "prompt": "show chromatin folding into a loop domain",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "chromatin loop",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-06",
+      "prompt": "visualize cohesin holding a DNA loop",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "loop extrusion",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-07",
+      "prompt": "show condensin compacting a mitotic chromosome",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "mitotic compaction",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-08",
+      "prompt": "display euchromatin as an open nucleosome array",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "open chromatin",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-09",
+      "prompt": "show heterochromatin packing DNA densely",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "condensed chromatin",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "packaging-10",
+      "prompt": "visualize DNA packaging from nucleosomes to a chromosome",
+      "expected": {
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "histone"
+        ],
+        "focus": "packaging hierarchy",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "packaging",
+        "scale": "complex",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "histone"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-01",
+      "prompt": "show the hydrogen bonds in an adenine-thymine base pair",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "AT hydrogen bonds",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-02",
+      "prompt": "visualize the three hydrogen bonds of a guanine-cytosine pair",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "GC hydrogen bonds",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-03",
+      "prompt": "display the phosphodiester bond linking two DNA nucleotides",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "phosphodiester bond",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-04",
+      "prompt": "show a deoxyribose sugar attached to a DNA base",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "nucleoside chemistry",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-05",
+      "prompt": "visualize a methyl group on 5-methylcytosine in DNA",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "cytosine methylation",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-06",
+      "prompt": "show the local atoms of a thymine dimer lesion",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "thymine-dimer chemistry",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-07",
+      "prompt": "display a DNA minor-groove drug bound to a base pair",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "small-molecule binding",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-08",
+      "prompt": "show a protonated DNA base causing a mismatch",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "tautomeric mismatch",
+        "supported": true
+      },
+      "actual": {
+        "status": "supported",
+        "confidence": 0.96,
+        "source": "semantic",
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "entities": [
+          "dna",
+          "base-pair"
+        ]
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": []
+    },
+    {
+      "id": "chemistry-09",
+      "prompt": "make DNA chemistry pretty",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "base-pair"
+      ]
+    },
+    {
+      "id": "chemistry-10",
+      "prompt": "show an atom near DNA",
+      "expected": {
+        "sceneFamily": "local-chemistry",
+        "scale": "atomic",
+        "dnaState": "double-stranded",
+        "importantEntities": [
+          "dna",
+          "base-pair"
+        ],
+        "focus": "ambiguous request",
+        "supported": false
+      },
+      "actual": {
+        "status": "unsupported",
+        "confidence": 0,
+        "reason": "This prompt is too ambiguous for a confident biology scene."
+      },
+      "passed": true,
+      "failures": [
+        "none"
+      ],
+      "missingEntities": [
+        "dna",
+        "base-pair"
+      ]
+    }
+  ]
+}

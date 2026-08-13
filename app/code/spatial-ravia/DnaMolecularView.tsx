@@ -2,16 +2,19 @@
 
 import dynamic from "next/dynamic";
 import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import metadata from "../../structures/1ZF5.metadata.json";
 import { parseSpatialScenePrompt } from "./dna-structure-routing";
 import type { PromptResolution, SpatialSceneCommand } from "./dna-structure-routing";
+import type { DnaVisualTemplate } from "./biology-dna-visual-dispatcher";
+import { canonicalDnaView, dnaVisualSystem } from "./DnaVisualSystem";
+import { deriveDnaRegulationPresentation } from "./DnaRegulationPresentation";
 
 export type StructureViewMode = "cartoon" | "ball-stick" | "atomic";
 export type StructureColorMode = "strand" | "base" | "element" | "backbone";
 export type StructureTheme = "dark" | "light";
 export type StructureSource = "experimental" | "idealized";
-export type StructureCameraPreset = "reset" | "groove" | "base-pair";
+export type StructureCameraPreset = "reset" | "groove" | "base-pair" | "nucleotide";
 export type DnaTransformationState = {
   strandSeparation: number;
   bubbleBasePairs: number;
@@ -21,6 +24,7 @@ export type DnaTransformationState = {
 export type StructureIsolationMode =
   | "all"
   | "base-pair"
+  | "nucleotide"
   | "strand-a"
   | "strand-b"
   | "bases"
@@ -111,29 +115,55 @@ const sourceDetails: Record<
 };
 type DnaMolecularViewProps = {
   embedded?: boolean;
+  theme?: StructureTheme;
+  /** A DNA-family dispatcher owns initial static composition. */
+  visualTemplate?: DnaVisualTemplate;
+  regulationPrompt?: string;
 };
 
 export function DnaMolecularView({
   embedded = false,
+  theme: controlledTheme,
+  visualTemplate,
+  regulationPrompt,
 }: DnaMolecularViewProps) {
   const [sceneStarted, setSceneStarted] = useState(embedded);
   const [prompt, setPrompt] = useState("");
   const [lastCommand, setLastCommand] = useState<SpatialSceneCommand | null>(null);
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
-  const [source, setSource] = useState<StructureSource>("experimental");
-  const [viewMode, setViewMode] = useState<StructureViewMode>("cartoon");
+  const heroView = canonicalDnaView("whole-duplex");
+  const [source, setSource] = useState<StructureSource>(
+    // Generic DNA structure is an educational canonical B-DNA hero shot.
+    visualTemplate?.family === "structure" || !visualTemplate ? "idealized" :
+      visualTemplate.useExperimentalCoordinates ? "experimental" : "idealized"
+  );
+  const [viewMode, setViewMode] = useState<StructureViewMode>(
+    visualTemplate?.representationLevel === "atom" ? "atomic" :
+      visualTemplate?.allowBallAndStick ? "ball-stick" : "cartoon"
+  );
   const [colorMode, setColorMode] = useState<StructureColorMode>("base");
   const [isolationMode, setIsolationMode] = useState<StructureIsolationMode>("all");
-  const [focusedBasePair, setFocusedBasePair] = useState(1);
+  const [focusedBasePair, setFocusedBasePair] = useState(heroView.selectedBasePair);
   const [cameraCommand, setCameraCommand] = useState<{ preset: StructureCameraPreset; nonce: number }>({
     preset: "reset",
     nonce: 0
   });
   const [bubbleProgress, setBubbleProgress] = useState(0);
-  const [transformation, setTransformation] = useState<DnaTransformationState>(neutralTransformation);
+  const [transformation, setTransformation] = useState<DnaTransformationState>(() => ({
+    ...neutralTransformation,
+    bend: visualTemplate?.family === "packaging" ? 0.72 : 0,
+    exposeBases: visualTemplate?.family === "damageRepair" ? 0.42 : 0,
+  }));
   const [bubblePlaying, setBubblePlaying] = useState(false);
-  const [theme, setTheme] = useState<StructureTheme>("light");
+  const [localTheme, setLocalTheme] = useState<StructureTheme>("light");
+  const theme = controlledTheme ?? localTheme;
   const [inspectorOpen, setInspectorOpen] = useState(false);
+  const regulationPresentation = useMemo(
+    () => visualTemplate?.family === "regulation"
+      ? deriveDnaRegulationPresentation(regulationPrompt ?? "regulatory region on DNA")
+      : undefined,
+    [regulationPrompt, visualTemplate?.family]
+  );
 
   useEffect(() => {
     document.documentElement.dataset.spatialRavia = "active";
@@ -239,6 +269,8 @@ export function DnaMolecularView({
             theme={theme}
             transformation={transformation}
             viewMode={viewMode}
+            cameraFamily={visualTemplate?.family ?? "structure"}
+            regulationRegions={regulationPresentation?.regions}
           />
         </section>
       ) : null}
@@ -453,13 +485,13 @@ export function DnaMolecularView({
             </div>
           </div>
         </details>
-        <button
+        {!controlledTheme && <button
           type="button"
           className="structureThemeToggle"
-          onClick={() => setTheme((value) => (value === "dark" ? "light" : "dark"))}
+          onClick={() => setLocalTheme((value) => (value === "dark" ? "light" : "dark"))}
         >
           {theme === "dark" ? "Light theme" : "Dark theme"}
-        </button>
+        </button>}
         <button type="button" onClick={() => setInspectorOpen((open) => !open)}>
           {inspectorOpen ? "Hide metadata" : "Metadata"}
         </button>
@@ -478,8 +510,16 @@ export function DnaMolecularView({
       {sceneStarted ? (
         <div className="structureEndpointBadge" aria-label="DNA strand endpoint labels">
           <strong>Endpoint labels</strong>
-          <span>Chain A: 5′ A1 → 3′ A10</span>
-          <span>Chain B: 3′ B1 → 5′ B10</span>
+          <span>Chain A: 5′ A1 → 3′ A{dnaVisualSystem.geometry.canonicalDuplexBasePairCount}</span>
+          <span>Chain B: 3′ B1 → 5′ B{dnaVisualSystem.geometry.canonicalDuplexBasePairCount}</span>
+        </div>
+      ) : null}
+
+      {regulationPresentation && sceneStarted ? (
+        <div className="dnaRegulationLegend" aria-label="DNA regulatory regions">
+          {regulationPresentation.regions.filter((region) => region.visible).map((region) => (
+            <span key={region.id}>{region.label}</span>
+          ))}
         </div>
       ) : null}
 

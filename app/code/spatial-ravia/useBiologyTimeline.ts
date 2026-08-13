@@ -9,11 +9,13 @@ import {
   getTotalDurationMs,
   type TemporalFrame,
 } from "./biology-timeline";
+import type { FocusedTimelineWindow } from "./biology-translation-timeline-focus.ts";
 
 type UseBiologyTimelineResult = {
   hasTemporal: boolean;
   playing: boolean;
   speed: number;
+  resetVersion: number;
   timeMs: number;
   totalDurationMs: number;
   frame: TemporalFrame | null;
@@ -25,12 +27,14 @@ type UseBiologyTimelineResult = {
 };
 
 export function useBiologyTimeline(
-  temporal?: BiologySceneSpec["temporal"]
+  temporal?: BiologySceneSpec["temporal"],
+  focusedWindow?: FocusedTimelineWindow
 ): UseBiologyTimelineResult {
   const totalDurationMs = useMemo(() => getTotalDurationMs(temporal), [temporal]);
   const [timeMs, setTimeMs] = useState(() => getInitialTimeMs(temporal));
   const [playing, setPlaying] = useState(false);
   const [speed, setSpeedState] = useState(1);
+  const [resetVersion, setResetVersion] = useState(0);
   const previousTickRef = useRef<number | null>(null);
 
   useEffect(() => {
@@ -47,9 +51,9 @@ export function useBiologyTimeline(
       const deltaMs = (timestamp - previousTimestamp) * speed;
 
       setTimeMs((currentTimeMs) => {
-        const nextTimeMs = clampTimeMs(temporal, currentTimeMs + deltaMs);
+        const nextTimeMs = Math.min(clampTimeMs(temporal, currentTimeMs + deltaMs), focusedWindow?.endMs ?? Infinity);
 
-        if (nextTimeMs >= totalDurationMs) {
+        if (nextTimeMs >= (focusedWindow?.endMs ?? totalDurationMs)) {
           previousTickRef.current = null;
           setPlaying(false);
         }
@@ -63,21 +67,23 @@ export function useBiologyTimeline(
     frameRequest = window.requestAnimationFrame(tick);
 
     return () => window.cancelAnimationFrame(frameRequest);
-  }, [playing, speed, temporal, totalDurationMs]);
+  }, [focusedWindow?.endMs, playing, speed, temporal, totalDurationMs]);
 
   const seek = useCallback(
     (nextTimeMs: number) => {
-      setTimeMs(clampTimeMs(temporal, nextTimeMs));
+      const absoluteTime = focusedWindow ? focusedWindow.startMs + nextTimeMs : nextTimeMs;
+      setTimeMs(Math.min(Math.max(clampTimeMs(temporal, absoluteTime), focusedWindow?.startMs ?? 0), focusedWindow?.endMs ?? Infinity));
       previousTickRef.current = null;
     },
-    [temporal]
+    [focusedWindow, temporal]
   );
 
   const restart = useCallback(() => {
-    setTimeMs(0);
+    setTimeMs(focusedWindow?.startMs ?? getInitialTimeMs(temporal));
+    setResetVersion((value) => value + 1);
     previousTickRef.current = null;
     setPlaying(true);
-  }, []);
+  }, [focusedWindow, temporal]);
 
   const play = useCallback(() => setPlaying(true), []);
   const pause = useCallback(() => {
@@ -89,13 +95,21 @@ export function useBiologyTimeline(
     setSpeedState(nextSpeed);
   }, []);
 
+  // A prompt can replace the temporal plan without remounting this hook.
+  // Until the next interaction writes the new clock, never expose a stale
+  // timestamp outside the new focused interval.
+  const safeTimeMs = focusedWindow && (timeMs < focusedWindow.startMs || timeMs >= focusedWindow.endMs)
+    ? focusedWindow.startMs
+    : timeMs;
+
   return {
     hasTemporal: Boolean(temporal && totalDurationMs > 0),
     playing,
     speed,
-    timeMs,
-    totalDurationMs,
-    frame: getTemporalFrame(temporal, timeMs),
+    resetVersion,
+    timeMs: focusedWindow ? safeTimeMs - focusedWindow.startMs : safeTimeMs,
+    totalDurationMs: focusedWindow ? focusedWindow.endMs - focusedWindow.startMs : totalDurationMs,
+    frame: getTemporalFrame(temporal, safeTimeMs),
     play,
     pause,
     restart,

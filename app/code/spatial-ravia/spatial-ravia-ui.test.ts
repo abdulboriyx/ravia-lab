@@ -19,6 +19,14 @@ const timelineSource = readFileSync(
   new URL("./SpatialTimelineControls.tsx", import.meta.url),
   "utf8"
 );
+const structurePrimitiveSource = readFileSync(
+  new URL("./StructureDerivedPrimitive.tsx", import.meta.url),
+  "utf8"
+);
+const themeSource = readFileSync(
+  new URL("./spatial-ravia-theme.ts", import.meta.url),
+  "utf8"
+);
 const globalCssSource = readFileSync(
   new URL("../../globals.css", import.meta.url),
   "utf8"
@@ -51,7 +59,7 @@ test("Spatial prompt dock is bottom centered and responsive", () => {
 test("embedded Molstar view does not render a second Spatial Ravia prompt", () => {
   assert.match(molecularViewSource, /!\s*embedded\s*\?/);
   assert.match(molecularViewSource, /structurePromptBar/);
-  assert.match(pageSource, /<DnaMolecularView embedded \/>/);
+  assert.match(pageSource, /<DnaMolecularView embedded theme=\{theme\} \/>/);
 });
 
 test("temporal scenes use a separate compact timeline controller", () => {
@@ -69,4 +77,27 @@ test("timeline controls are positioned separately from the bottom prompt dock", 
   assert.match(globalCssSource, /\.spatialTimelineControls\s*{[\s\S]*?bottom:\s*calc\(92px/);
   assert.match(globalCssSource, /\.spatialTimelineControls\s*{[\s\S]*?left:\s*16px/);
   assert.match(globalCssSource, /@media \(max-width: 560px\)[\s\S]*\.spatialTimelineControls/);
+});
+
+test("grounded structure loading is not restarted by an inline resolution callback", () => {
+  assert.match(structurePrimitiveSource, /const onResolvedRef = useRef\(onResolved\)/);
+  assert.match(structurePrimitiveSource, /onResolvedRef\.current\?\.\(next\)/);
+  assert.match(structurePrimitiveSource, /\}, \[entry\]\);/);
+  assert.doesNotMatch(structurePrimitiveSource, /\}, \[entry, onResolved\]\);/);
+});
+
+test("mechanistic canvas fills the visualization surface", () => {
+  assert.match(globalCssSource, /\.mechanisticSceneSurface > canvas\s*{[\s\S]*?width:\s*100%;[\s\S]*?height:\s*100%/);
+});
+
+test("Spatial Ravia owns one persistent workspace light and dark background preference", () => {
+  assert.match(pageSource, /spatialRaviaThemeStorageKey/);
+  assert.match(pageSource, /localStorage\.getItem/);
+  assert.match(pageSource, /localStorage\.setItem/);
+  assert.match(pageSource, /data-spatial-theme=\{theme\}/);
+  assert.match(pageSource, /Switch to dark background/);
+  assert.match(pageSource, /Switch to light background/);
+  assert.match(themeSource, /canvasBackground/);
+  assert.match(mechanismSource, /spatialRaviaThemePresentation\[theme\]\.canvasBackground/);
+  assert.match(molecularViewSource, /theme=\{theme\}/);
 });

@@ -12,11 +12,14 @@ import {
   signalingScene,
   translationScene,
   actionPotentialScene,
+  dnaFamilyScene,
 } from "./biology-scene-builders.ts";
 import { validateBiologySceneConsistency } from "./biology-scene-validator.ts";
+import { deriveDnaPromptSelection } from "./biology-dna-prompt-intent.ts";
 
 type SemanticConcept =
   | "dna-structure"
+  | "replication-full"
   | "helicase-unwinds"
   | "strand-stabilization"
   | "topoisomerase-ahead"
@@ -48,6 +51,7 @@ type SemanticConcept =
   | "translation-directionality"
   | "translation-termination"
   | "signaling-membrane-receptor"
+  | "signaling-canonical"
   | "signaling-ligand-binding"
   | "signaling-dimerization"
   | "signaling-rtk-activation"
@@ -84,11 +88,34 @@ export function parseBiologyPromptSemantically(
 ): BiologyParseResult {
   const normalized = normalizeBiologyPrompt(prompt);
   const context = detectBiologyContext(prompt);
+  const dnaSelection = deriveDnaPromptSelection(prompt);
+
+  // DNA family selection is intentionally evaluated before broad domain
+  // scoring. It keeps regulatory, repair, packaging, and local chemistry
+  // vocabulary from being misrouted to generic structure or replication.
+  const genericDnaFamily = dnaSelection && !hasNonDnaConflict(normalized) &&
+    (["sequence-regulation", "damage-repair", "packaging", "local-chemistry"].includes(dnaSelection.family) ||
+      (dnaSelection.family === "structure" && hasStructuralDetailCue(normalized)));
+  if (genericDnaFamily && dnaSelection) {
+    const scene = dnaFamilyScene(dnaSelection);
+    const validation = validateBiologySceneConsistency(scene, context);
+    if (validation.ok) {
+      return { status: "supported", scene, confidence: 0.96, source: "semantic", dnaSelection };
+    }
+  }
   const tokens = tokenize(normalized);
   const scores = scoreConcepts(normalized, tokens);
   const best = scores.sort((left, right) => right.score - left.score)[0];
 
   if (!best || best.score < minimumSemanticConfidence) {
+    if (dnaSelection && isFallbackDnaSelection(dnaSelection.family, normalized)) {
+      const scene = dnaSelection.family === "replication"
+        ? dnaReplicationSynthesisScene("full-replication")
+        : dnaSelection.family === "transcription"
+          ? transcriptionScene("transcription", context)
+          : dnaFamilyScene(dnaSelection);
+      return { status: "supported", scene, confidence: 0.84, source: "semantic", dnaSelection };
+    }
     return {
       status: "unsupported",
       reason: "This prompt is too ambiguous for a confident biology scene.",
@@ -96,7 +123,7 @@ export function parseBiologyPromptSemantically(
     };
   }
 
-  const scene = sceneForConcept(best.concept, context);
+  const scene = augmentDnaProcessScene(sceneForConcept(best.concept, context), dnaSelection, context, best.concept);
   const validation = validateBiologySceneConsistency(scene, context);
 
   if (!validation.ok) {
@@ -112,6 +139,55 @@ export function parseBiologyPromptSemantically(
     scene,
     confidence: best.score,
     source: "semantic",
+    dnaSelection,
+  };
+}
+
+function hasStructuralDetailCue(text: string) {
+  return [
+    "helix", "duplex", "b-dna", "groove", "backbone", "base pair",
+    "base-pair", "base stacking", "antiparallel", "oligomer", "nucleotide",
+    "one turn", "watson-crick", "adenine", "thymine", "guanine", "cytosine",
+  ].some((cue) => text.includes(cue));
+}
+
+function hasNonDnaConflict(text: string) {
+  return ["ribosome", "peptide", "amino acid", "trna", "mrna", "protein", "membrane", "neuron", "voltage"].some((cue) => text.includes(cue));
+}
+
+function hasReplicationDirectionCue(text: string) {
+  return (text.includes("5-prime") || text.includes("3-prime") || text.includes("5 to 3")) && !text.includes("rna");
+}
+
+function hasTranscriptionDirectionCue(text: string) {
+  return text.includes("rna") && (text.includes("5-prime") || text.includes("3-prime") || text.includes("direction"));
+}
+
+function isFallbackDnaSelection(family: NonNullable<ReturnType<typeof deriveDnaPromptSelection>>["family"], text: string) {
+  const transcriptionProcessCue = ["dna", "transcription", "transcrib", "polymerase", "promoter", "template", "coding", "gene", "terminator"].some((cue) => text.includes(cue)) || (text.includes("rna") && text.includes("chain"));
+  return family === "replication" || (family === "transcription" && transcriptionProcessCue) ||
+    (family === "structure" && hasStructuralDetailCue(text));
+}
+
+function augmentDnaProcessScene(
+  scene: ReturnType<typeof sceneForConcept>,
+  selection: ReturnType<typeof deriveDnaPromptSelection>,
+  context: ReturnType<typeof detectBiologyContext>,
+  concept: SemanticConcept
+) {
+  if (!selection || !["replication", "transcription"].includes(selection.family) || scene.renderMode === "molecular-structure" || concept === "transcription-rna-transcript" || !scene.entities.some((entity) => entity.id === "dna")) return scene;
+  const canonical = selection.family === "replication"
+    ? dnaReplicationSynthesisScene("full-replication")
+    : transcriptionScene("transcription", context);
+  const byId = new Map(canonical.entities.map((entity) => [entity.id, entity]));
+  for (const entity of scene.entities) byId.set(entity.id, entity);
+  const unique = <T extends { [key: string]: unknown }>(items: T[]) => Array.from(new Map(items.map((item) => [JSON.stringify(item), item])).values());
+  return {
+    ...canonical,
+    entities: [...byId.values()],
+    relations: unique([...canonical.relations, ...scene.relations]),
+    actions: unique([...canonical.actions, ...scene.actions]),
+    temporal: scene.temporal ?? canonical.temporal,
   };
 }
 
@@ -130,6 +206,11 @@ function hasPhrase(text: string, phrases: string[]) {
 function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
   const replicationContext = hasAny(tokens, [
     "replication",
+    "replicate",
+    "replicates",
+    "replicating",
+    "duplicating",
+    "duplication",
     "fork",
     "duplex",
     "ssdna",
@@ -236,6 +317,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       "erk",
       "mapk",
       "nucleus",
+      "signaling",
     ]) ||
     hasPhrase(text, [
       "receptor tyrosine kinase",
@@ -335,8 +417,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     "transcription bubbles",
     "protein being transcribed",
     "ribosome transcribing dna",
-    "rna being made",
-  ]);
+  ]) || (hasPhrase(text, ["rna being made"]) && !hasPhrase(text, ["rna being made from dna"]));
   const replicationSpecificPrompt =
     (replicationContext &&
       !hasPhrase(text, [
@@ -371,7 +452,6 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     "ribosome phosphorylation during translation",
     "make the receptor cool",
     "protein near the membrane",
-    "show cell signaling",
     "show a phosphorylated protein",
     "show protein phosphorylation",
     "show a membrane protein",
@@ -551,17 +631,25 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     transcriptionContext &&
     !translationTrap &&
     !unsupportedTranscriptionTrap &&
-    (hasAny(tokens, ["transcribing", "transcribe", "transcribed"]) ||
+    (text === "show transcription" ||
+      hasAny(tokens, ["transcribing", "transcribe", "transcribed"]) ||
       (hasAny(tokens, ["polymerase"]) && hasAny(tokens, ["rna"]) && hasAny(tokens, ["dna", "gene", "template", "growing"])) ||
       hasPhrase(text, [
+        "dna to rna transcription",
+        "transcription from dna to rna",
         "transcription of a short gene",
         "transcription of a gene",
+        "transcription elongation",
         "protein machine producing rna",
         "producing rna on a gene",
+        "dna information being copied into rna",
         "dna information being written as rna",
         "dna information into rna",
         "copy dna information into rna",
         "turns a dna template into rna",
+        "dna is transcribed into rna",
+        "dna transcribed into rna",
+        "transcribed into rna",
         "copying a gene into rna",
         "rna production from genetic dna information",
         "transcription enzyme making a nascent rna",
@@ -678,13 +766,20 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     translationContext &&
     !translationTrap &&
     !transcriptionSpecificPrompt &&
-    (hasPhrase(text, [
+    (text === "show translation" ||
+      hasPhrase(text, [
+      "visualize translation",
+      "translation process",
+      "how translation works",
       "ribosome elongating a protein",
       "ribosome synthesizing protein",
       "ribosome making protein",
       "make protein from mrna",
       "making protein from mrna",
       "protein from mrna",
+      "mrna becomes protein",
+      "mrna become protein",
+      "messenger rna becomes protein",
       "convert mrna information into protein",
       "mrna information into protein",
       "protein from a transcript",
@@ -880,6 +975,8 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     hasPhrase(text, [
       "show a membrane receptor",
       "show membrane receptor",
+      "show a receptor tyrosine kinase",
+      "show receptor tyrosine kinase",
       "show a membrane protein",
       "transmembrane receptor",
       "receptor embedded in membrane",
@@ -989,6 +1086,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       "mapk cascade",
       "map kinase cascade",
       "ras raf mek erk",
+      "raf mek erk",
       "raf mek and erk",
       "rtk signaling to erk",
       "rtk signaling through ras",
@@ -1004,12 +1102,24 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       "mapk activation after rtk activation",
       "map kinase chain after ras-gtp",
     ]);
+  const broadSignalingCue =
+    signalingContext &&
+    !signalingTrap &&
+    hasPhrase(text, [
+      "show signaling",
+      "show cell signaling",
+      "show rtk signaling",
+      "receptor tyrosine kinase signaling",
+      "growth factor activates ras",
+      "membrane signaling through ras and erk",
+    ]);
   const signalingNucleusCue =
     signalingContext &&
     !signalingTrap &&
     hasPhrase(text, [
       "erk signaling to the nucleus",
       "erk signaling toward the nucleus",
+      "erk entering the nucleus",
       "signal reaching the nucleus",
       "signal to the nucleus",
       "nuclear response",
@@ -1300,6 +1410,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
     { concept: "action-potential-sodium-channel", score: sodiumChannelCue && !depolarizationCue && !peakCue ? 0.93 : 0 },
     { concept: "action-potential-potassium-channel", score: potassiumChannelCue && !repolarizationCue ? 0.93 : 0 },
     { concept: "action-potential-full", score: actionPotentialFullCue ? 0.95 : 0 },
+    { concept: "signaling-canonical", score: broadSignalingCue ? 0.985 : 0 },
     { concept: "signaling-nucleus", score: signalingNucleusCue ? 0.97 : 0 },
     { concept: "signaling-mapk", score: signalingMapkCue ? 0.96 : 0 },
     { concept: "signaling-ras", score: signalingRasCue || signalingTopologyCue ? 0.96 : 0 },
@@ -1441,7 +1552,7 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
       concept: "transcription-initiation",
       score:
         promoterCue && transcriptionMechanismCue && !replicationSpecificPrompt
-          ? 0.94
+          ? 0.96
           : 0,
     },
     {
@@ -1450,6 +1561,24 @@ function scoreConcepts(text: string, tokens: Set<string>): ConceptScore[] {
         transcriptionMechanismCue
           && !replicationSpecificPrompt
           ? 0.95
+          : 0,
+    },
+    {
+      concept: "replication-full",
+      score:
+        !hasAny(tokens, ["helicase", "topoisomerase", "primase", "polymerase", "leading", "lagging", "okazaki", "ligase", "rpa", "ssb"]) &&
+        (hasPhrase(text, [
+          "dna replication",
+          "how dna replicates",
+          "dna being copied",
+          "visualize dna being copied",
+          "dna duplication",
+          "replication fork working",
+          "full replication fork",
+          "show a replication fork",
+          "replication fork mechanism",
+        ]))
+          ? 0.96
           : 0,
     },
     {
@@ -1663,6 +1792,8 @@ function sceneForConcept(
   switch (concept) {
     case "dna-structure":
       return dnaStructureScene();
+    case "replication-full":
+      return dnaReplicationSynthesisScene("full-replication");
     case "helicase-unwinds":
       return helicaseMechanismScene();
     case "strand-stabilization":
@@ -1725,6 +1856,8 @@ function sceneForConcept(
       return translationScene("termination", context);
     case "signaling-membrane-receptor":
       return signalingScene("membrane-receptor");
+    case "signaling-canonical":
+      return signalingScene("canonical-rtk-mapk");
     case "signaling-ligand-binding":
       return signalingScene("ligand-binding");
     case "signaling-dimerization":

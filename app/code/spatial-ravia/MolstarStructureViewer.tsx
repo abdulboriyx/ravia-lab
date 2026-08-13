@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type {
   DnaTransformationState,
   StructureCameraPreset,
@@ -10,6 +10,11 @@ import type {
   StructureTheme,
   StructureViewMode
 } from "./DnaMolecularView";
+import { dnaVisualSystem } from "./DnaVisualSystem";
+import type { DnaRegulatoryRegion } from "./DnaRegulationPresentation";
+import { MolstarPresentationRebuildGate } from "./MolstarPresentationRebuildGate";
+import type { DnaVisualFamily } from "./biology-dna-visual-dispatcher";
+import { getDnaSceneCameraContract } from "./DnaSceneCamera";
 
 type LoadState = "loading" | "ready" | "error";
 type SelectionReadout = {
@@ -226,6 +231,7 @@ const molstarScriptUrl = "/spatial-ravia/molstar/molstar.js";
 const molstarStylesheetUrl = "/spatial-ravia/molstar/molstar.css";
 let molstarAssetPromise: Promise<MolstarGlobal> | null = null;
 let molstarQueryPromise: Promise<MolstarQueryRuntime> | null = null;
+const noRegulationRegions: readonly DnaRegulatoryRegion[] = [];
 
 export default function MolstarStructureViewer({
   bubbleProgress,
@@ -236,7 +242,9 @@ export default function MolstarStructureViewer({
   source,
   theme,
   transformation,
-  viewMode
+  viewMode,
+  cameraFamily = "structure",
+  regulationRegions,
 }: {
   bubbleProgress: number;
   cameraCommand: { preset: StructureCameraPreset; nonce: number };
@@ -247,6 +255,8 @@ export default function MolstarStructureViewer({
   theme: StructureTheme;
   transformation: DnaTransformationState;
   viewMode: StructureViewMode;
+  cameraFamily?: DnaVisualFamily;
+  regulationRegions?: readonly DnaRegulatoryRegion[];
 }) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const viewerRef = useRef<MolstarViewerInstance | null>(null);
@@ -258,8 +268,17 @@ export default function MolstarStructureViewer({
   const [selection, setSelection] = useState<SelectionReadout | null>(null);
   const [viewerReady, setViewerReady] = useState(false);
   const frameRequestRef = useRef(0);
+  const rebuildGateRef = useRef(new MolstarPresentationRebuildGate());
+  const activeRegulationRegions = regulationRegions ?? noRegulationRegions;
+  const regulationKey = useMemo(
+    () => activeRegulationRegions
+      .filter((region) => region.visible)
+      .map((region) => `${region.id}:${region.start}-${region.end}`)
+      .join(","),
+    [activeRegulationRegions]
+  );
 
-  const requestStructureFrame = (preset: StructureCameraPreset) => {
+  const requestStructureFrame = useCallback((preset: StructureCameraPreset) => {
     const viewer = viewerRef.current;
     if (!viewer) {
       return;
@@ -267,16 +286,16 @@ export default function MolstarStructureViewer({
 
     const request = frameRequestRef.current + 1;
     frameRequestRef.current = request;
-    frameStructure(viewer, preset);
+    frameStructure(viewer, preset, cameraFamily);
 
     // Mol* commits representations asynchronously. A second fit catches the
     // final bounds when a command changes from the duplex to an isolated layer.
     window.setTimeout(() => {
       if (frameRequestRef.current === request && viewerRef.current === viewer) {
-        frameStructure(viewer, preset);
+        frameStructure(viewer, preset, cameraFamily);
       }
     }, 220);
-  };
+  }, [cameraFamily]);
 
   useEffect(() => {
     let disposed = false;
@@ -362,7 +381,7 @@ export default function MolstarStructureViewer({
     }
 
     requestStructureFrame(cameraCommand.preset);
-  }, [cameraCommand, viewerReady]);
+  }, [cameraCommand, requestStructureFrame, viewerReady]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -390,18 +409,20 @@ export default function MolstarStructureViewer({
 
   useEffect(() => {
     let cancelled = false;
+    const rebuildGate = rebuildGateRef.current;
 
-    async function loadStructure() {
+    async function loadStructure(isCurrent: () => boolean) {
       const viewer = viewerRef.current;
       const Color = colorRef.current;
+      const isStale = () => cancelled || !isCurrent() || viewerRef.current !== viewer;
       const transformationFrame = quantizedTransformation(transformation, bubbleProgress);
       const bubbleFrame = source === "idealized" ? transformationFrame.bubbleProgress : 0;
-      const baseVisualKey = `${source}:${viewMode}:${colorMode}:${isolationMode}:${focusedBasePair}`;
+      const baseVisualKey = `${cameraFamily}:${source}:${viewMode}:${colorMode}:${isolationMode}:${focusedBasePair}:${regulationKey}`;
       const visualKey = `${baseVisualKey}:${transformationKey(transformationFrame)}`;
       const isBubbleFrameUpdate =
         source === "idealized" && lastBaseVisualRef.current === baseVisualKey && lastVisualRef.current !== null;
 
-      if (!viewerReady || !viewer || lastVisualRef.current === visualKey) {
+      if (!viewerReady || !viewer || isStale() || lastVisualRef.current === visualKey) {
         return;
       }
 
@@ -421,10 +442,16 @@ export default function MolstarStructureViewer({
       if (source === "experimental") {
         try {
           const response = await fetch(publicStructureUrl, { cache: "no-store" });
+          if (isStale()) {
+            return;
+          }
           if (!response.ok) {
             throw new Error(`HTTP ${response.status} while fetching ${publicStructureUrl}`);
           }
         } catch (error) {
+          if (isStale()) {
+            return;
+          }
           console.error("[Spatial Ravia] HTTP/CIF download failure", {
             url: publicStructureUrl,
             error
@@ -438,6 +465,9 @@ export default function MolstarStructureViewer({
       try {
         await viewer.plugin.clear(false);
       } catch (error) {
+        if (isStale()) {
+          return;
+        }
         console.error("[Spatial Ravia] structure-preset failure while clearing Mol* state", error);
         setMessage("Mol* state reset failed");
         setLoadState("error");
@@ -463,6 +493,9 @@ export default function MolstarStructureViewer({
           );
         }
       } catch (error) {
+        if (isStale()) {
+          return;
+        }
         console.error(
           source === "experimental"
             ? "[Spatial Ravia] HTTP/CIF download failure"
@@ -477,10 +510,17 @@ export default function MolstarStructureViewer({
         return;
       }
 
+      if (isStale()) {
+        return;
+      }
+
       let trajectory;
       try {
         trajectory = await viewer.plugin.builders.structure.parseTrajectory(data, format);
       } catch (error) {
+        if (isStale()) {
+          return;
+        }
         console.error(
           source === "experimental" ? "[Spatial Ravia] mmCIF parsing failure" : "[Spatial Ravia] ideal PDB parsing failure",
           error
@@ -490,10 +530,16 @@ export default function MolstarStructureViewer({
         return;
       }
 
+      if (isStale()) {
+        return;
+      }
+
       try {
         if (isolationMode === "all") {
           await applySemanticRepresentation(viewer, trajectory, {
             colorMode,
+            focusedBasePair,
+            regulationRegions: activeRegulationRegions,
             viewMode
           });
         } else {
@@ -505,11 +551,21 @@ export default function MolstarStructureViewer({
           });
         }
 
+        if (isStale()) {
+          return;
+        }
+
         setMolstarBackground(viewer, Color, theme);
         if (!isBubbleFrameUpdate) {
-          requestStructureFrame("reset");
+          requestStructureFrame(
+            isolationMode === "nucleotide" ? "nucleotide" :
+              isolationMode === "base-pair" ? "base-pair" : "reset"
+          );
         }
       } catch (error) {
+        if (isStale()) {
+          return;
+        }
         console.error("[Spatial Ravia] structure-preset failure", {
           viewMode,
           error
@@ -519,19 +575,41 @@ export default function MolstarStructureViewer({
         return;
       }
 
-      if (!cancelled) {
+      if (!isStale()) {
         lastVisualRef.current = visualKey;
         lastBaseVisualRef.current = baseVisualKey;
         setLoadState("ready");
       }
     }
 
-    loadStructure();
+    void rebuildGate.schedule(loadStructure).catch((error) => {
+      if (cancelled) {
+        return;
+      }
+      console.error("[Spatial Ravia] Mol* structure rebuild failure", error);
+      setMessage("Could not rebuild Mol* structure presentation");
+      setLoadState("error");
+    });
 
     return () => {
       cancelled = true;
+      rebuildGate.invalidate();
     };
-  }, [bubbleProgress, colorMode, focusedBasePair, isolationMode, source, theme, transformation, viewMode, viewerReady]);
+  }, [
+    activeRegulationRegions,
+    bubbleProgress,
+    colorMode,
+    cameraFamily,
+    focusedBasePair,
+    isolationMode,
+    regulationKey,
+    source,
+    theme,
+    transformation,
+    viewMode,
+    viewerReady,
+    requestStructureFrame,
+  ]);
 
   return (
     <>
@@ -756,13 +834,13 @@ type DnaTransformationFrame = DnaTransformationState & {
 };
 
 function generateIdealBDnaPdb(transformation: DnaTransformationFrame) {
-  const sequence = "CCAGCGCTGG";
+  const sequence = "CCAGCGCTGGATCGTA";
   const progress = clamp01(transformation.bubbleProgress);
   const lines: string[] = [
     "HEADER    IDEALIZED PARAMETRIC B-DNA DUPLEX",
     "TITLE     CANONICAL B-DNA MODEL GENERATED IN SPATIAL RAVIA",
     "REMARK   SOURCE: IDEALIZED STRUCTURAL MODEL, NOT EXPERIMENTAL COORDINATES",
-    "REMARK   PARAMETERS: RISE 3.38 ANGSTROM, TWIST 36 DEGREES, 10 BP/TURN",
+    `REMARK   PARAMETERS: RISE ${dnaVisualSystem.geometry.risePerBasePairAngstrom} ANGSTROM, TWIST ${(360 / dnaVisualSystem.geometry.basePairsPerTurn).toFixed(3)} DEGREES, ${dnaVisualSystem.geometry.basePairsPerTurn} BP/TURN`,
     "REMARK   BUBBLE: CONTROLLED STRAND-OPENING TRANSFORMATION, NOT MOLECULAR DYNAMICS",
     "REMARK   TRANSFORMS: STRAND SEPARATION, LOCAL BUBBLE, BEND, BASE EXPOSURE PRESERVE CHAIN ORDER"
   ];
@@ -770,16 +848,16 @@ function generateIdealBDnaPdb(transformation: DnaTransformationFrame) {
 
   for (let i = 0; i < sequence.length; i += 1) {
     const base = sequence[i];
-    const theta = (i * 36 * Math.PI) / 180;
-    const z = (i - (sequence.length - 1) / 2) * 3.38;
+    const theta = (i * (360 / dnaVisualSystem.geometry.basePairsPerTurn) * Math.PI) / 180;
+    const z = (i - (sequence.length - 1) / 2) * dnaVisualSystem.geometry.risePerBasePairAngstrom;
     serial = addIdealNucleotide(lines, serial, "A", i + 1, base, theta, z, 1, progress, i, transformation);
   }
 
   for (let i = 0; i < sequence.length; i += 1) {
     const pairedIndex = sequence.length - 1 - i;
     const base = complementBase(sequence[pairedIndex]);
-    const theta = ((pairedIndex * 36 + 180) * Math.PI) / 180;
-    const z = (pairedIndex - (sequence.length - 1) / 2) * 3.38;
+    const theta = ((pairedIndex * (360 / dnaVisualSystem.geometry.basePairsPerTurn) + 180) * Math.PI) / 180;
+    const z = (pairedIndex - (sequence.length - 1) / 2) * dnaVisualSystem.geometry.risePerBasePairAngstrom;
     serial = addIdealNucleotide(lines, serial, "B", i + 1, base, theta, z, -1, progress, pairedIndex, transformation);
   }
 
@@ -802,6 +880,7 @@ function addIdealNucleotide(
   transformation: DnaTransformationFrame
 ) {
   const residue = `D${base}`;
+  const helixRadius = dnaVisualSystem.geometry.helixRadiusAngstrom;
   const radial = vector(Math.cos(theta), Math.sin(theta), 0);
   const tangent = vector(-Math.sin(theta) * handedness, Math.cos(theta) * handedness, 0);
   const bubble = bubbleEnvelope(pairedIndex, transformation.bubbleBasePairs) * smoothStep(bubbleProgress);
@@ -810,18 +889,18 @@ function addIdealNucleotide(
   const shear = bubble * 1.72 * handedness;
   const zShear = bubble * (pairedIndex < 5 ? -0.62 : 0.62);
   const atoms = [
-    atomPoint("P", "P", radial, tangent, 10.4 + backboneLift, -0.82 + shear * 0.28, z - 0.56 + zShear * 0.4),
-    atomPoint("OP1", "O", radial, tangent, 11.32 + backboneLift, -1.04 + shear * 0.3, z - 1.36 + zShear * 0.4),
-    atomPoint("OP2", "O", radial, tangent, 10.72 + backboneLift, 0.62 + shear * 0.3, z + 0.5 + zShear * 0.4),
-    atomPoint("O5'", "O", radial, tangent, 9.18 + backboneLift, -0.42 + shear * 0.34, z - 0.1 + zShear * 0.55),
-    atomPoint("C5'", "C", radial, tangent, 8.58 + backboneLift, 0.28 + shear * 0.38, z + 0.66 + zShear * 0.55),
-    atomPoint("C4'", "C", radial, tangent, 7.62 + backboneLift, -0.18 + shear * 0.42, z + 0.18 + zShear * 0.7),
-    atomPoint("O4'", "O", radial, tangent, 7.1 + backboneLift, 0.76 + shear * 0.45, z - 0.36 + zShear * 0.72),
-    atomPoint("C3'", "C", radial, tangent, 7.52 + backboneLift, -1.08 + shear * 0.42, z - 0.68 + zShear * 0.7),
-    atomPoint("O3'", "O", radial, tangent, 8.16 + backboneLift, -1.84 + shear * 0.38, z - 1.42 + zShear * 0.55),
-    atomPoint("C2'", "C", radial, tangent, 6.12 + backboneLift, -0.84 + shear * 0.52, z - 0.08 + zShear * 0.82),
-    atomPoint("C1'", "C", radial, tangent, 5.88 + backboneLift, 0.52 + shear * 0.58, z - 0.48 + zShear * 0.85),
-    ...baseAtoms(base, radial, tangent, z + zShear, baseLift, shear)
+    atomPoint("P", "P", radial, tangent, helixRadius + 0.4 + backboneLift, -0.82 + shear * 0.28, z - 0.56 + zShear * 0.4),
+    atomPoint("OP1", "O", radial, tangent, helixRadius + 1.32 + backboneLift, -1.04 + shear * 0.3, z - 1.36 + zShear * 0.4),
+    atomPoint("OP2", "O", radial, tangent, helixRadius + 0.72 + backboneLift, 0.62 + shear * 0.3, z + 0.5 + zShear * 0.4),
+    atomPoint("O5'", "O", radial, tangent, helixRadius - 0.82 + backboneLift, -0.42 + shear * 0.34, z - 0.1 + zShear * 0.55),
+    atomPoint("C5'", "C", radial, tangent, helixRadius - 1.42 + backboneLift, 0.28 + shear * 0.38, z + 0.66 + zShear * 0.55),
+    atomPoint("C4'", "C", radial, tangent, helixRadius - 2.38 + backboneLift, -0.18 + shear * 0.42, z + 0.18 + zShear * 0.7),
+    atomPoint("O4'", "O", radial, tangent, helixRadius - 2.9 + backboneLift, 0.76 + shear * 0.45, z - 0.36 + zShear * 0.72),
+    atomPoint("C3'", "C", radial, tangent, helixRadius - 2.48 + backboneLift, -1.08 + shear * 0.42, z - 0.68 + zShear * 0.7),
+    atomPoint("O3'", "O", radial, tangent, helixRadius - 1.84 + backboneLift, -1.84 + shear * 0.38, z - 1.42 + zShear * 0.55),
+    atomPoint("C2'", "C", radial, tangent, helixRadius - 3.88 + backboneLift, -0.84 + shear * 0.52, z - 0.08 + zShear * 0.82),
+    atomPoint("C1'", "C", radial, tangent, helixRadius - 4.12 + backboneLift, 0.52 + shear * 0.58, z - 0.48 + zShear * 0.85),
+    ...baseAtoms(base, radial, tangent, z + zShear, baseLift, shear, dnaVisualSystem.geometry.basePairWidthAngstrom / 10.8)
   ].map((atom) =>
     transformIdealAtom(atom, {
       chain,
@@ -901,7 +980,7 @@ function transformIdealAtom(
   };
 }
 
-function baseAtoms(base: string, radial: Vec3, tangent: Vec3, z: number, baseLift = 0, shear = 0) {
+function baseAtoms(base: string, radial: Vec3, tangent: Vec3, z: number, baseLift = 0, shear = 0, baseScale = 1) {
   const glycosidic = base === "A" || base === "G" ? "N9" : "N1";
   const ring: BaseAtomTuple[] =
     base === "A"
@@ -960,8 +1039,8 @@ function baseAtoms(base: string, radial: Vec3, tangent: Vec3, z: number, baseLif
       element,
       radial,
       tangent,
-      Number(radialDistance) + baseLift,
-      Number(tangentialOffset) + shear,
+      Number(radialDistance) * baseScale + baseLift,
+      Number(tangentialOffset) * baseScale + shear,
       z + Number(zOffset)
     );
     return name === glycosidic ? { ...point, z: point.z - 0.06 } : point;
@@ -1071,12 +1150,12 @@ type Vec3 = {
 type BaseAtomTuple = [string, string, number, number, number];
 
 const semanticColors = {
-  strandA: 0x1d4ed8,
-  strandB: 0xdc2626,
-  bases: 0x16a34a,
+  strandA: dnaVisualSystem.colors.strandA,
+  strandB: dnaVisualSystem.colors.strandB,
+  bases: dnaVisualSystem.colors.basePair,
   backbone: 0x475569,
-  phosphates: 0xd97706,
-  sugars: 0x7c3aed,
+  phosphates: dnaVisualSystem.colors.phosphate,
+  sugars: dnaVisualSystem.colors.sugar,
   hydrogenBonds: 0x0891b2
 };
 
@@ -1085,6 +1164,8 @@ async function applySemanticRepresentation(
   trajectory: MolstarSelector,
   options: {
     colorMode: StructureColorMode;
+    focusedBasePair: number;
+    regulationRegions: readonly DnaRegulatoryRegion[];
     viewMode: StructureViewMode;
   }
 ) {
@@ -1103,23 +1184,32 @@ async function applySemanticRepresentation(
   const strandB = await createComponent(viewer, runtime, structureWithProps, "semantic-strand-b", "Strand B", {
     "chain-test": runtime.MolScriptBuilder.core.rel.eq([runtime.MolScriptBuilder.ammp("label_asym_id"), "B"])
   });
-  const bases = await createComponent(viewer, runtime, structureWithProps, "semantic-bases", "Bases", {
-    "atom-test": runtime.MolScriptBuilder.core.logic.not([atomNameIn(runtime.MolScriptBuilder, nucleicBackboneAtoms)])
-  });
   const phosphates = await createComponent(viewer, runtime, structureWithProps, "semantic-phosphates", "Phosphates", {
     "atom-test": atomNameIn(runtime.MolScriptBuilder, phosphateAtoms)
   });
   const sugars = await createComponent(viewer, runtime, structureWithProps, "semantic-sugars", "Sugars", {
     "atom-test": atomNameIn(runtime.MolScriptBuilder, sugarAtoms)
   });
+  const focusedPair = await createComponent(viewer, runtime, structureWithProps, "semantic-focused-base-pair", `Base pair ${options.focusedBasePair}`, {
+    "residue-test": focusedBasePairResidueTest(runtime.MolScriptBuilder, options.focusedBasePair)
+  });
+  const regulationComponents = await Promise.all(
+    options.regulationRegions.filter((region) => region.visible).map((region) =>
+      createComponent(viewer, runtime, structureWithProps, `regulation-${region.id}`, region.label, {
+        "residue-test": regulatoryRegionResidueTest(runtime.MolScriptBuilder, region.start, region.end)
+      })
+    )
+  );
   const labelComponents = await createLabelComponents(viewer, runtime, structureWithProps);
 
   const update = viewer.plugin.state.data.build();
   const strandTrace = {
     type: "cartoon",
     typeParams: {
-      sizeFactor: 0.82,
-      visuals: ["polymer-trace", "polymer-gap"]
+      // Global DNA is a restrained duplex: two thin backbone traces with
+      // nucleotide rings/blocks, not a full atomistic pile-up.
+      sizeFactor: dnaVisualSystem.representation.backboneRadius,
+      visuals: ["polymer-trace", "polymer-gap", "nucleotide-ring", "nucleotide-block"]
     },
     color: "chain-id",
     colorParams: {}
@@ -1137,69 +1227,50 @@ async function applySemanticRepresentation(
     { ...strandTrace, color: "uniform", colorParams: uniformColor(semanticColors.strandB) },
     { tag: "spatial-ravia-strand-b-trace" }
   );
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    bases,
-    {
-      type: options.viewMode === "cartoon" ? "ball-and-stick" : representationType(options.viewMode),
-      typeParams: {
-        sizeFactor: options.viewMode === "atomic" ? 0.24 : 0.3,
-        sizeAspectRatio: 0.72,
-        aromaticBonds: true
+  options.regulationRegions.filter((region) => region.visible).forEach((region, index) => {
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      regulationComponents[index],
+      {
+        type: "cartoon",
+        typeParams: {
+          sizeFactor: dnaVisualSystem.representation.backboneRadius * 1.34,
+          visuals: ["polymer-trace", "nucleotide-ring", "nucleotide-block"]
+        },
+        color: "uniform",
+        colorParams: uniformColor(region.color)
       },
-      color: options.colorMode === "base" ? "residue-name" : semanticColorName(options.colorMode, "bases"),
-      colorParams:
-        options.colorMode === "base" ? {} : semanticColorParams(options.colorMode, semanticColors.bases)
-    },
-    { tag: "spatial-ravia-bases" }
-  );
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    phosphates,
-    {
-      type: "ball-and-stick",
-      typeParams: {
-        sizeFactor: 0.34,
-        sizeAspectRatio: 0.76,
-        aromaticBonds: false
-      },
-      color: "uniform",
-      colorParams: uniformColor(semanticColors.phosphates)
-    },
-    { tag: "spatial-ravia-phosphates" }
-  );
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    sugars,
-    {
-      type: "ball-and-stick",
-      typeParams: {
-        sizeFactor: 0.28,
-        sizeAspectRatio: 0.74,
-        aromaticBonds: false
-      },
-      color: "uniform",
-      colorParams: uniformColor(semanticColors.sugars)
-    },
-    { tag: "spatial-ravia-sugars" }
-  );
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    structureWithProps,
-    {
-      type: "interactions",
-      typeParams: {
-        sizeFactor: 0.42,
-        visuals: ["intra-unit", "inter-unit", "bridge"]
-      },
-      color: "uniform",
-      colorParams: uniformColor(semanticColors.hydrogenBonds),
-      size: "uniform",
-      sizeParams: {}
-    },
-    { tag: "spatial-ravia-hydrogen-bonds-semantic" }
-  );
-  addNucleotideLabels(viewer, update, labelComponents);
+      { tag: `spatial-ravia-regulation-${region.id}` }
+    );
+  });
+  if (options.viewMode !== "cartoon") {
+    // Close inspection remains local: this preserves a smooth semantic LOD
+    // from the whole duplex to one chemically legible base-pair region.
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      focusedPair,
+      localDnaChemistryRepresentation(options.viewMode, options.colorMode),
+      { tag: "spatial-ravia-focused-base-pair-chemistry" }
+    );
+  }
+
+  if (options.colorMode === "backbone" && options.viewMode !== "cartoon") {
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      phosphates,
+      { type: "ball-and-stick", typeParams: { sizeFactor: dnaVisualSystem.representation.atomScale, sizeAspectRatio: 0.5, aromaticBonds: false }, color: "uniform", colorParams: uniformColor(semanticColors.phosphates) },
+      { tag: "spatial-ravia-local-phosphate-detail" }
+    );
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      sugars,
+      { type: "ball-and-stick", typeParams: { sizeFactor: dnaVisualSystem.representation.atomScale * 0.9, sizeAspectRatio: 0.5, aromaticBonds: false }, color: "uniform", colorParams: uniformColor(semanticColors.sugars) },
+      { tag: "spatial-ravia-local-sugar-detail" }
+    );
+  }
+  // DNA identity is conveyed by the duplex itself and the restrained endpoint
+  // badge; residue-number labels are opt-in inspection clutter, not hero art.
+  addNucleotideLabels(viewer, update, labelComponents, false, false);
 
   await update.commit();
 }
@@ -1275,7 +1346,7 @@ async function applyIsolatedRepresentation(
       { tag: `spatial-ravia-${options.isolationMode}-representation` }
     );
   }
-  addNucleotideLabels(viewer, update, labelComponents);
+  addNucleotideLabels(viewer, update, labelComponents, false, false);
 
   await update.commit();
 }
@@ -1301,44 +1372,108 @@ function addNucleotideLabels(
   components: {
     nucleotideComponent: MolstarSelector | undefined;
     terminalComponent: MolstarSelector | undefined;
-  }
+  },
+  showNucleotideLabels = false,
+  showTerminalLabels = false,
 ) {
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    components.nucleotideComponent,
-    {
-      type: "label",
-      typeParams: {
-        level: "residue",
-        residueScale: 0.58,
-        background: true,
-        backgroundMargin: 0.08,
-        backgroundOpacity: 0.72,
-        borderWidth: 0.08
+  if (showNucleotideLabels) {
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      components.nucleotideComponent,
+      {
+        type: "label",
+        typeParams: {
+          level: "residue",
+          residueScale: 0.46,
+          background: true,
+          backgroundMargin: 0.06,
+          backgroundOpacity: 0.64,
+          borderWidth: 0.06
+        },
+        color: "uniform",
+        colorParams: uniformColor(0x111827)
       },
-      color: "uniform",
-      colorParams: uniformColor(0x111827)
-    },
-    { tag: "spatial-ravia-nucleotide-number-labels" }
-  );
-  viewer.plugin.builders.structure.representation.buildRepresentation(
-    update,
-    components.terminalComponent,
-    {
-      type: "label",
-      typeParams: {
-        level: "residue",
-        residueScale: 1.05,
-        background: true,
-        backgroundMargin: 0.12,
-        backgroundOpacity: 0.82,
-        borderWidth: 0.12
+      { tag: "spatial-ravia-nucleotide-number-labels" }
+    );
+  }
+  if (showTerminalLabels) {
+    viewer.plugin.builders.structure.representation.buildRepresentation(
+      update,
+      components.terminalComponent,
+      {
+        type: "label",
+        typeParams: {
+          level: "residue",
+          residueScale: 0.78,
+          background: true,
+          backgroundMargin: 0.12,
+          backgroundOpacity: 0.82,
+          borderWidth: 0.12
+        },
+        color: "uniform",
+        colorParams: uniformColor(0x064e3b)
       },
-      color: "uniform",
-      colorParams: uniformColor(0x064e3b)
+      { tag: "spatial-ravia-terminal-residue-labels" }
+    );
+  }
+}
+
+function localDnaChemistryRepresentation(viewMode: StructureViewMode, colorMode: StructureColorMode) {
+  const atomic = viewMode === "atomic";
+  return {
+    type: "ball-and-stick",
+    typeParams: {
+      sizeFactor: atomic ? dnaVisualSystem.representation.atomScale : dnaVisualSystem.representation.selectedNucleotideScale,
+      sizeAspectRatio: 0.46,
+      linkScale: dnaVisualSystem.representation.bondScale,
+      aromaticBonds: true,
+      ignoreHydrogens: true,
+      radialSegments: 10,
     },
-    { tag: "spatial-ravia-terminal-residue-labels" }
+    color: atomic || colorMode === "element" ? "element-symbol" : colorMode === "base" ? "residue-name" : "chain-id",
+    colorParams: atomic || colorMode === "element" ? { carbonColor: { name: "uniform", params: uniformColor(dnaVisualSystem.colors.atomCarbon) } } : {},
+  };
+}
+
+function focusedBasePairResidueTest(MS: MolstarQueryRuntime["MolScriptBuilder"], focusedBasePair: number) {
+  const pair = Math.min(dnaLength, Math.max(1, Math.round(focusedBasePair)));
+  const partner = dnaLength - pair + 1;
+  return MS.core.logic.or([
+    MS.core.logic.and([
+      MS.core.rel.eq([MS.ammp("label_asym_id"), "A"]),
+      MS.core.rel.eq([MS.ammp("label_seq_id"), pair]),
+    ]),
+    MS.core.logic.and([
+      MS.core.rel.eq([MS.ammp("label_asym_id"), "B"]),
+      MS.core.rel.eq([MS.ammp("label_seq_id"), partner]),
+    ]),
+  ]);
+}
+
+/** Select complementary canonical-duplex spans; region evidence stays on DNA. */
+function regulatoryRegionResidueTest(
+  MS: MolstarQueryRuntime["MolScriptBuilder"],
+  start: number,
+  end: number,
+) {
+  const positions = Array.from(
+    { length: Math.max(0, end - start + 1) },
+    (_, index) => start + index,
   );
+  const partnerPositions = positions.map((position) => dnaLength - position + 1);
+  const residueIn = (values: number[]) => MS.core.logic.or(
+    values.map((value) => MS.core.rel.eq([MS.ammp("label_seq_id"), value]))
+  );
+  return MS.core.logic.or([
+    MS.core.logic.and([
+      MS.core.rel.eq([MS.ammp("label_asym_id"), "A"]),
+      residueIn(positions),
+    ]),
+    MS.core.logic.and([
+      MS.core.rel.eq([MS.ammp("label_asym_id"), "B"]),
+      residueIn(partnerPositions),
+    ]),
+  ]);
 }
 
 function isolationRepresentation(
@@ -1351,6 +1486,10 @@ function isolationRepresentation(
     color === "uniform"
       ? uniformColor(isolationMode === "strand-b" ? semanticColors.strandB : semanticColors.strandA)
       : colorParams(color);
+
+  if (isolationMode === "nucleotide" || isolationMode === "base-pair") {
+    return localDnaChemistryRepresentation(viewMode, colorMode);
+  }
 
   if (isolationMode === "backbone") {
     return {
@@ -1518,6 +1657,16 @@ function isolationExpression(
       ]);
   }
 
+  if (isolationMode === "nucleotide") {
+    const nucleotide = Math.min(dnaLength, Math.max(1, Math.round(focusedBasePair)));
+    return MS.struct.modifier.union([
+      MS.struct.generator.atomGroups({
+        "chain-test": MS.core.rel.eq([MS.ammp("label_asym_id"), "A"]),
+        "residue-test": MS.core.rel.eq([MS.ammp("label_seq_id"), nucleotide])
+      })
+    ]);
+  }
+
   if (isolationMode === "strand-a") {
     return atomGroups(MS, {
       "chain-test": MS.core.rel.eq([MS.ammp("label_asym_id"), "A"])
@@ -1602,6 +1751,8 @@ function isolationLabel(mode: StructureIsolationMode) {
       return "Strand B";
     case "base-pair":
       return "Focused base pair";
+    case "nucleotide":
+      return "Focused nucleotide";
     case "bases":
       return "Bases";
     case "backbone":
@@ -1618,7 +1769,7 @@ function isolationLabel(mode: StructureIsolationMode) {
 }
 
 const phosphateAtoms = ["P", "OP1", "OP2", "O1P", "O2P"];
-const dnaLength = 10;
+const dnaLength = dnaVisualSystem.geometry.canonicalDuplexBasePairCount;
 const sugarAtoms = ["C1'", "C2'", "C3'", "C4'", "C5'", "O4'", "O2'", "C1*", "C2*", "C3*", "C4*", "C5*", "O4*", "O2*"];
 const nucleicBackboneAtoms = [
   ...phosphateAtoms,
@@ -1703,7 +1854,7 @@ function setMolstarBackground(
   });
 }
 
-function frameStructure(viewer: MolstarViewerInstance, preset: StructureCameraPreset) {
+function frameStructure(viewer: MolstarViewerInstance, preset: StructureCameraPreset, family: DnaVisualFamily = "structure") {
   viewer.plugin.managers.camera.reset(undefined, 0);
   window.setTimeout(() => {
     const snapshot = viewer.plugin.canvas3d?.camera.getSnapshot();
@@ -1712,20 +1863,50 @@ function frameStructure(viewer: MolstarViewerInstance, preset: StructureCameraPr
       return;
     }
 
-    const radiusScale = preset === "base-pair" ? 0.32 : preset === "groove" ? 0.48 : 0.58;
+    const familyContract = getDnaSceneCameraContract(family);
+    const radiusScale = preset === "groove" ? 0.48 : familyContract.molstarDistanceScale;
+    const sourceTarget = snapshot.target;
+    const sourceDistance = Math.hypot(
+      snapshot.position[0] - sourceTarget[0],
+      snapshot.position[1] - sourceTarget[1],
+      snapshot.position[2] - sourceTarget[2],
+    ) || snapshot.radius * 2;
+    const directionLength = Math.hypot(...familyContract.viewDirection);
+    const direction: [number, number, number] = directionLength > 0
+      ? familyContract.viewDirection.map((value) => value / directionLength) as [number, number, number]
+      : [0, 0, 1];
+    const target: [number, number, number] = [
+      sourceTarget[0],
+      sourceTarget[1] - snapshot.radius * familyContract.usableViewportVerticalOffset,
+      sourceTarget[2],
+    ];
+    const distance = Math.min(
+      familyContract.maxDistance,
+      Math.max(familyContract.minDistance, sourceDistance * radiusScale),
+    );
     const nextSnapshot: Partial<MolstarCameraSnapshot> = {
       ...snapshot,
-      radius: Math.max(snapshot.radius * radiusScale, preset === "base-pair" ? 4 : 8),
-      radiusMax: Math.max(snapshot.radiusMax * 0.58, 24)
+      radius: Math.max(snapshot.radius * radiusScale, preset === "nucleotide" ? 2.2 : preset === "base-pair" ? 4 : 12),
+      radiusMax: Math.max(snapshot.radiusMax * radiusScale, 24),
+      target,
+      position: [
+        target[0] + direction[0] * distance,
+        target[1] + direction[1] * distance,
+        target[2] + direction[2] * distance,
+      ],
     };
 
     if (preset === "groove") {
-      const radius = snapshot.radius;
+      const radius = distance;
       nextSnapshot.position = [
         snapshot.target[0] + radius * 0.18,
         snapshot.target[1] - radius * 1.9,
         snapshot.target[2] + radius * 0.38
       ];
+      nextSnapshot.up = [0, 0, 1];
+    } else if (preset === "reset") {
+      // The family policy already supplies an oblique teaching angle. Preserve
+      // it instead of returning to Mol*'s full-structure reset framing.
       nextSnapshot.up = [0, 0, 1];
     }
 

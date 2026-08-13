@@ -34,7 +34,10 @@ function subscribe(onStoreChange: () => void) {
 }
 
 function applyTheme(theme: Theme) {
-  document.documentElement.dataset.theme = theme;
+  const root = document.documentElement;
+  root.dataset.theme = theme;
+  root.style.colorScheme = theme;
+  document.body.dataset.theme = theme;
   window.dispatchEvent(new Event(themeChangeEvent));
 }
 
@@ -47,7 +50,9 @@ export function ThemeToggle() {
   }, []);
 
   function toggleTheme() {
-    const nextTheme = theme === "dark" ? "light" : "dark";
+    // Read the applied value so a click remains correct even while React is
+    // hydrating around the small pre-paint theme script in the root layout.
+    const nextTheme = getThemeSnapshot() === "dark" ? "light" : "dark";
     window.localStorage.setItem("theme", nextTheme);
     applyTheme(nextTheme);
   }

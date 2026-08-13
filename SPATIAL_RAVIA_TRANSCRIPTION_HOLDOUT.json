@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T19:05:17.203Z",
+  "generatedAt": "2026-08-11T19:34:26.147Z",
   "holdoutFrozen": true,
   "datasetVersion": "transcription-holdout-v1",
   "baselineBeforeHoldoutTuning": {
@@ -2078,17 +2078,13 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.95,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
           "dna",
           "gene",
           "promoter",
-          "template-strand",
-          "coding-strand",
-          "rna-polymerase",
-          "transcription-bubble",
-          "rna-transcript"
+          "rna-polymerase"
         ],
         "actions": [
           {
@@ -2100,16 +2096,6 @@
             "actor": "rna-polymerase",
             "action": "locally_unwinds",
             "target": "dna"
-          },
-          {
-            "actor": "rna-polymerase",
-            "action": "synthesizes",
-            "target": "rna-transcript"
-          },
-          {
-            "actor": "rna-polymerase",
-            "action": "moves_along",
-            "target": "template-strand"
           }
         ],
         "relations": [
@@ -2124,39 +2110,9 @@
             "object": "dna"
           },
           {
-            "subject": "template-strand",
-            "relation": "part_of",
-            "object": "dna"
-          },
-          {
-            "subject": "coding-strand",
-            "relation": "part_of",
-            "object": "dna"
-          },
-          {
-            "subject": "transcription-bubble",
-            "relation": "located_on",
-            "object": "dna"
-          },
-          {
             "subject": "rna-polymerase",
             "relation": "binds_to",
             "object": "promoter"
-          },
-          {
-            "subject": "rna-polymerase",
-            "relation": "positioned_at",
-            "object": "transcription-bubble"
-          },
-          {
-            "subject": "rna-transcript",
-            "relation": "extends_from",
-            "object": "rna-polymerase"
-          },
-          {
-            "subject": "rna-transcript",
-            "relation": "complementary_to",
-            "object": "template-strand"
           }
         ],
         "source": "semantic",
@@ -2703,17 +2659,13 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.95,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
           "dna",
           "gene",
           "promoter",
-          "template-strand",
-          "coding-strand",
-          "rna-polymerase",
-          "transcription-bubble",
-          "rna-transcript"
+          "rna-polymerase"
         ],
         "actions": [
           {
@@ -2725,16 +2677,6 @@
             "actor": "rna-polymerase",
             "action": "locally_unwinds",
             "target": "dna"
-          },
-          {
-            "actor": "rna-polymerase",
-            "action": "synthesizes",
-            "target": "rna-transcript"
-          },
-          {
-            "actor": "rna-polymerase",
-            "action": "moves_along",
-            "target": "template-strand"
           }
         ],
         "relations": [
@@ -2749,39 +2691,9 @@
             "object": "dna"
           },
           {
-            "subject": "template-strand",
-            "relation": "part_of",
-            "object": "dna"
-          },
-          {
-            "subject": "coding-strand",
-            "relation": "part_of",
-            "object": "dna"
-          },
-          {
-            "subject": "transcription-bubble",
-            "relation": "located_on",
-            "object": "dna"
-          },
-          {
             "subject": "rna-polymerase",
             "relation": "binds_to",
             "object": "promoter"
-          },
-          {
-            "subject": "rna-polymerase",
-            "relation": "positioned_at",
-            "object": "transcription-bubble"
-          },
-          {
-            "subject": "rna-transcript",
-            "relation": "extends_from",
-            "object": "rna-polymerase"
-          },
-          {
-            "subject": "rna-transcript",
-            "relation": "complementary_to",
-            "object": "template-strand"
           }
         ],
         "source": "semantic",

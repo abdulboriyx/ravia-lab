@@ -88,22 +88,101 @@ test("MAPK and nuclear signaling preserve cascade order", () => {
   hasRelation(mapk, "mek", "activates", "erk");
   hasAction(mapk, "raf", "phosphorylates", "mek");
   hasAction(mapk, "mek", "phosphorylates", "erk");
+  assert.ok(mapk.temporal, "broad RTK/MAPK signaling should be temporal");
 
   const nucleus = scene("show ERK signaling toward the nucleus");
   hasRelation(nucleus, "erk", "signals_to", "nucleus");
   hasRelation(nucleus, "cellular-response", "downstream_of", "erk");
 });
 
+test("broad signaling prompts route to canonical temporal signaling", () => {
+  for (const prompt of [
+    "show signaling",
+    "show RTK signaling",
+    "show receptor tyrosine kinase signaling",
+    "show RTK signaling through Ras Raf MEK ERK",
+    "show how a growth factor activates Ras",
+    "show membrane signaling through Ras and ERK",
+  ]) {
+    const spec = scene(prompt);
+    assert.deepEqual(
+      spec.temporal?.phases.map((phase) => phase.id),
+      [
+        "resting",
+        "ligand-approach",
+        "ligand-binding",
+        "dimerization",
+        "receptor-activation",
+        "adaptor-recruitment",
+        "ras-activation",
+        "raf-activation",
+        "mek-activation",
+        "erk-activation",
+        "erk-translocation",
+        "response-ready",
+      ],
+      prompt
+    );
+    hasEntity(spec, "ligand");
+    hasEntity(spec, "receptor-dimer");
+    hasEntity(spec, "sos");
+    hasEntity(spec, "ras");
+    hasEntity(spec, "raf");
+    hasEntity(spec, "mek");
+    hasEntity(spec, "erk");
+    hasEntity(spec, "nucleus");
+  }
+});
+
+test("focused signaling prompts stay focused", () => {
+  const receptor = scene("show a receptor tyrosine kinase");
+  assert.equal(receptor.temporal, undefined);
+  assert.equal(receptor.entities.some((entity) => entity.id === "raf"), false);
+
+  const ligand = scene("show a ligand activating a receptor tyrosine kinase");
+  assert.equal(ligand.temporal, undefined);
+  assert.equal(ligand.entities.some((entity) => entity.id === "raf"), false);
+
+  const dimer = scene("show receptor dimerization");
+  assert.equal(dimer.temporal, undefined);
+  hasEntity(dimer, "receptor-dimer");
+  assert.equal(dimer.entities.some((entity) => entity.id === "erk"), false);
+
+  const ras = scene("show Ras switching from GDP to GTP");
+  assert.equal(ras.temporal, undefined);
+  hasEntity(ras, "ras-gdp");
+  assert.equal(ras.entities.some((entity) => entity.id === "raf"), false);
+
+  const mapk = scene("show Raf MEK ERK signaling");
+  assert.equal(mapk.temporal, undefined);
+  hasEntity(mapk, "raf");
+  hasEntity(mapk, "mek");
+  hasEntity(mapk, "erk");
+  assert.equal(mapk.entities.some((entity) => entity.id === "nucleus"), false);
+
+  const nucleus = scene("show ERK entering the nucleus");
+  assert.equal(nucleus.temporal, undefined);
+  hasEntity(nucleus, "nucleus");
+});
+
 test("resolver places signaling topology on correct sides", () => {
-  const placements = resolveSpatialPlacements(signalingScene("ras-activation"));
+  const placements = resolveSpatialPlacements(signalingScene("canonical-rtk-mapk"));
   const ligand = placements.find((placement) => placement.entityId === "ligand");
   const receptor = placements.find((placement) => placement.entityId === "receptor-tyrosine-kinase");
   const phospho = placements.find((placement) => placement.entityId === "phosphotyrosine-site");
   const ras = placements.find((placement) => placement.entityId === "ras");
+  const raf = placements.find((placement) => placement.entityId === "raf");
+  const mek = placements.find((placement) => placement.entityId === "mek");
+  const erk = placements.find((placement) => placement.entityId === "erk");
+  const nucleus = placements.find((placement) => placement.entityId === "nucleus");
   assert.ok(ligand && ligand.position.y > 0);
   assert.ok(receptor && Math.abs(receptor.position.y) < 0.1);
   assert.ok(phospho && phospho.position.y < 0);
   assert.ok(ras && ras.position.y < 0 && ras.position.y > -0.8);
+  assert.ok(raf && raf.position.y < -0.8);
+  assert.ok(mek && mek.position.y < -0.8);
+  assert.ok(erk && erk.position.y < -0.8);
+  assert.ok(nucleus && nucleus.position.y > erk.position.y);
 });
 
 test("validator rejects incorrect signaling topology and cross-domain effectors", () => {
