@@ -10,6 +10,8 @@ import { SpatialPromptDock } from "./SpatialPromptDock";
 import { parseBiologyScenePrompt } from "./biology-parser";
 import { chooseBiologyRenderer } from "./biology-renderer-router";
 import { resolveDnaTemplateRendererOwner, resolveDnaVisualTemplate } from "./biology-dna-visual-dispatcher";
+import { DnaMechanismPresentationView } from "./DnaMechanismPresentationView";
+import { resolveDnaMechanismPresentation } from "./DnaMechanismPresentationRouter";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemeStorageKey, type SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 const spatialRaviaThemeChangeEvent = "spatial-ravia-theme-change";
@@ -51,6 +53,7 @@ export default function Page() {
   let error: string | null = null;
 
   const result = parseBiologyScenePrompt(submittedPrompt);
+  const dnaMechanismRoute = resolveDnaMechanismPresentation(submittedPrompt);
 
   if (result.status === "supported") {
     scene = result.scene;
@@ -77,13 +80,17 @@ export default function Page() {
         className="spatialRaviaViewport"
         aria-label="Spatial Ravia visualization"
       >
-        {!error && scene && renderer === "three" && (
+        {!error && dnaMechanismRoute && (
+          <DnaMechanismPresentationView route={dnaMechanismRoute} theme={theme} visualTemplate={dnaTemplate ?? undefined} />
+        )}
+
+        {!error && !dnaMechanismRoute && scene && renderer === "three" && (
           <MechanisticScene key={submittedPrompt} scene={scene} theme={theme} />
         )}
 
-        {!error && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
+        {!error && !dnaMechanismRoute && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
 
-        {!error && scene && renderer === "dna-template" && dnaTemplate && (
+        {!error && !dnaMechanismRoute && scene && renderer === "dna-template" && dnaTemplate && (
           resolveDnaTemplateRendererOwner(dnaTemplate) === "mechanistic-dna"
             ? <MechanisticScene key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} scene={scene} theme={theme} />
             : resolveDnaTemplateRendererOwner(dnaTemplate) === "packaging"

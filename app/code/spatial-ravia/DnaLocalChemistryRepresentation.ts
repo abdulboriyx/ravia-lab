@@ -1,18 +1,21 @@
 import { canonicalDnaView, type CanonicalDnaView } from "./DnaVisualSystem.ts";
 
-export type LocalChemistrySubject = "gc-base-pair" | "nucleotide" | "thymine-dimer" | "mismatch";
+export type LocalChemistrySubject = "at-base-pair" | "gc-base-pair" | "backbone-linkage" | "nucleotide" | "thymine-dimer" | "mismatch";
 export type LocalChemistryAtom = {
   id: string;
   element: "C" | "N" | "O" | "P";
   residue: string;
   role: "base" | "sugar" | "phosphate" | "context" | "lesion";
   position: readonly [number, number, number];
+  interactionRole?: "donor" | "acceptor";
+  anchor?: "onePrimeCarbon" | "threePrimeCarbon" | "threePrimeHydroxyl" | "fivePrimeCarbon" | "fivePrimePhosphate";
 };
 export type LocalChemistryBond = {
   id: string;
   from: string;
   to: string;
   kind: "covalent" | "hydrogen" | "lesion-crosslink";
+  state?: "present" | "forming" | "breaking" | "absent";
 };
 export type LocalChemistryActor = { id: string; label: string; kind: "base" | "nucleotide" | "lesion" | "repair-context"; emphasis: "primary" | "secondary" | "context" };
 export type DnaLocalChemistryPlan = {
@@ -25,7 +28,7 @@ export type DnaLocalChemistryPlan = {
   camera: { azimuthDegrees: number; elevationDegrees: number; distanceScale: number; framing: "local" };
 };
 
-const atom = (id: string, element: LocalChemistryAtom["element"], residue: string, role: LocalChemistryAtom["role"], position: LocalChemistryAtom["position"]): LocalChemistryAtom => ({ id, element, residue, role, position });
+const atom = (id: string, element: LocalChemistryAtom["element"], residue: string, role: LocalChemistryAtom["role"], position: LocalChemistryAtom["position"], anchor?: LocalChemistryAtom["anchor"]): LocalChemistryAtom => ({ id, element, residue, role, position, anchor });
 const bond = (id: string, from: string, to: string, kind: LocalChemistryBond["kind"] = "covalent"): LocalChemistryBond => ({ id, from, to, kind });
 
 const guanineCytosineAtoms = [
@@ -41,6 +44,16 @@ const guanineCytosineBonds = [
   bond("gc-hbond-o6-n4", "g-o6", "c-n4", "hydrogen"), bond("gc-hbond-n1-n3", "g-n1", "c-n3", "hydrogen"), bond("gc-hbond-n2-o2", "g-n2", "c-o2", "hydrogen"),
 ] as const;
 
+const adenineThymineAtoms = [
+  atom("a-n6", "N", "A", "base", [-0.78, 0.55, 0]), atom("a-n1", "N", "A", "base", [-0.78, 0, 0]), atom("a-c", "C", "A", "base", [-1.28, 0, 0]), atom("a-sugar", "C", "DA", "sugar", [-1.85, -0.12, 0]), atom("a-phosphate", "P", "DA", "phosphate", [-2.3, -0.28, 0]),
+  atom("t-o4", "O", "T", "base", [0.78, 0.55, 0]), atom("t-n3", "N", "T", "base", [0.78, 0, 0]), atom("t-c", "C", "T", "base", [1.28, 0, 0]), atom("t-sugar", "C", "DT", "sugar", [1.85, -0.12, 0]), atom("t-phosphate", "P", "DT", "phosphate", [2.3, -0.28, 0]),
+] as const;
+const adenineThymineBonds = [
+  bond("a-base-1", "a-n6", "a-c"), bond("a-base-2", "a-n1", "a-c"), bond("a-sugar", "a-c", "a-sugar"), bond("a-phosphate", "a-sugar", "a-phosphate"),
+  bond("t-base-1", "t-o4", "t-c"), bond("t-base-2", "t-n3", "t-c"), bond("t-sugar", "t-c", "t-sugar"), bond("t-phosphate", "t-sugar", "t-phosphate"),
+  bond("at-hbond-n6-o4", "a-n6", "t-o4", "hydrogen"), bond("at-hbond-n1-n3", "a-n1", "t-n3", "hydrogen"),
+] as const;
+
 const nucleotideAtoms = [
   atom("nt-p", "P", "DG", "phosphate", [-1.35, 0.1, 0]), atom("nt-o5", "O", "DG", "phosphate", [-0.92, 0.14, 0]),
   atom("nt-c5", "C", "DG", "sugar", [-0.55, 0.28, 0]), atom("nt-c4", "C", "DG", "sugar", [-0.2, 0.02, 0]), atom("nt-o4", "O", "DG", "sugar", [0.05, 0.32, 0]), atom("nt-c1", "C", "DG", "sugar", [0.26, -0.04, 0]), atom("nt-c3", "C", "DG", "sugar", [-0.18, -0.37, 0]),
@@ -48,6 +61,17 @@ const nucleotideAtoms = [
 ] as const;
 const nucleotideBonds = [
   bond("nt-p-o5", "nt-p", "nt-o5"), bond("nt-o5-c5", "nt-o5", "nt-c5"), bond("nt-sugar-1", "nt-c5", "nt-c4"), bond("nt-sugar-2", "nt-c4", "nt-o4"), bond("nt-sugar-3", "nt-o4", "nt-c1"), bond("nt-sugar-4", "nt-c1", "nt-c3"), bond("nt-sugar-5", "nt-c3", "nt-c4"), bond("nt-glycosidic", "nt-c1", "nt-n9"), bond("nt-base-1", "nt-n9", "nt-c6"), bond("nt-base-2", "nt-c6", "nt-o6"), bond("nt-base-3", "nt-c6", "nt-n1"),
+] as const;
+
+const backboneLinkageAtoms = [
+  atom("bb1-c1", "C", "DG", "sugar", [-1.28, 0.34, 0], "onePrimeCarbon"), atom("bb1-c3", "C", "DG", "sugar", [-1.25, -0.38, 0], "threePrimeCarbon"), atom("bb1-o3", "O", "DG", "sugar", [-0.78, -0.55, 0], "threePrimeHydroxyl"), atom("bb1-c5", "C", "DG", "sugar", [-1.58, 0.72, 0], "fivePrimeCarbon"), atom("bb1-n9", "N", "G", "base", [-1.72, 0.25, 0]),
+  atom("bb-p", "P", "DG", "phosphate", [0, -0.58, 0]), atom("bb-p-o3", "O", "DG", "phosphate", [-0.4, -0.56, 0]), atom("bb-p-o5", "O", "DG", "phosphate", [0.4, -0.56, 0]),
+  atom("bb2-o5", "O", "DG", "sugar", [0.78, -0.38, 0], "fivePrimePhosphate"), atom("bb2-c5", "C", "DG", "sugar", [1.25, -0.2, 0], "fivePrimeCarbon"), atom("bb2-c1", "C", "DG", "sugar", [1.28, 0.52, 0], "onePrimeCarbon"), atom("bb2-c3", "C", "DG", "sugar", [1.58, 0.84, 0], "threePrimeCarbon"), atom("bb2-n9", "N", "G", "base", [1.72, 0.28, 0]),
+] as const;
+const backboneLinkageBonds = [
+  bond("bb1-ring-a", "bb1-c1", "bb1-c3"), bond("bb1-ring-b", "bb1-c3", "bb1-c5"), bond("bb1-glycosidic", "bb1-c1", "bb1-n9"),
+  bond("bb-phosphate-o3", "bb1-o3", "bb-p-o3"), bond("bb-phosphate-center", "bb-p-o3", "bb-p"), bond("bb-phosphate-o5", "bb-p", "bb-p-o5"), bond("bb-phosphate-next", "bb-p-o5", "bb2-o5"),
+  bond("bb2-sugar-a", "bb2-o5", "bb2-c5"), bond("bb2-ring-a", "bb2-c5", "bb2-c1"), bond("bb2-ring-b", "bb2-c1", "bb2-c3"), bond("bb2-glycosidic", "bb2-c1", "bb2-n9"),
 ] as const;
 
 const thymineDimerAtoms = [
@@ -70,7 +94,9 @@ const localView = (focus: "base-pair" | "nucleotide" | "local-chemistry") => can
 
 export function getDnaLocalChemistryPlan(subject: LocalChemistrySubject): DnaLocalChemistryPlan {
   switch (subject) {
+    case "at-base-pair": return { subject, view: localView("base-pair"), atoms: adenineThymineAtoms, bonds: adenineThymineBonds, actors: [{ id: "adenine", label: "Adenine", kind: "base", emphasis: "primary" }, { id: "thymine", label: "Thymine", kind: "base", emphasis: "primary" }], contextOpacity: 0.18, camera: { ...localView("base-pair").camera, framing: "local" } };
     case "gc-base-pair": return { subject, view: localView("base-pair"), atoms: guanineCytosineAtoms, bonds: guanineCytosineBonds, actors: [{ id: "guanine", label: "Guanine", kind: "base", emphasis: "primary" }, { id: "cytosine", label: "Cytosine", kind: "base", emphasis: "primary" }], contextOpacity: 0.18, camera: { ...localView("base-pair").camera, framing: "local" } };
+    case "backbone-linkage": return { subject, view: localView("local-chemistry"), atoms: backboneLinkageAtoms, bonds: backboneLinkageBonds, actors: [{ id: "sugar-phosphate-backbone", label: "Sugar-phosphate backbone", kind: "nucleotide", emphasis: "primary" }, { id: "neighboring-bases", label: "Neighboring bases", kind: "base", emphasis: "secondary" }], contextOpacity: 0.14, camera: { ...localView("local-chemistry").camera, framing: "local" } };
     case "nucleotide": return { subject, view: localView("nucleotide"), atoms: nucleotideAtoms, bonds: nucleotideBonds, actors: [{ id: "phosphate", label: "Phosphate", kind: "nucleotide", emphasis: "primary" }, { id: "deoxyribose", label: "Deoxyribose", kind: "nucleotide", emphasis: "primary" }, { id: "guanine-base", label: "Guanine base", kind: "nucleotide", emphasis: "primary" }], contextOpacity: 0.1, camera: { ...localView("nucleotide").camera, framing: "local" } };
     case "thymine-dimer": return { subject, view: localView("local-chemistry"), atoms: thymineDimerAtoms, bonds: thymineDimerBonds, actors: [{ id: "thymine-1", label: "Thymine", kind: "lesion", emphasis: "primary" }, { id: "thymine-2", label: "Thymine", kind: "lesion", emphasis: "primary" }, { id: "neighboring-bases", label: "Neighboring bases", kind: "base", emphasis: "context" }], contextOpacity: 0.14, camera: { ...localView("local-chemistry").camera, framing: "local" } };
     case "mismatch": return { subject, view: localView("base-pair"), atoms: mismatchAtoms, bonds: mismatchBonds, actors: [{ id: "guanine", label: "Guanine", kind: "base", emphasis: "primary" }, { id: "thymine-mismatch", label: "Thymine mismatch", kind: "lesion", emphasis: "primary" }, { id: "repair-context", label: "Local repair context", kind: "repair-context", emphasis: "secondary" }], contextOpacity: 0.16, camera: { ...localView("base-pair").camera, framing: "local" } };

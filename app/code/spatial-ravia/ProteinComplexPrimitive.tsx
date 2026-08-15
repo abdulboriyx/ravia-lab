@@ -21,7 +21,7 @@ const materialColors = {
   shadow: spatialRaviaColors.cavity,
 };
 
-function ProteinDomain({ domain }: { domain: ProteinDomainDefinition }) {
+function ProteinDomain({ domain, opacity = 1 }: { domain: ProteinDomainDefinition; opacity?: number }) {
   const color = materialColors[domain.materialVariant ?? "body"];
   const rotation = domain.rotation ?? [0, 0, 0];
 
@@ -34,7 +34,12 @@ function ProteinDomain({ domain }: { domain: ProteinDomainDefinition }) {
       ) : (
         <sphereGeometry args={[0.5, 32, 22]} />
       )}
-      <meshStandardMaterial color={color} {...spatialRaviaMaterialDefaults.protein} />
+      <meshStandardMaterial
+        color={color}
+        {...spatialRaviaMaterialDefaults.protein}
+        transparent={opacity < 1}
+        opacity={opacity}
+      />
     </mesh>
   );
 }
@@ -42,9 +47,11 @@ function ProteinDomain({ domain }: { domain: ProteinDomainDefinition }) {
 function ProteinChannel({
   channel,
   stateScale = 1,
+  opacity = 1,
 }: {
   channel: ProteinChannelDefinition;
   stateScale?: number;
+  opacity?: number;
 }) {
   return (
     <mesh position={channel.position} rotation={channel.rotation ?? [0, 0, 0]}>
@@ -60,7 +67,7 @@ function ProteinChannel({
         color={channel.variant === "groove" ? spatialRaviaColors.proteinDark : spatialRaviaColors.cavity}
         roughness={0.9}
         transparent
-        opacity={channel.variant === "groove" ? 0.72 : 0.9}
+        opacity={(channel.variant === "groove" ? 0.72 : 0.9) * opacity}
       />
     </mesh>
   );
@@ -75,6 +82,7 @@ export function ProteinComplexPrimitive({
   state,
   label,
   compactLabel = false,
+  opacity = 1,
 }: {
   definition: ProteinComplexDefinition;
   position: THREE.Vector3;
@@ -84,6 +92,7 @@ export function ProteinComplexPrimitive({
   state?: string;
   label?: string;
   compactLabel?: boolean;
+  opacity?: number;
 }) {
   const stateModifier = state ? definition.states?.[state] : undefined;
 
@@ -93,6 +102,7 @@ export function ProteinComplexPrimitive({
         <ProteinDomain
           key={domain.id}
           domain={getStateAdjustedDomain(definition, domain, state)}
+          opacity={opacity}
         />
       ))}
       {(definition.channels ?? []).map((channel) => (
@@ -100,6 +110,7 @@ export function ProteinComplexPrimitive({
           key={channel.id}
           channel={channel}
           stateScale={stateModifier?.channelScale?.[channel.id] ?? 1}
+          opacity={opacity}
         />
       ))}
       {label && !compactLabel && (

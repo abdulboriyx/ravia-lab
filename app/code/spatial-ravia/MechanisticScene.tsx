@@ -9,7 +9,6 @@ import type { BiologySceneSpec } from "./biology-scene-spec";
 import { ProteinComplexPrimitive } from "./ProteinComplexPrimitive";
 import {
   dnaPolymeraseComplexDefinition,
-  rnaPolymeraseComplexDefinition,
   sigmaFactorComplexDefinition,
 } from "./ProteinComplexDefinitions";
 import {
@@ -31,7 +30,6 @@ import {
 } from "./biology-replication-structure-grounding";
 import { StructureDerivedPrimitive } from "./StructureDerivedPrimitive";
 import type { StructureDerivedGeometry, StructureManifestEntry } from "./biology-structure-grounding";
-import { createTranscriptionStructureTransform, resolveTranscriptionStructureGrounding } from "./biology-transcription-structure-grounding";
 import { sampleTranslationGeometry } from "./biology-translation-geometry";
 import { loadGroundedTranslation, type GroundedTranslation, type GroundedTranslationSite } from "./biology-translation-structure-grounding.ts";
 import { deriveTranslationVisualState } from "./biology-translation-visual-state.ts";
@@ -76,6 +74,7 @@ import { spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial
 import { MolstarStructurePresentationAdapter } from "./MolstarStructurePresentationAdapter";
 import { deriveDnaPresentationPlan } from "./biology-dna-presentation";
 import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
+import { TranscriptionRnapPresentation } from "./TranscriptionRnapPresentation";
 import { deriveTranscriptionTemplatePlan } from "./biology-transcription-template";
 
 type Props = {
@@ -335,76 +334,6 @@ function DnaTerminalMarkers({
       <Text position={fivePrime} fontSize={0.09} fillOpacity={0.7}>{labels[0]}</Text>
       <Text position={threePrime} fontSize={0.09} fillOpacity={0.7}>{labels[1]}</Text>
     </group>
-  );
-}
-
-function RnaPolymerase({
-  position,
-  label,
-  orientation,
-  compactLabel = false,
-}: {
-  position: THREE.Vector3;
-  label: string;
-  orientation?: THREE.Quaternion;
-  compactLabel?: boolean;
-}) {
-  return (
-    <ProteinComplexPrimitive
-      definition={rnaPolymeraseComplexDefinition}
-      position={position}
-      quaternion={orientation}
-      state="open"
-      label={label}
-      compactLabel={compactLabel}
-    />
-  );
-}
-
-function GroundedRnaPolymerase({
-  position,
-  direction,
-  fallback,
-  label,
-}: {
-  position: THREE.Vector3;
-  direction: THREE.Vector3;
-  fallback: ReactNode;
-  label: string;
-}) {
-  const entry = resolveTranscriptionStructureGrounding();
-  const [resolved, setResolved] = useState<{ geometry: StructureDerivedGeometry } | null>(null);
-  const transform = useMemo(() => {
-    if (!resolved || !entry) return null;
-    const active = resolved.geometry.anchors.find((anchor) => anchor.id === "active-center");
-    const upstream = resolved.geometry.anchors.find((anchor) => anchor.id === "upstream-dna");
-    const downstream = resolved.geometry.anchors.find((anchor) => anchor.id === "downstream-dna");
-    if (!active || !upstream || !downstream) return null;
-    const sourceDirection = downstream.point.clone().sub(upstream.point);
-    if (sourceDirection.lengthSq() < 1e-9 || direction.lengthSq() < 1e-9) return null;
-    return createTranscriptionStructureTransform({
-      sourceAnchor: { point: active.point, direction: sourceDirection },
-      targetAnchor: position,
-      targetDirection: direction,
-      scale: 0.018,
-    });
-  }, [direction, entry, position, resolved]);
-
-  if (!entry) return <>{fallback}</>;
-  return (
-    <>
-      <StructureDerivedPrimitive
-        entry={entry}
-        position={transform?.position ?? position}
-        quaternion={transform?.quaternion}
-        scale={transform?.scale ?? 0.018}
-        visible={false}
-        onResolved={(result) => setResolved({ geometry: result.geometry })}
-      />
-      {resolved
-        ? <RnaPolymerase position={transform?.position ?? position} orientation={transform?.quaternion} label={label} compactLabel />
-        : fallback}
-    </>
   );
 }
 
@@ -2785,7 +2714,7 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
           />
         )}
 
-        {isTranscriptionScene && !useMolstarStructuralPresentation && dnaPresentation?.regions.map((region) => (
+        {isTranscriptionScene && !timeline.hasTemporal && !useMolstarStructuralPresentation && dnaPresentation?.regions.map((region) => (
           <TranscriptionDnaRegionMarker
             key={region.id}
             centerX={region.center}
@@ -2799,7 +2728,7 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
           />
         ))}
 
-        {dnaPresentation && isTranscriptionScene && !useMolstarStructuralPresentation && (
+        {dnaPresentation && isTranscriptionScene && !timeline.hasTemporal && !useMolstarStructuralPresentation && (
           <DnaTerminalMarkers labels={dnaPresentation.terminalMarkers} />
         )}
 
@@ -2815,11 +2744,11 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
         )}
 
 
-        {rnaPolymeraseEntity && transcriptionTemplate?.rnap.visible && (
-          <RnaPolymerase
-            position={new THREE.Vector3(0, 0.62, 0.16)}
-            label={rnaPolymeraseEntity.name}
-            compactLabel
+        {transcriptionTemplate?.rnap.visible && (
+          <TranscriptionRnapPresentation
+            position={new THREE.Vector3(0, 0, 0)}
+            scale={transcriptionTemplate.rnap.scale}
+            opacity={transcriptionTemplate.rnap.opacity}
           />
         )}
 

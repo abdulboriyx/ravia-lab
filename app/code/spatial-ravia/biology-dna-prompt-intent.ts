@@ -132,6 +132,8 @@ function localChemistrySubjectFor(text: string, family: DnaSceneFamily): LocalCh
   if (family !== "local-chemistry" && family !== "damage-repair") return undefined;
   if (text.includes("thymine dimer") || text.includes("pyrimidine dimer") || text.includes("photoproduct")) return "thymine-dimer";
   if (text.includes("mismatch")) return "mismatch";
+  if (text.includes("phosphodiester") || text.includes("sugar phosphate") || text.includes("3 prime") || text.includes("5 prime") || text.includes("deoxyribose")) return "backbone-linkage";
   if (text.includes("nucleotide") && family === "local-chemistry") return "nucleotide";
+  if (text.includes("adenine") || text.includes("thymine") || /\ba[- ]t\b/.test(text)) return "at-base-pair";
   return family === "damage-repair" ? "mismatch" : "gc-base-pair";
 }

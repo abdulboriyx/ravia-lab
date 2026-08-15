@@ -12,6 +12,7 @@
     "eval:spatial": "npm run test:spatial",
     "eval:spatial:semantic-holdout": "tsx scripts/run-spatial-ravia-semantic-holdout.ts",
     "eval:spatial:dna-family-benchmark": "tsx scripts/run-spatial-ravia-dna-family-benchmark.ts",
+    "eval:spatial:dna-mechanism-benchmark": "tsx scripts/run-spatial-ravia-dna-mechanism-benchmark.ts",
     "eval:spatial:transcription-holdout": "tsx scripts/run-spatial-ravia-transcription-holdout.ts",
     "eval:spatial:translation-holdout": "tsx scripts/run-spatial-ravia-translation-holdout.ts",
     "eval:spatial:signaling-holdout": "tsx scripts/run-spatial-ravia-signaling-holdout.ts",
