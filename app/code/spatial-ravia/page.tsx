@@ -12,6 +12,8 @@ import { chooseBiologyRenderer } from "./biology-renderer-router";
 import { resolveDnaTemplateRendererOwner, resolveDnaVisualTemplate } from "./biology-dna-visual-dispatcher";
 import { DnaMechanismPresentationView } from "./DnaMechanismPresentationView";
 import { resolveDnaMechanismPresentation } from "./DnaMechanismPresentationRouter";
+import { resolveRnaPresentation } from "./RnaPresentationRouter";
+import { RnaPresentationView } from "./RnaPresentationView";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemeStorageKey, type SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 const spatialRaviaThemeChangeEvent = "spatial-ravia-theme-change";
@@ -52,15 +54,16 @@ export default function Page() {
   let parseSource = null;
   let error: string | null = null;
 
-  const result = parseBiologyScenePrompt(submittedPrompt);
+  const rnaPresentationRoute = resolveRnaPresentation(submittedPrompt);
+  const result = rnaPresentationRoute ? null : parseBiologyScenePrompt(submittedPrompt);
   const dnaMechanismRoute = resolveDnaMechanismPresentation(submittedPrompt);
 
-  if (result.status === "supported") {
+  if (result?.status === "supported") {
     scene = result.scene;
     parseSource = result.source;
     dnaTemplate = resolveDnaVisualTemplate(scene, result.dnaSelection);
     renderer = chooseBiologyRenderer(scene, dnaTemplate);
-  } else {
+  } else if (!rnaPresentationRoute && result) {
     error = result.reason;
   }
 
@@ -80,17 +83,19 @@ export default function Page() {
         className="spatialRaviaViewport"
         aria-label="Spatial Ravia visualization"
       >
-        {!error && dnaMechanismRoute && (
+        {!error && !rnaPresentationRoute && dnaMechanismRoute && (
           <DnaMechanismPresentationView route={dnaMechanismRoute} theme={theme} visualTemplate={dnaTemplate ?? undefined} />
         )}
 
-        {!error && !dnaMechanismRoute && scene && renderer === "three" && (
+        {!error && rnaPresentationRoute && <RnaPresentationView route={rnaPresentationRoute} theme={theme} />}
+
+        {!error && !rnaPresentationRoute && !dnaMechanismRoute && scene && renderer === "three" && (
           <MechanisticScene key={submittedPrompt} scene={scene} theme={theme} />
         )}
 
-        {!error && !dnaMechanismRoute && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
+        {!error && !rnaPresentationRoute && !dnaMechanismRoute && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
 
-        {!error && !dnaMechanismRoute && scene && renderer === "dna-template" && dnaTemplate && (
+        {!error && !rnaPresentationRoute && !dnaMechanismRoute && scene && renderer === "dna-template" && dnaTemplate && (
           resolveDnaTemplateRendererOwner(dnaTemplate) === "mechanistic-dna"
             ? <MechanisticScene key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} scene={scene} theme={theme} />
             : resolveDnaTemplateRendererOwner(dnaTemplate) === "packaging"
@@ -100,7 +105,7 @@ export default function Page() {
                 : <DnaMolecularView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} embedded theme={theme} visualTemplate={dnaTemplate} regulationPrompt={submittedPrompt} />
         )}
 
-        {!error && renderer === "cell-context" && (
+        {!error && !rnaPresentationRoute && renderer === "cell-context" && (
           <p className="spatialRaviaStatus">
             Cell-context rendering is not implemented yet.
           </p>
@@ -112,7 +117,7 @@ export default function Page() {
           </p>
         )}
 
-        {!error && parseSource && (
+        {!error && !rnaPresentationRoute && parseSource && (
           <p aria-label="Parser source" className="spatialRaviaParseSource">
             Parsed by {parseSource}
           </p>
