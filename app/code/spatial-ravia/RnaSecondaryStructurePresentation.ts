@@ -85,6 +85,14 @@ export type RnaSecondaryStructurePresentation = {
   materials: ReturnType<typeof rnaMaterialPalette>;
 };
 
+export type RnaSecondaryStructureGeometryValidation = {
+  valid: boolean;
+  crossingSegments: readonly [number, number][];
+  sideInversions: readonly number[];
+  minimumBackboneDistance: number;
+  maximumTurnRadians: number;
+};
+
 type BuildOptions = {
   stemPairs?: number;
   loopLength?: number;
@@ -150,17 +158,16 @@ function buildStem(options: BuildOptions): { sequence: RnaBase[]; regions: RnaSe
 
 function buildBulge(options: BuildOptions): { sequence: RnaBase[]; regions: RnaSecondaryStructureRegion[]; pairingRegions: RnaPairingRegion[] } {
   const stemPairs = Math.max(2, Math.round(options.stemPairs ?? 3));
-  const length = stemPairs * 2 + 3;
+  const length = stemPairs * 2 + 1;
   const sequence = Array.from({ length }, (_, index) => options.sequence?.[index] ?? (["A", "G", "C", "U"] as const)[index % 4]);
   const pairs: { left: number; right: number; pair: "A-U" | "G-C" | "G-U-wobble" }[] = [];
   for (let index = 0; index < stemPairs; index += 1) addPair(sequence, pairs, index, length - 1 - index);
   const left = range(0, stemPairs - 1);
   const bulge = [stemPairs];
-  const unpaired = [stemPairs + 1];
-  const right = range(stemPairs + 2, length - 1);
+  const right = range(stemPairs + 1, length - 1);
   return {
     sequence,
-    regions: [region("bulge-stem-left", "stem", left, "left", "Stem"), region("bulge-region", "bulge", bulge, "left", "Bulge"), region("bulge-unpaired-side", "unpaired", unpaired, "right", "Unpaired"), region("bulge-stem-right", "stem", right, "right", "Stem")],
+    regions: [region("bulge-stem-left", "stem", left, "left", "Stem"), region("bulge-region", "bulge", bulge, "left", "Bulge"), region("bulge-stem-right", "stem", right, "right", "Stem")],
     pairingRegions: [{ id: "bulge-stem-pairing", kind: "canonical", pairs, leftRange: asRange(left), rightRange: asRange(right), sameChain: true, antiparallel: true }],
   };
 }
@@ -208,7 +215,38 @@ function toAgentBTopology(topology: RnaSecondaryStructureTopology): RnaTopologyS
   return { topology: "secondary-structure", regions: topology.regions.map((item) => ({ id: item.id, kind: item.kind === "loop" ? "unpaired" : item.kind === "junction" ? "unpaired" : item.kind, residueIndices: item.residueIndices, partnerIndices: item.kind === "stem" ? topology.pairedResidues.flat() : undefined })), pairedResidues: topology.pairedResidues, unpairedResidues: topology.unpairedResidues, deterministicKey: topology.deterministicKey };
 }
 
+function sharedSideFrame(topology: RnaSecondaryStructureTopology): Map<number, RnaPoint> {
+  const positions = new Map<number, RnaPoint>();
+  const leftRegions = topology.regions.filter((item) => item.side === "left").sort((a, b) => (a.residueIndices[0] ?? 0) - (b.residueIndices[0] ?? 0));
+  const rightRegions = topology.regions.filter((item) => item.side === "right").sort((a, b) => (a.residueIndices[0] ?? 0) - (b.residueIndices[0] ?? 0));
+  const leftCount = leftRegions.reduce((total, item) => total + item.residueIndices.length, 0);
+  const rightCount = rightRegions.reduce((total, item) => total + item.residueIndices.length, 0);
+  const rowCount = Math.max(leftCount, rightCount);
+  let leftRow = 0;
+  for (const item of leftRegions) {
+    for (const index of item.residueIndices) {
+      const isUnpaired = item.kind === "internalLoop" || item.kind === "bulge" || item.kind === "unpaired";
+      const outward = isUnpaired ? 0.22 + Math.min(0.22, item.residueIndices.length * 0.05) : 0;
+      positions.set(index, [-1.08 - outward, leftRow * 0.64, isUnpaired ? 0.04 : 0]);
+      leftRow += 1;
+    }
+  }
+  let rightRow = 0;
+  for (const item of rightRegions) {
+    for (const index of item.residueIndices) {
+      const isUnpaired = item.kind === "internalLoop" || item.kind === "bulge" || item.kind === "unpaired";
+      const outward = isUnpaired ? 0.22 + Math.min(0.22, item.residueIndices.length * 0.05) : 0;
+      positions.set(index, [1.08 + outward, (rowCount - 1 - rightRow) * 0.64, isUnpaired ? 0.04 : 0]);
+      rightRow += 1;
+    }
+  }
+  return positions;
+}
+
 function foldedPosition(topology: RnaSecondaryStructureTopology, index: number): RnaPoint {
+  if (topology.motif === "internalLoop" || topology.motif === "bulge") {
+    return sharedSideFrame(topology).get(index) ?? [0, 0, 0];
+  }
   const stem = topology.pairingRegions[0];
   const pairCount = stem?.pairs.length ?? 0;
   const loopRegion = topology.regions.find((item) => item.kind === "hairpin" || item.kind === "internalLoop" || item.kind === "bulge");
@@ -241,6 +279,51 @@ function samplesFor(topology: RnaSecondaryStructureTopology): RnaResidueSample[]
   });
 }
 
+function orientation(a: RnaPoint, b: RnaPoint, c: RnaPoint): number {
+  return (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+}
+
+function segmentsCross(a: RnaPoint, b: RnaPoint, c: RnaPoint, d: RnaPoint): boolean {
+  const ab = orientation(a, b, c);
+  const ab2 = orientation(a, b, d);
+  const cd = orientation(c, d, a);
+  const cd2 = orientation(c, d, b);
+  return ((ab > 0 && ab2 < 0) || (ab < 0 && ab2 > 0)) && ((cd > 0 && cd2 < 0) || (cd < 0 && cd2 > 0));
+}
+
+function pointDistance(a: RnaPoint, b: RnaPoint): number {
+  return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+}
+
+function turnRadians(a: RnaPoint, b: RnaPoint, c: RnaPoint): number {
+  const first: RnaPoint = [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+  const second: RnaPoint = [c[0] - b[0], c[1] - b[1], c[2] - b[2]];
+  const firstLength = Math.hypot(...first);
+  const secondLength = Math.hypot(...second);
+  if (firstLength === 0 || secondLength === 0) return Math.PI;
+  const cosine = Math.max(-1, Math.min(1, (first[0] * second[0] + first[1] * second[1] + first[2] * second[2]) / (firstLength * secondLength)));
+  return Math.PI - Math.acos(cosine);
+}
+
+export function validateRnaSecondaryStructureGeometry(topology: RnaSecondaryStructureTopology, samples: readonly RnaResidueSample[] = samplesFor(topology)): RnaSecondaryStructureGeometryValidation {
+  const crossingSegments: [number, number][] = [];
+  let minimumBackboneDistance = Number.POSITIVE_INFINITY;
+  for (let first = 0; first < samples.length - 1; first += 1) {
+    for (let second = first + 2; second < samples.length - 1; second += 1) {
+      if (second === first + 1) continue;
+      const a = samples[first].backbone;
+      const b = samples[first + 1].backbone;
+      const c = samples[second].backbone;
+      const d = samples[second + 1].backbone;
+      if (segmentsCross(a, b, c, d)) crossingSegments.push([first, second]);
+      minimumBackboneDistance = Math.min(minimumBackboneDistance, pointDistance(a, c), pointDistance(a, d), pointDistance(b, c), pointDistance(b, d));
+    }
+  }
+  const sideInversions = topology.pairedResidues.flatMap(([left, right]) => samples[left].backbone[0] >= samples[right].backbone[0] ? [left, right] : []);
+  const maximumTurnRadians = samples.slice(1, -1).reduce((maximum, sample, index) => Math.max(maximum, turnRadians(samples[index].backbone, sample.backbone, samples[index + 2].backbone)), 0);
+  return { valid: crossingSegments.length === 0 && sideInversions.length === 0 && maximumTurnRadians < Math.PI * 0.92, crossingSegments, sideInversions, minimumBackboneDistance, maximumTurnRadians };
+}
+
 export function createRnaSecondaryStructureSpec(motif: RnaSecondaryStructureMotif, options: BuildOptions = {}): RnaSecondaryStructureTopology {
   return buildTopology(motif, options);
 }
@@ -269,7 +352,8 @@ export function isValidRnaSecondaryStructurePresentation(presentation: RnaSecond
     && presentation.backboneLinks.length === Math.max(0, topology.sequence.length - 1)
     && topology.regions.every((item) => item.residueIndices.every((index) => index >= 0 && index < topology.sequence.length))
     && allPairs.every((pair) => pair.left !== pair.right && pair.left >= 0 && pair.right < topology.sequence.length)
-    && presentation.samples.every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite));
+    && presentation.samples.every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite))
+    && validateRnaSecondaryStructureGeometry(topology, presentation.samples).valid;
 }
 
 export { canonicalRnaPair };

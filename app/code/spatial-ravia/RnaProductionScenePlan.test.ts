@@ -3,7 +3,7 @@ import test from "node:test";
 import { rnaV1Benchmark } from "./rna-benchmark.ts";
 import { resolveRnaPresentation, rnaPresentationOwners } from "./RnaPresentationRouter.ts";
 import { deriveProductionRnaScenePlan } from "./RnaProductionScenePlan.ts";
-import { createRnaSecondaryStructureSpec, deriveRnaSecondaryStructurePresentation } from "./RnaSecondaryStructurePresentation.ts";
+import { createRnaSecondaryStructureSpec, deriveRnaSecondaryStructurePresentation, sampleRnaSecondaryStructure, validateRnaSecondaryStructureGeometry } from "./RnaSecondaryStructurePresentation.ts";
 
 test("all eight RNA owners produce one shared production scene plan", () => {
   const families = new Set(rnaV1Benchmark.map((item) => item.expectedFamily));
@@ -70,6 +70,40 @@ test("secondary-structure labels are region-anchored and deduplicated", () => {
   assert.equal(new Set(hairpin.labels.map((label) => label.text)).size, hairpin.labels.length);
   const pairedUnpaired = deriveProductionRnaScenePlan(resolveRnaPresentation("show paired and unpaired regions in RNA")!);
   assert.deepEqual(pairedUnpaired.labels.map((label) => label.text), ["Paired", "Unpaired"]);
+});
+
+test("internal-loop geometry preserves side ordering and has no backbone crossings", () => {
+  const topology = createRnaSecondaryStructureSpec("internalLoop");
+  const samples = sampleRnaSecondaryStructure(topology);
+  const validation = validateRnaSecondaryStructureGeometry(topology, samples);
+  assert.equal(validation.valid, true);
+  assert.deepEqual(validation.crossingSegments, []);
+  assert.deepEqual(validation.sideInversions, []);
+  assert.ok(samples[0].backbone[0] < samples[11].backbone[0]);
+  assert.ok(samples[4].backbone[0] < samples[7].backbone[0]);
+  assert.ok(samples[2].backbone[1] < samples[3].backbone[1]);
+  assert.ok(samples[8].backbone[1] > samples[9].backbone[1]);
+});
+
+test("internal-loop pairing resumes above and below the unpaired opening", () => {
+  const topology = createRnaSecondaryStructureSpec("internalLoop");
+  const presentation = deriveRnaSecondaryStructurePresentation(topology);
+  const paired = new Set(presentation.interactions.flatMap((interaction) => interaction.participants));
+  assert.deepEqual(topology.unpairedResidues, [2, 3, 8, 9]);
+  assert.ok(topology.pairedResidues.filter(([left]) => left < 2).length > 0);
+  assert.ok(topology.pairedResidues.filter(([left]) => left > 3 && left < 6).length > 0);
+  assert.ok(topology.unpairedResidues.every((index) => !paired.has(index)));
+});
+
+test("bulge deforms one side while the opposite paired stem stays on its frame", () => {
+  const topology = createRnaSecondaryStructureSpec("bulge");
+  const samples = sampleRnaSecondaryStructure(topology);
+  const validation = validateRnaSecondaryStructureGeometry(topology, samples);
+  assert.equal(validation.valid, true);
+  assert.deepEqual(topology.unpairedResidues, [3]);
+  assert.equal(samples[3].backbone[0] < samples[2].backbone[0], true);
+  assert.ok(samples[4].backbone[0] > 0 && samples[5].backbone[0] > 0 && samples[6].backbone[0] > 0);
+  assert.deepEqual(validation.crossingSegments, []);
 });
 
 test("pairing and hybrid routes mount paired strands and interaction overlays", () => {
