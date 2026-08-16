@@ -23,9 +23,18 @@ test("local chemistry uses atom/bond LOD without spawning a whole RNA backbone",
   const route = resolveRnaPresentation("show the 2 prime OH in RNA")!;
   const plan = deriveProductionRnaScenePlan(route);
   assert.equal(plan.structuralMode, "local-chemistry");
+  assert.equal(plan.localFocus, "twoPrimeOH");
   assert.ok(plan.atoms.some((atom) => atom.role === "twoPrimeHydroxyl"));
   assert.ok(plan.bonds.length > 0);
   assert.equal(plan.strands.length, 0);
+});
+
+test("local chemistry production labels follow the resolved focus", () => {
+  const twoPrime = deriveProductionRnaScenePlan(resolveRnaPresentation("show the 2 prime OH in RNA")!);
+  assert.deepEqual(twoPrime.labels.map((label) => label.text), ["2′-OH"]);
+  assert.equal(twoPrime.labels.filter((label) => label.text === "2′-OH").length, 1);
+  assert.equal(twoPrime.labels.some((label) => label.text === "Phosphodiester linkage"), false);
+  assert.equal(twoPrime.labels.some((label) => label.text.includes("5′") || label.text.includes("3′")), false);
 });
 
 test("RNA-DNA local chemistry comparison mounts the existing DNA chemistry plan beside RNA", () => {

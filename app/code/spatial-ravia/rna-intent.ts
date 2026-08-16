@@ -153,4 +153,15 @@ function inferEntities(text: string, family: RnaFamily, type: RnaType, pairing: 
   if (family === "nascentTranscript" && /pre-mrna/.test(text)) { entities.add("intron"); entities.add("exon"); }
   return [...entities];
 }
-function focusFor(text: string, family: RnaFamily) { return family === "typesFunctions" ? `${inferRnaType(text)} identity and function` : family === "localChemistry" ? "RNA local chemical structure" : family === "processing" ? "RNA processing state" : family === "secondaryStructure" ? "RNA secondary-structure motif" : family === "pairingHybridization" ? "RNA base pairing or hybridization" : family === "degradationStability" ? "RNA cleavage and stability" : family === "nascentTranscript" ? "nascent RNA transcript" : "RNA molecular structure"; }
+function focusFor(text: string, family: RnaFamily) {
+  if (family === "localChemistry") {
+    if (/2 ?prime ?-?oh|2′-?oh/.test(text)) return "twoPrimeOH";
+    if (/phosphodiester bond/.test(text)) return "phosphodiesterLinkage";
+    if (/\buracil\b/.test(text)) return "uracil";
+    if (/\bribose\b/.test(text)) return "ribose";
+    if (/3 prime and 5 prime ends|1 prime.*2 prime.*3 prime.*5 prime/.test(text)) return "sugarPositions";
+    if (/dna nucleotide|chemical difference|differs chemically/.test(text)) return "rnaVsDnaComparison";
+    return "nucleotide";
+  }
+  return family === "typesFunctions" ? `${inferRnaType(text)} identity and function` : family === "processing" ? "RNA processing state" : family === "secondaryStructure" ? "RNA secondary-structure motif" : family === "pairingHybridization" ? "RNA base pairing or hybridization" : family === "degradationStability" ? "RNA cleavage and stability" : family === "nascentTranscript" ? "nascent RNA transcript" : "RNA molecular structure";
+}

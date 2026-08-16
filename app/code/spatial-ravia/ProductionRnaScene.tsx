@@ -19,6 +19,19 @@ function cameraFrame(intent: RnaPresentationRoute["cameraIntent"]) {
   return { position: [0, 0, 9] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 44 };
 }
 
+function localChemistryFrame(plan: RnaProductionScenePlan) {
+  const focusRoles = plan.localFocus === "twoPrimeOH" ? new Set(["twoPrimeHydroxyl", "ribose"]) : undefined;
+  const selected = focusRoles ? plan.atoms.filter((atom) => focusRoles.has(atom.role)) : plan.atoms;
+  const points = (selected.length > 0 ? selected : plan.atoms).map((atom) => atom.position);
+  const minX = Math.min(...points.map((value) => value[0]));
+  const maxX = Math.max(...points.map((value) => value[0]));
+  const minY = Math.min(...points.map((value) => value[1]));
+  const maxY = Math.max(...points.map((value) => value[1]));
+  const target: RnaPoint = [(minX + maxX) / 2, (minY + maxY) / 2, 0];
+  const extent = Math.max(maxX - minX, maxY - minY, 1.2) + 0.8;
+  return { position: [target[0], target[1], Math.max(3.8, extent / (2 * Math.tan((36 * Math.PI) / 360)))] as RnaPoint, target, fov: 36 };
+}
+
 function comparisonCameraFrame(layout: RnaProductionComparisonLayout, aspect: number) {
   const fov = 42;
   const verticalExtent = Math.max(layout.bounds.height + 1.05, (layout.bounds.width + 1.05) / Math.max(0.35, aspect));
@@ -109,8 +122,8 @@ function AtomBondLayer({ plan, isDark }: { plan: RnaProductionScenePlan; isDark:
       {bonds.map((bond) => <Line key={bond.id} points={[bond.from, bond.to]} color={bond.type === "phosphodiester" ? "#4c9ba7" : bond.type === "hydrogenBond" ? "#e4d18d" : (isDark ? "#bbcacc" : "#59696e")} lineWidth={bond.type === "phosphodiester" ? 2.2 : 1.4} dashed={bond.type === "hydrogenBond"} />)}
       {atoms.map((atom) => (
         <mesh key={atom.id} position={atom.position as [number, number, number]}>
-          <sphereGeometry args={[atom.role === "twoPrimeHydroxyl" ? 0.16 : 0.12, 16, 10]} />
-          <meshStandardMaterial color={colors[atom.element] ?? (isDark ? "#dce8e8" : "#43575c")} />
+          <sphereGeometry args={[plan.localFocus === "twoPrimeOH" && atom.role === "twoPrimeHydroxyl" ? 0.24 : atom.role === "twoPrimeHydroxyl" ? 0.16 : 0.12, 16, 10]} />
+          <meshStandardMaterial color={colors[atom.element] ?? (isDark ? "#dce8e8" : "#43575c")} emissive={plan.localFocus === "twoPrimeOH" && atom.role === "twoPrimeHydroxyl" ? "#d99b48" : "#000000"} emissiveIntensity={plan.localFocus === "twoPrimeOH" && atom.role === "twoPrimeHydroxyl" ? 0.55 : 0} />
         </mesh>
       ))}
     </group>
@@ -146,7 +159,7 @@ function RnaSceneStage({ plan, theme, frame, controls }: { plan: RnaProductionSc
   const portrait = Boolean(plan.comparison && aspect < 1.05);
   const layout = plan.comparison ? (portrait ? plan.comparison.portrait : plan.comparison.wide) : undefined;
   const activePlan = layout ? { ...plan, strands: layout.strands, labels: layout.labels, interactions: layout.interactions } : plan;
-  const activeFrame = layout ? comparisonCameraFrame(layout, aspect) : frame;
+  const activeFrame = layout ? comparisonCameraFrame(layout, aspect) : plan.structuralMode === "local-chemistry" && plan.atoms.length > 0 ? localChemistryFrame(plan) : frame;
   return (
     <>
       <RnaCameraRig frame={activeFrame} controls={controls} />

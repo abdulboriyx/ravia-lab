@@ -2,6 +2,7 @@ import type { RnaSceneSpec } from "./rna-contract.ts";
 import { canonicalRnaNucleotide, canonicalRnaView, type RnaAtom, type RnaBase, type RnaBond } from "./RnaVisualSystem.ts";
 
 export type RnaLocalChemistryMode = "nucleotide" | "ribose" | "backbone" | "comparison" | "adjacentNucleotides";
+export type RnaLocalChemistryFocus = "twoPrimeOH" | "ribose" | "phosphate" | "phosphodiesterLinkage" | "nucleotide" | "uracil" | "sugarPositions" | "rnaVsDnaComparison";
 export type RnaLocalAnchorPosition = "1-prime" | "2-prime" | "3-prime" | "4-prime" | "5-prime";
 
 export type RnaLocalChemistryAtom = RnaAtom & {
@@ -44,6 +45,7 @@ export type RnaDnaLocalComparison = {
 
 export type RnaLocalChemistryPresentation = {
   mode: RnaLocalChemistryMode;
+  focus: RnaLocalChemistryFocus;
   representation: ReturnType<typeof canonicalRnaView>;
   atoms: readonly RnaLocalChemistryAtom[];
   bonds: readonly RnaLocalChemistryBond[];
@@ -112,13 +114,28 @@ function bridge(left: string, right: string, state: RnaPhosphodiesterBridge["sta
 }
 
 function modeForSpec(spec: RnaSceneSpec): RnaLocalChemistryMode {
-  if (spec.requiredEntities.includes("phosphodiesterLinkage") && spec.requiredEntities.includes("ribose")) return "backbone";
+  if (spec.focus === "phosphodiesterLinkage") return "backbone";
+  if (spec.focus === "rnaVsDnaComparison") return "comparison";
   if (spec.requiredEntities.includes("twoPrimeHydroxyl") || spec.requiredEntities.includes("uracil")) return "ribose";
+  if (spec.requiredEntities.includes("phosphodiesterLinkage") && spec.requiredEntities.includes("ribose")) return "backbone";
   return "nucleotide";
 }
 
-export function createRnaLocalChemistryPresentation(spec: RnaSceneSpec, options: { mode?: RnaLocalChemistryMode; base?: RnaBase; comparisonBase?: "A" | "T" | "G" | "C" } = {}): RnaLocalChemistryPresentation {
+function focusForPresentation(spec: RnaSceneSpec, mode: RnaLocalChemistryMode, requested?: RnaLocalChemistryFocus): RnaLocalChemistryFocus {
+  if (requested) return requested;
+  if (mode === "comparison") return "rnaVsDnaComparison";
+  if (spec.focus === "twoPrimeOH" || spec.focus === "ribose" || spec.focus === "phosphodiesterLinkage" || spec.focus === "uracil" || spec.focus === "sugarPositions") return spec.focus;
+  if (spec.focus === "rnaVsDnaComparison") return "rnaVsDnaComparison";
+  if (mode === "backbone" || mode === "adjacentNucleotides") return "phosphodiesterLinkage";
+  if (spec.requiredEntities.includes("twoPrimeHydroxyl")) return "twoPrimeOH";
+  if (spec.requiredEntities.includes("uracil")) return "uracil";
+  if (mode === "ribose") return "ribose";
+  return "nucleotide";
+}
+
+export function createRnaLocalChemistryPresentation(spec: RnaSceneSpec, options: { mode?: RnaLocalChemistryMode; focus?: RnaLocalChemistryFocus; base?: RnaBase; comparisonBase?: "A" | "T" | "G" | "C" } = {}): RnaLocalChemistryPresentation {
   const mode = options.mode ?? modeForSpec(spec);
+  const focus = focusForPresentation(spec, mode, options.focus);
   const base = options.base ?? baseForSpec(spec);
   const comparison = mode === "comparison" ? createRnaDnaLocalComparison(base, options.comparisonBase ?? "T") : undefined;
   const count = mode === "adjacentNucleotides" || mode === "backbone" ? 2 : 1;
@@ -128,11 +145,14 @@ export function createRnaLocalChemistryPresentation(spec: RnaSceneSpec, options:
   const bridges = count === 2 ? [bridge("rna-nucleotide-1", "rna-nucleotide-2")] : [];
   for (const item of bridges) bonds.push(bond(item.id, item.participants[0], item.participants[1], "phosphodiester", item.state));
   const anchors = units.flatMap((unit) => unit.anchors);
-  const labelFilter = mode === "ribose" ? new Set(["1-prime", "2-prime", "3-prime", "4-prime", "5-prime"]) : mode === "backbone" || mode === "adjacentNucleotides" ? new Set(["3-prime", "5-prime"]) : new Set(["2-prime"]);
-  const labels = anchors.filter((item) => labelFilter.has(item.position)).map((item) => ({ text: item.label, anchorId: item.id }));
-  if (mode === "backbone" || mode === "adjacentNucleotides") labels.push({ text: "Phosphodiester linkage", anchorId: bridges[0]?.id ?? anchors[0].id });
-  if (base === "U") labels.push({ text: "Uracil", anchorId: "rna-nucleotide-1-base-anchor" });
-  return { mode, representation: canonicalRnaView(mode === "ribose" || mode === "comparison" ? "local-chemistry" : "nucleotide"), atoms, bonds, anchors, phosphodiesterBridges: bridges, highlightedGroups: mode === "backbone" || mode === "adjacentNucleotides" ? ["ribose", "phosphate", "phosphodiesterLinkage"] : ["ribose", "twoPrimeHydroxyl", "base"], labels, comparison, sameStrand: true, localScale: "local-chemistry" };
+  const labelFilter = focus === "twoPrimeOH" ? new Set(["2-prime"]) : focus === "ribose" || focus === "uracil" || focus === "phosphate" ? new Set<string>() : focus === "phosphodiesterLinkage" ? new Set(["3-prime", "5-prime"]) : focus === "sugarPositions" ? new Set(["1-prime", "2-prime", "3-prime", "4-prime", "5-prime"]) : new Set(["2-prime"]);
+  const labels = anchors.filter((item) => labelFilter.has(item.position) && (focus !== "phosphodiesterLinkage" || item.nucleotideId === "rna-nucleotide-1")).map((item) => ({ text: item.label, anchorId: item.id }));
+  if (focus === "ribose") labels.unshift({ text: "Ribose", anchorId: "rna-nucleotide-1-1-prime" });
+  if (focus === "phosphodiesterLinkage") labels.push({ text: "Phosphodiester linkage", anchorId: bridges[0]?.id ?? anchors[0].id });
+  if (focus === "uracil" || (focus === "nucleotide" && base === "U")) labels.push({ text: "Uracil", anchorId: "rna-nucleotide-1-base-anchor" });
+  const uniqueLabels = [...new Map(labels.map((label) => [`${label.text}:${label.anchorId}`, label])).values()];
+  const highlightedGroups = focus === "twoPrimeOH" ? ["ribose", "twoPrimeHydroxyl"] : focus === "phosphodiesterLinkage" ? ["ribose", "phosphate", "phosphodiesterLinkage"] : focus === "uracil" ? ["base"] : ["ribose", "twoPrimeHydroxyl", "base"];
+  return { mode, focus, representation: canonicalRnaView(mode === "ribose" || mode === "comparison" ? "local-chemistry" : "nucleotide"), atoms, bonds, anchors, phosphodiesterBridges: bridges, highlightedGroups, labels: uniqueLabels, comparison, sameStrand: true, localScale: "local-chemistry" };
 }
 
 export function createRnaDnaLocalComparison(rnaBase: RnaBase = "U", dnaBase: "T" | "A" | "G" | "C" = "T"): RnaDnaLocalComparison {

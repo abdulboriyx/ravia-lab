@@ -5,13 +5,14 @@ import { createRnaDnaLocalComparison, createRnaLocalChemistryPresentation, isVal
 
 const intent = (prompt: string) => resolveRnaIntent(prompt)!.spec;
 
-test("RNA local nucleotide contains ribose, explicit 2′-OH, and canonical uracil", () => {
+test("RNA local nucleotide contains ribose and an explicitly focused 2′-OH", () => {
   const plan = createRnaLocalChemistryPresentation(intent("show the 2 prime OH in RNA"), { mode: "ribose", base: "U" });
   assert.ok(isValidRnaLocalChemistryPresentation(plan));
   assert.ok(plan.atoms.some((atom) => atom.role === "twoPrimeHydroxyl"));
   assert.ok(plan.anchors.some((anchor) => anchor.position === "2-prime" && anchor.attachedTo.endsWith("o2-prime")));
   assert.ok(plan.labels.some((label) => label.text === "2′-OH"));
-  assert.ok(plan.labels.some((label) => label.text === "Uracil"));
+  assert.deepEqual(plan.labels.map((label) => label.text), ["2′-OH"]);
+  assert.equal(plan.focus, "twoPrimeOH");
 });
 
 test("ribose exposes anchored 1′, 2′, 3′, 4′, and 5′ positions", () => {
@@ -49,4 +50,21 @@ test("local RNA chemistry presentation is deterministic and uses local scale", (
   assert.deepEqual(first, second);
   assert.equal(first.localScale, "local-chemistry");
   assert.ok(first.highlightedGroups.includes("phosphodiesterLinkage"));
+});
+
+test("local chemistry focus filters labels and preserves requested primary anchors", () => {
+  const twoPrime = createRnaLocalChemistryPresentation(intent("show the 2 prime OH in RNA"), { mode: "ribose", focus: "twoPrimeOH" });
+  assert.equal(twoPrime.labels.filter((label) => label.text === "2′-OH").length, 1);
+  assert.equal(twoPrime.labels.some((label) => label.text === "Phosphodiester linkage"), false);
+  assert.equal(twoPrime.labels.some((label) => label.text.includes("5′") || label.text.includes("3′")), false);
+  assert.deepEqual(twoPrime.highlightedGroups, ["ribose", "twoPrimeHydroxyl"]);
+
+  const ribose = createRnaLocalChemistryPresentation(intent("show ribose in RNA"), { mode: "ribose", focus: "ribose" });
+  assert.deepEqual(ribose.labels.map((label) => label.text), ["Ribose"]);
+
+  const linkage = createRnaLocalChemistryPresentation(intent("show a phosphodiester bond in RNA"), { mode: "adjacentNucleotides", focus: "phosphodiesterLinkage" });
+  assert.ok(linkage.labels.some((label) => label.text === "Phosphodiester linkage"));
+
+  const uracil = createRnaLocalChemistryPresentation(intent("show uracil in RNA"), { mode: "ribose", focus: "uracil", base: "U" });
+  assert.deepEqual(uracil.labels.map((label) => label.text), ["Uracil"]);
 });

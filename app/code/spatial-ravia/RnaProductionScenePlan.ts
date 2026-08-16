@@ -1,6 +1,6 @@
 import { rnaTopologyState, sampleCanonicalRna, type RnaPoint, type RnaResidueSample } from "./RnaVisualSystem.ts";
 import type { RnaPresentationRoute, RnaSharedSubstratePresentation } from "./RnaPresentationRouter.ts";
-import type { RnaLocalChemistryPresentation } from "./RnaLocalChemistryPresentation.ts";
+import type { RnaLocalChemistryFocus, RnaLocalChemistryPresentation } from "./RnaLocalChemistryPresentation.ts";
 import type { RnaTypeIdentity, RnaTypePresentation } from "./RnaTypePresentation.ts";
 import type { RnaPairingPresentation } from "./RnaPairingPresentation.ts";
 import type { RnaSecondaryStructurePresentation } from "./RnaSecondaryStructurePresentation.ts";
@@ -87,6 +87,7 @@ export type RnaProductionScenePlan = {
   terminalMarkers: readonly RnaProductionTerminalMarker[];
   labels: readonly RnaProductionLabel[];
   highlightedIndices: readonly number[];
+  localFocus?: RnaLocalChemistryFocus;
   comparison?: RnaProductionComparison;
   metadata: { owner: string; representationMode: string; grounding: string };
 };
@@ -296,6 +297,19 @@ function overlayForRoute(route: RnaPresentationRoute, strands: readonly RnaProdu
 
 function labelsForRoute(route: RnaPresentationRoute, strands: readonly RnaProductionStrand[], atoms: readonly RnaProductionAtom[]): RnaProductionLabel[] {
   const samples = strands[0]?.samples ?? [];
+  if (route.family === "localChemistry") {
+    const chemistry = route.presentation as RnaLocalChemistryPresentation;
+    const atomPositions = new Map(chemistry.atoms.map((atom) => [atom.id, atom.position]));
+    const anchorPositions = new Map(chemistry.anchors.map((anchor) => [anchor.id, atomPositions.get(anchor.attachedTo) ?? [0, 0, 0] as RnaPoint]));
+    const seen = new Set<string>();
+    return chemistry.labels.flatMap((label, index) => {
+      if (seen.has(`${label.text}:${label.anchorId}`)) return [];
+      seen.add(`${label.text}:${label.anchorId}`);
+      const target = anchorPositions.get(label.anchorId) ?? atomPositions.get(label.anchorId) ?? atoms[0]?.position ?? [0, 0, 0] as RnaPoint;
+      const offset: RnaPoint = chemistry.focus === "twoPrimeOH" ? [0.28, 0.22, 0.24] : [0.18, 0.18 + index * 0.08, 0.24];
+      return [{ text: label.text, position: [target[0] + offset[0], target[1] + offset[1], target[2] + offset[2]], anchor: `local-chemistry-${label.anchorId}` }];
+    });
+  }
   if (route.family === "typesFunctions" && route.rnaType === "tRNA") return [];
   if (route.family === "secondaryStructure") {
     const secondary = route.presentation as RnaSecondaryStructurePresentation;
@@ -326,5 +340,6 @@ export function deriveProductionRnaScenePlan(route: RnaPresentationRoute): RnaPr
   const overlay = overlayForRoute(route, strands);
   const comparison = comparisonForRoute(route);
   const comparisonStrands = comparison?.wide.strands ?? strands;
-  return { family: route.family, cameraIntent: route.cameraIntent, structuralMode: route.family === "localChemistry" ? "local-chemistry" : "procedural", strands: comparisonStrands, atoms: local.atoms, bonds: local.bonds, comparisonAtoms: local.comparisonAtoms, comparisonBonds: local.comparisonBonds, interactions: comparison?.wide.interactions ?? overlay.interactions, terminalMarkers: terminalMarkers(route, comparisonStrands), labels: comparison?.wide.labels ?? labelsForRoute(route, comparisonStrands, [...local.atoms, ...local.comparisonAtoms]), highlightedIndices: overlay.highlightedIndices, comparison, metadata: { owner: route.owner, representationMode: route.representationMode, grounding: route.groundingStatus } };
+  const chemistry = route.family === "localChemistry" ? route.presentation as RnaLocalChemistryPresentation : undefined;
+  return { family: route.family, cameraIntent: route.cameraIntent, structuralMode: route.family === "localChemistry" ? "local-chemistry" : "procedural", strands: comparisonStrands, atoms: local.atoms, bonds: local.bonds, comparisonAtoms: local.comparisonAtoms, comparisonBonds: local.comparisonBonds, interactions: comparison?.wide.interactions ?? overlay.interactions, terminalMarkers: terminalMarkers(route, comparisonStrands), labels: comparison?.wide.labels ?? labelsForRoute(route, comparisonStrands, [...local.atoms, ...local.comparisonAtoms]), highlightedIndices: overlay.highlightedIndices, localFocus: chemistry?.focus, comparison, metadata: { owner: route.owner, representationMode: route.representationMode, grounding: route.groundingStatus } };
 }
