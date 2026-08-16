@@ -96,6 +96,8 @@ export type RnaSecondaryStructureGeometryValidation = {
 type BuildOptions = {
   stemPairs?: number;
   loopLength?: number;
+  bulgeSide?: "left" | "right";
+  bulgeLength?: number;
   sequence?: readonly RnaBase[];
   foldingState?: RnaSecondaryStructureFoldingState;
   theme?: RnaTheme;
@@ -158,18 +160,37 @@ function buildStem(options: BuildOptions): { sequence: RnaBase[]; regions: RnaSe
 
 function buildBulge(options: BuildOptions): { sequence: RnaBase[]; regions: RnaSecondaryStructureRegion[]; pairingRegions: RnaPairingRegion[] } {
   const stemPairs = Math.max(2, Math.round(options.stemPairs ?? 3));
-  const length = stemPairs * 2 + 1;
+  const bulgeSide = options.bulgeSide ?? "left";
+  const bulgeLength = Math.max(1, Math.round(options.bulgeLength ?? 1));
+  const length = stemPairs * 2 + bulgeLength;
   const sequence = Array.from({ length }, (_, index) => options.sequence?.[index] ?? (["A", "G", "C", "U"] as const)[index % 4]);
   const pairs: { left: number; right: number; pair: "A-U" | "G-C" | "G-U-wobble" }[] = [];
-  for (let index = 0; index < stemPairs; index += 1) addPair(sequence, pairs, index, length - 1 - index);
+  const lowerSplit = Math.max(1, Math.floor(stemPairs / 2));
   const left = range(0, stemPairs - 1);
-  const bulge = [stemPairs];
-  const right = range(stemPairs + 1, length - 1);
-  return {
-    sequence,
-    regions: [region("bulge-stem-left", "stem", left, "left", "Stem"), region("bulge-region", "bulge", bulge, "left", "Bulge"), region("bulge-stem-right", "stem", right, "right", "Stem")],
-    pairingRegions: [{ id: "bulge-stem-pairing", kind: "canonical", pairs, leftRange: asRange(left), rightRange: asRange(right), sameChain: true, antiparallel: true }],
-  };
+  if (bulgeSide === "left") {
+    const leftLower = range(0, lowerSplit - 1);
+    const bulge = range(lowerSplit, lowerSplit + bulgeLength - 1);
+    const leftUpper = range(lowerSplit + bulgeLength, lowerSplit + bulgeLength + stemPairs - lowerSplit - 1);
+    const right = range(stemPairs + bulgeLength, length - 1);
+    const pairedLeft = [...leftLower, ...leftUpper];
+    for (let index = 0; index < stemPairs; index += 1) addPair(sequence, pairs, pairedLeft[index], right[stemPairs - 1 - index]);
+    return {
+      sequence,
+      regions: [region("bulge-stem-left-lower", "stem", leftLower, "left", "Stem"), region("bulge-region", "bulge", bulge, "left", "Bulge"), region("bulge-stem-left-upper", "stem", leftUpper, "left", "Stem"), region("bulge-stem-right", "stem", right, "right", "Stem")],
+      pairingRegions: [{ id: "bulge-stem-pairing", kind: "canonical", pairs, leftRange: asRange(pairedLeft), rightRange: asRange(right), sameChain: true, antiparallel: true }],
+    };
+  } else {
+    const rightUpper = range(stemPairs, stemPairs + lowerSplit - 1);
+    const rightBulge = range(stemPairs + lowerSplit, stemPairs + lowerSplit + bulgeLength - 1);
+    const rightLower = range(stemPairs + lowerSplit + bulgeLength, length - 1);
+    const pairedRight = [...rightUpper, ...rightLower];
+    for (let index = 0; index < stemPairs; index += 1) addPair(sequence, pairs, left[index], pairedRight[stemPairs - 1 - index]);
+    return {
+      sequence,
+      regions: [region("bulge-stem-left", "stem", left, "left", "Stem"), region("bulge-stem-right-upper", "stem", rightUpper, "right", "Stem"), region("bulge-region", "bulge", rightBulge, "right", "Bulge"), region("bulge-stem-right-lower", "stem", rightLower, "right", "Stem")],
+      pairingRegions: [{ id: "bulge-stem-pairing", kind: "canonical", pairs, leftRange: asRange(left), rightRange: asRange(pairedRight), sameChain: true, antiparallel: true }],
+    };
+  }
 }
 
 function buildInternalLoop(options: BuildOptions): { sequence: RnaBase[]; regions: RnaSecondaryStructureRegion[]; pairingRegions: RnaPairingRegion[] } {
@@ -217,29 +238,37 @@ function toAgentBTopology(topology: RnaSecondaryStructureTopology): RnaTopologyS
 
 function sharedSideFrame(topology: RnaSecondaryStructureTopology): Map<number, RnaPoint> {
   const positions = new Map<number, RnaPoint>();
-  const leftRegions = topology.regions.filter((item) => item.side === "left").sort((a, b) => (a.residueIndices[0] ?? 0) - (b.residueIndices[0] ?? 0));
-  const rightRegions = topology.regions.filter((item) => item.side === "right").sort((a, b) => (a.residueIndices[0] ?? 0) - (b.residueIndices[0] ?? 0));
-  const leftCount = leftRegions.reduce((total, item) => total + item.residueIndices.length, 0);
-  const rightCount = rightRegions.reduce((total, item) => total + item.residueIndices.length, 0);
-  const rowCount = Math.max(leftCount, rightCount);
-  let leftRow = 0;
-  for (const item of leftRegions) {
-    for (const index of item.residueIndices) {
-      const isUnpaired = item.kind === "internalLoop" || item.kind === "bulge" || item.kind === "unpaired";
-      const outward = isUnpaired ? 0.22 + Math.min(0.22, item.residueIndices.length * 0.05) : 0;
-      positions.set(index, [-1.08 - outward, leftRow * 0.64, isUnpaired ? 0.04 : 0]);
-      leftRow += 1;
+  const pairRows = new Map<number, number>();
+  topology.pairingRegions.flatMap((pairing) => pairing.pairs.map((pair) => [pair.left, pair.right] as [number, number])).forEach(([left, right], row) => {
+    pairRows.set(left, row);
+    pairRows.set(right, row);
+    positions.set(left, [-1.08, row * 0.64, 0]);
+    positions.set(right, [1.08, row * 0.64, 0]);
+  });
+  const sideIndices = (side: "left" | "right") => topology.regions.filter((item) => item.side === side).flatMap((item) => item.residueIndices).sort((a, b) => a - b);
+  const placeUnpaired = (side: "left" | "right") => {
+    const pairedIndices = sideIndices(side).filter((index) => pairRows.has(index));
+    const unpairedRegions = topology.regions.filter((item) => item.side === side && (item.kind === "internalLoop" || item.kind === "bulge" || item.kind === "unpaired"));
+    for (const item of unpairedRegions) {
+      const ordered = [...item.residueIndices].sort((a, b) => a - b);
+      for (const [local, index] of ordered.entries()) {
+        const previous = pairedIndices.filter((candidate) => candidate < index).pop();
+        const next = pairedIndices.find((candidate) => candidate > index);
+        const previousRow = previous === undefined ? undefined : pairRows.get(previous);
+        const nextRow = next === undefined ? undefined : pairRows.get(next);
+        const centerRow = previousRow !== undefined && nextRow !== undefined
+          ? (previousRow + nextRow) / 2
+          : previousRow !== undefined ? previousRow + 0.55 : nextRow !== undefined ? nextRow - 0.55 : local;
+        const center = (ordered.length - 1) / 2;
+        const spread = (side === "left" ? local - center : center - local) * 0.42;
+        const row = centerRow + spread;
+        const outward = 0.28 + Math.min(0.26, ordered.length * 0.06) + Math.abs(spread) * 0.16;
+        positions.set(index, [side === "left" ? -1.08 - outward : 1.08 + outward, row * 0.64, 0.04]);
+      }
     }
-  }
-  let rightRow = 0;
-  for (const item of rightRegions) {
-    for (const index of item.residueIndices) {
-      const isUnpaired = item.kind === "internalLoop" || item.kind === "bulge" || item.kind === "unpaired";
-      const outward = isUnpaired ? 0.22 + Math.min(0.22, item.residueIndices.length * 0.05) : 0;
-      positions.set(index, [1.08 + outward, (rowCount - 1 - rightRow) * 0.64, isUnpaired ? 0.04 : 0]);
-      rightRow += 1;
-    }
-  }
+  };
+  placeUnpaired("left");
+  placeUnpaired("right");
   return positions;
 }
 

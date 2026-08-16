@@ -100,10 +100,33 @@ test("bulge deforms one side while the opposite paired stem stays on its frame",
   const samples = sampleRnaSecondaryStructure(topology);
   const validation = validateRnaSecondaryStructureGeometry(topology, samples);
   assert.equal(validation.valid, true);
-  assert.deepEqual(topology.unpairedResidues, [3]);
-  assert.equal(samples[3].backbone[0] < samples[2].backbone[0], true);
+  assert.deepEqual(topology.unpairedResidues, [1]);
+  assert.equal(samples[1].backbone[0] < samples[0].backbone[0], true);
   assert.ok(samples[4].backbone[0] > 0 && samples[5].backbone[0] > 0 && samples[6].backbone[0] > 0);
   assert.deepEqual(validation.crossingSegments, []);
+});
+
+test("bulge pairing resumes around the unmatched residue without diagonal connectors", () => {
+  const topology = createRnaSecondaryStructureSpec("bulge", { stemPairs: 4, bulgeLength: 1 });
+  const presentation = deriveRnaSecondaryStructurePresentation(topology);
+  const paired = new Set(presentation.interactions.flatMap((interaction) => interaction.participants));
+  assert.equal(topology.unpairedResidues.length, 1);
+  assert.equal(paired.has(topology.unpairedResidues[0]), false);
+  assert.ok(presentation.interactions.every((interaction) => Math.abs(presentation.samples[interaction.participants[0]].basePosition[1] - presentation.samples[interaction.participants[1]].basePosition[1]) < 0.3));
+});
+
+test("left and right multi-residue bulges share the same frame and remain bounded", () => {
+  for (const side of ["left", "right"] as const) {
+    const topology = createRnaSecondaryStructureSpec("bulge", { stemPairs: 4, bulgeSide: side, bulgeLength: 2 });
+    const samples = sampleRnaSecondaryStructure(topology);
+    const validation = validateRnaSecondaryStructureGeometry(topology, samples);
+    assert.equal(validation.valid, true);
+    assert.equal(topology.unpairedResidues.length, 2);
+    assert.deepEqual(validation.crossingSegments, []);
+    const bulgeRegion = topology.regions.find((region) => region.kind === "bulge")!;
+    const bulgeXs = bulgeRegion.residueIndices.map((index) => samples[index].backbone[0]);
+    assert.ok(side === "left" ? bulgeXs.every((x) => x < -1.08) : bulgeXs.every((x) => x > 1.08));
+  }
 });
 
 test("pairing and hybrid routes mount paired strands and interaction overlays", () => {
