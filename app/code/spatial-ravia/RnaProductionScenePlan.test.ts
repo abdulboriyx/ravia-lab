@@ -45,6 +45,22 @@ test("secondary structure and type routes retain structural strands", () => {
   assert.ok(trna.strands[0].samples.length > 1);
 });
 
+test("tRNA production uses a continuous cloverleaf substrate with distinct arms and shared pair overlays", () => {
+  const plan = deriveProductionRnaScenePlan(resolveRnaPresentation("show a tRNA")!);
+  const samples = plan.strands[0].samples;
+  assert.equal(samples.length, 20);
+  assert.equal(plan.interactions.length, 7);
+  assert.deepEqual(plan.labels, []);
+  assert.ok(samples[0].backbone[0] < 0 && samples[19].backbone[0] > 0);
+  assert.ok(samples[8].backbone[1] < samples[4].backbone[1]);
+  assert.ok(samples[4].backbone[0] < 0 && samples[12].backbone[0] > 0);
+  assert.ok(plan.interactions.every((interaction) => Math.abs(interaction.from[1] - interaction.to[1]) < 0.5 || Math.abs(interaction.from[0] - interaction.to[0]) < 0.8));
+  const paired = new Set(plan.interactions.flatMap((interaction) => [interaction.from.join(","), interaction.to.join(",")]));
+  assert.ok(plan.interactions.length > 0);
+  assert.equal(samples.slice(0, 20).filter((sample) => sample.pairedWith === undefined).length, 6);
+  assert.ok(paired.size > 0);
+});
+
 test("secondary-structure production carries shared pairing interactions across the stem", () => {
   const route = resolveRnaPresentation("show an RNA hairpin")!;
   const plan = deriveProductionRnaScenePlan(route);

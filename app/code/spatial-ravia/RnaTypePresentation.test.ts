@@ -27,6 +27,10 @@ test("tRNA exposes a continuous chain with acceptor, D, anticodon, and TΨC regi
   assert.ok(topology.regions.some((region) => region.kind === "DArm"));
   assert.ok(topology.regions.some((region) => region.kind === "TpsiCArm"));
   assert.ok(topology.pairs.length > 0);
+  assert.deepEqual(topology.regions.find((region) => region.id === "d-loop")?.residueIndices, [5, 6]);
+  assert.deepEqual(topology.regions.find((region) => region.id === "anticodon-loop")?.residueIndices, [9, 10]);
+  assert.deepEqual(topology.regions.find((region) => region.id === "tpsi-c-loop")?.residueIndices, [13, 14]);
+  assert.equal(topology.continuousChains[0].length, topology.sequences[0].length);
 });
 
 test("rRNA uses a folded multi-region identity", () => {

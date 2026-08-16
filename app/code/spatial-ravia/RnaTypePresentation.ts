@@ -103,8 +103,25 @@ function topologyFor(type: RnaTypeIdentity, options: TypeOptions = {}): RnaTypeT
   }
   if (type === "tRNA") {
     const basesForTrna = sequence(20);
-    const pairs: RnaTypePair[] = [[0, 19], [1, 18], [2, 17], [3, 16], [5, 14], [6, 13], [8, 11], [9, 10]].map(([left, right]) => ({ leftStrand: "tRNA", rightStrand: "tRNA", left, right, pair: basesForTrna[left] === "A" ? "A-U" : "G-C" }));
-    return { type, topology: "secondary-structure", strandCount: 1, sequences: [basesForTrna], regions: [{ id: "acceptor-stem", kind: "acceptorStem", residueIndices: [0, 1, 2, 3, 16, 17, 18, 19], label: "Acceptor stem" }, { id: "d-arm", kind: "DArm", residueIndices: [4, 5, 6, 7], label: "D arm" }, { id: "anticodon-loop", kind: "anticodonLoop", residueIndices: [8, 9, 10, 11], label: "Anticodon loop" }, { id: "tpsi-c-arm", kind: "TpsiCArm", residueIndices: [12, 13, 14, 15], label: "TΨC arm" }], pairs, continuousChains: [range(0, 19)], deterministicKey: "tRNA:cloverleaf:20" };
+    const pairs: RnaTypePair[] = [[0, 19], [1, 18], [2, 17], [3, 16], [4, 7], [8, 11], [12, 15]].map(([left, right]) => ({ leftStrand: "tRNA", rightStrand: "tRNA", left, right, pair: basesForTrna[left] === "A" ? "A-U" : "G-C" }));
+    return {
+      type,
+      topology: "secondary-structure",
+      strandCount: 1,
+      sequences: [basesForTrna],
+      regions: [
+        { id: "acceptor-stem", kind: "acceptorStem", residueIndices: [0, 1, 2, 3, 16, 17, 18, 19], label: "Acceptor stem" },
+        { id: "d-arm", kind: "DArm", residueIndices: [4, 5, 6, 7], label: "D arm" },
+        { id: "d-loop", kind: "loop", residueIndices: [5, 6], label: "D loop" },
+        { id: "anticodon-arm", kind: "anticodonLoop", residueIndices: [8, 9, 10, 11], label: "Anticodon arm" },
+        { id: "anticodon-loop", kind: "loop", residueIndices: [9, 10], label: "Anticodon loop" },
+        { id: "tpsi-c-arm", kind: "TpsiCArm", residueIndices: [12, 13, 14, 15], label: "TΨC arm" },
+        { id: "tpsi-c-loop", kind: "loop", residueIndices: [13, 14], label: "TΨC loop" },
+      ],
+      pairs,
+      continuousChains: [range(0, 19)],
+      deterministicKey: "tRNA:cloverleaf:20",
+    };
   }
   if (type === "rRNA") {
     const rna = sequence(30);

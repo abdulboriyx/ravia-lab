@@ -74,17 +74,25 @@ function offsetSamples(samples: readonly RnaResidueSample[], offset: RnaPoint, b
   });
 }
 
-function compactTnucleotideLayout(samples: readonly RnaResidueSample[]): RnaResidueSample[] {
-  if (samples.length < 12) return [...samples];
-  return samples.map((sample, index) => {
-    const arm = index < 5 ? 0 : index < 10 ? 1 : 2;
-    const local = index - arm * 5;
-    const angle = (local / 4) * Math.PI - Math.PI / 2 + arm * (Math.PI * 2 / 3);
-    const radius = arm === 0 ? 1.25 : 0.92;
-    const backbone: RnaPoint = [Math.cos(angle) * radius, Math.sin(angle) * radius, arm === 0 ? 0.12 : -0.08];
-    const ribose: RnaPoint = [backbone[0] * 0.94, backbone[1] * 0.94, backbone[2] + 0.08];
-    const basePosition: RnaPoint = [backbone[0] * 1.12, backbone[1] * 1.12, backbone[2] + 0.16];
-    return { ...sample, backbone, ribose, basePosition, fivePrime: backbone, threePrime: backbone };
+function tRnaCloverleafLayout(samples: readonly RnaResidueSample[]): RnaResidueSample[] {
+  if (samples.length < 20) return [...samples];
+  const positions: RnaPoint[] = [
+    [-0.55, 2.45, 0.08], [-0.45, 2.05, 0.08], [-0.45, 1.65, 0.08], [-0.55, 1.25, 0.08],
+    [-0.72, 1.02, 0.04], [-1.05, 0.84, 0.04], [-1.05, 0.48, 0.04], [-0.72, 0.25, 0.04],
+    [-0.56, -0.08, 0.04], [-0.44, -0.48, 0.04], [0.02, -0.72, 0.04], [0.42, -0.50, 0.04],
+    [0.66, -0.08, 0.04], [1.04, 0.18, 0.04], [1.04, 0.54, 0.04], [0.72, 0.84, 0.04],
+    [0.55, 1.25, 0.08], [0.45, 1.65, 0.08], [0.45, 2.05, 0.08], [0.55, 2.45, 0.08],
+  ];
+  const paired = new Map<number, number>([[0, 19], [1, 18], [2, 17], [3, 16], [4, 7], [8, 11], [12, 15], [19, 0], [18, 1], [17, 2], [16, 3], [7, 4], [11, 8], [15, 12]]);
+  return samples.map((sample) => {
+    const backbone = positions[sample.index] ?? sample.backbone;
+    const partner = paired.get(sample.index);
+    const partnerPosition = partner === undefined ? undefined : positions[partner];
+    const basePosition = partnerPosition
+      ? [backbone[0] + (partnerPosition[0] - backbone[0]) * 0.2, backbone[1] + (partnerPosition[1] - backbone[1]) * 0.2, backbone[2] + 0.2] as RnaPoint
+      : [backbone[0] + (backbone[0] < 0 ? -0.2 : 0.2), backbone[1] + (backbone[1] < 0 ? -0.12 : 0.12), backbone[2] + 0.18] as RnaPoint;
+    const ribose: RnaPoint = [backbone[0], backbone[1], backbone[2] + 0.12];
+    return { ...sample, backbone, ribose, basePosition, pairedWith: partner, fivePrime: backbone, threePrime: backbone };
   });
 }
 
@@ -106,7 +114,7 @@ function samplesForRoute(route: RnaPresentationRoute): RnaProductionStrand[] {
   }
   if (route.family === "typesFunctions") {
     const typed = presentation as RnaTypePresentation;
-    return typed.strands.map((strand, index) => ({ id: strand.id, kind: "RNA" as const, samples: route.rnaType === "tRNA" ? compactTnucleotideLayout(strand.samples) : route.rnaType === "rRNA" ? foldedRnaLayout(strand.samples) : index === 0 ? [...strand.samples] : offsetSamples(strand.samples, [0, 0, -0.7], -0.2) }));
+    return typed.strands.map((strand, index) => ({ id: strand.id, kind: "RNA" as const, samples: route.rnaType === "tRNA" ? tRnaCloverleafLayout(strand.samples) : route.rnaType === "rRNA" ? foldedRnaLayout(strand.samples) : index === 0 ? [...strand.samples] : offsetSamples(strand.samples, [0, 0, -0.7], -0.2) }));
   }
   if (route.family === "pairingHybridization") {
     const pairing = presentation as RnaPairingPresentation;
@@ -177,6 +185,17 @@ function overlayForRoute(route: RnaPresentationRoute, strands: readonly RnaProdu
       highlightedIndices: secondary.topology.pairedResidues.flat(),
     };
   }
+  if (route.family === "typesFunctions" && route.rnaType === "tRNA") {
+    const typed = route.presentation as RnaTypePresentation;
+    return {
+      interactions: typed.topology.pairs.flatMap((pair) => {
+        const from = first[pair.left]?.basePosition;
+        const to = first[pair.right]?.basePosition;
+        return from && to ? [{ id: `tRNA-${pair.left}-${pair.right}`, type: "hydrogenBond" as const, from, to }] : [];
+      }),
+      highlightedIndices: typed.topology.pairs.flatMap((pair) => [pair.left, pair.right]),
+    };
+  }
   if (route.family === "processing") {
     const processing = route.presentation as RnaProcessingPresentation;
     return { interactions: processing.topology.spliceJunctions.map((junction) => ({ id: junction.id, type: "highlight" as const, from: first[junction.fromDisplayIndex]?.backbone ?? [0, 0, 0], to: first[junction.toDisplayIndex]?.backbone ?? [0, 0, 0] })), highlightedIndices: processing.topology.regions.flatMap((region) => region.displayIndices) };
@@ -190,6 +209,7 @@ function overlayForRoute(route: RnaPresentationRoute, strands: readonly RnaProdu
 
 function labelsForRoute(route: RnaPresentationRoute, strands: readonly RnaProductionStrand[], atoms: readonly RnaProductionAtom[]): RnaProductionLabel[] {
   const samples = strands[0]?.samples ?? [];
+  if (route.family === "typesFunctions" && route.rnaType === "tRNA") return [];
   if (route.family === "secondaryStructure") {
     const secondary = route.presentation as RnaSecondaryStructurePresentation;
     const requestedPairingLabels = route.sourceSpec.requiredEntities.includes("pairedRegion") || route.sourceSpec.requiredEntities.includes("unpairedRegion");
