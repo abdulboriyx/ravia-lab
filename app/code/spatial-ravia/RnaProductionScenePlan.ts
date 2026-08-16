@@ -47,6 +47,20 @@ export type RnaProductionTerminalMarker = {
   position: RnaPoint;
 };
 
+export type RnaProductionComparisonLayout = {
+  mode: "side-by-side" | "stacked";
+  strands: readonly RnaProductionStrand[];
+  labels: readonly RnaProductionLabel[];
+  bounds: { min: RnaPoint; max: RnaPoint; center: RnaPoint; width: number; height: number };
+};
+
+export type RnaProductionComparison = {
+  normalizedScale: true;
+  identities: readonly string[];
+  wide: RnaProductionComparisonLayout;
+  portrait: RnaProductionComparisonLayout;
+};
+
 export type RnaProductionScenePlan = {
   family: RnaPresentationRoute["family"];
   cameraIntent: RnaPresentationRoute["cameraIntent"];
@@ -60,6 +74,7 @@ export type RnaProductionScenePlan = {
   terminalMarkers: readonly RnaProductionTerminalMarker[];
   labels: readonly RnaProductionLabel[];
   highlightedIndices: readonly number[];
+  comparison?: RnaProductionComparison;
   metadata: { owner: string; representationMode: string; grounding: string };
 };
 
@@ -104,6 +119,39 @@ function foldedRnaLayout(samples: readonly RnaResidueSample[]): RnaResidueSample
     const basePosition: RnaPoint = [backbone[0], backbone[1] + 0.3, backbone[2] + 0.16];
     return { ...sample, backbone, ribose, basePosition, fivePrime: backbone, threePrime: backbone };
   });
+}
+
+function boundsForStrands(strands: readonly RnaProductionStrand[]): RnaProductionComparisonLayout["bounds"] {
+  const points = strands.flatMap((strand) => strand.samples.flatMap((sample) => [sample.backbone, sample.ribose, sample.basePosition]));
+  const min: RnaPoint = [Math.min(...points.map((value) => value[0])), Math.min(...points.map((value) => value[1])), Math.min(...points.map((value) => value[2]))];
+  const max: RnaPoint = [Math.max(...points.map((value) => value[0])), Math.max(...points.map((value) => value[1])), Math.max(...points.map((value) => value[2]))];
+  return { min, max, center: [(min[0] + max[0]) / 2, (min[1] + max[1]) / 2, (min[2] + max[2]) / 2], width: max[0] - min[0], height: max[1] - min[1] };
+}
+
+function normalizeSamples(samples: readonly RnaResidueSample[], targetCenter: RnaPoint, targetExtent = 2.2): RnaResidueSample[] {
+  const source = boundsForStrands([{ id: "source", kind: "RNA", samples }]);
+  const scale = targetExtent / Math.max(source.width, source.height, 0.001);
+  const translate = (value: RnaPoint): RnaPoint => [targetCenter[0] + (value[0] - source.center[0]) * scale, targetCenter[1] + (value[1] - source.center[1]) * scale, targetCenter[2] + (value[2] - source.center[2]) * scale];
+  return samples.map((sample) => ({ ...sample, backbone: translate(sample.backbone), ribose: translate(sample.ribose), basePosition: translate(sample.basePosition), fivePrime: translate(sample.fivePrime), threePrime: translate(sample.threePrime) }));
+}
+
+function comparisonLayout(objects: readonly { id: string; identity: string; samples: readonly RnaResidueSample[] }[], mode: RnaProductionComparisonLayout["mode"]): RnaProductionComparisonLayout {
+  const centers: RnaPoint[] = mode === "side-by-side" ? [[-1.65, 0, 0], [1.65, 0, 0]] : [[0, 1.35, 0], [0, -1.3, 0]];
+  const strands = objects.map((object, index) => ({ id: object.id, kind: "RNA" as const, samples: normalizeSamples(object.samples, centers[index] ?? [0, 0, 0]) }));
+  const bounds = boundsForStrands(strands);
+  const labels = strands.map((strand, index) => ({ text: objects[index]?.identity ?? strand.id, position: [bounds.center[0] + (mode === "side-by-side" ? (index === 0 ? -1.65 : 1.65) : 0), (strand.samples.reduce((sum, sample) => sum + sample.backbone[1], 0) / Math.max(1, strand.samples.length)) + (mode === "side-by-side" ? 0.9 : index === 0 ? 0.9 : -0.9), 0.32] as RnaPoint, anchor: `comparison-label-${index}` }));
+  return { mode, strands, labels, bounds };
+}
+
+function comparisonForRoute(route: RnaPresentationRoute): RnaProductionComparison | undefined {
+  if (route.family !== "typesFunctions") return undefined;
+  const typed = route.presentation as RnaTypePresentation;
+  if (!typed.comparison) return undefined;
+  const objects = [
+    { id: `comparison-${typed.type}`, identity: typed.type, samples: typed.strands[0]?.samples ?? [] },
+    { id: `comparison-${typed.comparison.right.type}`, identity: typed.comparison.right.type, samples: typed.comparison.right.strands[0]?.samples ?? [] },
+  ];
+  return { normalizedScale: true, identities: objects.map((object) => object.identity), wide: comparisonLayout(objects, "side-by-side"), portrait: comparisonLayout(objects, "stacked") };
 }
 
 function samplesForRoute(route: RnaPresentationRoute): RnaProductionStrand[] {
@@ -237,5 +285,7 @@ export function deriveProductionRnaScenePlan(route: RnaPresentationRoute): RnaPr
   const strands = samplesForRoute(route);
   const local = localChemistryData(route);
   const overlay = overlayForRoute(route, strands);
-  return { family: route.family, cameraIntent: route.cameraIntent, structuralMode: route.family === "localChemistry" ? "local-chemistry" : "procedural", strands, atoms: local.atoms, bonds: local.bonds, comparisonAtoms: local.comparisonAtoms, comparisonBonds: local.comparisonBonds, interactions: overlay.interactions, terminalMarkers: terminalMarkers(route, strands), labels: labelsForRoute(route, strands, [...local.atoms, ...local.comparisonAtoms]), highlightedIndices: overlay.highlightedIndices, metadata: { owner: route.owner, representationMode: route.representationMode, grounding: route.groundingStatus } };
+  const comparison = comparisonForRoute(route);
+  const comparisonStrands = comparison?.wide.strands ?? strands;
+  return { family: route.family, cameraIntent: route.cameraIntent, structuralMode: route.family === "localChemistry" ? "local-chemistry" : "procedural", strands: comparisonStrands, atoms: local.atoms, bonds: local.bonds, comparisonAtoms: local.comparisonAtoms, comparisonBonds: local.comparisonBonds, interactions: overlay.interactions, terminalMarkers: terminalMarkers(route, comparisonStrands), labels: comparison?.wide.labels ?? labelsForRoute(route, comparisonStrands, [...local.atoms, ...local.comparisonAtoms]), highlightedIndices: overlay.highlightedIndices, comparison, metadata: { owner: route.owner, representationMode: route.representationMode, grounding: route.groundingStatus } };
 }

@@ -7,7 +7,7 @@ import * as THREE from "three";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 import type { RnaPresentationRoute } from "./RnaPresentationRouter";
-import { deriveProductionRnaScenePlan, type RnaProductionScenePlan, type RnaProductionStrand } from "./RnaProductionScenePlan";
+import { deriveProductionRnaScenePlan, type RnaProductionScenePlan, type RnaProductionStrand, type RnaProductionComparisonLayout } from "./RnaProductionScenePlan";
 import type { RnaPoint, RnaResidueSample } from "./RnaVisualSystem";
 
 function cameraFrame(intent: RnaPresentationRoute["cameraIntent"]) {
@@ -17,6 +17,13 @@ function cameraFrame(intent: RnaPresentationRoute["cameraIntent"]) {
   if (intent === "rna-dna-hybrid") return { position: [0, 0, 10] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 44 };
   if (intent === "processing-region" || intent === "whole-rna") return { position: [0, 0, 10] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 45 };
   return { position: [0, 0, 9] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 44 };
+}
+
+function comparisonCameraFrame(layout: RnaProductionComparisonLayout, aspect: number) {
+  const fov = 42;
+  const verticalExtent = Math.max(layout.bounds.height + 1.05, (layout.bounds.width + 1.05) / Math.max(0.35, aspect));
+  const distance = Math.max(3.8, verticalExtent / (2 * Math.tan((fov * Math.PI) / 360)));
+  return { position: [layout.bounds.center[0], layout.bounds.center[1], distance] as RnaPoint, target: [layout.bounds.center[0], layout.bounds.center[1], 0] as RnaPoint, fov };
 }
 
 function RnaCameraRig({ frame, controls }: { frame: ReturnType<typeof cameraFrame>; controls: OrbitControlsImpl | null }) {
@@ -133,6 +140,21 @@ function ProductionRnaSceneContent({ plan, theme }: { plan: RnaProductionScenePl
   );
 }
 
+function RnaSceneStage({ plan, theme, frame, controls }: { plan: RnaProductionScenePlan; theme: SpatialRaviaTheme; frame: ReturnType<typeof cameraFrame>; controls: OrbitControlsImpl | null }) {
+  const { size } = useThree();
+  const aspect = size.width / Math.max(1, size.height);
+  const portrait = Boolean(plan.comparison && aspect < 1.05);
+  const layout = plan.comparison ? (portrait ? plan.comparison.portrait : plan.comparison.wide) : undefined;
+  const activePlan = layout ? { ...plan, strands: layout.strands, labels: layout.labels } : plan;
+  const activeFrame = layout ? comparisonCameraFrame(layout, aspect) : frame;
+  return (
+    <>
+      <RnaCameraRig frame={activeFrame} controls={controls} />
+      <ProductionRnaSceneContent plan={activePlan} theme={theme} />
+    </>
+  );
+}
+
 export function ProductionRnaScene({ route, theme }: { route: RnaPresentationRoute; theme: SpatialRaviaTheme }) {
   const plan = useMemo(() => deriveProductionRnaScenePlan(route), [route]);
   const frame = useMemo(() => cameraFrame(route.cameraIntent), [route.cameraIntent]);
@@ -140,10 +162,9 @@ export function ProductionRnaScene({ route, theme }: { route: RnaPresentationRou
   const isDark = theme === "dark";
   return (
     <section className="mechanisticSceneSurface" aria-label={`Production RNA scene: ${route.family}`} data-rna-production-family={route.family} data-rna-production-owner={route.owner} data-rna-production-camera={route.cameraIntent}>
-      <Canvas camera={{ position: frame.position, fov: frame.fov }} dpr={[1, 2]}>
+      <Canvas camera={{ position: frame.position, fov: plan.comparison ? 42 : frame.fov }} dpr={[1, 2]}>
         <color attach="background" args={[isDark ? "#020305" : "#f6f8f7"]} />
-        <RnaCameraRig frame={frame} controls={controls} />
-        <ProductionRnaSceneContent plan={plan} theme={theme} />
+        <RnaSceneStage plan={plan} theme={theme} frame={frame} controls={controls} />
         <OrbitControls ref={setControls} enablePan={false} target={frame.target} enableDamping dampingFactor={0.08} />
       </Canvas>
     </section>

@@ -61,6 +61,21 @@ test("tRNA production uses a continuous cloverleaf substrate with distinct arms 
   assert.ok(paired.size > 0);
 });
 
+test("type comparison mounts independent normalized mRNA and tRNA objects", () => {
+  const route = resolveRnaPresentation("compare mRNA and tRNA")!;
+  const plan = deriveProductionRnaScenePlan(route);
+  assert.ok(plan.comparison);
+  assert.deepEqual(plan.comparison?.identities, ["mRNA", "tRNA"]);
+  assert.equal(plan.comparison?.normalizedScale, true);
+  assert.equal(plan.comparison?.wide.mode, "side-by-side");
+  assert.equal(plan.comparison?.portrait.mode, "stacked");
+  assert.equal(plan.comparison?.wide.strands.length, 2);
+  assert.notDeepEqual(plan.comparison?.wide.strands[0].samples, plan.comparison?.wide.strands[1].samples);
+  assert.ok((plan.comparison?.wide.bounds.width ?? 0) > 3);
+  assert.ok(plan.comparison?.wide.labels.every((label) => label.text === "mRNA" || label.text === "tRNA"));
+  assert.equal(plan.labels.some((label) => label.text === "Coding-region context"), false);
+});
+
 test("secondary-structure production carries shared pairing interactions across the stem", () => {
   const route = resolveRnaPresentation("show an RNA hairpin")!;
   const plan = deriveProductionRnaScenePlan(route);
