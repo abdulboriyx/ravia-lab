@@ -9,6 +9,7 @@ import {
   type RnaTheme,
   type RnaTopologyState,
 } from "./RnaVisualSystem.ts";
+import { classifyRnaPair } from "./RnaPairingPresentation.ts";
 
 export type RnaSecondaryStructureMotif =
   | "stem"
@@ -213,25 +214,29 @@ function foldedPosition(topology: RnaSecondaryStructureTopology, index: number):
   const loopRegion = topology.regions.find((item) => item.kind === "hairpin" || item.kind === "internalLoop" || item.kind === "bulge");
   const left = stem?.pairs.findIndex((pair) => pair.left === index) ?? -1;
   const right = stem?.pairs.findIndex((pair) => pair.right === index) ?? -1;
-  if (left >= 0) return [-1.1, left * 0.62, 0];
-  if (right >= 0) return [1.1, (pairCount - 1 - right) * 0.62, 0];
+  if (left >= 0) return [-1.08, left * 0.64, 0];
+  if (right >= 0) return [1.08, right * 0.64, 0];
   if (loopRegion?.residueIndices.includes(index)) {
     const local = loopRegion.residueIndices.indexOf(index);
     const count = Math.max(1, loopRegion.residueIndices.length - 1);
     const angle = Math.PI - (local / count) * Math.PI;
-    return [Math.cos(angle) * 1.1, pairCount * 0.62 + Math.sin(angle) * 0.72, 0];
+    return [Math.cos(angle) * 1.08, pairCount * 0.64 + Math.sin(angle) * 0.78, 0];
   }
   const x = topology.unpairedResidues.indexOf(index) % 2 === 0 ? -1.45 : 1.45;
-  return [x, (topology.unpairedResidues.indexOf(index) + 1) * 0.62, 0.05];
+  return [x, (topology.unpairedResidues.indexOf(index) + 1) * 0.64, 0.05];
 }
 
 function samplesFor(topology: RnaSecondaryStructureTopology): RnaResidueSample[] {
   const state: RnaTopologyState = toAgentBTopology(topology);
   const samples = sampleCanonicalRna(topology.sequence.length, { topology: "secondary-structure", lod: 2, source: "canonical-procedural", topologyState: state }, topology.sequence);
+  const backboneByIndex = new Map(samples.map((sample) => [sample.index, foldedPosition(topology, sample.index)]));
   return samples.map((sample) => {
-    const backbone = foldedPosition(topology, sample.index);
-    const ribose: RnaPoint = [backbone[0], backbone[1] + 0.16, backbone[2] + 0.08];
-    const basePosition: RnaPoint = [backbone[0] + (backbone[0] < 0 ? 0.22 : -0.22), backbone[1], backbone[2] + 0.16];
+    const backbone = backboneByIndex.get(sample.index) ?? [0, 0, 0];
+    const partner = sample.pairedWith === undefined ? undefined : backboneByIndex.get(sample.pairedWith);
+    const basePosition: RnaPoint = partner
+      ? [backbone[0] + (partner[0] - backbone[0]) * 0.18, backbone[1] + (partner[1] - backbone[1]) * 0.08, backbone[2] + 0.18]
+      : [backbone[0] + (backbone[0] < 0 ? 0.18 : -0.18), backbone[1] + 0.18, backbone[2] + 0.16];
+    const ribose: RnaPoint = [backbone[0], backbone[1] + 0.12, backbone[2] + 0.08];
     return { ...sample, backbone, ribose, basePosition, fivePrime: backbone, threePrime: backbone };
   });
 }
@@ -247,7 +252,10 @@ export function sampleRnaSecondaryStructure(topology: RnaSecondaryStructureTopol
 export function deriveRnaSecondaryStructurePresentation(topology: RnaSecondaryStructureTopology, theme: RnaTheme = "dark"): RnaSecondaryStructurePresentation {
   const topologyState = toAgentBTopology(topology);
   const samples = samplesFor(topology);
-  const interactions = topology.pairingRegions.flatMap((pairing) => pairing.pairs.map((pair, index) => ({ id: `${pairing.id}-${index}`, type: pair.pair === "G-U-wobble" ? "wobblePair" as const : "hydrogenBond" as const, participants: [pair.left, pair.right] as [number, number], state: "present" as const })));
+  const interactions = topology.pairingRegions.flatMap((pairing) => pairing.pairs.map((pair, index) => {
+    const classification = classifyRnaPair(pair.pair);
+    return { id: `${pairing.id}-${index}`, type: classification.interactionType === "wobble" ? "wobblePair" as const : "hydrogenBond" as const, participants: [pair.left, pair.right] as [number, number], state: "present" as const };
+  }));
   const labels = topology.regions.filter((item) => item.label).map((item) => ({ text: item.label!, regionId: item.id }));
   return { motif: topology.motif, representation: canonicalRnaView("secondary-structure"), topology, topologyState, samples, interactions, backboneLinks: topology.continuousChainIndices.slice(1).map((index) => ({ from: index - 1, to: index, type: "continuous" as const })), labels, visualGrammar: { paired: "partner-facing-with-interaction", unpaired: "open-backbone-without-interaction", chemistry: "RNA-ribose-2prime-oh-uracil" }, camera: canonicalRnaView("secondary-structure").camera, materials: rnaMaterialPalette(theme) };
 }

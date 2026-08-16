@@ -3,6 +3,7 @@ import test from "node:test";
 import { rnaV1Benchmark } from "./rna-benchmark.ts";
 import { resolveRnaPresentation, rnaPresentationOwners } from "./RnaPresentationRouter.ts";
 import { deriveProductionRnaScenePlan } from "./RnaProductionScenePlan.ts";
+import { createRnaSecondaryStructureSpec, deriveRnaSecondaryStructurePresentation } from "./RnaSecondaryStructurePresentation.ts";
 
 test("all eight RNA owners produce one shared production scene plan", () => {
   const families = new Set(rnaV1Benchmark.map((item) => item.expectedFamily));
@@ -42,6 +43,33 @@ test("secondary structure and type routes retain structural strands", () => {
   assert.ok(hairpin.strands[0].samples.length > 1);
   assert.equal(trna.strands.length, 1);
   assert.ok(trna.strands[0].samples.length > 1);
+});
+
+test("secondary-structure production carries shared pairing interactions across the stem", () => {
+  const route = resolveRnaPresentation("show an RNA hairpin")!;
+  const plan = deriveProductionRnaScenePlan(route);
+  const samples = plan.strands[0].samples;
+  assert.equal(plan.interactions.length, 3);
+  assert.ok(plan.interactions.every((interaction) => interaction.type === "hydrogenBond"));
+  assert.ok(plan.interactions.every((interaction) => interaction.from[0] < 0 && interaction.to[0] > 0));
+  assert.ok(samples[0].pairedWith !== undefined);
+  assert.equal(samples[samples[0].pairedWith!].pairedWith, 0);
+});
+
+test("unpaired loop residues remain interaction-free while the backbone stays continuous", () => {
+  const topology = createRnaSecondaryStructureSpec("hairpin", { stemPairs: 3, loopLength: 3 });
+  const presentation = deriveRnaSecondaryStructurePresentation(topology);
+  const paired = new Set(presentation.interactions.flatMap((interaction) => interaction.participants));
+  assert.ok(topology.unpairedResidues.every((index) => !paired.has(index)));
+  assert.equal(presentation.backboneLinks.length, topology.sequence.length - 1);
+});
+
+test("secondary-structure labels are region-anchored and deduplicated", () => {
+  const hairpin = deriveProductionRnaScenePlan(resolveRnaPresentation("show an RNA hairpin")!);
+  assert.deepEqual(hairpin.labels.map((label) => label.text), ["Stem", "Loop"]);
+  assert.equal(new Set(hairpin.labels.map((label) => label.text)).size, hairpin.labels.length);
+  const pairedUnpaired = deriveProductionRnaScenePlan(resolveRnaPresentation("show paired and unpaired regions in RNA")!);
+  assert.deepEqual(pairedUnpaired.labels.map((label) => label.text), ["Paired", "Unpaired"]);
 });
 
 test("pairing and hybrid routes mount paired strands and interaction overlays", () => {

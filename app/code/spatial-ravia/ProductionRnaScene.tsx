@@ -13,7 +13,7 @@ import type { RnaPoint, RnaResidueSample } from "./RnaVisualSystem";
 function cameraFrame(intent: RnaPresentationRoute["cameraIntent"]) {
   if (intent === "local-chemistry") return { position: [0, 0, 5.2] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 36 };
   if (intent === "nucleotide") return { position: [0, 0, 6.5] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 40 };
-  if (intent === "secondary-structure") return { position: [0, 0, 8.5] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 42 };
+  if (intent === "secondary-structure") return { position: [0, 0, 5.8] as RnaPoint, target: [0, 1.1, 0] as RnaPoint, fov: 42 };
   if (intent === "rna-dna-hybrid") return { position: [0, 0, 10] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 44 };
   if (intent === "processing-region" || intent === "whole-rna") return { position: [0, 0, 10] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 45 };
   return { position: [0, 0, 9] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 44 };
@@ -50,17 +50,23 @@ function RnaBackbone({ strand, isDark, dna = false }: { strand: RnaProductionStr
   return (
     <group>
       <mesh>
-        <tubeGeometry args={[curve, Math.max(24, points.length * 8), dna ? 0.105 : 0.095, 10, false]} />
+        <tubeGeometry args={[curve, Math.max(24, points.length * 8), dna ? 0.08 : 0.07, 10, false]} />
         <meshStandardMaterial color={dna ? "#9b78b7" : "#2d8295"} roughness={0.54} metalness={0.05} transparent opacity={0.94} />
       </mesh>
       {strand.samples.map((sample) => (
         <group key={`${strand.id}-${sample.index}`}>
+          <Line points={[sample.backbone, sample.ribose]} color={dna ? "#a27bc1" : "#8f79b8"} lineWidth={1.1} transparent opacity={0.72} />
+          <mesh position={sample.backbone as [number, number, number]}>
+            <sphereGeometry args={[0.075, 10, 8]} />
+            <meshStandardMaterial color={dna ? "#9b78b7" : "#2d8295"} transparent opacity={0.92} />
+          </mesh>
           <mesh position={sample.ribose as [number, number, number]}>
-            <sphereGeometry args={[0.16, 12, 8]} />
+            <torusGeometry args={[0.125, 0.035, 8, 12]} />
             <meshStandardMaterial color={dna ? "#a27bc1" : "#8f79b8"} transparent opacity={0.9} />
           </mesh>
-          <mesh position={sample.basePosition as [number, number, number]} scale={[0.22, 0.14, 0.08]}>
-            <sphereGeometry args={[1, 12, 8]} />
+          <Line points={[sample.ribose, sample.basePosition]} color={baseColor[sample.base] ?? (isDark ? "#d7e5e6" : "#33464b")} lineWidth={1.25} transparent opacity={0.8} />
+          <mesh position={sample.basePosition as [number, number, number]} scale={[0.2, 0.12, 0.055]}>
+            <boxGeometry args={[1.7, 1, 1]} />
             <meshStandardMaterial color={baseColor[sample.base] ?? (isDark ? "#d7e5e6" : "#33464b")} roughness={0.5} />
           </mesh>
         </group>

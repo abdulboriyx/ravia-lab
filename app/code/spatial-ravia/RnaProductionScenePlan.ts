@@ -166,6 +166,17 @@ function overlayForRoute(route: RnaPresentationRoute, strands: readonly RnaProdu
     const pairing = route.presentation as RnaPairingPresentation;
     return { interactions: pairing.interactions.map((interaction, index) => ({ id: interaction.id, type: pairing.classification.interactionType === "wobble" ? "wobblePair" as const : "hydrogenBond" as const, from: strands[0].samples[index % strands[0].samples.length].basePosition, to: strands[1].samples[index % strands[1].samples.length].basePosition })), highlightedIndices: [] };
   }
+  if (route.family === "secondaryStructure") {
+    const secondary = route.presentation as RnaSecondaryStructurePresentation;
+    return {
+      interactions: secondary.interactions.flatMap((interaction) => {
+        const from = first[interaction.participants[0]]?.basePosition;
+        const to = first[interaction.participants[1]]?.basePosition;
+        return from && to ? [{ id: interaction.id, type: interaction.type, from, to }] : [];
+      }),
+      highlightedIndices: secondary.topology.pairedResidues.flat(),
+    };
+  }
   if (route.family === "processing") {
     const processing = route.presentation as RnaProcessingPresentation;
     return { interactions: processing.topology.spliceJunctions.map((junction) => ({ id: junction.id, type: "highlight" as const, from: first[junction.fromDisplayIndex]?.backbone ?? [0, 0, 0], to: first[junction.toDisplayIndex]?.backbone ?? [0, 0, 0] })), highlightedIndices: processing.topology.regions.flatMap((region) => region.displayIndices) };
@@ -179,6 +190,25 @@ function overlayForRoute(route: RnaPresentationRoute, strands: readonly RnaProdu
 
 function labelsForRoute(route: RnaPresentationRoute, strands: readonly RnaProductionStrand[], atoms: readonly RnaProductionAtom[]): RnaProductionLabel[] {
   const samples = strands[0]?.samples ?? [];
+  if (route.family === "secondaryStructure") {
+    const secondary = route.presentation as RnaSecondaryStructurePresentation;
+    const requestedPairingLabels = route.sourceSpec.requiredEntities.includes("pairedRegion") || route.sourceSpec.requiredEntities.includes("unpairedRegion");
+    const candidateRegions = secondary.topology.regions.filter((region) => region.label && region.label !== "Stem");
+    const chosen = requestedPairingLabels
+      ? [
+        { text: "Paired", indices: secondary.topology.pairedResidues.flat() },
+        { text: "Unpaired", indices: secondary.topology.unpairedResidues },
+      ]
+      : [{ text: "Stem", indices: secondary.topology.pairingRegions[0]?.pairs.flatMap((pair) => [pair.left, pair.right]) ?? [] }, ...candidateRegions.slice(0, 1).map((region) => ({ text: region.label ?? "Loop", indices: region.residueIndices }))];
+    return chosen.map((label, index) => {
+      const positions = label.indices.map((residue) => samples[residue]?.backbone).filter((position): position is RnaPoint => Boolean(position));
+      const center = positions.reduce((sum, position) => [sum[0] + position[0], sum[1] + position[1], sum[2] + position[2]] as RnaPoint, [0, 0, 0]);
+      const divisor = Math.max(1, positions.length);
+      const averaged: RnaPoint = [center[0] / divisor, center[1] / divisor, center[2] / divisor];
+      const offset: RnaPoint = label.text === "Stem" || label.text === "Paired" ? [-0.32, 0, 0.28] : [0, 0.22, 0.28];
+      return { text: label.text, position: [averaged[0] + offset[0], averaged[1] + offset[1], averaged[2] + offset[2]], anchor: `secondary-label-${index}` };
+    });
+  }
   const anchor = samples[Math.floor(samples.length / 2)]?.backbone ?? atoms[0]?.position ?? [0, 0, 0];
   return route.labels.slice(0, 8).map((text, index) => ({ text, position: [anchor[0], anchor[1] + 0.35 + index * 0.18, anchor[2] + 0.3] as RnaPoint, anchor: `route-label-${index}` }));
 }
