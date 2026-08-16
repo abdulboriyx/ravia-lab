@@ -3,6 +3,7 @@ import test from "node:test";
 import { rnaV1Benchmark } from "./rna-benchmark.ts";
 import { resolveRnaPresentation, rnaPresentationOwners } from "./RnaPresentationRouter.ts";
 import { deriveProductionRnaScenePlan } from "./RnaProductionScenePlan.ts";
+import type { RnaTypePresentation } from "./RnaTypePresentation.ts";
 import { createRnaSecondaryStructureSpec, deriveRnaSecondaryStructurePresentation, sampleRnaSecondaryStructure, validateRnaSecondaryStructureGeometry } from "./RnaSecondaryStructurePresentation.ts";
 
 test("all eight RNA owners produce one shared production scene plan", () => {
@@ -64,6 +65,7 @@ test("tRNA production uses a continuous cloverleaf substrate with distinct arms 
 test("type comparison mounts independent normalized mRNA and tRNA objects", () => {
   const route = resolveRnaPresentation("compare mRNA and tRNA")!;
   const plan = deriveProductionRnaScenePlan(route);
+  const typed = route.presentation as RnaTypePresentation;
   assert.ok(plan.comparison);
   assert.deepEqual(plan.comparison?.identities, ["mRNA", "tRNA"]);
   assert.equal(plan.comparison?.normalizedScale, true);
@@ -71,6 +73,12 @@ test("type comparison mounts independent normalized mRNA and tRNA objects", () =
   assert.equal(plan.comparison?.portrait.mode, "stacked");
   assert.equal(plan.comparison?.wide.strands.length, 2);
   assert.notDeepEqual(plan.comparison?.wide.strands[0].samples, plan.comparison?.wide.strands[1].samples);
+  assert.equal(plan.comparison?.wide.items[0].type, "mRNA");
+  assert.equal(plan.comparison?.wide.items[1].type, "tRNA");
+  assert.equal(plan.comparison?.wide.items[1].presentation, typed.comparison?.right);
+  assert.deepEqual(plan.comparison?.wide.items[1].topology.regions.filter((region) => ["acceptor-stem", "anticodon-arm", "d-arm", "tpsi-c-arm"].includes(region.id)).map((region) => region.id), ["acceptor-stem", "d-arm", "anticodon-arm", "tpsi-c-arm"]);
+  assert.equal(plan.comparison?.wide.items[0].topology.regions.some((region) => region.kind === "acceptorStem"), false);
+  assert.ok(plan.comparison?.wide.interactions.length >= 7);
   assert.ok((plan.comparison?.wide.bounds.width ?? 0) > 3);
   assert.ok(plan.comparison?.wide.labels.every((label) => label.text === "mRNA" || label.text === "tRNA"));
   assert.equal(plan.labels.some((label) => label.text === "Coding-region context"), false);

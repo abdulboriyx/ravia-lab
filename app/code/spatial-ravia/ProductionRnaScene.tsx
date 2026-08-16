@@ -145,7 +145,7 @@ function RnaSceneStage({ plan, theme, frame, controls }: { plan: RnaProductionSc
   const aspect = size.width / Math.max(1, size.height);
   const portrait = Boolean(plan.comparison && aspect < 1.05);
   const layout = plan.comparison ? (portrait ? plan.comparison.portrait : plan.comparison.wide) : undefined;
-  const activePlan = layout ? { ...plan, strands: layout.strands, labels: layout.labels } : plan;
+  const activePlan = layout ? { ...plan, strands: layout.strands, labels: layout.labels, interactions: layout.interactions } : plan;
   const activeFrame = layout ? comparisonCameraFrame(layout, aspect) : frame;
   return (
     <>
