@@ -7,6 +7,7 @@ import { deriveRnaTypePresentation, type RnaTypePresentation } from "./RnaTypePr
 import { deriveRnaPairingPresentation, type RnaPairingPresentation } from "./RnaPairingPresentation.ts";
 import { deriveRnaProcessingPresentation, type RnaProcessingPresentation } from "./RnaProcessingPresentation.ts";
 import { deriveRnaDegradationPresentation, type RnaDegradationPresentation } from "./RnaDegradationPresentation.ts";
+import { deriveRnaNascentTranscriptPresentation, type NascentTranscriptPresentation } from "./RnaNascentTranscriptPresentation.ts";
 
 export const rnaPresentationOwners = {
   structure: "RnaVisualSystem",
@@ -39,7 +40,8 @@ export type RnaPresentationPayload =
   | RnaSecondaryStructurePresentation
   | RnaPairingPresentation
   | RnaProcessingPresentation
-  | RnaDegradationPresentation;
+  | RnaDegradationPresentation
+  | NascentTranscriptPresentation;
 
 export type RnaPresentationRoute = {
   family: RnaFamily;
@@ -83,8 +85,9 @@ function secondaryMotif(spec: RnaSceneSpec): RnaSecondaryStructureMotif {
 function routePresentation(spec: RnaSceneSpec): RnaPresentationPayload {
   switch (spec.family) {
     case "structure":
-    case "nascentTranscript":
       return sharedSubstrate(spec);
+    case "nascentTranscript":
+      return deriveRnaNascentTranscriptPresentation(spec);
     case "typesFunctions":
       return deriveRnaTypePresentation(spec);
     case "localChemistry":
@@ -101,6 +104,7 @@ function routePresentation(spec: RnaSceneSpec): RnaPresentationPayload {
 }
 
 function presentationMetadata(presentation: RnaPresentationPayload) {
+  if ("family" in presentation && presentation.family === "nascentTranscript" && "hierarchy" in presentation) return { cameraIntent: "whole-rna" as const, groundingStatus: "educational-procedural" as const, representationMode: presentation.mode, labels: presentation.labels.map((label) => label.text), highlightedRegions: ["nascent-rna", "dna-template", "transcription-exit"], highlightedInteractions: [] };
   if ("grounding" in presentation && "family" in presentation) return { cameraIntent: presentation.camera.intent, groundingStatus: presentation.grounding, representationMode: presentation.family, labels: presentation.labels.map((label) => label.text), highlightedRegions: presentation.highlightedGroups, highlightedInteractions: [] };
   if ("policy" in presentation) return { cameraIntent: presentation.policy.cameraIntent, groundingStatus: presentation.grounding.status, representationMode: presentation.policy.view, labels: presentation.labels.map((label) => label.text), highlightedRegions: presentation.topology.regions.map((region) => region.id), highlightedInteractions: [] };
   if ("localScale" in presentation) return { cameraIntent: presentation.representation.camera.intent === "secondary-structure" ? "secondary-structure" as const : presentation.representation.camera.intent, groundingStatus: "educational-procedural" as const, representationMode: presentation.mode, labels: presentation.labels.map((label) => label.text), highlightedRegions: presentation.highlightedGroups, highlightedInteractions: presentation.bonds.filter((bond) => bond.type === "phosphodiester").map((bond) => bond.id) };

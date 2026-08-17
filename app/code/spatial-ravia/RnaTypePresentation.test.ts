@@ -37,7 +37,8 @@ test("rRNA uses a folded multi-region identity", () => {
   const presentation = deriveRnaTypePresentation(spec("show rRNA"));
   assert.equal(presentation.type, "rRNA");
   assert.equal(presentation.topology.topology, "secondary-structure");
-  assert.ok(presentation.topology.regions.length >= 2);
+  assert.ok(presentation.topology.regions.filter((region) => region.kind === "stem").length >= 3);
+  assert.ok(presentation.topology.pairs.length >= 10);
   assert.equal(rnaTypeCameraIntent("rRNA"), "secondary-structure");
 });
 
@@ -65,7 +66,8 @@ test("snRNA is represented as a small folded RNA", () => {
   const presentation = deriveRnaTypePresentation(spec("show snRNA"));
   assert.equal(presentation.type, "snRNA");
   assert.equal(presentation.topology.topology, "secondary-structure");
-  assert.equal(presentation.topology.sequences[0].length, 16);
+  assert.equal(presentation.topology.sequences[0].length, 18);
+  assert.ok(presentation.topology.pairs.length >= 4);
 });
 
 test("comparison preserves type identities and shared visual grammar", () => {
@@ -73,7 +75,32 @@ test("comparison preserves type identities and shared visual grammar", () => {
   assert.equal(presentation.comparison?.sharedVisualGrammar, true);
   assert.equal(presentation.comparison?.left.type, "mRNA");
   assert.equal(presentation.comparison?.right.type, "tRNA");
+  assert.equal(presentation.comparison?.scaling, "uniform-whole-object");
+  assert.deepEqual(presentation.comparison?.labels, ["mRNA", "tRNA"]);
   assert.equal(presentation.comparison?.left.representation.focus, presentation.comparison?.right.representation.focus === "secondary-structure" ? "whole-rna" : presentation.comparison?.left.representation.focus);
+});
+
+test("type identity remains precise for standalone and comparison presentations", () => {
+  const prompts = [
+    ["show the structure of mRNA", "mRNA", "single-stranded"],
+    ["show a tRNA", "tRNA", "secondary-structure"],
+    ["show rRNA", "rRNA", "secondary-structure"],
+    ["show miRNA", "miRNA", "single-stranded"],
+    ["show siRNA", "siRNA", "paired-region"],
+    ["show snRNA", "snRNA", "secondary-structure"],
+  ] as const;
+  for (const [prompt, type, topology] of prompts) {
+    const presentation = deriveRnaTypePresentation(spec(prompt));
+    assert.equal(presentation.type, type, prompt);
+    assert.equal(presentation.topology.topology, topology, prompt);
+    assert.equal(isValidRnaTypePresentation(presentation), true, prompt);
+  }
+  // Prompt resolution is intentionally owned by the RNA semantics layer.
+  // The type presentation accepts the already-resolved comparison identity.
+  const smallRnaComparison = deriveRnaTypePresentation(spec("show miRNA"), { compareWith: "siRNA" });
+  assert.deepEqual([smallRnaComparison.comparison?.left.type, smallRnaComparison.comparison?.right.type], ["miRNA", "siRNA"]);
+  assert.equal(smallRnaComparison.comparison?.left.topology.topology, "single-stranded");
+  assert.equal(smallRnaComparison.comparison?.right.topology.topology, "paired-region");
 });
 
 test("deposited and procedural grounding are explicit and deterministic", () => {

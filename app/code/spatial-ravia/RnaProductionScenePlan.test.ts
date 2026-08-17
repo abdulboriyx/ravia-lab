@@ -37,6 +37,41 @@ test("local chemistry production labels follow the resolved focus", () => {
   assert.equal(twoPrime.labels.some((label) => label.text.includes("5′") || label.text.includes("3′")), false);
 });
 
+test("phosphodiester production isolates a same-strand sugar–phosphate–sugar bridge", () => {
+  const plan = deriveProductionRnaScenePlan(resolveRnaPresentation("show a phosphodiester bond in RNA")!);
+  assert.equal(plan.localFocus, "phosphodiesterLinkage");
+  assert.equal(plan.strands.length, 0);
+  assert.equal(plan.labels.map((label) => label.text).join(","), "Phosphodiester linkage");
+  const primaryAtoms = plan.atoms.filter((atom) => atom.emphasis === "primary");
+  assert.equal(primaryAtoms.length, 3);
+  assert.deepEqual(primaryAtoms.map((atom) => atom.role), ["threePrimeCarbon", "phosphate", "fivePrimePhosphate"]);
+  assert.ok(primaryAtoms[0].position[0] < primaryAtoms[1].position[0] && primaryAtoms[1].position[0] < primaryAtoms[2].position[0]);
+  assert.equal(plan.bonds.filter((bond) => bond.type === "phosphodiester" && bond.emphasis === "primary").length, 2);
+  assert.ok(plan.atoms.filter((atom) => atom.emphasis === "supporting" && atom.role === "ribose").length >= 2);
+});
+
+test("local RNA pairing mounts two molecular bases, RNA ribose context, and exact H-bonds", () => {
+  const au = deriveProductionRnaScenePlan(resolveRnaPresentation("show how adenine pairs with uracil")!);
+  assert.equal(au.strands.length, 2);
+  assert.equal(au.atoms.filter((atom) => atom.role === "base").length, 2);
+  assert.ok(au.atoms.filter((atom) => atom.role === "baseRing").length >= 12);
+  assert.equal(au.atoms.filter((atom) => atom.role === "twoPrimeHydroxyl").length, 2);
+  assert.equal(au.interactions.length, 2);
+  assert.deepEqual(au.labels.map((label) => label.text), ["Adenine", "Uracil"]);
+  assert.ok(au.interactions.every((interaction) => interaction.type === "hydrogenBond"));
+  assert.ok([...au.atoms.flatMap((atom) => atom.position), ...au.interactions.flatMap((interaction) => [...interaction.from, ...interaction.to])].every(Number.isFinite));
+  assert.ok(au.atoms.filter((atom) => atom.role === "base")[0].position[0] < au.atoms.filter((atom) => atom.role === "base")[1].position[0]);
+
+  const gc = deriveProductionRnaScenePlan(resolveRnaPresentation("show G C pairing in RNA")!);
+  assert.equal(gc.atoms.filter((atom) => atom.role === "base").length, 2);
+  assert.ok(gc.atoms.filter((atom) => atom.role === "baseRing").length >= 15);
+  assert.equal(gc.interactions.length, 3);
+
+  const wobble = deriveProductionRnaScenePlan(resolveRnaPresentation("show a G U wobble pair")!);
+  assert.equal(wobble.interactions.length, 2);
+  assert.ok(wobble.interactions.every((interaction) => interaction.type === "wobblePair"));
+});
+
 test("RNA-DNA local chemistry comparison mounts the existing DNA chemistry plan beside RNA", () => {
   const route = resolveRnaPresentation("compare a DNA nucleotide and an RNA nucleotide")!;
   const plan = deriveProductionRnaScenePlan(route);
@@ -53,6 +88,48 @@ test("secondary structure and type routes retain structural strands", () => {
   assert.ok(hairpin.strands[0].samples.length > 1);
   assert.equal(trna.strands.length, 1);
   assert.ok(trna.strands[0].samples.length > 1);
+});
+
+test("processing comparison mounts pre-mRNA and mature mRNA as two distinct transcripts", () => {
+  const plan = deriveProductionRnaScenePlan(resolveRnaPresentation("compare pre mRNA and mature mRNA")!);
+  assert.deepEqual(plan.strands.map((strand) => strand.id), ["pre-mrna-transcript", "mature-mrna-transcript"]);
+  assert.equal(plan.strands[0].samples.length, 24);
+  assert.equal(plan.strands[1].samples.length, 16);
+  assert.deepEqual(plan.labels.map((label) => label.text), ["pre-mRNA", "mature mRNA"]);
+  assert.equal(plan.transcriptSpans.length, 0);
+
+  const rows = plan.strands.map((strand) => {
+    const ys = strand.samples.map((sample) => sample.backbone[1]);
+    const xs = strand.samples.map((sample) => sample.backbone[0]);
+    return { minY: Math.min(...ys), maxY: Math.max(...ys), centerX: (Math.min(...xs) + Math.max(...xs)) / 2 };
+  });
+  assert.ok(rows[0].minY > rows[1].maxY, "comparison rows must not overlap");
+  assert.ok(Math.abs(rows[0].centerX) < 1e-9 && Math.abs(rows[1].centerX) < 1e-9, "rows are independently centered");
+  assert.ok(plan.labels[0].position[1] > rows[0].maxY, "pre-mRNA label sits outside the upper transcript");
+  assert.ok(plan.labels[1].position[1] < rows[1].minY, "mature mRNA label sits outside the lower transcript");
+});
+
+test("5-prime cap production uses a local terminal ROI", () => {
+  const plan = deriveProductionRnaScenePlan(resolveRnaPresentation("show the 5 prime cap on mRNA")!);
+  assert.equal(plan.strands.length, 1);
+  assert.equal(plan.strands[0].samples.length, 5);
+  assert.deepEqual(plan.labels.map((label) => label.text), ["5′ cap"]);
+  assert.deepEqual(plan.terminalMarkers.map((marker) => marker.kind), ["fivePrimeCap"]);
+  assert.equal(plan.transcriptSpans.length, 0);
+  assert.equal(plan.interactions.length, 0);
+});
+
+test("generic nucleotide structure uses a single continuous RNA substrate sample", () => {
+  const plan = deriveProductionRnaScenePlan(resolveRnaPresentation("show a single RNA nucleotide")!);
+  assert.equal(plan.strands.length, 1);
+  assert.equal(plan.strands[0].samples.length, 1);
+  assert.equal(plan.structuralMode, "local-chemistry");
+  assert.deepEqual(plan.labels.map((label) => label.text), ["Phosphate", "Ribose", "Base"]);
+  assert.equal(new Set(plan.labels.map((label) => label.anchor)).size, 3);
+  assert.ok(plan.atoms.some((atom) => atom.role === "phosphate"));
+  assert.ok(plan.atoms.some((atom) => atom.role === "ribose"));
+  assert.ok(plan.atoms.some((atom) => atom.role === "base"));
+  assert.ok(plan.strands[0].samples[0].backbone.every(Number.isFinite));
 });
 
 test("tRNA production uses a continuous cloverleaf substrate with distinct arms and shared pair overlays", () => {
@@ -186,16 +263,40 @@ test("pairing and hybrid routes mount paired strands and interaction overlays", 
   assert.deepEqual(hybrid.strands.map((strand) => strand.kind), ["RNA", "DNA"]);
 });
 
-test("processing, degradation, and nascent routes retain RNA-centered overlays", () => {
+test("processing, degradation, and nascent routes retain RNA-centered geometry", () => {
   const processing = deriveProductionRnaScenePlan(resolveRnaPresentation("show introns and exons in pre mRNA")!);
   const degradation = deriveProductionRnaScenePlan(resolveRnaPresentation("show RNA being cleaved")!);
   const nascent = deriveProductionRnaScenePlan(resolveRnaPresentation("show RNA emerging from transcription")!);
   assert.equal(processing.strands.length, 1);
   assert.ok(processing.highlightedIndices.length > 0);
-  assert.equal(degradation.strands.length, 1);
-  assert.ok(degradation.interactions.length > 0);
+  assert.deepEqual(processing.transcriptSpans.map((span) => span.kind), ["exon", "intron", "exon", "intron", "exon"]);
+  assert.ok(processing.transcriptSpans.every((span) => span.attachedToTranscript && span.indices.length > 0));
+  assert.deepEqual(processing.labels.map((label) => label.text), ["Exon", "Intron"]);
+  assert.deepEqual(processing.labels.map((label) => label.anchor), ["processing-exon-1", "processing-intron-1"]);
+  assert.equal(degradation.strands.length, 2);
+  assert.deepEqual(degradation.strands.map((strand) => strand.samples.map((sample) => sample.index)), [[0, 1, 2, 3, 4, 5, 6, 7], [8, 9, 10, 11, 12, 13, 14, 15]]);
+  assert.equal(degradation.interactions.length, 0);
+  assert.ok(degradation.strands[0].samples.at(-1)!.backbone[0] < degradation.strands[1].samples[0]!.backbone[0]);
   assert.equal(nascent.family, "nascentTranscript");
-  assert.equal(nascent.strands.length, 1);
+  assert.deepEqual(nascent.strands.map((strand) => strand.kind), ["DNA", "DNA", "RNA"]);
+  assert.ok(nascent.interactions.some((interaction) => interaction.type === "dnaPair"));
+  assert.ok(nascent.strands[2].samples.at(-1)!.backbone[1] > nascent.strands[2].samples[0].backbone[1]);
+});
+
+test("degradation production mounts terminally shortened RNA and local-only stability chemistry", () => {
+  const exonuclease = deriveProductionRnaScenePlan(resolveRnaPresentation("show exonuclease degradation of RNA")!);
+  const stability = deriveProductionRnaScenePlan(resolveRnaPresentation("why is RNA less chemically stable than DNA")!);
+  assert.deepEqual(exonuclease.strands.map((strand) => strand.id), ["exonuclease-before", "exonuclease-after"]);
+  assert.equal(exonuclease.strands[0].samples.length, 16);
+  assert.ok(exonuclease.strands[1].samples.length < exonuclease.strands[0].samples.length);
+  assert.ok(exonuclease.strands[1].samples[0].index > 0);
+  assert.ok(exonuclease.strands[1].samples.every((sample, index, samples) => index === 0 || samples[index - 1].index + 1 === sample.index));
+  assert.ok(exonuclease.strands[0].samples[0].backbone[1] > exonuclease.strands[1].samples[0].backbone[1]);
+  assert.deepEqual(exonuclease.labels.map((label) => label.text), ["before", "after"]);
+  assert.equal(stability.strands.length, 0);
+  assert.ok(stability.atoms.some((atom) => atom.role === "twoPrimeHydroxyl"));
+  assert.ok(stability.comparisonAtoms.length > 0);
+  assert.deepEqual(stability.labels.map((label) => label.text), ["RNA", "DNA", "2′-OH", "no 2′-OH", "2′-OH increases backbone susceptibility"]);
 });
 
 test("generic B-DNA bypasses the RNA production renderer", () => {

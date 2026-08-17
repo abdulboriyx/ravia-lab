@@ -17,6 +17,7 @@ test("pre-mRNA is one continuous transcript with attached exon and intron region
   assert.ok(presentation.topology.regions.some((region) => region.kind === "exon"));
   assert.ok(presentation.topology.regions.some((region) => region.kind === "intron"));
   assert.ok(presentation.topology.regions.every((region) => region.attachedToTranscript));
+  assert.ok(presentation.topology.regions.every((region) => region.displaySpan[1] - region.displaySpan[0] + 1 === region.displayIndices.length));
   assert.equal(isValidRnaProcessingPresentation(presentation), true);
 });
 
@@ -27,6 +28,7 @@ test("5-prime cap is anchored only to the transcript 5-prime terminus", () => {
   assert.equal(cap.kind, "fivePrimeCap");
   assert.equal(cap.terminus, "5prime");
   assert.equal(cap.attachedToDisplayIndex, 0);
+  assert.equal(cap.attachment, "exact-5prime-terminus");
   assert.equal(cap.chemistryClaim, "pedagogical-terminal-feature");
 });
 
@@ -40,6 +42,8 @@ test("poly(A) tail is a continuous 3-prime extension", () => {
   assert.equal(presentation.topology.displayLength, 29);
   assert.equal(presentation.topology.backboneLinks.length, 28);
   assert.ok(tail.units.every((unit) => unit.base === "A"));
+  assert.equal(tail.attachment, "extends-from-3prime-terminus");
+  assert.deepEqual(tail.units.map((unit) => unit.displayIndex), [24, 25, 26, 27, 28]);
 });
 
 test("mature mRNA removes introns and preserves exon order with exon-exon junctions", () => {
@@ -73,6 +77,19 @@ test("conceptual splicing exposes before, processing, and after static states", 
   assert.equal(after.spliceState, "after");
   assert.ok(after.topology.spliceJunctions.some((junction) => junction.kind === "exonExonJunction"));
   assert.equal(after.noSpliceosomeMachinery, true);
+  assert.equal(after.staticStateOnly, true);
+});
+
+test("processing acceptance prompts remain transcript-attached with compact labels", () => {
+  for (const prompt of ["show a mature eukaryotic mRNA", "show what is removed during RNA splicing", "show exons joined after splicing"]) {
+    const presentation = deriveRnaProcessingPresentation(spec(prompt));
+    assert.equal(isValidRnaProcessingPresentation(presentation), true, prompt);
+    assert.ok(presentation.labels.length <= 3, prompt);
+    if (presentation.stage === "mature") {
+      assert.equal(presentation.topology.regions.some((region) => region.kind === "intron"), false, prompt);
+      assert.ok(presentation.topology.spliceJunctions.some((junction) => junction.kind === "exonExonJunction"), prompt);
+    }
+  }
 });
 
 test("generic RNA is not automatically capped or polyadenylated", () => {

@@ -21,6 +21,13 @@ test("canonical ssRNA geometry is finite, deterministic, and polarity-aware", ()
   assert.notDeepEqual(first[0].backbone, first[11].backbone);
 });
 
+test("single-strand topology preserves every residue as unpaired substrate", () => {
+  const topology = rnaTopologyState("singleStrand", 12);
+  assert.equal(topology.pairedResidues.length, 0);
+  assert.equal(topology.unpairedResidues.length, 12);
+  assert.equal(sampleCanonicalRna(12, { topology: "single-stranded", lod: 1, source: "canonical-procedural", topologyState: topology }).length, 12);
+});
+
 test("secondary-structure topology expresses stems, loops, bulges, and paired/unpaired regions", () => {
   for (const kind of ["stem", "hairpin", "internalLoop", "bulge", "pairedUnpaired"] as const) {
     const topology = rnaTopologyState(kind, 14);
@@ -54,4 +61,3 @@ test("LOD, camera, material, and deposited-coordinate contracts are deterministi
   assert.notDeepEqual(rnaMaterialPalette("light"), rnaMaterialPalette("dark"));
   assert.equal(rnaDepositedCoordinatePlan("1ABC", ["A"]).provider, "Mol*");
 });
-

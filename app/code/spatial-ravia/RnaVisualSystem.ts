@@ -48,7 +48,7 @@ export type RnaAtom = {
   id: string;
   element: "C" | "N" | "O" | "P";
   residue: RnaBase | "ribose" | "phosphate";
-  role: "base" | "ribose" | "twoPrimeHydroxyl" | "phosphate" | "onePrimeCarbon" | "threePrimeCarbon" | "fivePrimeCarbon" | "fivePrimePhosphate";
+  role: "base" | "baseRing" | "ribose" | "twoPrimeHydroxyl" | "phosphate" | "onePrimeCarbon" | "threePrimeCarbon" | "fivePrimeCarbon" | "fivePrimePhosphate";
   position: RnaPoint;
 };
 
@@ -171,7 +171,7 @@ export function rnaLodPolicy(level: RnaLodLevel) {
 export function rnaTopologyState(kind: "singleStrand" | "stem" | "hairpin" | "internalLoop" | "bulge" | "pairedUnpaired", length: number): RnaTopologyState {
   const count = Math.max(1, Math.round(length));
   const midpoint = Math.floor(count / 2);
-  const pairCount = Math.max(0, Math.floor(Math.min(count / 2, kind === "bulge" ? count / 2 - 1 : count / 2)));
+  const pairCount = kind === "singleStrand" ? 0 : Math.max(0, Math.floor(Math.min(count / 2, kind === "bulge" ? count / 2 - 1 : count / 2)));
   const pairedResidues: [number, number][] = [];
   for (let index = 0; index < pairCount; index += 1) pairedResidues.push([index, count - 1 - index]);
   const pairedSet = new Set(pairedResidues.flat());
@@ -246,4 +246,3 @@ export function rnaMaterialPalette(theme: RnaTheme) {
 export function isFiniteRnaSample(sample: RnaResidueSample) {
   return [sample.backbone, sample.ribose, sample.basePosition, sample.fivePrime, sample.threePrime].flat().every(Number.isFinite);
 }
-

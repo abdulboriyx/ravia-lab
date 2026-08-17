@@ -75,7 +75,14 @@ export type RnaTypePresentation = {
   processingPlaceholders: readonly ("fivePrimeCap" | "polyATail")[];
   chemistry: "shared-rna-ribose-2prime-oh-uracil";
   materials: ReturnType<typeof rnaMaterialPalette>;
-  comparison?: { left: RnaTypePresentation; right: RnaTypePresentation; sharedVisualGrammar: true };
+  comparison?: {
+    left: RnaTypePresentation;
+    right: RnaTypePresentation;
+    sharedVisualGrammar: true;
+    /** Comparators may resize an object, but must never reshape its topology. */
+    scaling: "uniform-whole-object";
+    labels: readonly string[];
+  };
 };
 
 type TypeOptions = {
@@ -124,18 +131,34 @@ function topologyFor(type: RnaTypeIdentity, options: TypeOptions = {}): RnaTypeT
     };
   }
   if (type === "rRNA") {
-    const rna = sequence(30);
-    const pairs: RnaTypePair[] = [[0, 29], [1, 28], [5, 24], [6, 23], [12, 17], [13, 16]].map(([left, right]) => ({ leftStrand: "rRNA", rightStrand: "rRNA", left, right, pair: rna[left] === "A" ? "A-U" : "G-C" }));
-    return { type, topology: "secondary-structure", strandCount: 1, sequences: [rna], regions: [{ id: "rrna-folded-region-1", kind: "structuredRegion", residueIndices: [0, 1, 2, 3, 4, 24, 25, 26, 27, 28, 29], label: "Folded rRNA region" }, { id: "rrna-folded-region-2", kind: "structuredRegion", residueIndices: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23], label: "Folded rRNA region" }], pairs, continuousChains: [range(0, 29)], deterministicKey: "rRNA:multi-stem:30" };
+    const rna = sequence(42);
+    const stems = [[0, 41], [1, 40], [2, 39], [7, 17], [8, 16], [9, 15], [21, 31], [22, 30], [23, 29], [33, 37], [34, 36]] as const;
+    const pairs: RnaTypePair[] = stems.map(([left, right]) => ({ leftStrand: "rRNA", rightStrand: "rRNA", left, right, pair: rna[left] === "A" || rna[left] === "U" ? "A-U" : "G-C" }));
+    return {
+      type, topology: "secondary-structure", strandCount: 1, sequences: [rna],
+      regions: [
+        { id: "rrna-core-stem", kind: "structuredRegion", residueIndices: [0, 1, 2, 3, 4, 5, 6, 38, 39, 40, 41], label: "rRNA core" },
+        { id: "rrna-stem-a", kind: "stem", residueIndices: [7, 8, 9, 15, 16, 17], label: "Stem A" },
+        { id: "rrna-stem-b", kind: "stem", residueIndices: [21, 22, 23, 29, 30, 31], label: "Stem B" },
+        { id: "rrna-stem-c", kind: "stem", residueIndices: [33, 34, 36, 37], label: "Stem C" },
+        { id: "rrna-loop-a", kind: "loop", residueIndices: [10, 11, 12, 13, 14] },
+        { id: "rrna-loop-b", kind: "loop", residueIndices: [24, 25, 26, 27, 28] },
+      ], pairs, continuousChains: [range(0, 41)], deterministicKey: "rRNA:multi-stem:42",
+    };
   }
   if (type === "miRNA" && options.precursor) {
     const hairpin = sequence(18);
     const pairs: RnaTypePair[] = range(0, 6).map((left) => ({ leftStrand: "miRNA-precursor", rightStrand: "miRNA-precursor", left, right: 17 - left, pair: hairpin[left] === "A" ? "A-U" : "G-C" }));
     return { type, topology: "secondary-structure", strandCount: 1, sequences: [hairpin], regions: [{ id: "mirna-precursor-stem", kind: "stem", residueIndices: [0, 1, 2, 3, 4, 5, 6, 11, 12, 13, 14, 15, 16, 17], label: "Pre-miRNA stem" }, { id: "mirna-precursor-loop", kind: "loop", residueIndices: [7, 8, 9, 10], label: "Pre-miRNA loop" }], pairs, continuousChains: [range(0, 17)], deterministicKey: "miRNA:precursor-hairpin:18" };
   }
-  const length = type === "mRNA" ? 24 : type === "snRNA" ? 16 : type === "miRNA" || type === "regulatorySmallRNA" ? 8 : 14;
+  if (type === "snRNA") {
+    const rna = sequence(18);
+    const pairs: RnaTypePair[] = [[0, 17], [1, 16], [2, 15], [6, 11], [7, 10]].map(([left, right]) => ({ leftStrand: "snRNA", rightStrand: "snRNA", left, right, pair: rna[left] === "A" || rna[left] === "U" ? "A-U" : "G-C" }));
+    return { type, topology: "secondary-structure", strandCount: 1, sequences: [rna], regions: [{ id: "snrna-main-stem", kind: "stem", residueIndices: [0, 1, 2, 15, 16, 17], label: "snRNA fold" }, { id: "snrna-internal-stem", kind: "stem", residueIndices: [6, 7, 10, 11] }, { id: "snrna-loop", kind: "loop", residueIndices: [3, 4, 5, 12, 13, 14] }], pairs, continuousChains: [range(0, 17)], deterministicKey: "snRNA:compact-fold:18" };
+  }
+  const length = type === "mRNA" ? 36 : type === "miRNA" || type === "regulatorySmallRNA" ? 8 : 14;
   const kind = type === "mRNA" ? "coding" : type === "miRNA" || type === "regulatorySmallRNA" ? "regulatory" : "structuredRegion";
-  return { type, topology: type === "snRNA" ? "secondary-structure" : "single-stranded", strandCount: 1, sequences: [sequence(length)], regions: [{ id: `${type}-primary-region`, kind, residueIndices: range(0, length - 1), label: type === "mRNA" ? "Coding-region context" : undefined }], pairs: [], continuousChains: [range(0, length - 1)], deterministicKey: `${type}:${length}:${type === "mRNA" ? "single-stranded" : "small-rna"}` };
+  return { type, topology: "single-stranded", strandCount: 1, sequences: [sequence(length)], regions: [{ id: `${type}-primary-region`, kind, residueIndices: range(0, length - 1), label: type === "mRNA" ? "mRNA coding region" : undefined }], pairs: [], continuousChains: [range(0, length - 1)], deterministicKey: `${type}:${length}:${type === "mRNA" ? "extended-transcript" : "small-rna"}` };
 }
 
 export function rnaTypeTopology(type: RnaTypeIdentity, options: TypeOptions = {}): RnaTypeTopology {
@@ -173,7 +196,8 @@ function groundingFor(options: TypeOptions): RnaTypeGroundingInfo {
 }
 
 function labelsFor(topology: RnaTypeTopology): RnaTypePresentation["labels"] {
-  return topology.regions.filter((region) => region.label).map((region) => ({ text: region.label!, regionId: region.id }));
+  const labelCap = topology.type === "tRNA" ? 2 : 1;
+  return topology.regions.filter((region) => region.label).slice(0, labelCap).map((region) => ({ text: region.label!, regionId: region.id }));
 }
 
 function placeholdersFor(spec: RnaSceneSpec): RnaTypePresentation["processingPlaceholders"] {
@@ -207,7 +231,12 @@ export function deriveRnaTypePresentation(spec: RnaSceneSpec, options: TypeOptio
   if (!compareWith) return presentation;
   const rightSpec: RnaSceneSpec = { ...spec, rnaType: compareWith };
   const right = createSinglePresentation(compareWith, rightSpec, options);
-  return { ...presentation, comparison: { left: presentation, right, sharedVisualGrammar: true } };
+  return { ...presentation, comparison: deriveRnaTypeComparison(presentation, right) };
+}
+
+/** Reuses fully derived standalone objects; comparison code may only scale them uniformly. */
+export function deriveRnaTypeComparison(left: RnaTypePresentation, right: RnaTypePresentation): NonNullable<RnaTypePresentation["comparison"]> {
+  return { left, right, sharedVisualGrammar: true, scaling: "uniform-whole-object", labels: [left.type, right.type] };
 }
 
 export function isValidRnaTypePresentation(presentation: RnaTypePresentation): boolean {
@@ -215,5 +244,6 @@ export function isValidRnaTypePresentation(presentation: RnaTypePresentation): b
     && presentation.strands.length === presentation.topology.strandCount
     && presentation.topology.continuousChains.length === presentation.topology.strandCount
     && presentation.strands.every((strand) => strand.samples.every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite)))
+    && (!presentation.comparison || (presentation.comparison.left.type !== presentation.comparison.right.type && presentation.comparison.scaling === "uniform-whole-object" && presentation.comparison.labels.length === 2))
     && (presentation.grounding.mode === "procedural" ? presentation.grounding.status === "educational-procedural" : Boolean(presentation.grounding.deposited));
 }

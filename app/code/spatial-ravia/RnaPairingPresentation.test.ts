@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { resolveRnaIntent } from "./rna-intent.ts";
-import { classifyRnaPair, deriveRnaPairingPresentation, isValidRnaPairingPresentation, rnaHybridPresentation, rnaPairInteractions } from "./RnaPairingPresentation.ts";
+import { classifyRnaPair, createRnaLocalPairFrame, deriveRnaPairingPresentation, isValidRnaPairingPresentation, rnaHybridPresentation, rnaPairInteractions, transformRnaLocalPairPoint } from "./RnaPairingPresentation.ts";
 
 function spec(prompt: string) {
   const resolved = resolveRnaIntent(prompt);
@@ -15,6 +15,16 @@ test("RNA A-U pairing has exactly two canonical hydrogen bonds", () => {
   assert.equal(presentation.interactions.length, 2);
   assert.ok(presentation.interactions.every((interaction) => interaction.type === "hydrogenBond"));
   assert.equal(isValidRnaPairingPresentation(presentation), true);
+});
+
+test("local RNA pair frame is deterministic and faces both bases toward one another", () => {
+  const frame = createRnaLocalPairFrame();
+  assert.deepEqual(frame, createRnaLocalPairFrame());
+  const left = transformRnaLocalPairPoint([0.55, 0.1, 0], 0, frame);
+  const right = transformRnaLocalPairPoint([0.55, 0.1, 0], 1, frame);
+  assert.ok(left[0] < right[0]);
+  assert.equal(left[1], right[1]);
+  assert.equal(left[2], right[2]);
 });
 
 test("RNA G-C pairing has exactly three canonical hydrogen bonds", () => {
@@ -70,6 +80,64 @@ test("donor and acceptor assignments cross strands", () => {
     const [first, second] = interaction.participants;
     return first.strandId !== second.strandId && new Set([first.role, second.role]).size === 2;
   }));
+});
+
+test("G-C donor/acceptor sites stay attached to the chemically correct bases", () => {
+  const presentation = deriveRnaPairingPresentation("G-C");
+  assert.deepEqual(presentation.interactions.map((interaction) => interaction.participants.map((participant) => `${participant.base}-${participant.site}-${participant.role}`)), [
+    ["G-G-N1-acceptor", "C-C-N3-donor"],
+    ["G-G-N2-donor", "C-C-O2-acceptor"],
+    ["C-C-N4-donor", "G-G-O6-acceptor"],
+  ]);
+  assert.ok(presentation.interactions.every((interaction) => interaction.anchors.every((anchor) => anchor.position.every(Number.isFinite))));
+});
+
+test("wobble geometry is visibly offset from the canonical pair frame", () => {
+  const canonical = deriveRnaPairingPresentation("A-U");
+  const wobble = deriveRnaPairingPresentation("G-U-wobble");
+  assert.equal(wobble.classification.interactionType, "wobble");
+  assert.notDeepEqual(wobble.geometry.frames[0].frame.pairAxis, canonical.geometry.frames[0].frame.pairAxis);
+  assert.notDeepEqual(wobble.interactions[0].anchors[0].position, canonical.interactions[0].anchors[0].position);
+  assert.ok(wobble.geometry.bounds.width > 0 && wobble.geometry.bounds.height > 0 && wobble.geometry.bounds.depth > 0);
+});
+
+test("short RNA duplex uses repeated antiparallel pair frames and real bounds", () => {
+  const presentation = deriveRnaPairingPresentation("A-U", { mode: "shortDuplex", length: 5 });
+  assert.deepEqual(presentation.strands.map((strand) => strand.direction), ["5primeTo3prime", "3primeTo5prime"]);
+  assert.equal(presentation.geometry.frames.length, 5);
+  assert.ok(presentation.geometry.frames.every((frame) => frame.frame.pairAxis[0] === 1 && frame.frame.sugarDirection[1] === 1));
+  assert.ok(presentation.geometry.frames[0].frame.center[1] < presentation.geometry.frames[4].frame.center[1]);
+  assert.ok(presentation.geometry.bounds.min[0] < presentation.geometry.bounds.max[0]);
+  assert.ok(presentation.geometry.bounds.min[1] < presentation.geometry.bounds.max[1]);
+  assert.equal(isValidRnaPairingPresentation(presentation), true);
+});
+
+test("RNA-DNA hybrid keeps RNA and DNA pairing chemistry distinct", () => {
+  const presentation = rnaHybridPresentation("G-C", { length: 3 });
+  assert.deepEqual(presentation.strands.map((strand) => [strand.kind, strand.chemistry.sugar, strand.chemistry.hasTwoPrimeHydroxyl]), [
+    ["RNA", "ribose", true],
+    ["DNA", "deoxyribose", false],
+  ]);
+  assert.ok(presentation.interactions.every((interaction) => interaction.participants[0].strandId !== interaction.participants[1].strandId));
+  assert.equal(presentation.spec.length, 5);
+  assert.equal(presentation.interactions.length, 15);
+  assert.equal(presentation.hybridPlan?.distinctChemistries, true);
+});
+
+test("local donor/acceptor anchors form separated rows instead of a center line", () => {
+  for (const pair of ["A-U", "G-C"] as const) {
+    const presentation = deriveRnaPairingPresentation(pair);
+    const rows = presentation.interactions.map((interaction) => interaction.anchors[0].position[1]);
+    assert.equal(new Set(rows).size, presentation.classification.hydrogenBondCount);
+    assert.ok(presentation.interactions.every((interaction) => Math.abs(interaction.anchors[0].position[0] - interaction.anchors[1].position[0]) > 0.8));
+  }
+});
+
+test("RNA-DNA hybrid remains a short antiparallel ladder without a bond-count label", () => {
+  const presentation = rnaHybridPresentation("A-T");
+  assert.ok(presentation.spec.length >= 5 && presentation.spec.length <= 7);
+  assert.deepEqual(presentation.strands.map((strand) => strand.direction), ["5primeTo3prime", "3primeTo5prime"]);
+  assert.equal(presentation.labels.some((label) => /hydrogen bonds/.test(label.text)), false);
 });
 
 test("pairing state transitions affect H-bonds but preserve phosphodiester backbone", () => {

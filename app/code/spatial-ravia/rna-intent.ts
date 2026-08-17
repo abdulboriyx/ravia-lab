@@ -21,6 +21,9 @@ export function resolveRnaFamily(prompt: string): { family: RnaFamily; confidenc
   if (!text) return undefined;
   if (/^(show|explain|visualize|what is)?\s*(the\s+)?rna$/.test(text)) return scored("structure", text);
   if (/(pairs with uracil|g-c pairing|g ?-?u wobble|rna[ -]?dna hybrid|complementary rna|hybridization)/.test(text)) return scored("pairingHybridization", text);
+  // Exonuclease is a degradation mechanism, not an exon/intron processing
+  // request. This guard must precede the broad `exon` processing vocabulary.
+  if (/exonuclease|exonucleolytic|exonucleo/.test(text)) return scored("degradationStability", text);
   // Specific chemistry and processing guards must precede broad “RNA”/“transcript” matches.
   if (/(2 ?prime ?-?oh|2′-?oh|\bribose\b|phosphate group|phosphodiester bond|3 prime and 5 prime ends|\buracil\b|nucleotide components|local chemistry|dna nucleotide|chemical difference|differs chemically)/.test(text) && !/single rna nucleotide|ribonucleotide/.test(text)) return scored("localChemistry", text);
   if (/(5 ?prime cap|5′ cap|poly ?\(?a\)? tail|intron|exon|splice|pre-mrna|mature mrna|processing of a primary)/.test(text) && !/(immediately after transcription|pre-mrna before processing)/.test(text)) return scored("processing", text);
@@ -63,7 +66,7 @@ function buildRnaSceneSpec(text: string, family: RnaFamily): RnaSceneSpec {
   return {
     family, focus: focusFor(text, family), scale: { level: scale, locality: scale === "localChemistry" ? "local" : scale === "molecule" ? "global" : "regional" }, rnaType,
     structuralState, strandCount: pairingState === "hybrid" || /complementary rna strands/.test(text) ? 2 : 1, pairingState, requiredEntities: entities,
-    annotations: [], sequenceRequirements: { required: /adenine|uracil|g-c|g-u|complementary/.test(text), bases: /adenine|uracil/.test(text) ? ["A", "U"] : undefined }, secondaryStructure: secondary,
+    annotations: family === "degradationStability" && /exonuclease|exonucleolytic|exonucleo/.test(text) ? ["exonuclease"] : [], sequenceRequirements: { required: /adenine|uracil|g-c|g-u|complementary/.test(text), bases: /adenine|uracil/.test(text) ? ["A", "U"] : undefined }, secondaryStructure: secondary,
     dnaContext, processingState, degradationState, representation: { detail: scale === "localChemistry" ? "atomAndBond" : scale === "secondaryStructure" ? "residue" : "overview", showBackbone: true, showBases: true, showAnnotations: true }, supportExpectation: "grounded-or-explanatory",
   };
 }
@@ -102,8 +105,8 @@ function inferPairing(text: string, family: RnaFamily): RnaPairingState {
 function inferProcessing(text: string, family: RnaFamily): RnaProcessingState {
   if (family === "nascentTranscript" && /pre-mrna/.test(text)) return "unprocessed";
   if (family !== "processing") return "none";
+  if (/pre[- ]?mrna.*mature[- ]?mrna|mature[- ]?mrna.*pre[- ]?mrna/.test(text)) return "comparePreMature";
   if (/processing of a primary|primary mrna transcript/.test(text)) return "mature";
-  if (/pre-mrna.*mature|mature.*pre-mrna/.test(text)) return "comparePreMature";
   if (/splic|exon joining|during rna processing/.test(text)) return "spliced";
   if (/poly ?\(?a\)?/.test(text)) return "polyadenylated";
   if (/cap/.test(text)) return "capped";

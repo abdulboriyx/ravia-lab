@@ -1,9 +1,11 @@
 import type { RnaSceneSpec, RnaStabilityState } from "./rna-contract.ts";
 import { createRnaDnaLocalComparison, createRnaLocalChemistryPresentation, type RnaDnaLocalComparison, type RnaLocalChemistryPresentation } from "./RnaLocalChemistryPresentation.ts";
 import { createRnaSecondaryStructureSpec, type RnaSecondaryStructureMotif, type RnaSecondaryStructureTopology } from "./RnaSecondaryStructurePresentation.ts";
-import { canonicalRnaView, rnaCameraFor, rnaMaterialPalette, rnaTopologyState, sampleCanonicalRna, type RnaTheme, type RnaResidueSample } from "./RnaVisualSystem.ts";
+import { canonicalRnaView, rnaCameraFor, rnaMaterialPalette, rnaTopologyState, sampleCanonicalRna, type RnaPoint, type RnaTheme, type RnaResidueSample } from "./RnaVisualSystem.ts";
 
 export type RnaDegradationPhase = "intact" | "cleavageReady" | "cleaved" | "partiallyDegraded" | "shortened";
+/** Stable, presentation-level states used by static degradation illustrations. */
+export type RnaDegradationState = "intact" | "internallyCleaved" | "terminallyDegraded";
 export type RnaDegradationMode = "endonucleolytic" | "exonucleolytic" | "chemicalHydrolysis" | "genericConceptual";
 export type RnaCleavageLocation = "internal" | "fivePrimeTerminal" | "threePrimeTerminal";
 export type RnaDegradationDirection = "fivePrimeToThreePrime" | "threePrimeToFivePrime";
@@ -22,6 +24,7 @@ export type RnaDegradationSpec = {
 
 export type RnaDegradationBackboneLink = {
   id: string;
+  authoritativeBridgeId: string;
   type: "phosphodiester";
   leftIndex: number;
   rightIndex: number;
@@ -51,9 +54,22 @@ export type RnaStabilityComparison = {
   dna: { twoPrimeHydroxyl: "absent"; susceptibleGroup: "no-equivalent-2prime-oh" };
 };
 
+export type RnaDegradationDisplayFragment = {
+  id: string;
+  sourceIndices: readonly number[];
+  samples: readonly RnaResidueSample[];
+  opacity: number;
+  retained: boolean;
+};
+
 export type RnaDegradationPresentation = {
   spec: RnaDegradationSpec;
+  state: RnaDegradationState;
   samples: readonly RnaResidueSample[];
+  /** Separate continuous display paths; consumers must not reconnect fragments. */
+  displayFragments: readonly RnaDegradationDisplayFragment[];
+  cleavageCue?: { linkId: string; position: RnaPoint; gapWidth: number };
+  terminalShortening?: { direction: RnaDegradationDirection; removedTerminus: "5prime" | "3prime"; retainedStart: number; retainedEnd: number };
   backboneLinks: readonly RnaDegradationBackboneLink[];
   fragments: readonly RnaDegradationFragment[];
   exposedEnds: readonly RnaExposedEnd[];
@@ -142,12 +158,12 @@ function buildBackbone(degradation: RnaDegradationSpec, retained: readonly numbe
     const rightIndex = leftIndex + 1;
     const targeted = degradation.phase !== "intact" && degradation.cleavageLocation === "internal" && leftIndex === degradation.cleavageIndex;
     const retainedLink = retainedSet.has(leftIndex) && retainedSet.has(rightIndex);
-    return { id: `phosphodiester-${leftIndex}-${rightIndex}`, type: "phosphodiester" as const, leftIndex, rightIndex, state: targeted && (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" || degradation.phase === "shortened") ? "absent" as const : retainedLink ? "present" as const : "absent" as const, targeted };
+    return { id: `phosphodiester-${leftIndex}-${rightIndex}`, authoritativeBridgeId: `rna-nucleotide-${leftIndex + 1}-rna-nucleotide-${rightIndex + 1}-phosphodiester`, type: "phosphodiester" as const, leftIndex, rightIndex, state: targeted && (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" || degradation.phase === "shortened") ? "absent" as const : retainedLink ? "present" as const : "absent" as const, targeted };
   });
 }
 
 function buildFragments(degradation: RnaDegradationSpec, retained: readonly number[]): RnaDegradationFragment[] {
-  if (degradation.mode === "endonucleolytic" && (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded")) return [{ id: "left-rna-fragment", indices: range(0, degradation.cleavageIndex), continuous: true, retained: true }, { id: "right-rna-fragment", indices: range(degradation.cleavageIndex + 1, degradation.length - 1), continuous: true, retained: true }];
+  if (degradation.mode !== "exonucleolytic" && degradation.cleavageLocation === "internal" && (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded")) return [{ id: "left-rna-fragment", indices: range(0, degradation.cleavageIndex), continuous: true, retained: true }, { id: "right-rna-fragment", indices: range(degradation.cleavageIndex + 1, degradation.length - 1), continuous: true, retained: true }];
   if (degradation.mode === "exonucleolytic" && (degradation.phase === "shortened" || degradation.phase === "partiallyDegraded")) {
     const removed = degradation.direction === "threePrimeToFivePrime" ? range(retained.length, degradation.length - 1) : range(0, retained[0] - 1);
     const fragments: RnaDegradationFragment[] = [{ id: "retained-rna", indices: retained, continuous: true, retained: true }];
@@ -159,8 +175,11 @@ function buildFragments(degradation: RnaDegradationSpec, retained: readonly numb
 
 function buildEnds(degradation: RnaDegradationSpec, retained: readonly number[]): RnaExposedEnd[] {
   if (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" || degradation.phase === "shortened") {
-    if (degradation.mode === "endonucleolytic") return [{ id: "native-five-prime-end", terminus: "5prime", index: 0, reason: "native", attachedToTranscript: true }, { id: "cleavage-three-prime-end", terminus: "3prime", index: degradation.cleavageIndex, reason: "cleavage-generated", attachedToTranscript: true }, { id: "cleavage-five-prime-end", terminus: "5prime", index: degradation.cleavageIndex + 1, reason: "cleavage-generated", attachedToTranscript: true }, { id: "native-three-prime-end", terminus: "3prime", index: degradation.length - 1, reason: "native", attachedToTranscript: true }];
-    if (degradation.mode === "exonucleolytic") return [{ id: "retained-five-prime-end", terminus: "5prime", index: retained[0], reason: "shortening-generated", attachedToTranscript: true }, { id: "retained-three-prime-end", terminus: "3prime", index: retained[retained.length - 1], reason: "shortening-generated", attachedToTranscript: true }];
+    if (degradation.mode !== "exonucleolytic") return [{ id: "native-five-prime-end", terminus: "5prime", index: 0, reason: "native", attachedToTranscript: true }, { id: "cleavage-three-prime-end", terminus: "3prime", index: degradation.cleavageIndex, reason: "cleavage-generated", attachedToTranscript: true }, { id: "cleavage-five-prime-end", terminus: "5prime", index: degradation.cleavageIndex + 1, reason: "cleavage-generated", attachedToTranscript: true }, { id: "native-three-prime-end", terminus: "3prime", index: degradation.length - 1, reason: "native", attachedToTranscript: true }];
+    if (degradation.mode === "exonucleolytic") return [
+      { id: "retained-five-prime-end", terminus: "5prime", index: retained[0], reason: degradation.direction === "fivePrimeToThreePrime" ? "shortening-generated" : "native", attachedToTranscript: true },
+      { id: "retained-three-prime-end", terminus: "3prime", index: retained[retained.length - 1], reason: degradation.direction === "threePrimeToFivePrime" ? "shortening-generated" : "native", attachedToTranscript: true },
+    ];
   }
   return [{ id: "native-five-prime-end", terminus: "5prime", index: 0, reason: "native", attachedToTranscript: true }, { id: "native-three-prime-end", terminus: "3prime", index: degradation.length - 1, reason: "native", attachedToTranscript: true }];
 }
@@ -169,6 +188,26 @@ function secondaryContext(degradation: RnaDegradationSpec): RnaSecondaryStructur
   if (!degradation.structuredContext) return undefined;
   const motif: RnaSecondaryStructureMotif = "hairpin";
   return createRnaSecondaryStructureSpec(motif, { stemPairs: 3, loopLength: 3 });
+}
+
+function stateFor(degradation: RnaDegradationSpec): RnaDegradationState {
+  if (degradation.mode === "exonucleolytic" && (degradation.phase === "partiallyDegraded" || degradation.phase === "shortened")) return "terminallyDegraded";
+  if (degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded") return "internallyCleaved";
+  return "intact";
+}
+
+function translateSample(sample: RnaResidueSample, offset: RnaPoint): RnaResidueSample {
+  const move = (point: RnaPoint): RnaPoint => [point[0] + offset[0], point[1] + offset[1], point[2] + offset[2]];
+  return { ...sample, backbone: move(sample.backbone), ribose: move(sample.ribose), basePosition: move(sample.basePosition), fivePrime: move(sample.fivePrime), threePrime: move(sample.threePrime) };
+}
+
+function buildDisplayFragments(degradation: RnaDegradationSpec, fragments: readonly RnaDegradationFragment[], samples: readonly RnaResidueSample[]): RnaDegradationDisplayFragment[] {
+  return fragments.map((fragment, index) => {
+    // A fixed gap makes an absent internal phosphodiester visually legible.
+    // Terminal loss never becomes random internal fragmentation.
+    const offset: RnaPoint = degradation.mode !== "exonucleolytic" && fragment.id === "right-rna-fragment" ? [0.76, 0.18, 0] : [0, 0, 0];
+    return { id: fragment.id, sourceIndices: fragment.indices, samples: fragment.indices.map((sourceIndex) => translateSample(samples[sourceIndex]!, offset)), opacity: fragment.retained ? 1 : 0.2, retained: fragment.retained };
+  });
 }
 
 export function deriveRnaDegradationPresentation(input: RnaSceneSpec | RnaDegradationSpec, options: DegradationOptions = {}): RnaDegradationPresentation {
@@ -180,12 +219,31 @@ export function deriveRnaDegradationPresentation(input: RnaSceneSpec | RnaDegrad
   const scene = "family" in input ? input : undefined;
   const localChemistry = degradation.mode === "chemicalHydrolysis" || degradation.phase === "cleavageReady" || degradation.cleavageLocation === "internal" ? createRnaLocalChemistryPresentation(scene ?? ({ family: "localChemistry", focus: "RNA phosphodiester linkage", scale: { level: "localChemistry", locality: "local" }, rnaType: "generic", structuralState: "intact", strandCount: 1, pairingState: "none", requiredEntities: ["ribose", "twoPrimeHydroxyl", "phosphate", "phosphodiesterLinkage"], annotations: [], sequenceRequirements: { required: false }, secondaryStructure: { required: false, motifs: [] }, dnaContext: { required: false }, processingState: "none", degradationState: "hydrolysisContext", representation: { detail: "atomAndBond", showBackbone: true, showBases: true, showAnnotations: true }, supportExpectation: "grounded-or-explanatory" }), { mode: "backbone" }) : undefined;
   const stabilityComparison = degradation.mode === "chemicalHydrolysis" || (scene?.dnaContext.required ?? false) ? { localChemistry: createRnaDnaLocalComparison(), sameScale: true as const, rna: { twoPrimeHydroxyl: "present" as const, susceptibleGroup: "2prime-oh-adjacent-phosphodiester" as const }, dna: { twoPrimeHydroxyl: "absent" as const, susceptibleGroup: "no-equivalent-2prime-oh" as const } } : undefined;
-  const highlightedGroups = degradation.phase === "cleavageReady" ? ["twoPrimeHydroxyl", "phosphate", "susceptiblePhosphodiester"] : degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" || degradation.phase === "shortened" ? ["cleavageSite", "exposedEnd"] : [];
-  const labels = [{ text: degradation.phase === "cleavageReady" ? "reaction-ready linkage" : degradation.phase === "cleaved" ? "cleavage site" : degradation.mode === "exonucleolytic" ? "shortening direction" : "RNA", target: degradation.phase === "cleavageReady" ? "phosphodiester-0-1" : degradation.phase === "cleaved" ? `phosphodiester-${degradation.cleavageIndex}-${degradation.cleavageIndex + 1}` : "retained-rna" }];
-  if (exposedEnds.some((end) => end.terminus === "5prime")) labels.push({ text: "5′ end", target: exposedEnds.find((end) => end.terminus === "5prime")!.id });
-  if (exposedEnds.some((end) => end.terminus === "3prime")) labels.push({ text: "3′ end", target: exposedEnds.find((end) => end.terminus === "3prime")!.id });
+  const authoritativeBridge = localChemistry?.phosphodiesterBridges[0];
+  const localChemistryWithState = localChemistry && authoritativeBridge ? {
+    ...localChemistry,
+    comparison: stabilityComparison?.localChemistry,
+    phosphodiesterBridges: localChemistry.phosphodiesterBridges.map((bridge) => ({ ...bridge, state: degradation.phase === "cleavageReady" ? "breaking" : degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" ? "absent" : bridge.state })),
+    bonds: localChemistry.bonds.map((bond) => bond.id.startsWith(authoritativeBridge.id) ? { ...bond, state: degradation.phase === "cleavageReady" ? "breaking" as const : degradation.phase === "cleaved" || degradation.phase === "partiallyDegraded" ? "absent" as const : bond.state } : bond),
+  } : localChemistry;
   const representation = canonicalRnaView(stabilityComparison || localChemistry ? "local-chemistry" : "whole-rna");
-  return { spec: degradation, samples: sampleCanonicalRna(degradation.length, { topology: "single-stranded", lod: representation.lod, source: "canonical-procedural", topologyState: rnaTopologyState("singleStrand", degradation.length) }), backboneLinks: links, fragments, exposedEnds, highlightedGroups, labels, representation, camera: rnaCameraFor(stabilityComparison || localChemistry ? "local-chemistry" : degradation.mode === "exonucleolytic" ? "nucleotide" : "whole-rna"), materials: rnaMaterialPalette(options.theme ?? "dark"), localChemistry, stabilityComparison, secondaryTopology: secondaryContext(degradation), noDegradationMachinery: true };
+  const samples = sampleCanonicalRna(degradation.length, { topology: "single-stranded", lod: representation.lod, source: "canonical-procedural", topologyState: rnaTopologyState("singleStrand", degradation.length) });
+  const state = stateFor(degradation);
+  const displayFragments = buildDisplayFragments(degradation, fragments, samples);
+  const targetedLink = links.find((link) => link.targeted);
+  const cuePoint = targetedLink ? samples[targetedLink.leftIndex]!.backbone : undefined;
+  const cleavageCue = state === "internallyCleaved" && targetedLink && cuePoint ? { linkId: targetedLink.id, position: cuePoint, gapWidth: 0.76 } : undefined;
+  const retainedFragment = fragments.find((fragment) => fragment.retained);
+  const terminalShortening = state === "terminallyDegraded" && degradation.direction && retainedFragment ? { direction: degradation.direction, removedTerminus: degradation.direction === "fivePrimeToThreePrime" ? "5prime" as const : "3prime" as const, retainedStart: retainedFragment.indices[0]!, retainedEnd: retainedFragment.indices[retainedFragment.indices.length - 1]! } : undefined;
+  const highlightedGroups = stabilityComparison ? ["twoPrimeHydroxyl", "susceptiblePhosphodiester", "rnaTwoPrimeHydroxyl", "dnaTwoPrimePosition", "adjacentPhosphodiester"] : degradation.phase === "cleavageReady" ? ["twoPrimeHydroxyl", "phosphate", "susceptiblePhosphodiester"] : state === "internallyCleaved" ? ["cleavageSite"] : state === "terminallyDegraded" ? ["terminalShortening"] : [];
+  const labels = stabilityComparison
+    ? [{ text: "RNA 2′-OH → greater backbone susceptibility", target: "twoPrimeHydroxyl" }, { text: "DNA: no 2′-OH", target: "dna-two-prime-position" }]
+    : state === "internallyCleaved"
+      ? [{ text: "cleavage site", target: targetedLink?.id ?? "cleavage-site" }]
+      : state === "terminallyDegraded"
+        ? [{ text: `${degradation.direction === "threePrimeToFivePrime" ? "3′→5′" : "5′→3′"} terminal shortening`, target: "retained-rna" }]
+        : [{ text: degradation.phase === "cleavageReady" ? "reaction-ready linkage" : "RNA", target: degradation.phase === "cleavageReady" ? links[0].id : "intact-rna" }];
+  return { spec: degradation, state, samples, displayFragments, cleavageCue, terminalShortening, backboneLinks: links, fragments, exposedEnds, highlightedGroups, labels, representation, camera: rnaCameraFor(stabilityComparison || localChemistry ? "local-chemistry" : degradation.mode === "exonucleolytic" ? "nucleotide" : "whole-rna"), materials: rnaMaterialPalette(options.theme ?? "dark"), localChemistry: localChemistryWithState, stabilityComparison, secondaryTopology: secondaryContext(degradation), noDegradationMachinery: true };
 }
 
 export function rnaCleavagePresentation(input: RnaSceneSpec | RnaDegradationSpec, options: DegradationOptions = {}): RnaDegradationPresentation {
@@ -203,9 +261,18 @@ export function rnaStabilityComparison(input: RnaSceneSpec | Partial<RnaDegradat
 
 export function isValidRnaDegradationPresentation(presentation: RnaDegradationPresentation): boolean {
   const targeted = presentation.backboneLinks.filter((link) => link.targeted);
+  const absent = presentation.backboneLinks.filter((link) => link.state === "absent");
+  const retained = presentation.fragments.filter((fragment) => fragment.retained);
+  const retainedIndices = new Set(retained.flatMap((fragment) => fragment.indices));
   return presentation.backboneLinks.every((link) => link.type === "phosphodiester" && link.leftIndex + 1 === link.rightIndex)
+    && presentation.backboneLinks.every((link) => link.authoritativeBridgeId === `rna-nucleotide-${link.leftIndex + 1}-rna-nucleotide-${link.rightIndex + 1}-phosphodiester`)
     && presentation.fragments.every((fragment) => fragment.continuous && fragment.indices.every((index) => index >= 0 && index < presentation.spec.length))
+    && retained.every((fragment) => fragment.indices.every((index, position, indices) => position === 0 || indices[position - 1] + 1 === index))
+    && absent.every((link) => link.targeted || !retainedIndices.has(link.leftIndex) || !retainedIndices.has(link.rightIndex))
     && presentation.exposedEnds.every((end) => end.attachedToTranscript && end.index >= 0 && end.index < presentation.spec.length)
-    && (presentation.spec.phase === "cleaved" || presentation.spec.phase === "partiallyDegraded" ? targeted.length <= 1 : true)
+    && presentation.displayFragments.every((fragment) => fragment.samples.length === fragment.sourceIndices.length && fragment.samples.every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite)))
+    && (presentation.state !== "internallyCleaved" || Boolean(presentation.cleavageCue) && presentation.displayFragments.length === 2)
+    && (presentation.state !== "terminallyDegraded" || Boolean(presentation.terminalShortening) && presentation.displayFragments.filter((fragment) => fragment.retained).length === 1)
+    && (presentation.spec.phase === "cleaved" || presentation.spec.phase === "partiallyDegraded" ? targeted.length === 1 : true)
     && presentation.noDegradationMachinery;
 }

@@ -13,6 +13,9 @@ export type RnaProcessingRegion = {
   displayIndices: readonly number[];
   attachedToTranscript: true;
   label: "Exon" | "Intron";
+  /** Inclusive spans in the source transcript and the rendered transcript. */
+  sourceSpan: readonly [number, number];
+  displaySpan: readonly [number, number];
 };
 
 export type RnaProcessingTerminalFeature = {
@@ -23,6 +26,8 @@ export type RnaProcessingTerminalFeature = {
   attachedToSourceIndex: number;
   units: readonly { id: string; displayIndex: number; base: "A" }[];
   anchoredToTranscript: true;
+  /** Prevents terminal processing features from becoming free scene objects. */
+  attachment: "exact-5prime-terminus" | "extends-from-3prime-terminus";
   chemistryClaim: "pedagogical-terminal-feature";
 };
 
@@ -46,6 +51,7 @@ export type RnaProcessingTopology = {
   backboneLinks: readonly { from: number; to: number; type: "continuous" }[];
   spliceJunctions: readonly RnaSpliceJunction[];
   deterministicKey: string;
+  staticStateOnly: true;
 };
 
 export type RnaProcessingPresentation = {
@@ -63,6 +69,7 @@ export type RnaProcessingPresentation = {
   comparison?: { before: RnaProcessingPresentation; after: RnaProcessingPresentation; sharedTranscriptIdentity: true };
   spliceState?: "before" | "processing" | "after";
   noSpliceosomeMachinery: true;
+  staticStateOnly: true;
 };
 
 type ProcessingOptions = {
@@ -81,7 +88,7 @@ const range = (start: number, end: number): number[] => Array.from({ length: Mat
 
 function stageFor(spec: RnaSceneSpec, options: ProcessingOptions): RnaProcessingStage {
   if (options.stage) return options.stage;
-  if (spec.processingState === "mature" || spec.processingState === "spliced") return "mature";
+  if (spec.processingState === "mature" || spec.processingState === "spliced" || spec.structuralState === "mature") return "mature";
   if (spec.processingState === "capped" || spec.processingState === "polyadenylated" || spec.processingState === "comparePreMature") return "partiallyProcessed";
   return "unprocessed";
 }
@@ -108,12 +115,12 @@ function buildTopology(stage: RnaProcessingStage, includeTail: boolean, tailLeng
   for (let index = 0; index < exonSources.length; index += 1) {
     const source = exonSources[index];
     const display = range(displayCursor, displayCursor + source.length - 1);
-    regions.push({ id: `exon-${index + 1}`, kind: "exon", sourceIndices: source, displayIndices: display, attachedToTranscript: true, label: "Exon" });
+    regions.push({ id: `exon-${index + 1}`, kind: "exon", sourceIndices: source, displayIndices: display, attachedToTranscript: true, label: "Exon", sourceSpan: [source[0], source[source.length - 1]], displaySpan: [display[0], display[display.length - 1]] });
     displayCursor += source.length;
     if (stage !== "mature" && index < intronSources.length) {
       const intron = intronSources[index];
       const intronDisplay = range(displayCursor, displayCursor + intron.length - 1);
-      regions.push({ id: `intron-${index + 1}`, kind: "intron", sourceIndices: intron, displayIndices: intronDisplay, attachedToTranscript: true, label: "Intron" });
+      regions.push({ id: `intron-${index + 1}`, kind: "intron", sourceIndices: intron, displayIndices: intronDisplay, attachedToTranscript: true, label: "Intron", sourceSpan: [intron[0], intron[intron.length - 1]], displaySpan: [intronDisplay[0], intronDisplay[intronDisplay.length - 1]] });
       displayCursor += intron.length;
     }
   }
@@ -129,7 +136,7 @@ function buildTopology(stage: RnaProcessingStage, includeTail: boolean, tailLeng
     const exons = regions.filter((region) => region.kind === "exon");
     for (let index = 0; index < exons.length - 1; index += 1) spliceJunctions.push({ id: `${exons[index].id}-${exons[index + 1].id}-junction`, kind: "exonExonJunction", leftRegionId: exons[index].id, rightRegionId: exons[index + 1].id, fromDisplayIndex: exons[index].displayIndices[exons[index].displayIndices.length - 1], toDisplayIndex: exons[index + 1].displayIndices[0], attachedToTranscript: true });
   }
-  return { stage, sourceLength, displayLength, sourceIndices, continuousChainIndices: chain, regions, backboneLinks: chain.slice(1).map((index) => ({ from: index - 1, to: index, type: "continuous" as const })), spliceJunctions, deterministicKey: `mRNA-processing:${stage}:${includeTail ? tailLength : 0}` };
+  return { stage, sourceLength, displayLength, sourceIndices, continuousChainIndices: chain, regions, backboneLinks: chain.slice(1).map((index) => ({ from: index - 1, to: index, type: "continuous" as const })), spliceJunctions, deterministicKey: `mRNA-processing:${stage}:${includeTail ? tailLength : 0}`, staticStateOnly: true };
 }
 
 function featureFlags(spec: RnaSceneSpec, stage: RnaProcessingStage, mode: RnaProcessingMode): { cap: boolean; tail: boolean } {
@@ -140,10 +147,10 @@ function featureFlags(spec: RnaSceneSpec, stage: RnaProcessingStage, mode: RnaPr
 
 function terminalFeatures(flags: { cap: boolean; tail: boolean }, topology: RnaProcessingTopology, tailLength: number): RnaProcessingTerminalFeature[] {
   const features: RnaProcessingTerminalFeature[] = [];
-  if (flags.cap) features.push({ id: "five-prime-cap", kind: "fivePrimeCap", terminus: "5prime", attachedToDisplayIndex: 0, attachedToSourceIndex: topology.sourceIndices[0] ?? 0, units: [], anchoredToTranscript: true, chemistryClaim: "pedagogical-terminal-feature" });
+  if (flags.cap) features.push({ id: "five-prime-cap", kind: "fivePrimeCap", terminus: "5prime", attachedToDisplayIndex: 0, attachedToSourceIndex: topology.sourceIndices[0] ?? 0, units: [], anchoredToTranscript: true, attachment: "exact-5prime-terminus", chemistryClaim: "pedagogical-terminal-feature" });
   if (flags.tail) {
     const tailStart = topology.displayLength - tailLength;
-    features.push({ id: "poly-a-tail", kind: "polyATail", terminus: "3prime", attachedToDisplayIndex: Math.max(0, tailStart - 1), attachedToSourceIndex: topology.sourceIndices[topology.sourceIndices.length - 1] ?? sourceLength - 1, units: range(tailStart, topology.displayLength - 1).map((displayIndex, index) => ({ id: `poly-a-${index + 1}`, displayIndex, base: "A" as const })), anchoredToTranscript: true, chemistryClaim: "pedagogical-terminal-feature" });
+    features.push({ id: "poly-a-tail", kind: "polyATail", terminus: "3prime", attachedToDisplayIndex: Math.max(0, tailStart - 1), attachedToSourceIndex: topology.sourceIndices[topology.sourceIndices.length - 1] ?? sourceLength - 1, units: range(tailStart, topology.displayLength - 1).map((displayIndex, index) => ({ id: `poly-a-${index + 1}`, displayIndex, base: "A" as const })), anchoredToTranscript: true, attachment: "extends-from-3prime-terminus", chemistryClaim: "pedagogical-terminal-feature" });
   }
   return features;
 }
@@ -159,11 +166,15 @@ function createPresentation(spec: RnaSceneSpec, options: ProcessingOptions, mode
   const topology = buildTopology(stage, flags.tail, tailLength);
   const transcriptIdentity = deriveRnaTypePresentation({ ...spec, rnaType: "mRNA" }, { theme: options.theme });
   const representation = canonicalRnaView(mode === "cap" || mode === "polyA" ? "local-chemistry" : "whole-rna");
-  const labels: { text: string; target: string }[] = topology.regions.map((region) => ({ text: region.label, target: region.id }));
+  // Labels name region classes, not every individual span, keeping a single
+  // RNA transcript readable without detached bar-like annotations.
+  const labels: { text: string; target: string }[] = [];
+  if (topology.regions.some((region) => region.kind === "exon")) labels.push({ text: "Exons", target: "exon-1" });
+  if (topology.regions.some((region) => region.kind === "intron")) labels.push({ text: "Introns", target: "intron-1" });
   if (flags.cap) labels.push({ text: "5′ cap", target: "five-prime-cap" });
   if (flags.tail) labels.push({ text: "poly(A) tail", target: "poly-a-tail" });
   if (stage === "mature") labels.push({ text: "Mature mRNA", target: "mature-transcript" });
-  return { mode, stage, processingState: processingStateFor(stage), transcriptIdentity, samples: samplesFor(topology), topology, terminalFeatures: terminalFeatures(flags, topology, tailLength), labels, representation, camera: rnaCameraFor(mode === "cap" ? "local-chemistry" : mode === "polyA" ? "local-chemistry" : mode === "splicing" ? "secondary-structure" : "whole-rna"), materials: rnaMaterialPalette(options.theme ?? "dark"), spliceState, noSpliceosomeMachinery: true };
+  return { mode, stage, processingState: processingStateFor(stage), transcriptIdentity, samples: samplesFor(topology), topology, terminalFeatures: terminalFeatures(flags, topology, tailLength), labels: labels.slice(0, 3), representation, camera: rnaCameraFor(mode === "cap" ? "local-chemistry" : mode === "polyA" ? "local-chemistry" : mode === "splicing" ? "secondary-structure" : "whole-rna"), materials: rnaMaterialPalette(options.theme ?? "dark"), spliceState, noSpliceosomeMachinery: true, staticStateOnly: true };
 }
 
 export function rnaProcessingState(spec: RnaSceneSpec, options: ProcessingOptions = {}): RnaProcessingState {
@@ -196,10 +207,23 @@ export function rnaSplicingPresentation(spec: RnaSceneSpec, state: "before" | "p
 export function isValidRnaProcessingPresentation(presentation: RnaProcessingPresentation): boolean {
   const { topology } = presentation;
   const regionIndices = topology.regions.flatMap((region) => region.displayIndices);
+  const sourceExpected = topology.stage === "mature" ? flatten(preExonSources) : range(0, sourceLength - 1);
+  const capIsTerminal = presentation.terminalFeatures.filter((feature) => feature.kind === "fivePrimeCap")
+    .every((feature) => feature.attachedToDisplayIndex === 0 && feature.attachment === "exact-5prime-terminus");
+  const tailsAreContiguous = presentation.terminalFeatures.filter((feature) => feature.kind === "polyATail")
+    .every((feature) => feature.attachment === "extends-from-3prime-terminus"
+      && feature.attachedToDisplayIndex === feature.units[0]!.displayIndex - 1
+      && feature.units.every((unit, index) => unit.displayIndex === feature.attachedToDisplayIndex + index + 1));
   return topology.continuousChainIndices.every((index, position) => index === position)
     && topology.backboneLinks.length === Math.max(0, topology.displayLength - 1)
-    && topology.regions.every((region) => region.attachedToTranscript && region.displayIndices.every((index) => index >= 0 && index < topology.displayLength))
+    && topology.regions.every((region) => region.attachedToTranscript && region.displayIndices.every((index) => index >= 0 && index < topology.displayLength) && region.sourceSpan[0] === region.sourceIndices[0] && region.sourceSpan[1] === region.sourceIndices[region.sourceIndices.length - 1] && region.displaySpan[0] === region.displayIndices[0] && region.displaySpan[1] === region.displayIndices[region.displayIndices.length - 1])
     && presentation.terminalFeatures.every((feature) => feature.anchoredToTranscript && (feature.kind === "fivePrimeCap" ? feature.terminus === "5prime" : feature.terminus === "3prime"))
     && new Set(regionIndices).size === regionIndices.length
-    && presentation.noSpliceosomeMachinery;
+    && topology.sourceIndices.join(",") === sourceExpected.join(",")
+    && capIsTerminal
+    && tailsAreContiguous
+    && presentation.labels.length <= 3
+    && presentation.noSpliceosomeMachinery
+    && presentation.staticStateOnly
+    && topology.staticStateOnly;
 }

@@ -55,3 +55,21 @@ test("secondary-structure sampling is finite and deterministic", () => {
   assert.deepEqual(sampleRnaSecondaryStructure(first), sampleRnaSecondaryStructure(second));
   assert.ok(sampleRnaSecondaryStructure(first).every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite)));
 });
+
+test("all secondary motifs provide finite padded bounds and a deduplicated label policy", () => {
+  for (const motif of ["stem", "hairpin", "bulge", "internalLoop", "pairedUnpaired"] as const) {
+    const presentation = deriveRnaSecondaryStructurePresentation(createRnaSecondaryStructureSpec(motif));
+    assert.equal(isValidRnaSecondaryStructurePresentation(presentation), true, motif);
+    assert.ok(presentation.bounds.width > 0 && presentation.bounds.height > 0 && presentation.bounds.depth > 0, motif);
+    assert.equal(new Set(presentation.labels.map((label) => label.text)).size, presentation.labels.length, motif);
+  }
+});
+
+test("paired interactions bridge opposite sides while unpaired residues remain interaction-free", () => {
+  for (const motif of ["hairpin", "bulge", "internalLoop", "pairedUnpaired"] as const) {
+    const presentation = deriveRnaSecondaryStructurePresentation(createRnaSecondaryStructureSpec(motif));
+    const paired = new Set(presentation.interactions.flatMap((interaction) => interaction.participants));
+    assert.ok(presentation.interactions.every((interaction) => presentation.samples[interaction.participants[0]].backbone[0] < presentation.samples[interaction.participants[1]].backbone[0]), motif);
+    assert.ok(presentation.topology.unpairedResidues.every((index) => !paired.has(index)), motif);
+  }
+});

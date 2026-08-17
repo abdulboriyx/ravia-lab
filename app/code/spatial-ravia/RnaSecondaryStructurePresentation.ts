@@ -82,6 +82,8 @@ export type RnaSecondaryStructurePresentation = {
     chemistry: "RNA-ribose-2prime-oh-uracil";
   };
   camera: ReturnType<typeof canonicalRnaView>["camera"];
+  /** Padded folded-RNA bounds for the shared camera consumer. */
+  bounds: { min: RnaPoint; max: RnaPoint; width: number; height: number; depth: number };
   materials: ReturnType<typeof rnaMaterialPalette>;
 };
 
@@ -324,6 +326,13 @@ function pointDistance(a: RnaPoint, b: RnaPoint): number {
   return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 }
 
+function presentationBounds(samples: readonly RnaResidueSample[]) {
+  const positions = samples.flatMap((sample) => [sample.backbone, sample.ribose, sample.basePosition]);
+  const minimum: RnaPoint = [Math.min(...positions.map((point) => point[0])) - 0.45, Math.min(...positions.map((point) => point[1])) - 0.45, Math.min(...positions.map((point) => point[2])) - 0.35];
+  const maximum: RnaPoint = [Math.max(...positions.map((point) => point[0])) + 0.45, Math.max(...positions.map((point) => point[1])) + 0.45, Math.max(...positions.map((point) => point[2])) + 0.35];
+  return { min: minimum, max: maximum, width: maximum[0] - minimum[0], height: maximum[1] - minimum[1], depth: maximum[2] - minimum[2] };
+}
+
 function turnRadians(a: RnaPoint, b: RnaPoint, c: RnaPoint): number {
   const first: RnaPoint = [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
   const second: RnaPoint = [c[0] - b[0], c[1] - b[1], c[2] - b[2]];
@@ -345,7 +354,9 @@ export function validateRnaSecondaryStructureGeometry(topology: RnaSecondaryStru
       const c = samples[second].backbone;
       const d = samples[second + 1].backbone;
       if (segmentsCross(a, b, c, d)) crossingSegments.push([first, second]);
-      minimumBackboneDistance = Math.min(minimumBackboneDistance, pointDistance(a, c), pointDistance(a, d), pointDistance(b, c), pointDistance(b, d));
+      // Ignore consecutive backbone neighbors; their short bond distance is
+      // expected and should not hide a true nonlocal near-collision.
+      if (second > first + 2) minimumBackboneDistance = Math.min(minimumBackboneDistance, pointDistance(a, c), pointDistance(a, d), pointDistance(b, c), pointDistance(b, d));
     }
   }
   const sideInversions = topology.pairedResidues.flatMap(([left, right]) => samples[left].backbone[0] >= samples[right].backbone[0] ? [left, right] : []);
@@ -368,8 +379,8 @@ export function deriveRnaSecondaryStructurePresentation(topology: RnaSecondarySt
     const classification = classifyRnaPair(pair.pair);
     return { id: `${pairing.id}-${index}`, type: classification.interactionType === "wobble" ? "wobblePair" as const : "hydrogenBond" as const, participants: [pair.left, pair.right] as [number, number], state: "present" as const };
   }));
-  const labels = topology.regions.filter((item) => item.label).map((item) => ({ text: item.label!, regionId: item.id }));
-  return { motif: topology.motif, representation: canonicalRnaView("secondary-structure"), topology, topologyState, samples, interactions, backboneLinks: topology.continuousChainIndices.slice(1).map((index) => ({ from: index - 1, to: index, type: "continuous" as const })), labels, visualGrammar: { paired: "partner-facing-with-interaction", unpaired: "open-backbone-without-interaction", chemistry: "RNA-ribose-2prime-oh-uracil" }, camera: canonicalRnaView("secondary-structure").camera, materials: rnaMaterialPalette(theme) };
+  const labels = topology.regions.filter((item) => item.label).filter((item, index, all) => all.findIndex((candidate) => candidate.label === item.label) === index).map((item) => ({ text: item.label!, regionId: item.id }));
+  return { motif: topology.motif, representation: canonicalRnaView("secondary-structure"), topology, topologyState, samples, interactions, backboneLinks: topology.continuousChainIndices.slice(1).map((index) => ({ from: index - 1, to: index, type: "continuous" as const })), labels, visualGrammar: { paired: "partner-facing-with-interaction", unpaired: "open-backbone-without-interaction", chemistry: "RNA-ribose-2prime-oh-uracil" }, camera: canonicalRnaView("secondary-structure").camera, bounds: presentationBounds(samples), materials: rnaMaterialPalette(theme) };
 }
 
 export function isValidRnaSecondaryStructurePresentation(presentation: RnaSecondaryStructurePresentation): boolean {
@@ -382,6 +393,7 @@ export function isValidRnaSecondaryStructurePresentation(presentation: RnaSecond
     && topology.regions.every((item) => item.residueIndices.every((index) => index >= 0 && index < topology.sequence.length))
     && allPairs.every((pair) => pair.left !== pair.right && pair.left >= 0 && pair.right < topology.sequence.length)
     && presentation.samples.every((sample) => [sample.backbone, sample.ribose, sample.basePosition].flat().every(Number.isFinite))
+    && [presentation.bounds.width, presentation.bounds.height, presentation.bounds.depth].every((dimension) => Number.isFinite(dimension) && dimension > 0)
     && validateRnaSecondaryStructureGeometry(topology, presentation.samples).valid;
 }
 
