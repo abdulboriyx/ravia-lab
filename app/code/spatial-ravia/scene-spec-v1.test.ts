@@ -1,0 +1,6 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+import { sceneSpecV1Fixtures } from "./scene-spec-v1-fixtures.ts";
+import { validateSceneSpecV1, type SceneSpecV1 } from "./scene-spec-v1.ts";
+test("F4 SceneSpec composes all representative frozen F1/F2/F3 scenes", () => { for (const spec of Object.values(sceneSpecV1Fixtures)) assert.equal(validateSceneSpecV1(spec).valid, true, spec.sceneId); });
+test("F4 rejects unknown versions, renderer leakage, dangling F3 references, and scientific mutation", () => { const invalid = structuredClone(sceneSpecV1Fixtures.mp4Export) as SceneSpecV1 & Record<string, unknown>; invalid.camera = { fov: 40 }; invalid.compatibility.timeline = "2" as never; invalid.timeline!.events[0]!.actorIds = ["missing-actor" as never]; invalid.export!.scenePackage.provenanceSourceIds = ["missing-source" as never]; const result = validateSceneSpecV1(invalid); assert.equal(result.valid, false); if (!result.valid) { assert.ok(result.issues.some((entry) => entry.path === "sceneSpec.camera")); assert.ok(result.issues.some((entry) => entry.path.includes("timeline"))); assert.ok(result.issues.some((entry) => entry.message.includes("F2 provenance"))); } });
