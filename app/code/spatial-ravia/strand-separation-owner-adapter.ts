@@ -37,6 +37,8 @@ export type StrandSeparationOwnerInputV1 = {
 };
 
 function fail(message: string): never { throw new Error(`Invalid strand-separation owner input: ${message}`); }
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
+const hasExactMembers = (actual: readonly ScientificActorId[], expected: readonly ScientificActorId[]) => actual.length === expected.length && actual.every((actorId) => expected.includes(actorId));
 
 /**
  * Derives the owner payload only from validated SceneSpec/Foundation fields.
@@ -53,7 +55,7 @@ export function createStrandSeparationOwnerInput(sceneSpec: SceneSpecV1): Strand
   const closed = sceneSpec.scientificScene.states.find((state) => state.kind === "closed");
   const open = sceneSpec.scientificScene.states.find((state) => state.kind === "open");
   if (!closed || !open) fail("requires both closed and open scientific states");
-  if (!closed.actorIds.every((actorId) => strands.includes(actorId)) || !open.actorIds.every((actorId) => strands.includes(actorId))) fail("open/closed states must reference the resolved strand actors");
+  if (!hasExactMembers(closed.actorIds, strands) || !hasExactMembers(open.actorIds, strands)) fail("open/closed states must reference exactly the resolved strand actors");
   const interactions = sceneSpec.scientificScene.topology.interactions
     .filter((interaction) => interaction.participants.every((participant) => strands.includes(participant.actorId)))
     .map((interaction) => ({ interactionId: interaction.interactionId, kind: interaction.kind, type: interaction.type, state: interaction.state, actorIds: interaction.participants.map((participant) => participant.actorId) }));
@@ -73,6 +75,18 @@ export function createStrandSeparationOwnerInput(sceneSpec: SceneSpecV1): Strand
   };
 }
 
+/** Rejects malformed direct owner handoffs before the retained owner is reached. */
+function assertValidStrandSeparationOwnerInput(input: unknown): asserts input is StrandSeparationOwnerInputV1 {
+  if (!isRecord(input)) fail("must be a structured record");
+  const allowed = ["schemaVersion", "sceneId", "capabilityId", "owner", "strandActorIds", "closedStateId", "openStateId", "mechanism", "interactions", "direction", "fidelityProvenance"];
+  if (Object.keys(input).some((key) => !allowed.includes(key))) fail("contains an unknown field");
+  if (input.schemaVersion !== "1" || input.capabilityId !== "dna-strand-separation" || input.owner !== strandSeparationProductionOwner || input.mechanism !== "strandSeparation") fail("has an unsupported schema, capability, owner, or mechanism");
+  if (typeof input.sceneId !== "string" || !input.sceneId || typeof input.closedStateId !== "string" || !input.closedStateId || typeof input.openStateId !== "string" || !input.openStateId) fail("requires stable scene and state IDs");
+  if (!Array.isArray(input.strandActorIds) || input.strandActorIds.length !== 2 || input.strandActorIds.some((actorId) => typeof actorId !== "string" || !actorId)) fail("requires exactly two strand actor IDs");
+  if (!Array.isArray(input.interactions) || !input.interactions.some((interaction) => isRecord(interaction) && interaction.type === "basePairing" && interaction.state === "absent" && Array.isArray(interaction.actorIds) && hasExactMembers(interaction.actorIds as ScientificActorId[], input.strandActorIds as ScientificActorId[]))) fail("requires an absent base-pairing interaction between the supplied strands");
+  if (!isRecord(input.fidelityProvenance) || !Array.isArray(input.fidelityProvenance.sources) || input.fidelityProvenance.sources.length === 0 || !Array.isArray(input.fidelityProvenance.attachments)) fail("requires non-empty Foundation fidelity provenance");
+}
+
 /** Maps structured scientific interaction state to the legacy owner contract. */
 function existingOwnerSpec(input: StrandSeparationOwnerInputV1): DnaMechanismSpec {
   if (input.schemaVersion !== "1" || input.owner !== strandSeparationProductionOwner || input.mechanism !== "strandSeparation") fail("unsupported owner input version or owner");
@@ -84,7 +98,8 @@ function existingOwnerSpec(input: StrandSeparationOwnerInputV1): DnaMechanismSpe
 }
 
 /** Thin production handoff; the established owner remains responsible for presentation. */
-export function routeStrandSeparationOwnerInput(input: StrandSeparationOwnerInputV1): DnaMechanismPresentationRoute {
+export function routeStrandSeparationOwnerInput(input: unknown): DnaMechanismPresentationRoute {
+  assertValidStrandSeparationOwnerInput(input);
   return routeDnaMechanismPresentation(buildDnaMechanismRepresentationPlan(existingOwnerSpec(input)));
 }
 

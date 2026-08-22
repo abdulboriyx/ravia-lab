@@ -37,3 +37,10 @@ test("P1-J3B routes structured Foundation data to the accepted production owner 
   assert.equal(route.plan.sourceSpec.interactions.filter((item) => item.type === "hydrogenBond").every((item) => item.state === "absent"), true);
   assert.deepEqual(verifyStrandSeparationStructuredEquivalence(input, route), { equivalent: true, differences: [] });
 });
+
+test("P1-J3B rejects invalid direct structured owner input", () => {
+  const input = createStrandSeparationOwnerInput(fixture());
+  assert.throws(() => routeStrandSeparationOwnerInput({ ...input, strandActorIds: [input.strandActorIds[0]] }), /exactly two strand actor IDs/);
+  assert.throws(() => routeStrandSeparationOwnerInput({ ...input, interactions: [] }), /absent base-pairing interaction/);
+  assert.throws(() => routeStrandSeparationOwnerInput({ ...input, rawPrompt: "unzip DNA" }), /unknown field/);
+});

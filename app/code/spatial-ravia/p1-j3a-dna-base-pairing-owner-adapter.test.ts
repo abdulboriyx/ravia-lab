@@ -3,6 +3,8 @@ import test from "node:test";
 import { migrateDnaFoundationRequest } from "./dna-foundation-migration.ts";
 import { scientificSceneSpecFixtures } from "./scientific-scene-spec-fixtures.ts";
 import { adaptBasePairingOwnerV1, canonicalBasePairingOwnerInput } from "./p1-j3a-dna-base-pairing-owner-adapter.ts";
+import { routeDnaMechanismPresentation } from "./DnaMechanismPresentationRouter.ts";
+import { buildDnaMechanismRepresentationPlan } from "./dna-mechanism-resolution.ts";
 
 function input(pair: "A-T" | "G-C") {
   const scene = scientificSceneSpecFixtures[pair === "A-T" ? "at-pairing" : "gc-pairing"];
@@ -19,6 +21,9 @@ test("structured adapter preserves A-T and G-C owner equivalence", () => {
       assert.equal(result.owner, "DnaBasePairInteractionPresentation");
       assert.equal(result.pair, pair);
       assert.equal(result.hydrogenBondInteractionIds.length, pair === "A-T" ? 2 : 3);
+      const acceptedOwner = routeDnaMechanismPresentation(buildDnaMechanismRepresentationPlan(input(pair).mechanismSpec));
+      assert.deepEqual(result.route, acceptedOwner);
+      assert.deepEqual(result.route.presentation, acceptedOwner.presentation);
       assert.deepEqual(result.fallbackStatus, "none");
     }
   }
@@ -32,4 +37,10 @@ test("structured adapter rejects invalid fields and references", () => {
   const unknown = adaptBasePairingOwnerV1({ ...base, cameraPreset: "hero" } as never);
   assert.equal(unknown.kind, "rejected");
   assert.equal(unknown.kind === "rejected" ? unknown.code : "", "MALFORMED_INPUT");
+  const wrongIdentity = adaptBasePairingOwnerV1({ ...base, actorIds: ["dna-1", "cytosine-1"] });
+  assert.equal(wrongIdentity.kind, "rejected");
+  assert.equal(wrongIdentity.kind === "rejected" ? wrongIdentity.code : "", "ACTOR_MISMATCH");
+  const alteredOwnerSpec = adaptBasePairingOwnerV1({ ...base, mechanismSpec: { ...base.mechanismSpec, focus: "a newly interpreted scene" } });
+  assert.equal(alteredOwnerSpec.kind, "rejected");
+  assert.equal(alteredOwnerSpec.kind === "rejected" ? alteredOwnerSpec.code : "", "INTERACTION_MISMATCH");
 });
