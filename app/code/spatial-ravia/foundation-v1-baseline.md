@@ -76,6 +76,7 @@ Additive implementation work that does not change a contract's externally valida
 - Legacy prompt/routing/planning seams still exist by design until their capability-by-capability F7 migration.
 - Production renderers retain their existing implementation-specific geometry and camera systems; Foundation does not replace them.
 - Manual visual acceptance remains a required human gate for each future migrated capability.
+- P1 semantic generalization is deferred pending external model API quota; see `p1-deferred-model-evaluation-status.md`. This does not change the frozen Foundation contracts or production path.
 
 ## Freeze acceptance
 

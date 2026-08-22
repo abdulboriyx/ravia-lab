@@ -1,0 +1,98 @@
+/** P1-K4 broad development corpus. Cases are authored from semantic
+ * principles and deliberately vary clause order, register, and surface form. */
+import type { IntentAct, MechanismId, PhenomenonId, SemanticEntityId } from "./foundation-semantic-vocabulary.ts";
+
+export type K4Case = { id: string; prompt: string; category: string; expected: { acts?: IntentAct[]; entities?: SemanticEntityId[]; phenomena?: PhenomenonId[]; mechanisms?: MechanismId[]; clarification?: boolean } };
+const c = (id: string, prompt: string, category: string, expected: K4Case["expected"]): K4Case => ({ id, prompt, category, expected });
+
+export const p1K4BroadDevelopmentCorpus: readonly K4Case[] = [
+  c("k4-struct-001", "show DNA structure", "structure", { acts: ["show"], entities: ["dna"] }),
+  c("k4-struct-002", "draw the DNA double helix", "structure", { acts: ["show"], entities: ["dna", "duplex"] }),
+  c("k4-struct-003", "give me a picture of hereditary DNA", "structure", { acts: ["show"], entities: ["dna"] }),
+  c("k4-struct-004", "show the two strands of DNA", "structure", { acts: ["show"], entities: ["dna", "strand"] }),
+  c("k4-struct-005", "inspect the DNA helix", "structure", { acts: ["inspect"], entities: ["dna", "duplex"] }),
+  c("k4-struct-006", "present the genetic material", "structure", { acts: ["show"], entities: ["dna"] }),
+  c("k4-struct-007", "show a single DNA strand", "structure", { acts: ["show"], entities: ["dna", "strand"] }),
+  c("k4-struct-008", "compare the paired and separated DNA strands", "structure", { acts: ["compare"], entities: ["dna", "strand"] }),
+
+  c("k4-rna-001", "show RNA structure", "rna", { acts: ["show"], entities: ["rna"] }),
+  c("k4-rna-002", "show one RNA nucleotide", "rna", { acts: ["show"], entities: ["rna", "nucleotide"] }),
+  c("k4-rna-003", "inspect ribose in RNA", "rna", { acts: ["inspect"], entities: ["rna", "ribose"] }),
+  c("k4-rna-004", "show the RNA sugar phosphate backbone", "rna", { acts: ["show"], entities: ["rna", "phosphate"], phenomena: ["backboneChemistry"], mechanisms: ["phosphodiesterLinkage"] }),
+  c("k4-rna-005", "point to the 2 prime OH in RNA", "rna", { acts: ["show", "inspect"], entities: ["rna", "riboseTwoPrimeHydroxyl"], mechanisms: ["riboseHydroxylSusceptibility"] }),
+  c("k4-rna-006", "show uracil in an RNA nucleotide", "rna", { acts: ["show"], entities: ["rna", "uracil"] }),
+  c("k4-rna-007", "explain the RNA backbone", "rna", { acts: ["explain"], entities: ["rna"], phenomena: ["backboneChemistry"] }),
+  c("k4-rna-008", "show two RNA nucleotides connected", "rna", { acts: ["show"], entities: ["rna", "nucleotide"], phenomena: ["backboneChemistry"], mechanisms: ["phosphodiesterLinkage"] }),
+
+  c("k4-pair-001", "show A-T base pairing", "pairing", { acts: ["show"], entities: ["adenine", "thymine"], phenomena: ["basePairing"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-002", "explain how G bonds to C", "pairing", { acts: ["explain"], entities: ["guanine", "cytosine"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-003", "show adenine paired with uracil in RNA", "pairing", { acts: ["show"], entities: ["rna", "adenine", "uracil"], phenomena: ["basePairing"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-004", "inspect hydrogen bonds between G and C", "pairing", { acts: ["inspect"], entities: ["guanine", "cytosine"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-005", "show a G-U wobble pair", "pairing", { acts: ["show"], entities: ["guanine", "uracil"], phenomena: ["basePairing"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-006", "why do purines pair with pyrimidines", "pairing", { acts: ["explain"], entities: ["base"] }),
+  c("k4-pair-007", "show donor and acceptor sites in A-T", "pairing", { acts: ["show"], entities: ["adenine", "thymine", "hydrogenBondDonor", "hydrogenBondAcceptor"], mechanisms: ["hydrogenBonding"] }),
+  c("k4-pair-008", "compare hydrogen bonding and base stacking in DNA", "pairing", { acts: ["compare"], entities: ["dna"], phenomena: ["basePairing", "helixStabilization"], mechanisms: ["hydrogenBonding", "baseStacking"] }),
+
+  c("k4-processing-001", "show introns and exons in pre mRNA", "processing", { acts: ["show"], entities: ["mRNA", "intron", "exon"], phenomena: ["rnaProcessing"], mechanisms: ["rnaSplicing"] }),
+  c("k4-processing-002", "show the 5 prime cap on mRNA", "processing", { acts: ["show"], entities: ["mRNA", "cap"], mechanisms: ["rnaCapping"] }),
+  c("k4-processing-003", "explain RNA splicing", "processing", { acts: ["explain"], entities: ["rna"], mechanisms: ["rnaSplicing"] }),
+  c("k4-processing-004", "show a capped messenger RNA", "processing", { acts: ["show"], entities: ["mRNA", "cap"], mechanisms: ["rnaCapping"] }),
+  c("k4-processing-005", "compare pre mRNA and mature mRNA", "processing", { acts: ["compare"], entities: ["mRNA"], phenomena: ["rnaProcessing"] }),
+  c("k4-processing-006", "show exons after introns are removed", "processing", { acts: ["show"], entities: ["exon", "intron"], phenomena: ["rnaProcessing"], mechanisms: ["rnaSplicing"] }),
+  c("k4-processing-007", "inspect the cap at the messenger's 5 prime end", "processing", { acts: ["inspect"], entities: ["mRNA", "cap"], mechanisms: ["rnaCapping"] }),
+  c("k4-processing-008", "show splicing and capping of a transcript", "processing", { acts: ["show"], entities: ["mRNA", "cap", "intron", "exon"], mechanisms: ["rnaSplicing", "rnaCapping"] }),
+
+  c("k4-secondary-001", "show an RNA hairpin", "secondary", { acts: ["show"], entities: ["rna"], phenomena: ["rnaSecondaryStructure"], mechanisms: ["rnaSecondaryFolding"] }),
+  c("k4-secondary-002", "inspect an RNA bulge", "secondary", { acts: ["inspect"], entities: ["rna"], phenomena: ["rnaSecondaryStructure"] }),
+  c("k4-secondary-003", "show an internal loop in RNA", "secondary", { acts: ["show"], entities: ["rna"], mechanisms: ["rnaSecondaryFolding"] }),
+  c("k4-secondary-004", "explain how an RNA stem folds", "secondary", { acts: ["explain"], entities: ["rna"], phenomena: ["rnaSecondaryStructure"] }),
+  c("k4-secondary-005", "show paired and unpaired RNA regions", "secondary", { acts: ["show"], entities: ["rna"], phenomena: ["basePairing", "rnaSecondaryStructure"] }),
+  c("k4-secondary-006", "compare a hairpin with an internal loop in RNA", "secondary", { acts: ["compare"], entities: ["rna"], phenomena: ["rnaSecondaryStructure"] }),
+  c("k4-secondary-007", "show an RNA stem loop", "secondary", { acts: ["show"], entities: ["rna"], mechanisms: ["rnaSecondaryFolding"] }),
+  c("k4-secondary-008", "why does RNA fold into a hairpin", "secondary", { acts: ["explain"], entities: ["rna"], phenomena: ["rnaSecondaryStructure"] }),
+
+  c("k4-degrade-001", "show RNA being cleaved", "degradation", { acts: ["show"], entities: ["rna"], phenomena: ["cleavage"], mechanisms: ["rnaCleavage"] }),
+  c("k4-degrade-002", "show exonuclease degradation of RNA", "degradation", { acts: ["show"], entities: ["rna"], phenomena: ["exonucleaseDegradation"], mechanisms: ["terminalExonucleaseAction"] }),
+  c("k4-degrade-003", "explain shortening from the 5 prime end", "degradation", { acts: ["explain"], entities: ["rna"], phenomena: ["exonucleaseDegradation"], mechanisms: ["terminalExonucleaseAction"] }),
+  c("k4-degrade-004", "show a transcript cut at one backbone site", "degradation", { acts: ["show"], entities: ["mRNA"], phenomena: ["cleavage"], mechanisms: ["rnaCleavage"] }),
+  c("k4-degrade-005", "compare internal cleavage with terminal nibbling", "degradation", { acts: ["compare"], entities: ["rna"], phenomena: ["cleavage", "exonucleaseDegradation"], mechanisms: ["rnaCleavage", "terminalExonucleaseAction"], clarification: true }),
+  c("k4-degrade-006", "show RNA eaten from its 3 prime end", "degradation", { acts: ["show"], entities: ["rna"], mechanisms: ["terminalExonucleaseAction"] }),
+  c("k4-degrade-007", "why is RNA chemically less stable than DNA", "degradation", { acts: ["explain"], entities: ["rna", "dna"], phenomena: ["chemicalStabilityComparison"], mechanisms: ["riboseHydroxylSusceptibility"] }),
+  c("k4-degrade-008", "inspect the phosphodiester bond broken in RNA cleavage", "degradation", { acts: ["inspect"], entities: ["rna", "phosphodiesterLinkage"], phenomena: ["cleavage"], mechanisms: ["rnaCleavage"] }),
+
+  c("k4-process-001", "show DNA replication", "processes", { acts: ["show"], entities: ["dna"], phenomena: ["replication"], mechanisms: ["dnaReplication"] }),
+  c("k4-process-002", "show transcription from DNA into RNA", "processes", { acts: ["show"], entities: ["dna", "rna"], phenomena: ["transcription"], mechanisms: ["transcriptionElongation"] }),
+  c("k4-process-003", "show the replication fork opening", "processes", { acts: ["show"], entities: ["dna", "replicationFork"], phenomena: ["strandSeparation", "replication"], mechanisms: ["strandOpening"] }),
+  c("k4-process-004", "show RNA emerging from a transcription site", "processes", { acts: ["show"], entities: ["rna", "dna"], phenomena: ["transcription"], mechanisms: ["transcriptionElongation"] }),
+  c("k4-process-005", "explain how helicase opens DNA", "processes", { acts: ["explain"], entities: ["dna", "helicase"], phenomena: ["strandSeparation"], mechanisms: ["strandOpening"] }),
+  c("k4-process-006", "show a nascent RNA transcript", "processes", { acts: ["show"], entities: ["rna", "mRNA"], phenomena: ["transcription"], mechanisms: ["transcriptionElongation"] }),
+  c("k4-process-007", "compare replication and transcription", "processes", { acts: ["compare"], entities: ["dna", "rna"], phenomena: ["replication", "transcription"] }),
+  c("k4-process-008", "show and explain polymerase copying DNA", "processes", { acts: ["show", "explain"], entities: ["dna", "polymerase"], phenomena: ["replication"], mechanisms: ["dnaReplication"] }),
+
+  c("k4-direction-001", "show 5 prime to 3 prime direction on DNA", "direction", { acts: ["show"], entities: ["dna"], phenomena: ["polarity"] }),
+  c("k4-direction-002", "show antiparallel DNA strands", "direction", { acts: ["show"], entities: ["dna", "strand"], phenomena: ["polarity"], mechanisms: ["antiparallelOrganization"] }),
+  c("k4-direction-003", "DNA breaking from the left side of the page", "direction", { acts: ["show"], entities: ["dna"] }),
+  c("k4-direction-004", "show the three prime and five prime ends", "direction", { acts: ["show"], entities: ["fivePrimeOxygen"], phenomena: ["polarity"] }),
+  c("k4-direction-005", "explain synthesis toward the five prime end", "direction", { acts: ["explain"], entities: ["strand"], phenomena: ["replication"] }),
+  c("k4-direction-006", "mark opposite termini on a duplex", "direction", { acts: ["show"], entities: ["duplex", "strand"], phenomena: ["polarity"] }),
+  c("k4-direction-007", "compare 5 prime and 3 prime strand orientation", "direction", { acts: ["compare"], entities: ["strand"], phenomena: ["polarity"] }),
+  c("k4-direction-008", "show RNA eaten from the three prime terminus", "direction", { acts: ["show"], entities: ["rna"], mechanisms: ["terminalExonucleaseAction"] }),
+
+  c("k4-cross-001", "compare an RNA ribose with a DNA deoxyribose", "crossDomain", { acts: ["compare"], entities: ["rna", "dna", "ribose", "deoxyribose"], phenomena: ["chemicalStabilityComparison"] }),
+  c("k4-cross-002", "show an RNA DNA hybrid", "crossDomain", { acts: ["show"], entities: ["rna", "dna"], phenomena: ["rnaDnaHybridization"], mechanisms: ["rnaDnaHybridFormation"] }),
+  c("k4-cross-003", "explain the 2 prime OH difference between RNA and DNA", "crossDomain", { acts: ["explain"], entities: ["rna", "dna", "riboseTwoPrimeHydroxyl"], phenomena: ["chemicalStabilityComparison"] }),
+  c("k4-cross-004", "show DNA and its nascent RNA transcript", "crossDomain", { acts: ["show"], entities: ["dna", "rna"], phenomena: ["transcription"], mechanisms: ["transcriptionElongation"] }),
+  c("k4-cross-005", "identify whether this strand is RNA or DNA", "crossDomain", { acts: ["inspect"], entities: ["rna", "dna"], clarification: true }),
+  c("k4-cross-006", "show RNA paired with DNA and explain the contact", "crossDomain", { acts: ["show", "explain"], entities: ["rna", "dna"], phenomena: ["rnaDnaHybridization"], mechanisms: ["rnaDnaHybridFormation"] }),
+  c("k4-cross-007", "why does RNA have a different sugar from DNA", "crossDomain", { acts: ["explain"], entities: ["rna", "dna"], phenomena: ["chemicalStabilityComparison"] }),
+  c("k4-cross-008", "compare RNA pairing with DNA pairing", "crossDomain", { acts: ["compare"], entities: ["rna", "dna"], phenomena: ["basePairing"] }),
+
+  c("k4-claim-001", "DNA has ribose, right?", "claims", { acts: ["explain"], entities: ["dna", "ribose"] }),
+  c("k4-claim-002", "Could RNA be less stable because of its hydroxyl?", "claims", { acts: ["explain"], entities: ["rna", "riboseTwoPrimeHydroxyl"], phenomena: ["chemicalStabilityComparison"] }),
+  c("k4-claim-003", "A student says the strands run the same way; show the correction.", "claims", { acts: ["show", "explain"], entities: ["dna", "strand"], phenomena: ["polarity"] }),
+  c("k4-claim-004", "A published report says RNA uses thymine.", "claims", { acts: ["show"], entities: ["rna", "thymine"] }),
+  c("k4-claim-005", "What is the cap for?", "claims", { acts: ["explain"], entities: ["cap"] }),
+  c("k4-claim-006", "Which base is attached at one prime?", "claims", { acts: ["inspect"], entities: ["base", "onePrimeCarbon"] }),
+  c("k4-claim-007", "How do two nucleotides connect?", "claims", { acts: ["explain"], entities: ["nucleotide"], mechanisms: ["phosphodiesterLinkage"] }),
+  c("k4-claim-008", "Show what happens when DNA strands separate, then explain what remains intact.", "claims", { acts: ["show", "explain"], entities: ["dna", "strand"], phenomena: ["strandSeparation"] }),
+] as const;
