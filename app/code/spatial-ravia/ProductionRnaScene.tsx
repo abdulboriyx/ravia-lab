@@ -10,6 +10,9 @@ import type { RnaPresentationRoute } from "./RnaPresentationRouter";
 import { deriveProductionRnaScenePlan, type RnaProductionScenePlan, type RnaProductionStrand, type RnaProductionComparisonLayout } from "./RnaProductionScenePlan";
 import type { RnaPoint, RnaResidueSample } from "./RnaVisualSystem";
 import { bottomDockInsetPx, boundsFromPoints, cameraForBounds, layoutRnaLabels, type RnaCompositionBounds } from "./RnaProductionComposition";
+import type { AppliedRenderStateV1 } from "./p4-b-exact-frame-runtime";
+import type { CameraStateV1 } from "./p4-d-deterministic-camera-execution";
+import { applyCameraStateToThreeCamera } from "./p4-d-deterministic-camera-execution";
 
 function cameraFrame(intent: RnaPresentationRoute["cameraIntent"]) {
   if (intent === "local-chemistry") return { position: [0, 0, 5.2] as RnaPoint, target: [0, 0, 0] as RnaPoint, fov: 36 };
@@ -59,11 +62,17 @@ function planBounds(plan: RnaProductionScenePlan): RnaCompositionBounds | null {
   return boundsFromPoints(points);
 }
 
-function RnaCameraRig({ frame, controls }: { frame: { position: RnaPoint; target: RnaPoint; fov: number }; controls: OrbitControlsImpl | null }) {
+function RnaCameraRig({ frame, controls, exactCameraState }: { frame: { position: RnaPoint; target: RnaPoint; fov: number }; controls: OrbitControlsImpl | null; exactCameraState?: CameraStateV1 }) {
   const { camera } = useThree();
   const [px, py, pz] = frame.position;
   const [tx, ty, tz] = frame.target;
   useLayoutEffect(() => {
+    if (exactCameraState) {
+      applyCameraStateToThreeCamera(camera, exactCameraState);
+      controls?.target.set(...exactCameraState.target);
+      controls?.update();
+      return;
+    }
     if (camera instanceof THREE.PerspectiveCamera) {
       // R3F exposes the active camera as a mutable Three.js object; this is the
       // one intentional projection update in the shared camera handshake.
@@ -82,7 +91,7 @@ function RnaCameraRig({ frame, controls }: { frame: { position: RnaPoint; target
       controls?.update();
     });
     return () => window.cancelAnimationFrame(request);
-  }, [camera, controls, frame.fov, px, py, pz, tx, ty, tz]);
+  }, [camera, controls, exactCameraState, frame.fov, px, py, pz, tx, ty, tz]);
   return null;
 }
 
@@ -182,14 +191,15 @@ function TerminalMarkers({ plan }: { plan: RnaProductionScenePlan }) {
   return <group>{plan.terminalMarkers.map((marker) => <mesh key={marker.id} position={marker.position as [number, number, number]} scale={marker.kind === "polyATail" ? [0.32, 0.12, 0.12] : [0.2, 0.2, 0.2]}><sphereGeometry args={[1, 12, 8]} /><meshStandardMaterial color={marker.kind === "fivePrimeCap" ? "#e8ae5d" : marker.kind === "polyATail" ? "#c87573" : "#f09a5b"} emissive={marker.kind === "exposedEnd" ? "#7a301f" : "#2b1910"} emissiveIntensity={0.25} /></mesh>)}</group>;
 }
 
-function RnaLabels({ plan, isDark }: { plan: RnaProductionScenePlan; isDark: boolean }) {
+function RnaLabels({ plan, isDark, visible = true }: { plan: RnaProductionScenePlan; isDark: boolean; visible?: boolean }) {
+  if (!visible) return null;
   const bounds = planBounds(plan);
   const labels = layoutRnaLabels(plan.labels, bounds);
   const processingSpanLabels = plan.transcriptSpans.length > 0;
   return <group>{labels.map((label) => <Text key={`${label.anchor}-${label.text}`} position={label.position as [number, number, number]} fontSize={processingSpanLabels ? 0.28 : 0.16} color={isDark ? "#e5eff2" : "#17242b"} fillOpacity={processingSpanLabels ? 1 : 0.84} anchorX="center" anchorY="middle" depthOffset={-1}>{label.text}</Text>)}</group>;
 }
 
-function ProductionRnaSceneContent({ plan, theme }: { plan: RnaProductionScenePlan; theme: SpatialRaviaTheme }) {
+function ProductionRnaSceneContent({ plan, theme, labelsVisible }: { plan: RnaProductionScenePlan; theme: SpatialRaviaTheme; labelsVisible: boolean }) {
   const isDark = theme === "dark";
   const nascentScene = plan.family === "nascentTranscript";
   return (
@@ -201,12 +211,12 @@ function ProductionRnaSceneContent({ plan, theme }: { plan: RnaProductionScenePl
       <RnaInteractionLines plan={plan} isDark={isDark} />
       {plan.atoms.length > 0 && <AtomBondLayer plan={plan} isDark={isDark} />}
       <TerminalMarkers plan={plan} />
-      <RnaLabels plan={plan} isDark={isDark} />
+      <RnaLabels plan={plan} isDark={isDark} visible={labelsVisible} />
     </>
   );
 }
 
-function RnaSceneStage({ plan, theme, frame, controls }: { plan: RnaProductionScenePlan; theme: SpatialRaviaTheme; frame: ReturnType<typeof cameraFrame>; controls: OrbitControlsImpl | null }) {
+function RnaSceneStage({ plan, theme, frame, controls, exactFrameState, exactCameraState, renderMode }: { plan: RnaProductionScenePlan; theme: SpatialRaviaTheme; frame: ReturnType<typeof cameraFrame>; controls: OrbitControlsImpl | null; exactFrameState?: AppliedRenderStateV1; exactCameraState?: CameraStateV1; renderMode: "INTERACTIVE" | "EXACT_FRAME" }) {
   const { size } = useThree();
   const [bottomInsetPx, setBottomInsetPx] = useState(0);
   useEffect(() => {
@@ -235,23 +245,23 @@ function RnaSceneStage({ plan, theme, frame, controls }: { plan: RnaProductionSc
     : layout ? comparisonCameraFrame(layout, aspect) : plan.atoms.length > 0 ? localChemistryFrame(plan, aspect) : frame;
   return (
     <>
-      <RnaCameraRig frame={activeFrame} controls={controls} />
-      <ProductionRnaSceneContent plan={activePlan} theme={theme} />
+      <RnaCameraRig frame={activeFrame} controls={controls} exactCameraState={exactCameraState} />
+      <ProductionRnaSceneContent plan={activePlan} theme={theme} labelsVisible={renderMode !== "EXACT_FRAME" || exactFrameState?.presentation.labels.stateVisible === true} />
     </>
   );
 }
 
-export function ProductionRnaScene({ route, theme }: { route: RnaPresentationRoute; theme: SpatialRaviaTheme }) {
+export function ProductionRnaScene({ route, theme, renderMode = "INTERACTIVE", exactFrameState, exactCameraState }: { route: RnaPresentationRoute; theme: SpatialRaviaTheme; renderMode?: "INTERACTIVE" | "EXACT_FRAME"; exactFrameState?: AppliedRenderStateV1; exactCameraState?: CameraStateV1 }) {
   const plan = useMemo(() => deriveProductionRnaScenePlan(route), [route]);
   const frame = useMemo(() => cameraFrame(route.cameraIntent), [route.cameraIntent]);
   const [controls, setControls] = useState<OrbitControlsImpl | null>(null);
   const isDark = theme === "dark";
   return (
-    <section className="mechanisticSceneSurface" aria-label={`Production RNA scene: ${route.family}`} data-rna-production-family={route.family} data-rna-production-owner={route.owner} data-rna-production-camera={route.cameraIntent}>
-      <Canvas camera={{ position: frame.position, fov: plan.comparison ? 42 : frame.fov }} dpr={[1, 2]}>
+    <section className="mechanisticSceneSurface" aria-label={`Production RNA scene: ${route.family}`} data-rna-production-family={route.family} data-rna-production-owner={route.owner} data-rna-production-camera={route.cameraIntent} data-render-mode={renderMode} data-exact-frame-time={renderMode === "EXACT_FRAME" ? exactFrameState?.timeSeconds : undefined}>
+      <Canvas camera={{ position: exactCameraState?.position ?? frame.position, fov: exactCameraState?.fov ?? (plan.comparison ? 42 : frame.fov), aspect: exactCameraState?.aspect }} dpr={renderMode === "EXACT_FRAME" ? exactFrameState?.renderConfig.pixelRatio ?? 1 : [1, 2]}>
         <color attach="background" args={[isDark ? "#020305" : "#f6f8f7"]} />
-        <RnaSceneStage plan={plan} theme={theme} frame={frame} controls={controls} />
-        <OrbitControls ref={setControls} enablePan={false} enableDamping dampingFactor={0.08} />
+        <RnaSceneStage plan={plan} theme={theme} frame={frame} controls={controls} exactFrameState={exactFrameState} exactCameraState={exactCameraState} renderMode={renderMode} />
+        <OrbitControls ref={setControls} enabled={renderMode !== "EXACT_FRAME"} enablePan={false} enableDamping={renderMode !== "EXACT_FRAME"} dampingFactor={0.08} />
       </Canvas>
     </section>
   );

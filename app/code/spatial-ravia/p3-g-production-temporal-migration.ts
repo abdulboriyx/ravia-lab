@@ -6,7 +6,7 @@ import type { DnaBasePairingOwnerView, DnaStrandSeparationOwnerView, RnaHairpinO
 import { compileDeterministicTemporalProgram, type DeterministicTemporalProgramV1 } from "./p3-c-deterministic-temporal-semantics.ts";
 import { evaluateScientificTimeline, type MechanismSnapshotV1, type PlaybackCursorV1 } from "./p3-b-mechanism-state-kernel.ts";
 import { evaluateGroundedTopologyAtTime, type MechanismTopologySnapshotV1 } from "./p3-d-grounded-topology-executor.ts";
-import { advancePresentationCursor, createDnaBasePairingTemporalPlan, createDnaSeparationTemporalPlan, createPresentationPlaybackCursor, createRnaExonucleaseTemporalPlan, createRnaHairpinTemporalPlan, evaluatePresentationCursorFrame, projectDnaBasePairingOwnerInput, projectDnaSeparationOwnerInput, projectRnaExonucleaseOwnerInput, projectRnaHairpinOwnerInput, seekPresentationCursor, restartPresentationCursor, setPresentationPlaybackRate, type PresentationOwnerInput, type PresentationOwnerProjectionResult, type PresentationPlanV1 } from "./p3-e-presentation-synchronization.ts";
+import { advancePresentationCursor, createDnaBasePairingTemporalPlan, createDnaSeparationTemporalPlan, createPresentationPlaybackCursor, createRnaExonucleaseTemporalPlan, createRnaHairpinTemporalPlan, evaluatePresentationCursorFrame, projectDnaBasePairingOwnerInput, projectDnaSeparationOwnerInput, projectRnaExonucleaseOwnerInput, projectRnaHairpinOwnerInput, seekPresentationCursor, restartPresentationCursor, setPresentationPlaybackRate, type PresentationMechanismSnapshotV1, type PresentationOwnerInput, type PresentationOwnerProjectionResult, type PresentationPlanV1 } from "./p3-e-presentation-synchronization.ts";
 
 export const productionTemporalOwnerRegistry = [
   { capabilityId: "dna-base-pairing", ownerId: "DnaBasePairInteractionPresentation" },
@@ -36,7 +36,7 @@ export type ProductionTemporalMigrationV1 = Readonly<{
 
 export type ProductionTemporalFailureCode = "PRODUCTION_TEMPORAL_INVALID" | "PRODUCTION_TEMPORAL_OWNER_UNAVAILABLE" | "PRODUCTION_TEMPORAL_GROUNDING_FAILURE" | "PRODUCTION_TEMPORAL_PRESENTATION_FAILURE";
 export type ProductionTemporalFailure = Readonly<{ ok: false; code: ProductionTemporalFailureCode; reasons: readonly string[] }>;
-export type ProductionTemporalFrame = Readonly<{ ok: true; cursor: PlaybackCursorV1; mechanism: MechanismSnapshotV1; topology: MechanismTopologySnapshotV1; ownerInput: PresentationOwnerInput } | ProductionTemporalFailure>;
+export type ProductionTemporalFrame = Readonly<{ ok: true; cursor: PlaybackCursorV1; mechanism: MechanismSnapshotV1; topology: MechanismTopologySnapshotV1; presentation: PresentationMechanismSnapshotV1; ownerInput: PresentationOwnerInput } | ProductionTemporalFailure>;
 export type ProductionTemporalMigrationResult = Readonly<{ ok: true; migration: ProductionTemporalMigrationV1 } | ProductionTemporalFailure>;
 
 const fail = (code: ProductionTemporalFailureCode, ...reasons: string[]): ProductionTemporalFailure => ({ ok: false, code, reasons });
@@ -69,7 +69,7 @@ export function evaluateProductionTemporalFrame(migration: ProductionTemporalMig
   if (!owner.ok) return fail("PRODUCTION_TEMPORAL_PRESENTATION_FAILURE", owner.code, ...owner.reasons);
   const presentation = evaluatePresentationCursorFrame(cursor, mechanism.snapshot, topology.snapshot, migration.presentationPlan);
   if (!presentation.ok) return fail("PRODUCTION_TEMPORAL_PRESENTATION_FAILURE", presentation.code, ...presentation.reasons);
-  return { ok: true, cursor, mechanism: mechanism.snapshot, topology: topology.snapshot, ownerInput: owner.input };
+  return { ok: true, cursor, mechanism: mechanism.snapshot, topology: topology.snapshot, presentation: presentation.snapshot, ownerInput: owner.input };
 }
 
 export function createProductionTemporalCursor(migration: ProductionTemporalMigrationV1): PlaybackCursorV1 { return createPresentationPlaybackCursor(migration.timeline.timelineId, migration.timeline.clock.duration); }

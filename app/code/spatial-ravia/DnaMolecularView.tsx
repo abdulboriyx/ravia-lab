@@ -9,6 +9,7 @@ import type { PromptResolution, SpatialSceneCommand } from "./dna-structure-rout
 import type { DnaVisualTemplate } from "./biology-dna-visual-dispatcher";
 import { canonicalDnaView, dnaVisualSystem } from "./DnaVisualSystem";
 import { deriveDnaRegulationPresentation } from "./DnaRegulationPresentation";
+import type { AppliedRenderStateV1 } from "./p4-b-exact-frame-runtime";
 
 export type StructureViewMode = "cartoon" | "ball-stick" | "atomic";
 export type StructureColorMode = "strand" | "base" | "element" | "backbone";
@@ -119,6 +120,8 @@ type DnaMolecularViewProps = {
   /** A DNA-family dispatcher owns initial static composition. */
   visualTemplate?: DnaVisualTemplate;
   regulationPrompt?: string;
+  renderMode?: "INTERACTIVE" | "EXACT_FRAME";
+  exactFrameState?: AppliedRenderStateV1;
 };
 
 export function DnaMolecularView({
@@ -126,8 +129,10 @@ export function DnaMolecularView({
   theme: controlledTheme,
   visualTemplate,
   regulationPrompt,
+  renderMode = "INTERACTIVE",
+  exactFrameState,
 }: DnaMolecularViewProps) {
-  const [sceneStarted, setSceneStarted] = useState(embedded);
+  const [sceneStarted, setSceneStarted] = useState(embedded || renderMode === "EXACT_FRAME");
   const [prompt, setPrompt] = useState("");
   const [lastCommand, setLastCommand] = useState<SpatialSceneCommand | null>(null);
   const [unsupportedReason, setUnsupportedReason] = useState<string | null>(null);
@@ -157,6 +162,11 @@ export function DnaMolecularView({
   const [bubblePlaying, setBubblePlaying] = useState(false);
   const [localTheme, setLocalTheme] = useState<StructureTheme>("light");
   const theme = controlledTheme ?? localTheme;
+  const exactSeparationState = renderMode === "EXACT_FRAME" && exactFrameState?.ownerState.ownerId === "DnaStrandSeparationPresentation" ? exactFrameState.ownerState : undefined;
+  const effectiveBubbleProgress = exactSeparationState?.bubbleProgress ?? bubbleProgress;
+  const effectiveTransformation = exactSeparationState
+    ? { ...transformation, bubbleBasePairs: Math.round(exactSeparationState.bubbleProgress * 6), strandSeparation: exactSeparationState.separationAmount }
+    : transformation;
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const regulationPresentation = useMemo(
     () => visualTemplate?.family === "regulation"
@@ -173,7 +183,7 @@ export function DnaMolecularView({
   }, []);
 
   useEffect(() => {
-    if (!bubblePlaying) {
+    if (renderMode === "EXACT_FRAME" || !bubblePlaying) {
       return;
     }
 
@@ -194,7 +204,7 @@ export function DnaMolecularView({
     return () => {
       window.clearInterval(timer);
     };
-  }, [bubblePlaying]);
+  }, [bubblePlaying, renderMode]);
 
   const sendCameraPreset = (preset: StructureCameraPreset) => {
     setCameraCommand((command) => ({ preset, nonce: command.nonce + 1 }));
@@ -256,18 +266,19 @@ export function DnaMolecularView({
       className="spatialWorkspace molstarWorkspace"
       data-scene-command={lastCommand?.kind ?? "empty"}
       data-spatial-theme={theme}
+      data-render-mode={renderMode}
     >
       {sceneStarted ? (
         <section className="molstarStage" aria-label="B-DNA molecular structure">
           <MolstarStructureViewer
-            bubbleProgress={bubbleProgress}
+            bubbleProgress={effectiveBubbleProgress}
             cameraCommand={cameraCommand}
             colorMode={colorMode}
             focusedBasePair={focusedBasePair}
             isolationMode={isolationMode}
             source={source}
             theme={theme}
-            transformation={transformation}
+            transformation={effectiveTransformation}
             viewMode={viewMode}
             cameraFamily={visualTemplate?.family ?? "structure"}
             regulationRegions={regulationPresentation?.regions}
