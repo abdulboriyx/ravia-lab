@@ -31,7 +31,7 @@ export type ProductionTeachingLabelProjectionV1 = Readonly<{
   segmentId: string;
   targetRefs: readonly TeachingReference[];
   priority: "PRIMARY" | "SECONDARY" | "NONE";
-  anchorStatus: "EXISTING_PRODUCTION_SEAM_REQUIRED";
+  anchorStatus: "EXISTING_PRODUCTION_SEAM_REQUIRED" | "RESOLVED_EXPORT_ANCHOR";
 }>;
 
 export type ProductionTeachingViewV1 = Readonly<{

@@ -14,6 +14,7 @@
     "eval:spatial:dna-family-benchmark": "tsx scripts/run-spatial-ravia-dna-family-benchmark.ts",
     "eval:spatial:dna-mechanism-benchmark": "tsx scripts/run-spatial-ravia-dna-mechanism-benchmark.ts",
     "eval:spatial:teaching-benchmark": "node --import tsx scripts/run-spatial-ravia-teaching-benchmark.ts",
+    "eval:spatial:export-benchmark": "node --import tsx scripts/run-spatial-ravia-export-benchmark.ts",
     "eval:spatial:rna-family-benchmark": "npm run eval:spatial:rna-v1-benchmark",
     "eval:spatial:rna-runtime-ownership": "tsx scripts/run-spatial-ravia-rna-runtime-ownership.ts",
     "eval:spatial:p3-f-benchmark": "node --import tsx scripts/run-spatial-ravia-p3-f-benchmark.ts",

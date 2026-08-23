@@ -1,0 +1,796 @@
+{
+  "version": "export-benchmark-v1",
+  "total": 100,
+  "passed": 100,
+  "criticalFailures": 0,
+  "holdoutHash": "00848499b52619a94b3cdfc7e4039fa27b6c9be7be3aa1fd2ed7aa51c0885786",
+  "runtimeMs": 16.87854199999998,
+  "dimensions": {
+    "scientificFrameCorrectness": 1,
+    "teachingFrameCorrectness": 1,
+    "exactTimeSynchronization": 1,
+    "sequenceCorrectness": 1,
+    "captionCorrectness": 1,
+    "slideCorrectness": 1,
+    "packageEmbedCorrectness": 1,
+    "provenanceFidelityIntegrity": 1,
+    "unsupportedPathCorrectness": 1,
+    "determinismMetamorphic": 1,
+    "resourceCancellationCorrectness": 1,
+    "securityPortabilityCorrectness": 1
+  },
+  "bySplit": {
+    "DEV": {
+      "total": 75,
+      "passed": 75
+    },
+    "SEALED_HOLDOUT": {
+      "total": 25,
+      "passed": 25
+    }
+  },
+  "byCategory": {
+    "SCIENTIFIC_FRAME": {
+      "total": 10,
+      "passed": 10
+    },
+    "TEACHING_FRAME": {
+      "total": 10,
+      "passed": 10
+    },
+    "PNG_SEQUENCE": {
+      "total": 10,
+      "passed": 10
+    },
+    "VIDEO_PACKAGE": {
+      "total": 10,
+      "passed": 10
+    },
+    "CAPTIONS": {
+      "total": 10,
+      "passed": 10
+    },
+    "SLIDES": {
+      "total": 10,
+      "passed": 10
+    },
+    "SCENE_PACKAGE": {
+      "total": 10,
+      "passed": 10
+    },
+    "EMBED": {
+      "total": 8,
+      "passed": 8
+    },
+    "NEGATIVE": {
+      "total": 8,
+      "passed": 8
+    },
+    "METAMORPHIC": {
+      "total": 6,
+      "passed": 6
+    },
+    "RESOURCE_CANCELLATION": {
+      "total": 4,
+      "passed": 4
+    },
+    "UNSUPPORTED": {
+      "total": 4,
+      "passed": 4
+    }
+  },
+  "partialStatuses": [
+    "ENCODER_UNAVAILABLE",
+    "SLIDE_RENDER_UNAVAILABLE",
+    "MP4/WEBM_RUNTIME_UNAVAILABLE",
+    "SLIDE_RASTERIZATION_UNAVAILABLE"
+  ],
+  "unsupportedStatuses": [
+    "MOLSTAR_EXACT_FRAME_UNSUPPORTED",
+    "GLB_UNSUPPORTED"
+  ],
+  "visualStatus": "UNVERIFIED — ENVIRONMENT BLOCKED",
+  "realVideoStatus": "UNVERIFIED — RUNTIME UNAVAILABLE",
+  "cases": [
+    {
+      "caseId": "export-scientific-frame-01",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-02",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-03",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-04",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-05",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-06",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-07",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-08",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-09",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scientific-frame-10",
+      "split": "DEV",
+      "category": "SCIENTIFIC_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-01",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-02",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-03",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-04",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-05",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-06",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-07",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-08",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-09",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-teaching-frame-10",
+      "split": "DEV",
+      "category": "TEACHING_FRAME",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-01",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-02",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-03",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-04",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-05",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-06",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-07",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-08",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-09",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-png-sequence-10",
+      "split": "DEV",
+      "category": "PNG_SEQUENCE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-video-package-01",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-02",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-03",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-04",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-05",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-06",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-07",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-08",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-09",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-video-package-10",
+      "split": "DEV",
+      "category": "VIDEO_PACKAGE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "ARCHITECTURE_CORRECT_ENCODER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-captions-01",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-02",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-03",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-04",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-05",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-06",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-07",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-08",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-09",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-captions-10",
+      "split": "DEV",
+      "category": "CAPTIONS",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-slides-01",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-02",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-03",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-04",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-05",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-06",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-07",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-08",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-09",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-slides-10",
+      "split": "DEV",
+      "category": "SLIDES",
+      "capability": "procedural-dna-rna-export",
+      "expected": "STRUCTURAL_PACKAGE_SLIDE_RENDER_UNAVAILABLE"
+    },
+    {
+      "caseId": "export-scene-package-01",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-02",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-03",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-04",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-05",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-06",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-07",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-08",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-09",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-scene-package-10",
+      "split": "DEV",
+      "category": "SCENE_PACKAGE",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-01",
+      "split": "DEV",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-02",
+      "split": "DEV",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-03",
+      "split": "DEV",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-04",
+      "split": "DEV",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-05",
+      "split": "DEV",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-06",
+      "split": "SEALED_HOLDOUT",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-07",
+      "split": "SEALED_HOLDOUT",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-embed-08",
+      "split": "SEALED_HOLDOUT",
+      "category": "EMBED",
+      "capability": "dna-strand-separation",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-01",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-02",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-03",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-04",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-05",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-06",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-07",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-negative-08",
+      "split": "SEALED_HOLDOUT",
+      "category": "NEGATIVE",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-01",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-02",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-03",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-04",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-05",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-metamorphic-06",
+      "split": "SEALED_HOLDOUT",
+      "category": "METAMORPHIC",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-resource-cancellation-01",
+      "split": "SEALED_HOLDOUT",
+      "category": "RESOURCE_CANCELLATION",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-resource-cancellation-02",
+      "split": "SEALED_HOLDOUT",
+      "category": "RESOURCE_CANCELLATION",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-resource-cancellation-03",
+      "split": "SEALED_HOLDOUT",
+      "category": "RESOURCE_CANCELLATION",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-resource-cancellation-04",
+      "split": "SEALED_HOLDOUT",
+      "category": "RESOURCE_CANCELLATION",
+      "capability": "procedural-dna-rna-export",
+      "expected": "SUPPORTED"
+    },
+    {
+      "caseId": "export-unsupported-01",
+      "split": "SEALED_HOLDOUT",
+      "category": "UNSUPPORTED",
+      "capability": "molstar-exact-frame",
+      "expected": "UNSUPPORTED_V1"
+    },
+    {
+      "caseId": "export-unsupported-02",
+      "split": "SEALED_HOLDOUT",
+      "category": "UNSUPPORTED",
+      "capability": "molstar-exact-frame",
+      "expected": "UNSUPPORTED_V1"
+    },
+    {
+      "caseId": "export-unsupported-03",
+      "split": "SEALED_HOLDOUT",
+      "category": "UNSUPPORTED",
+      "capability": "molstar-exact-frame",
+      "expected": "UNSUPPORTED_V1"
+    },
+    {
+      "caseId": "export-unsupported-04",
+      "split": "SEALED_HOLDOUT",
+      "category": "UNSUPPORTED",
+      "capability": "molstar-exact-frame",
+      "expected": "UNSUPPORTED_V1"
+    }
+  ]
+}
