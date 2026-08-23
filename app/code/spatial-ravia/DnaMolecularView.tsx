@@ -122,6 +122,7 @@ type DnaMolecularViewProps = {
   regulationPrompt?: string;
   renderMode?: "INTERACTIVE" | "EXACT_FRAME";
   exactFrameState?: AppliedRenderStateV1;
+  initialTransformation?: Partial<DnaTransformationState>;
 };
 
 export function DnaMolecularView({
@@ -131,6 +132,7 @@ export function DnaMolecularView({
   regulationPrompt,
   renderMode = "INTERACTIVE",
   exactFrameState,
+  initialTransformation,
 }: DnaMolecularViewProps) {
   const [sceneStarted, setSceneStarted] = useState(embedded || renderMode === "EXACT_FRAME");
   const [prompt, setPrompt] = useState("");
@@ -156,6 +158,7 @@ export function DnaMolecularView({
   const [bubbleProgress, setBubbleProgress] = useState(0);
   const [transformation, setTransformation] = useState<DnaTransformationState>(() => ({
     ...neutralTransformation,
+    ...initialTransformation,
     bend: visualTemplate?.family === "packaging" ? 0.72 : 0,
     exposeBases: visualTemplate?.family === "damageRepair" ? 0.42 : 0,
   }));

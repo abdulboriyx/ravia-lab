@@ -30,6 +30,8 @@ export const entityIds = [
   "exon", "intron", "cap", "polyATail", "riboseTwoPrimeHydroxyl", "onePrimeCarbon", "threePrimeCarbon",
   "fivePrimeCarbon", "threePrimeOxygen", "fivePrimeOxygen", "phosphodiesterLinkage", "hydrogenBondDonor",
   "hydrogenBondAcceptor", "stackingFace", "majorGroove", "minorGroove", "atom", "residue", "lesion",
+  "protein", "signalPeptide", "ER", "Golgi", "translocon", "secretoryVesicle", "vesicle", "kinesin", "dynein",
+  "ribosome", "codon", "spliceosome", "ligand", "receptor", "RTK", "Ras", "Raf", "MEK", "ERK",
 ] as const;
 export type SemanticEntityId = (typeof entityIds)[number];
 
@@ -51,6 +53,7 @@ export const phenomenonIds = [
   "transcription", "replication", "rnaProcessing", "rnaSecondaryStructure", "hybridization", "cleavage",
   "exonucleaseDegradation", "chemicalStabilityComparison", "translation", "proteinSynthesis",
   "regulation", "damageRepair", "packaging", "chromatinOrganization", "canonicalBasePairing", "rnaDnaHybridization",
+  "secretoryPathway", "cytoskeletalTransport", "endocytosis", "cellularSignaling",
 ] as const;
 export type PhenomenonId = (typeof phenomenonIds)[number];
 
@@ -58,7 +61,7 @@ export const mechanismIds = [
   "hydrogenBonding", "phosphodiesterLinkage", "antiparallelOrganization", "baseStacking", "grooveOrganization",
   "strandOpening", "strandReannealing", "nucleotideAddition", "transcriptionElongation", "dnaReplication",
   "rnaSplicing", "rnaCapping", "rnaCleavage", "terminalExonucleaseAction", "riboseHydroxylSusceptibility",
-  "rnaDnaHybridFormation", "rnaSecondaryFolding", "translationElongation",
+  "rnaDnaHybridFormation", "rnaSecondaryFolding", "translationElongation", "secretoryTargeting", "vesicleTrackTransport", "kinaseCascade",
 ] as const;
 export type MechanismId = (typeof mechanismIds)[number];
 

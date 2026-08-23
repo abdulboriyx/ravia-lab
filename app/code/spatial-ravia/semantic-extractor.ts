@@ -77,6 +77,10 @@ function entitiesFor(text: string): SemanticEntityId[] {
     [["adenine"], "adenine"], [["thymine"], "thymine"], [["uracil"], "uracil"], [["guanine", "g pairs", "g pair"], "guanine"], [["cytosine"], "cytosine"], [["base", "bases"], "base"], [["nucleotide", "nucleotides"], "nucleotide"],
     [["hairpin", "hair pin", "stem", "loop", "bulge", "rna fold", "rna motif"], "rna"], [["transcript", "message", "rna product", "mrna", "messenger rna", "pre mrna", "primary mrna"], "mRNA"], [["trna", "transfer rna"], "tRNA"], [["rrna", "ribosomal rna"], "rRNA"], [["mirna"], "miRNA"], [["sirna"], "siRNA"], [["snrna"], "snRNA"], [["regulatory small rna", "coding rna"], "smallRegulatoryRNA"],
     [["intron"], "intron"], [["exon"], "exon"], [["5 prime cap", "cap"], "cap"], [["poly a", "poly(a)"], "polyATail"],
+    [["protein", "polypeptide"], "protein"], [["er", "endoplasmic reticulum"], "ER"], [["golgi"], "Golgi"],
+    [["translocon"], "translocon"], [["vesicle"], "vesicle"], [["kinesin"], "kinesin"], [["dynein"], "dynein"],
+    [["ribosome"], "ribosome"], [["codon"], "codon"], [["spliceosome"], "spliceosome"], [["ligand"], "ligand"],
+    [["receptor", "rtk"], "receptor"], [["ras"], "Ras"], [["raf"], "Raf"], [["mek"], "MEK"], [["erk", "mapk"], "ERK"],
   ];
   const entities = entries.filter(([terms]) => includesAny(text, terms)).map(([, id]) => id);
   // Contextual entity inference: these are compositional biological roles,
@@ -161,6 +165,10 @@ const hasAssociationCue = (text: string) => includesAny(text, ["physical associa
 
 function matchFor(text: string, entities: SemanticEntityId[]): SemanticMatch {
   const withEntity = (match: Omit<SemanticMatch, "entities">): SemanticMatch => ({ ...match, entities });
+  if (includesAny(text, ["rtk", "ras", "mapk", "erk", "raf", "mek", "cellular signaling", "signaling cascade"])) return withEntity({ phenomenon: "cellularSignaling", mechanism: "kinaseCascade", focus: "region", confidence: 0.95 });
+  if (includesAny(text, ["kinesin", "dynein", "vesicle transport", "transporting a vesicle"])) return withEntity({ phenomenon: "cytoskeletalTransport", mechanism: "vesicleTrackTransport", focus: "region", confidence: 0.95 });
+  if (includesAny(text, ["secreted protein", "secretory pathway", "translocon", "endoplasmic reticulum", "golgi"])) return withEntity({ phenomenon: "secretoryPathway", mechanism: "secretoryTargeting", focus: "region", confidence: 0.95 });
+  if (includesAny(text, ["translation", "ribosome", "codon"])) return withEntity({ phenomenon: "translation", mechanism: "translationElongation", focus: "region", confidence: 0.95 });
   if (hasGenericPolymerAction(text) && !includesAny(text, ["exonuclease", "cleavage", "cleaved", "degrade", "degradation"])) return withEntity({ focus: "local", confidence: 0.45 });
   if (includesAny(text, ["dna has ribose", "dna contains ribose", "a pairs with g", "a pair with g"])) return withEntity({ phenomenon: "chemicalStabilityComparison", mechanism: "riboseHydroxylSusceptibility", focus: "relationship", confidence: 0.74 });
   if (includesAny(text, ["2 prime oh", "2 prime hydroxyl", "two prime oh", "two prime hydroxyl", "two prime position", "position two", "2′ oh", "2' oh", "rna local chemistry"])) return withEntity({ phenomenon: "chemicalStabilityComparison", mechanism: "riboseHydroxylSusceptibility", focus: "local", confidence: 0.93 });

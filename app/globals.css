@@ -1063,6 +1063,91 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   text-transform: uppercase;
 }
 
+.cellularProductionMount {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 100svh;
+  padding: clamp(72px, 12vh, 128px) clamp(16px, 5vw, 72px) 128px;
+  overflow: auto;
+  background: radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.98), rgba(232, 241, 239, 0.96));
+  color: #173037;
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+.cellularProductionMount header {
+  display: flex;
+  gap: 0.45rem;
+  align-items: baseline;
+  margin: 0 auto 1.2rem;
+  max-width: 920px;
+  font-size: clamp(1rem, 2vw, 1.45rem);
+}
+
+.cellularProductionMount header span,
+.cellularProductionMount > small {
+  color: #597076;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cellularProductionSchematic {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: 12px;
+  width: min(920px, 100%);
+  margin: 0 auto 1.1rem;
+}
+
+.cellularProductionCard {
+  display: grid;
+  gap: 0.5rem;
+  min-height: 86px;
+  padding: 16px;
+  border: 1px solid rgba(44, 89, 96, 0.2);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.82);
+  box-shadow: 0 10px 30px rgba(31, 70, 76, 0.08);
+}
+
+.cellularProductionCard span {
+  color: #597076;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cellularProductionCard strong {
+  overflow-wrap: anywhere;
+  font-size: 0.95rem;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .cellularProductionMount {
+  background: radial-gradient(circle at 50% 24%, #24383d, #142326 78%);
+  color: #e7f0ef;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .cellularProductionCard {
+  border-color: rgba(197, 224, 222, 0.2);
+  background: rgba(25, 48, 53, 0.82);
+}
+
+@media (max-width: 640px) {
+  .cellularProductionMount {
+    padding: 64px 12px 112px;
+  }
+
+  .cellularProductionMount header {
+    display: block;
+  }
+
+  .cellularProductionMount header span {
+    display: block;
+    margin-top: 0.35rem;
+  }
+}
+
 .spatialRaviaParseSource {
   position: fixed;
   top: 14px;

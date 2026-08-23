@@ -20,6 +20,9 @@ export function DnaMechanismPresentationView({
   teachingView?: ProductionTeachingViewV1;
 }) {
   const localSubject = route.localChemistrySubject;
+  const separation = route.family === "strandSeparation" && "localOpeningBasePairs" in route.presentation
+    ? route.presentation.localOpeningBasePairs
+    : undefined;
   return (
     <section
       aria-label={`DNA mechanism: ${route.family}`}
@@ -32,7 +35,15 @@ export function DnaMechanismPresentationView({
       {localSubject ? (
         <DnaLocalChemistryView subject={localSubject} theme={theme} />
       ) : (
-        <DnaMolecularView embedded theme={theme} visualTemplate={visualTemplate} />
+        <DnaMolecularView
+          embedded
+          theme={theme}
+          visualTemplate={visualTemplate}
+          initialTransformation={separation !== undefined ? {
+            strandSeparation: separation / 10,
+            bubbleBasePairs: separation,
+          } : undefined}
+        />
       )}
       {teachingView && <ProductionTeachingPanel view={teachingView} />}
     </section>
