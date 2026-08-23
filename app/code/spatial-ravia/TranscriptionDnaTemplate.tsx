@@ -57,8 +57,11 @@ function PairedDuplexSection({
   </group>;
 }
 
-export function TranscriptionDnaTemplate({ hasRnap, hasNascentRna }: { hasRnap: boolean; hasNascentRna: boolean }) {
-  const plan = useMemo(() => deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna }), [hasNascentRna, hasRnap]);
+export function TranscriptionDnaTemplate({ hasRnap, hasNascentRna, bubbleOpen = true }: { hasRnap: boolean; hasNascentRna: boolean; bubbleOpen?: boolean }) {
+  const plan = useMemo(() => {
+    const derived = deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna });
+    return bubbleOpen ? derived : { ...derived, dna: { ...derived.dna, openBasePairs: 0 } };
+  }, [bubbleOpen, hasNascentRna, hasRnap]);
   const sections = useMemo(() => partitionTranscriptionDuplex(plan), [plan]);
   const { samples, upstream, bubble, downstream } = sections;
   const bubbleA = useMemo(() => bubble.map((sample) => point(sample.strandA)), [bubble]);

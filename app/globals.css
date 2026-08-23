@@ -1188,13 +1188,27 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .transcriptionScene {
   position: relative;
   width: min(1120px, 100%);
-  min-height: min(68svh, 650px);
+  height: min(68svh, 650px);
+  min-height: 430px;
   margin: 0 auto 0.75rem;
   overflow: hidden;
   border: 1px solid rgba(141, 197, 208, 0.2);
   border-radius: 22px;
   background: radial-gradient(ellipse at 50% 48%, #182f3b 0%, #0b1824 48%, #050a12 100%);
   box-shadow: inset 0 0 100px rgba(73, 145, 161, 0.08), 0 20px 70px rgba(0, 0, 0, 0.42);
+}
+
+.geneExpression3DCanvas {
+  position: absolute;
+  inset: 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.geneExpression3DCanvas > canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 .nucleusHalo {
@@ -1320,7 +1334,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   .transcriptionProductionHeader { align-items: flex-start; gap: 0.65rem; }
   .transcriptionProductionHeader > div { display: block; }
   .transcriptionProductionHeader > div span { display: block; margin-top: 0.3rem; }
-  .transcriptionScene { min-height: 430px; border-radius: 14px; }
+  .transcriptionScene { height: min(58svh, 460px); min-height: 360px; border-radius: 14px; }
   .transcriptionDiagram { min-height: 360px; transform: scale(1.17); transform-origin: center center; }
   .strandLabel, .repairedLabel, .rnaLabel { font-size: 16px; }
   .transcriptionLegend { right: 14px; left: 14px; bottom: 10px; font-size: 0.64rem; }
