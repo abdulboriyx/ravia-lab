@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { resolveProductionPromptRoute } from "./production-prompt-router.ts";
+import { resolveRnaPresentation } from "./RnaPresentationRouter.ts";
 
 const expected = [
   ["Show DNA", "dna-canonical-structure", "DnaMolecularView"],
@@ -35,4 +36,11 @@ test("a new unsupported prompt resolves to an explicit route error rather than r
   assert.equal(route.productionOwner, "none");
   assert.equal(route.fallback, "explicit-error");
   assert.equal(route.failure?.code, "PRODUCTION_ROUTE_UNAVAILABLE");
+});
+
+test("generic RNA remains an explicit supported RNA presentation route", () => {
+  const route = resolveRnaPresentation("show RNA");
+  assert.ok(route);
+  assert.equal(route?.family, "structure");
+  assert.equal(route?.owner, "RnaVisualSystem");
 });

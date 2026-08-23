@@ -120,6 +120,7 @@ type DnaMolecularViewProps = {
   /** A DNA-family dispatcher owns initial static composition. */
   visualTemplate?: DnaVisualTemplate;
   regulationPrompt?: string;
+  presentationTitle?: string;
   renderMode?: "INTERACTIVE" | "EXACT_FRAME";
   exactFrameState?: AppliedRenderStateV1;
   initialTransformation?: Partial<DnaTransformationState>;
@@ -130,6 +131,7 @@ export function DnaMolecularView({
   theme: controlledTheme,
   visualTemplate,
   regulationPrompt,
+  presentationTitle,
   renderMode = "INTERACTIVE",
   exactFrameState,
   initialTransformation,
@@ -317,7 +319,7 @@ export function DnaMolecularView({
 
       {sceneStarted ? (
         <div className="structureIdentity">
-          <strong>{sourceDetails[source].title}</strong>
+          <strong>{presentationTitle ?? sourceDetails[source].title}</strong>
           <span>{sourceDetails[source].subtitle}</span>
         </div>
       ) : null}

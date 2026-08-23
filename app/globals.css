@@ -978,6 +978,34 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   inset: 0;
 }
 
+.rnaProductionIdentity {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  z-index: 7;
+  display: grid;
+  gap: 0.2rem;
+  max-width: min(420px, calc(100vw - 36px));
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(45, 63, 69, 0.2);
+  border-radius: 8px;
+  color: #19343b;
+  background: rgba(246, 248, 247, 0.9);
+  box-shadow: 0 10px 24px rgba(24, 37, 43, 0.1);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+.rnaProductionIdentity strong { font-size: 0.82rem; letter-spacing: 0.06em; }
+.rnaProductionIdentity span { color: #597076; font-size: 0.65rem; text-transform: uppercase; }
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .rnaProductionIdentity {
+  color: #e5eff2;
+  background: rgba(2, 3, 5, 0.84);
+  border-color: rgba(229, 239, 242, 0.24);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .rnaProductionIdentity span { color: #a9c0c5; }
+
 .rnaProductionMetadata {
   position: absolute;
   left: 16px;
@@ -1121,6 +1149,176 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .cellularProductionCard strong {
   overflow-wrap: anywhere;
   font-size: 0.95rem;
+}
+
+.transcriptionProductionMount {
+  padding-bottom: 136px;
+}
+
+.transcriptionProductionHeader {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.transcriptionProductionHeader > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: baseline;
+}
+
+.transcriptionProductionStatus {
+  padding: 0.35rem 0.55rem;
+  border: 1px solid rgba(50, 116, 127, 0.34);
+  border-radius: 999px;
+  color: #1c7180;
+  background: rgba(219, 244, 241, 0.76);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.transcriptionLessonIntro {
+  width: min(920px, 100%);
+  margin: 0 auto 0.7rem;
+}
+
+.transcriptionLessonIntro strong {
+  font-size: clamp(1.1rem, 3vw, 1.65rem);
+}
+
+.transcriptionLessonIntro p {
+  max-width: 720px;
+  margin: 0.35rem 0 0;
+  color: #4c656c;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.transcriptionScene {
+  position: relative;
+  width: min(1040px, 100%);
+  min-height: min(60svh, 550px);
+  margin: 0 auto 0.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(43, 96, 103, 0.22);
+  border-radius: 22px;
+  background: radial-gradient(circle at 50% 48%, rgba(244, 252, 250, 0.98), rgba(211, 232, 230, 0.95));
+  box-shadow: 0 18px 50px rgba(27, 69, 77, 0.13);
+}
+
+.nucleusHalo {
+  position: absolute;
+  inset: 9% 7%;
+  border: 1px solid rgba(72, 127, 138, 0.25);
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+}
+
+.nucleusHalo span {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  color: rgba(41, 95, 105, 0.6);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.transcriptionDiagram {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 360px;
+}
+
+.nucleusPanel { fill: rgba(240, 250, 248, 0.62); stroke: rgba(55, 112, 120, 0.2); stroke-width: 2; }
+.diagramLabel { fill: #4c737b; font-size: 15px; font-weight: 800; letter-spacing: 2px; }
+.dnaStrand { fill: none; stroke-width: 10; stroke-linecap: round; }
+.dnaCodingStrand { stroke: url(#dnaCoding); }
+.dnaTemplateStrand { stroke: url(#dnaTemplate); }
+.dnaOutside { fill: none; stroke: rgba(112, 145, 150, 0.3); stroke-width: 3; stroke-dasharray: 5 9; }
+.dnaRung { stroke: rgba(100, 125, 135, 0.65); stroke-width: 3; }
+.promoterRegion { fill: #e4a34e; stroke: #9b6222; stroke-width: 2; }
+.promoterLabel { fill: #3f2a12; font-size: 12px; font-weight: 900; letter-spacing: 1px; }
+.polymeraseBody { fill: #d47655; stroke: #7d3e32; stroke-width: 4; }
+.polymeraseBody.isEngaged { fill: #e58f4c; stroke: #8b4c1c; }
+.polymeraseText { fill: #fffaf2; font-size: 14px; font-weight: 900; letter-spacing: 1px; }
+.transcriptionBubble path { fill: none; stroke: #e58f4c; stroke-width: 7; stroke-linecap: round; }
+.bubbleLabel { fill: #a35c25; font-size: 13px; font-weight: 900; letter-spacing: 1px; }
+.nascentRnaPath { fill: none; stroke: #2c9b88; stroke-width: 9; stroke-linecap: round; stroke-dasharray: 2 13; }
+.rnaLabel { fill: #187766; font-size: 14px; font-weight: 900; letter-spacing: 1px; }
+.strandLabel, .repairedLabel { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; }
+.codingLabel { fill: #945477; }
+.templateLabel { fill: #346e9a; }
+.repairedLabel { fill: #60777c; }
+
+.transcriptionLegend {
+  position: absolute;
+  left: 18px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  color: #3f5d64;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.transcriptionLegend span { display: inline-flex; align-items: center; gap: 0.3rem; }
+.legendSwatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
+.codingSwatch { background: #a35f82; }
+.templateSwatch { background: #3f79a3; }
+.rnaSwatch { background: #2c9b88; }
+
+.transcriptionControls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  width: min(920px, 100%);
+  margin: 0 auto 0.9rem;
+}
+
+.transcriptionControls button {
+  min-height: 38px;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgba(49, 104, 111, 0.28);
+  border-radius: 8px;
+  color: #315760;
+  background: rgba(255, 255, 255, 0.75);
+  font: inherit;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.transcriptionControls button.isSelected, .transcriptionControls button:hover { color: white; background: #287886; }
+.cellularProductionDetails { width: min(920px, 100%); margin: 0 auto 0.75rem; color: #4c656c; }
+.cellularProductionDetails summary { cursor: pointer; font-size: 0.73rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+.cellularProductionDetails .cellularProductionSchematic { margin-top: 0.65rem; }
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionScene { background: radial-gradient(circle at 50% 48%, #29454b, #182e33); border-color: rgba(197, 224, 222, 0.2); }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .nucleusPanel { fill: rgba(38, 71, 76, 0.58); stroke: rgba(197, 224, 222, 0.22); }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionLessonIntro p, .spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionLegend { color: #b8d1d1; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionControls button { color: #c9dfdf; background: rgba(28, 55, 61, 0.9); border-color: rgba(197, 224, 222, 0.22); }
+
+@media (max-width: 640px) {
+  .transcriptionProductionMount { padding-bottom: 122px; }
+  .transcriptionProductionHeader { align-items: flex-start; gap: 0.65rem; }
+  .transcriptionProductionHeader > div { display: block; }
+  .transcriptionProductionHeader > div span { display: block; margin-top: 0.3rem; }
+  .transcriptionScene { min-height: 360px; border-radius: 14px; }
+  .transcriptionDiagram { min-height: 300px; transform: scale(1.12); transform-origin: center center; }
+  .diagramLabel { font-size: 18px; }
+  .strandLabel, .repairedLabel, .bubbleLabel, .rnaLabel { font-size: 16px; }
+  .transcriptionLegend { right: 14px; left: 14px; bottom: 10px; font-size: 0.64rem; }
+  .transcriptionControls { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.25rem; }
+  .transcriptionControls button { flex: 0 0 auto; }
 }
 
 .spatialRaviaWorkspace[data-spatial-theme="dark"] .cellularProductionMount {

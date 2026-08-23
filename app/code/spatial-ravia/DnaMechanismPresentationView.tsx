@@ -39,6 +39,7 @@ export function DnaMechanismPresentationView({
           embedded
           theme={theme}
           visualTemplate={visualTemplate}
+          presentationTitle={route.family === "strandSeparation" ? "DNA strand separation" : undefined}
           initialTransformation={separation !== undefined ? {
             strandSeparation: separation / 10,
             bubbleBasePairs: separation,

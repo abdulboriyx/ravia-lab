@@ -19,6 +19,10 @@ export function RnaPresentationView({ route, theme, teachingView }: { route: Rna
       data-rna-theme={theme}
     >
       <ProductionRnaScene route={route} theme={theme} />
+      <div className="rnaProductionIdentity" aria-label="RNA production identity">
+        <strong>{route.family === "structure" ? "RNA · SINGLE-STRANDED MOLECULE" : route.focus}</strong>
+        <span>{route.owner} · {route.groundingStatus}</span>
+      </div>
       {teachingView && <ProductionTeachingPanel view={teachingView} />}
       {process.env.NODE_ENV !== "production" && (
         <details className="rnaProductionMetadata">
