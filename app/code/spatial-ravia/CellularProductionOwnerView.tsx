@@ -15,8 +15,7 @@ type DisplayItem = Readonly<{ label: string; value: string | number | boolean }>
 type CellularProjection = Readonly<{ ownerId: string; timeSeconds: number; focus: string; items: readonly DisplayItem[] }>;
 const renderConfig = { width: 1280, height: 720, pixelRatio: 1, background: { mode: "opaque" as const, color: "#f7fafb" } };
 const transcriptionSteps = [
-  { label: "START", time: 0 }, { label: "INITIATION", time: 0.5 }, { label: "EARLY ELONGATION", time: 1 },
-  { label: "ELONGATION", time: 1.5 }, { label: "TERMINATION", time: 2 },
+  { label: "START", time: 0 }, { label: "INITIATION", time: 0.5 }, { label: "ELONGATION", time: 1.5 }, { label: "TERMINATION", time: 2 },
 ] as const;
 
 function geneProjection(program: GeneExpressionProgramV1, timeSeconds: number): GeneExpressionProductionProjectionV1 {
@@ -111,26 +110,31 @@ function GeneExpressionProductionView({ route }: { route: ProductionPromptRoute 
         : "Transcription has ended; the transcript is no longer polymerase-growing and DNA re-pairs.";
   return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={projection.timeSeconds}>
     <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep}</span></header>
-    <div className="transcriptionLessonIntro"><strong>DNA → nascent RNA</strong><p>{explanation}</p></div>
     <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${bubbleOpen ? "open transcription bubble" : "closed DNA"}, and ${rnaLength} nascent RNA nucleotides`}>
-      <div className="nucleusHalo" aria-hidden="true"><span>NUCLEOPLASM</span></div>
+      <div className="nucleusHalo" aria-hidden="true"><span>NUCLEUS</span></div>
       <svg className="transcriptionDiagram" viewBox="0 0 1000 500" aria-hidden="true" focusable="false">
-        <defs><filter id="softShadow"><feDropShadow dx="0" dy="8" stdDeviation="8" floodColor="#173037" floodOpacity="0.16" /></filter></defs>
-        <rect x="64" y="64" width="872" height="364" rx="28" className="nucleusPanel" />
-        <text x="88" y="104" className="diagramLabel">EUKARYOTIC NUCLEUS / NUCLEOPLASM</text>
+        <defs><filter id="softShadow"><feDropShadow dx="0" dy="12" stdDeviation="12" floodColor="#000814" floodOpacity="0.45" /></filter><radialGradient id="bubbleGlow"><stop offset="0" stopColor="#ffbd69" stopOpacity="0.35" /><stop offset="1" stopColor="#ffbd69" stopOpacity="0" /></radialGradient></defs>
+        <ellipse cx="500" cy="250" rx="414" ry="158" className="nucleusBoundary" />
+        <ellipse cx="500" cy="250" rx="320" ry="116" className="depthRing" />
+        <ellipse cx="500" cy="250" rx="152" ry="72" className="bubbleGlow" />
         <path d="M 130 208 C 250 155 365 155 450 208 C 500 238 520 238 570 208 C 655 155 770 155 870 208" className="dnaStrand dnaCodingStrand" />
         <path d="M 130 292 C 250 345 365 345 450 292 C 500 262 520 262 570 292 C 655 345 770 345 870 292" className="dnaStrand dnaTemplateStrand" />
         <path d="M 130 208 C 250 155 365 155 450 208" className="dnaOutside" /><path d="M 570 208 C 655 155 770 155 870 208" className="dnaOutside" />
         <path d="M 130 292 C 250 345 365 345 450 292" className="dnaOutside" /><path d="M 570 292 C 655 345 770 345 870 292" className="dnaOutside" />
         {!bubbleOpen && Array.from({ length: 13 }, (_, index) => { const x = 180 + index * 52; const y = 232 + Math.sin((index / 12) * Math.PI) * 22; return <line key={index} x1={x} y1={y - 12} x2={x} y2={y + 12} className="dnaRung" />; })}
-        {bubbleOpen && <g className="transcriptionBubble"><path d="M 425 206 C 465 174 535 174 575 206" /><path d="M 425 294 C 465 326 535 326 575 294" /><text x="446" y="365" className="bubbleLabel">LOCAL TRANSCRIPTION BUBBLE</text></g>}
+        {bubbleOpen && <g className="transcriptionBubble"><path d="M 425 206 C 465 174 535 174 575 206" /><path d="M 425 294 C 465 326 535 326 575 294" /><path d="M 430 216 C 465 190 535 190 570 216" className="bubbleInner" /></g>}
         <rect x="214" y="174" width="108" height="34" rx="8" className="promoterRegion" /><text x="268" y="196" textAnchor="middle" className="promoterLabel">PROMOTER</text>
-        <circle cx={bubbleOpen ? 500 : 290} cy="250" r="52" className={`polymeraseBody ${bubbleOpen ? "isEngaged" : ""}`} filter="url(#softShadow)" /><text x={bubbleOpen ? 500 : 290} y="246" textAnchor="middle" className="polymeraseText">RNA</text><text x={bubbleOpen ? 500 : 290} y="265" textAnchor="middle" className="polymeraseText">POL II</text>
+        <g className={`polymeraseComplex ${bubbleOpen ? "isEngaged" : ""}`} transform={`translate(${bubbleOpen ? 500 : 290} 250)`} filter="url(#softShadow)">
+          <path d="M -55 -18 C -65 -54 -26 -67 0 -50 C 23 -75 67 -47 53 -12 C 82 9 55 50 20 40 C 0 67 -43 52 -40 20 C -74 20 -78 -12 -55 -18 Z" className="polymeraseShell" />
+          <ellipse cx="-18" cy="-12" rx="21" ry="28" className="polymeraseLobe polymeraseLobeA" /><ellipse cx="25" cy="-10" rx="26" ry="32" className="polymeraseLobe polymeraseLobeB" /><ellipse cx="4" cy="23" rx="30" ry="15" className="polymeraseLobe polymeraseLobeC" />
+          <path d="M -34 2 C -10 -12 12 -12 36 2" className="polymeraseChannel" /><text x="0" y="5" textAnchor="middle" className="polymeraseText">POL II</text>
+        </g>
         {rnaLength > 0 && <path d={`M 500 307 C 500 365 535 390 590 390 C ${590 + rnaWidth / 2} 390 ${590 + rnaWidth} 360 ${590 + rnaWidth} 320`} className="nascentRnaPath" />}
         {rnaLength > 0 && <text x={600 + rnaWidth / 2} y="424" textAnchor="middle" className="rnaLabel">NASCENT RNA · 5′ → 3′</text>}
-        <text x="145" y="155" className="strandLabel codingLabel">NON-TEMPLATE / CODING · 5′ → 3′</text><text x="145" y="370" className="strandLabel templateLabel">TEMPLATE · 3′ → 5′ READ</text><text x="755" y="180" className="repairedLabel">DNA RE-PAIRED</text>
+        <text x="145" y="155" className="strandLabel codingLabel">DNA</text><text x="145" y="370" className="strandLabel templateLabel">TEMPLATE 3′ → 5′</text><text x="755" y="180" className="repairedLabel">REPAIRED</text>
       </svg>
-      <div className="transcriptionLegend" aria-label="Transcription legend"><span><i className="legendSwatch codingSwatch" />coding strand</span><span><i className="legendSwatch templateSwatch" />template strand</span><span><i className="legendSwatch rnaSwatch" />nascent RNA</span></div>
+      <div className="transcriptionTeachingCue"><strong>{bubbleOpen ? "RNA Pol II is opening and reading the local DNA" : "A gene segment inside the nucleus"}</strong><span>{explanation}</span></div>
+      <div className="transcriptionLegend" aria-label="Transcription legend"><span><i className="legendSwatch codingSwatch" />DNA</span><span><i className="legendSwatch templateSwatch" />template</span><span><i className="legendSwatch rnaSwatch" />nascent RNA</span></div>
     </div>
     <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => setTimeSeconds(step.time)}>{step.label}</button>)}</div>
     <details className="cellularProductionDetails"><summary>State details</summary><div className="cellularProductionSchematic">{[["DNA bubble", projection.dna.transcriptionBubble], ["RNA Pol II", projection.transcription.polymeraseState], ["Nascent RNA", rnaLength], ["RNA localization", projection.exportState.localization], ["Transcript", projection.transcription.transcriptState], ["Template read", "3′ → 5′"]].map(([label, value]) => <div className="cellularProductionCard" key={String(label)}><span>{label}</span><strong>{String(value)}</strong></div>)}</div></details>
