@@ -112,7 +112,10 @@ function GeneExpressionProductionView({ route }: { route: ProductionPromptRoute 
     <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep}</span></header>
     <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${bubbleOpen ? "open transcription bubble" : "closed DNA"}, and ${rnaLength} nascent RNA nucleotides`}>
       <GeneExpression3DScene projection={projection} />
-      <div className="transcriptionTeachingCue"><strong>{bubbleOpen ? "RNA Pol II is opening and reading the local DNA" : "A gene segment inside the nucleus"}</strong><span>{explanation}</span></div>
+      <details className="transcriptionTeachingCue">
+        <summary>{bubbleOpen ? "Pol II opens DNA and builds RNA." : "A gene segment inside the nucleus."}</summary>
+        <span>{explanation}</span>
+      </details>
     </div>
     <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => setTimeSeconds(step.time)}>{step.label}</button>)}</div>
     <details className="cellularProductionDetails"><summary>State details</summary><div className="cellularProductionSchematic">{[["DNA bubble", projection.dna.transcriptionBubble], ["RNA Pol II", projection.transcription.polymeraseState], ["Nascent RNA", rnaLength], ["RNA localization", projection.exportState.localization], ["Transcript", projection.transcription.transcriptState], ["Template read", "3′ → 5′"]].map(([label, value]) => <div className="cellularProductionCard" key={String(label)}><span>{label}</span><strong>{String(value)}</strong></div>)}</div></details>

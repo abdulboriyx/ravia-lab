@@ -1192,10 +1192,10 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   min-height: 430px;
   margin: 0 auto 0.75rem;
   overflow: hidden;
-  border: 1px solid rgba(141, 197, 208, 0.2);
-  border-radius: 22px;
-  background: radial-gradient(ellipse at 50% 48%, #182f3b 0%, #0b1824 48%, #050a12 100%);
-  box-shadow: inset 0 0 100px rgba(73, 145, 161, 0.08), 0 20px 70px rgba(0, 0, 0, 0.42);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .geneExpression3DCanvas {
@@ -1277,20 +1277,23 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .transcriptionTeachingCue {
   position: absolute;
   right: 18px;
-  bottom: 42px;
+  bottom: 18px;
   z-index: 3;
-  display: grid;
-  gap: 0.25rem;
-  width: min(300px, calc(100% - 36px));
-  padding: 0.65rem 0.75rem;
-  border-left: 2px solid #6fe4c4;
+  width: min(280px, calc(100% - 36px));
+  padding: 0.5rem 0.7rem;
+  border: 1px solid rgba(133, 222, 204, 0.22);
+  border-radius: 999px;
   color: #d8e9eb;
   background: rgba(4, 12, 20, 0.7);
   backdrop-filter: blur(8px);
   font-size: 0.72rem;
   line-height: 1.35;
 }
-.transcriptionTeachingCue strong { color: #f4fcf7; font-size: 0.75rem; }
+.transcriptionTeachingCue summary { cursor: pointer; color: #f4fcf7; font-size: 0.75rem; list-style: none; }
+.transcriptionTeachingCue summary::-webkit-details-marker { display: none; }
+.transcriptionTeachingCue summary::after { content: "＋"; float: right; color: #82e6c9; }
+.transcriptionTeachingCue[open] { border-radius: 12px; }
+.transcriptionTeachingCue[open] summary::after { content: "−"; }
 .transcriptionTeachingCue span { color: #a9c6ca; }
 
 .transcriptionLegend span { display: inline-flex; align-items: center; gap: 0.3rem; }
@@ -1301,15 +1304,17 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 
 .transcriptionControls {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 0.45rem;
-  width: min(920px, 100%);
+  width: min(620px, 100%);
   margin: 0 auto 0.65rem;
 }
 
 .transcriptionControls button {
   min-height: 38px;
-  padding: 0.55rem 0.7rem;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0.55rem 0.45rem;
   border: 1px solid rgba(49, 104, 111, 0.28);
   border-radius: 8px;
   color: #c7e0e2;
@@ -1318,7 +1323,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   font: inherit;
   font-size: 0.68rem;
   font-weight: 800;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.025em;
   cursor: pointer;
 }
 
@@ -1334,13 +1339,13 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   .transcriptionProductionHeader { align-items: flex-start; gap: 0.65rem; }
   .transcriptionProductionHeader > div { display: block; }
   .transcriptionProductionHeader > div span { display: block; margin-top: 0.3rem; }
-  .transcriptionScene { height: min(58svh, 460px); min-height: 360px; border-radius: 14px; }
+  .transcriptionScene { height: min(62svh, 500px); min-height: 390px; }
   .transcriptionDiagram { min-height: 360px; transform: scale(1.17); transform-origin: center center; }
   .strandLabel, .repairedLabel, .rnaLabel { font-size: 16px; }
   .transcriptionLegend { right: 14px; left: 14px; bottom: 10px; font-size: 0.64rem; }
-  .transcriptionTeachingCue { right: 12px; bottom: 52px; width: min(260px, calc(100% - 24px)); }
-  .transcriptionControls { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 0.25rem; }
-  .transcriptionControls button { flex: 0 0 auto; }
+  .transcriptionTeachingCue { right: 8px; bottom: 10px; width: min(250px, calc(100% - 16px)); font-size: 0.65rem; }
+  .transcriptionControls { gap: 0.25rem; padding-bottom: 0.25rem; }
+  .transcriptionControls button { padding: 0.48rem 0.18rem; font-size: 0.56rem; letter-spacing: 0; }
   .spatialPromptDock { right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); left: 8px; width: auto; transform: none; }
   .spatialPromptDockPanel { gap: 5px; padding: 5px; border-radius: 8px; }
   .spatialPromptDockInput { height: 34px; padding: 0 8px; font-size: 0.78rem; }
