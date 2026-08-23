@@ -3,6 +3,7 @@ import type { ScientificSceneSpec } from "./scientific-scene-spec.ts";
 import type { ScientificTimeline } from "./scientific-timeline.ts";
 import { compileTeachingChapterProgram, disclosureDetails, type TeachingChapterProgramEntryV1, type TeachingChapterProgramV1 } from "./teaching-chapter-program.ts";
 import { validateTeachingPlan, type TeachingPlan, type TeachingReference } from "./teaching-plan.ts";
+import type { CellularScientificExtensionV1 } from "./cellular-localization.ts";
 
 export const teachingAudiencePolicyLevels = ["BEGINNER", "INTERMEDIATE", "ADVANCED"] as const;
 export type TeachingAudiencePolicyLevel = typeof teachingAudiencePolicyLevels[number];
@@ -72,6 +73,7 @@ export type ProjectTeachingForAudienceInput = {
   audience: TeachingAudiencePolicyLevel;
   scene?: ScientificSceneSpec;
   timeline?: ScientificTimeline;
+  cellular?: CellularScientificExtensionV1;
   requestedDetail?: TeachingDetail;
   upstreamFailureCode?: "FRAGMENTATION_UNGROUNDED";
 };
@@ -144,9 +146,9 @@ export function projectTeachingForAudience(input: ProjectTeachingForAudienceInpu
   const shapeIssues = validateProgramShape(input.chapterProgram);
   if (shapeIssues.length) return { ok: false, code: "TEACHING_DEPENDENCY_INVALID", reasons: shapeIssues };
   if (input.scene) {
-    const planValidation = validateTeachingPlan(input.teachingPlan, input.scene, input.timeline);
+    const planValidation = validateTeachingPlan(input.teachingPlan, input.scene, input.timeline, input.cellular);
     if (!planValidation.valid) return { ok: false, code: "AUDIENCE_PROJECTION_UNSUPPORTED", reasons: planValidation.issues.map((issue) => `${issue.path}: ${issue.message}`) };
-    const rebuilt = compileTeachingChapterProgram(input.teachingPlan, input.scene, input.timeline);
+    const rebuilt = compileTeachingChapterProgram(input.teachingPlan, input.scene, input.timeline, input.cellular);
     if (!rebuilt.ok) return { ok: false, code: "AUDIENCE_PROJECTION_UNSUPPORTED", reasons: rebuilt.reasons };
   }
   if (input.requestedDetail && !disclosureDetails.includes(input.requestedDetail)) return { ok: false, code: "AUDIENCE_DETAIL_UNAVAILABLE", reasons: ["requested detail is outside the bounded TeachingPlan v3 vocabulary"] };

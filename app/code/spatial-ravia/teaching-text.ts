@@ -82,7 +82,7 @@ const uniqueStrings = (values: readonly string[]) => [...new Set(values)].sort()
 const clean = (value: string) => value.replace(/\s+/g, " ").trim();
 const bounded = (value: string, limit: number) => { const text = clean(value); return text.length <= limit ? text : `${text.slice(0, Math.max(0, limit - 1)).trimEnd()}…`; };
 const humanize = (value: string) => value.replace(/([a-z])([A-Z])/g, "$1 $2").replace(/[-_]+/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
-const refId = (ref: TeachingReference) => ref.kind === "actor" ? ref.actorId : ref.kind === "group" ? ref.groupId : ref.kind === "claim" ? ref.claimId : ref.kind === "source" ? ref.sourceId : ref.kind === "scientificState" ? ref.stateId : ref.kind === "interaction" ? ref.interactionId : ref.kind === "topologyChange" ? ref.topologyChangeId : ref.kind === "timelineChapter" ? ref.timelineChapterId : ref.kind === "timelineEvent" ? ref.timelineEventId : ref.timelineTransitionId;
+const refId = (ref: TeachingReference) => ref.kind === "actor" ? ref.actorId : ref.kind === "group" ? ref.groupId : ref.kind === "claim" ? ref.claimId : ref.kind === "source" ? ref.sourceId : ref.kind === "scientificState" ? ref.stateId : ref.kind === "interaction" ? ref.interactionId : ref.kind === "topologyChange" ? ref.topologyChangeId : ref.kind === "timelineChapter" ? ref.timelineChapterId : ref.kind === "timelineEvent" ? ref.timelineEventId : ref.kind === "timelineTransition" ? ref.timelineTransitionId : ref.kind === "compartment" ? ref.compartmentId : ref.kind === "localizationChange" ? ref.changeId : `${ref.actorId}:${ref.compartmentId}`;
 
 function labelFor(ref: TeachingReference, scene?: ScientificSceneSpec): string {
   if (scene) {

@@ -5,8 +5,10 @@ import { rnaCapabilityRegistry, rnaPresentationOwnerReferences, type RnaCapabili
 import { scientificPrimitiveRegistry, type ScientificPrimitiveId } from "./scientific-primitive-registry.ts";
 import { scientificFidelityTiers } from "./scientific-fidelity-provenance.ts";
 import { resolveCapabilitySupport, type CapabilityDescriptor, type CapabilityPolicyDecision, type CapabilityPolicyRequest, type CapabilityFidelity } from "./capability-support-policy.ts";
+import { cellCapabilityRegistry, secretoryCapabilityRegistry, membraneProteinCapabilityRegistry, intracellularTransportCapabilityRegistry, cellularSignalingCapabilityRegistry, cellularPrimitiveIds, cellularSecretoryPrimitiveIds, cellularMembraneProteinPrimitiveIds, cellularGeneExpressionPrimitiveIds, cellularTransportPrimitiveIds, cellularSignalingPrimitiveIds, type CellularCapabilityRegistryRecord } from "./cell-capability-registry.ts";
 
 export const capabilityRegistrySchemaVersion = "1" as const;
+export const cellularCapabilityRegistrySchemaVersion = "2" as const;
 export const capabilityRegistryDomains = ["DNA", "RNA", "shared"] as const;
 export type CapabilityRegistryDomain = (typeof capabilityRegistryDomains)[number];
 export const registrySupportStatuses = ["SUPPORTED", "PARTIALLY_SUPPORTED", "UNSUPPORTED"] as const;
@@ -64,6 +66,29 @@ function normalize(record: SourceRecord): CapabilityRegistryRecord {
 export const capabilityRegistry: readonly CapabilityRegistryRecord[] = [...dnaCapabilityRegistry, ...rnaCapabilityRegistry].map(normalize);
 export const capabilityRegistryById = new Map(capabilityRegistry.map((record) => [record.capabilityId, record]));
 export const capabilityRegistryPolicyDescriptors: readonly CapabilityDescriptor[] = capabilityRegistry.map((record) => record.policyDescriptor);
+
+/** Additive D-B view. The frozen v1 registry above remains byte/shape compatible. */
+export const capabilityRegistryV2: readonly (CapabilityRegistryRecord | CellularCapabilityRegistryRecord)[] = [...capabilityRegistry, ...cellCapabilityRegistry, ...secretoryCapabilityRegistry, ...membraneProteinCapabilityRegistry, ...intracellularTransportCapabilityRegistry, ...cellularSignalingCapabilityRegistry];
+
+export type CapabilityRegistryV2ValidationResult = { valid: true; issues: [] } | { valid: false; issues: CapabilityRegistryValidationIssue[] };
+
+export function validateCapabilityRegistryV2(records = capabilityRegistryV2): CapabilityRegistryV2ValidationResult {
+  const base = validateCapabilityRegistry(records.filter((record): record is CapabilityRegistryRecord => record.domain !== "CELL"));
+  const issues: CapabilityRegistryValidationIssue[] = base.valid ? [] : [...base.issues];
+  const ids = new Set<string>();
+  records.forEach((record) => {
+    if (ids.has(record.capabilityId)) issues.push({ path: `records.${record.capabilityId}`, message: "capability ID must be unique" });
+    ids.add(record.capabilityId);
+  });
+  [...cellCapabilityRegistry, ...secretoryCapabilityRegistry, ...membraneProteinCapabilityRegistry, ...intracellularTransportCapabilityRegistry, ...cellularSignalingCapabilityRegistry].forEach((record, index) => {
+    const path = `cellRecords[${index}]`;
+    if (record.domain !== "CELL") issues.push({ path: `${path}.domain`, message: "must be CELL" });
+    if (!record.primitiveIds.length || record.primitiveIds.some((id) => !cellularPrimitiveIds.includes(id as typeof cellularPrimitiveIds[number]) && !cellularGeneExpressionPrimitiveIds.includes(id as typeof cellularGeneExpressionPrimitiveIds[number]) && !cellularSecretoryPrimitiveIds.includes(id as typeof cellularSecretoryPrimitiveIds[number]) && !cellularMembraneProteinPrimitiveIds.includes(id as typeof cellularMembraneProteinPrimitiveIds[number]) && !cellularTransportPrimitiveIds.includes(id as typeof cellularTransportPrimitiveIds[number]) && !cellularSignalingPrimitiveIds.includes(id as typeof cellularSignalingPrimitiveIds[number]))) issues.push({ path: `${path}.primitiveIds`, message: "contains an unknown cellular primitive" });
+    if (record.benchmarkReferences.length !== 1 || !["cellular-localization-v1", "cellular-gene-expression-v1", "cellular-secretory-pathway-v1", "cellular-membrane-protein-v1", "cellular-intracellular-transport-v1"].includes(record.benchmarkReferences[0] ?? "")) issues.push({ path: `${path}.benchmarkReferences`, message: "must reference a known cellular benchmark" });
+    if (record.supportStatus !== "PARTIALLY_SUPPORTED") issues.push({ path: `${path}.supportStatus`, message: "D-B foundation capabilities are partial until mechanisms are implemented" });
+  });
+  return issues.length ? { valid: false, issues } : { valid: true, issues: [] };
+}
 
 export type CapabilityRegistryValidationIssue = { path: string; message: string };
 export type CapabilityRegistryValidationResult = { valid: true; issues: [] } | { valid: false; issues: CapabilityRegistryValidationIssue[] };

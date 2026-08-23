@@ -3,14 +3,14 @@
 import { entityIds, type SemanticEntityId } from "./foundation-semantic-vocabulary.ts";
 import type { SemanticEntityMention } from "./semantic-intent.ts";
 
-export const scientificActorTypeExtensions = ["complex", "histone", "nucleosome", "transcript", "cleavageFragment", "localReactionCenter", "comparisonPair"] as const;
+export const scientificActorTypeExtensions = ["complex", "histone", "nucleosome", "transcript", "cleavageFragment", "localReactionCenter", "comparisonPair", "compartment", "membrane", "organelle", "vesicle", "protein", "receptor", "transporter", "channel", "ribosome", "polymerase", "motorProtein", "functionalRegion", "nuclearPore", "aminoAcid", "tRNA", "cap", "polyATail", "transcriptionMachinery", "spliceosome", "releaseFactor"] as const;
 export type ScientificActorTypeId = SemanticEntityId | (typeof scientificActorTypeExtensions)[number];
 export const scientificActorTypeIds: readonly ScientificActorTypeId[] = [...entityIds, ...scientificActorTypeExtensions];
 
 export const scientificActorRoles = [
   "templateStrand", "codingStrand", "nascentTranscript", "parentStrand", "daughterStrand", "leadingStrand", "laggingStrand",
   "enzyme", "substrate", "product", "exon", "intron", "cap", "comparisonLeft", "comparisonRight", "complementaryStrand",
-  "donor", "acceptor", "lesion", "repairActor", "packagingComplex", "histoneComponent", "context", "focus",
+  "donor", "acceptor", "lesion", "repairActor", "packagingComplex", "histoneComponent", "cargo", "context", "focus",
 ] as const;
 export type ScientificActorRole = (typeof scientificActorRoles)[number];
 

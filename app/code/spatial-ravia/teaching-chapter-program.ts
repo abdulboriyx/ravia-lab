@@ -1,6 +1,7 @@
 /** A-C: deterministic pedagogical chapter/disclosure semantics; no time evaluation. */
 import type { ScientificSceneSpec } from "./scientific-scene-spec.ts";
 import type { ScientificTimeline } from "./scientific-timeline.ts";
+import type { CellularScientificExtensionV1 } from "./cellular-localization.ts";
 import { validateTeachingPlan, type TeachingPlan, type TeachingReference } from "./teaching-plan.ts";
 
 export const chapterRoles = ["IDENTIFY", "FOCUS", "CONNECT", "EXPLAIN", "CAUSE", "COMPARE", "CORRECT", "SUMMARIZE"] as const;
@@ -83,8 +84,8 @@ function classifyValidationFailure(reasons: string[]): ChapterProgramFailureCode
   return "TEACHING_CHAPTER_REFERENCE_MISSING";
 }
 
-export function compileTeachingChapterProgram(plan: TeachingPlan, scene: ScientificSceneSpec, timeline?: ScientificTimeline): ChapterProgramResult {
-  const valid = validateTeachingPlan(plan, scene, timeline);
+export function compileTeachingChapterProgram(plan: TeachingPlan, scene: ScientificSceneSpec, timeline?: ScientificTimeline, cellular?: CellularScientificExtensionV1): ChapterProgramResult {
+  const valid = validateTeachingPlan(plan, scene, timeline, cellular);
   if (!valid.valid) {
     const reasons = valid.issues.map((entry) => `${entry.path}: ${entry.message}`);
     return { ok: false, code: classifyValidationFailure(reasons), reasons };

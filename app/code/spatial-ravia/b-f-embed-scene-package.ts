@@ -10,6 +10,10 @@ import type { TeachingChapterProgramV1 } from "./teaching-chapter-program.ts";
 import type { AudienceTeachingProgramV1 } from "./teaching-audience-policy.ts";
 import type { TeachingSnapshotV1 } from "./teaching-snapshot.ts";
 import type { TeachingTextBundleV1, NarrationCueProgramV1 } from "./teaching-text.ts";
+import { validateCellularScientificScene, type CellularScientificExtensionV1 } from "./cellular-localization.ts";
+import { validateMembraneProteinTopologyContract, type MembraneProteinTopologyV1 } from "./membrane-protein-topology.ts";
+import { validateIntracellularTransportProgram, type IntracellularTransportProgramV1 } from "./intracellular-transport.ts";
+import { validateCellularSignalingProgram, type CellularSignalingProgramV1 } from "./cellular-signaling.ts";
 
 export type PackageFailureCodeV1 = "SCENE_PACKAGE_INVALID" | "SCENE_PACKAGE_VERSION_UNSUPPORTED" | "SCENE_PACKAGE_REFERENCE_MISSING" | "SCENE_PACKAGE_ASSET_MISSING" | "SCENE_PACKAGE_ASSET_HASH_MISMATCH" | "SCENE_PACKAGE_DEPENDENCY_INVALID" | "EMBED_BOOTSTRAP_INVALID" | "EMBED_RUNTIME_INCOMPATIBLE" | "PACKAGE_SIZE_LIMIT_EXCEEDED";
 export type PackageFailureV1 = Readonly<{ ok: false; code: PackageFailureCodeV1; reasons: readonly string[] }>;
@@ -29,6 +33,11 @@ export type ScenePackageV1 = Readonly<{
   ownerId?: string;
   representation?: RepresentationCapabilityV1;
   scientificSceneSpec: ScientificSceneSpec;
+  /** Additive cellular payload; ScientificSceneSpec v1 remains the base contract. */
+  cellularScientificExtension?: CellularScientificExtensionV1;
+  membraneProteinTopology?: MembraneProteinTopologyV1;
+  intracellularTransportProgram?: IntracellularTransportProgramV1;
+  cellularSignalingProgram?: CellularSignalingProgramV1;
   scientificTimeline?: ScientificTimeline;
   teaching?: Readonly<{ plan: TeachingPlan; chapterProgram: TeachingChapterProgramV1; audiencePrograms: readonly AudienceTeachingProgramV1[]; selectedAudience?: AudienceTeachingProgramV1["audience"]; selectedSnapshot?: TeachingSnapshotV1; textBundles?: readonly TeachingTextBundleV1[]; narration?: NarrationCueProgramV1 }>;
   viewer: ViewerBootstrapV1;
@@ -44,6 +53,10 @@ export type EmbedPackageV1 = Readonly<{ schemaVersion: "1"; package: ScenePackag
 export type ScenePackageInputV1 = Readonly<{
   packageId: string;
   scientificSceneSpec: ScientificSceneSpec;
+  cellularScientificExtension?: CellularScientificExtensionV1;
+  membraneProteinTopology?: MembraneProteinTopologyV1;
+  intracellularTransportProgram?: IntracellularTransportProgramV1;
+  cellularSignalingProgram?: CellularSignalingProgramV1;
   scientificTimeline?: ScientificTimeline;
   teaching?: ScenePackageV1["teaching"];
   viewer: ViewerBootstrapV1;
@@ -121,11 +134,18 @@ export function validateScenePackage(pkg: ScenePackageV1): PackageFailureV1 | un
   if (pkg.schemaVersion !== "1" || pkg.packageVersion !== "1") return fail("SCENE_PACKAGE_VERSION_UNSUPPORTED", "unsupported ScenePackage version");
   const sceneResult = validateScientificSceneSpec(pkg.scientificSceneSpec);
   if (!sceneResult.valid) return fail("SCENE_PACKAGE_INVALID", ...sceneResult.issues.map((issue) => `${issue.path}: ${issue.message}`));
+  if (pkg.cellularScientificExtension) {
+    const cellularResult = validateCellularScientificScene({ scene: pkg.scientificSceneSpec, cellular: pkg.cellularScientificExtension }, pkg.scientificTimeline);
+    if (!cellularResult.valid) return fail("SCENE_PACKAGE_INVALID", ...cellularResult.issues.map((issue) => `${issue.path}: ${issue.message}`));
+  }
+  if (pkg.membraneProteinTopology) { const topologyResult = validateMembraneProteinTopologyContract(pkg.membraneProteinTopology); if (!topologyResult.valid) return fail("SCENE_PACKAGE_INVALID", ...topologyResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
+  if (pkg.intracellularTransportProgram) { const transportResult = validateIntracellularTransportProgram(pkg.intracellularTransportProgram); if (!transportResult.valid) return fail("SCENE_PACKAGE_INVALID", ...transportResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
+  if (pkg.cellularSignalingProgram) { const signalingResult = validateCellularSignalingProgram(pkg.cellularSignalingProgram); if (!signalingResult.valid) return fail("SCENE_PACKAGE_INVALID", ...signalingResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
   if (pkg.scientificSceneSpec.sceneId !== pkg.sceneId) return fail("SCENE_PACKAGE_REFERENCE_MISSING", "package sceneId does not match ScientificSceneSpec");
   if (pkg.scientificTimeline) { const timelineResult = validateScientificTimeline(pkg.scientificTimeline, timelineContextFromScene(pkg.scientificSceneSpec)); if (!timelineResult.valid) return fail("SCENE_PACKAGE_INVALID", ...timelineResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
   if (pkg.teaching) {
     if (pkg.teaching.plan.sceneId !== pkg.sceneId || pkg.teaching.chapterProgram.sceneId !== pkg.sceneId || pkg.teaching.chapterProgram.planId !== pkg.teaching.plan.planId) return fail("SCENE_PACKAGE_REFERENCE_MISSING", "teaching contracts do not identify the packaged scene/plan");
-    const planResult = validateTeachingPlan(pkg.teaching.plan, pkg.scientificSceneSpec, pkg.scientificTimeline);
+    const planResult = validateTeachingPlan(pkg.teaching.plan, pkg.scientificSceneSpec, pkg.scientificTimeline, pkg.cellularScientificExtension);
     if (!planResult.valid) return fail("SCENE_PACKAGE_INVALID", ...planResult.issues.map((issue) => `${issue.path}: ${issue.message}`));
     if (pkg.teaching.audiencePrograms.some((program) => program.planId !== pkg.teaching!.plan.planId || program.sceneId !== pkg.sceneId)) return fail("SCENE_PACKAGE_REFERENCE_MISSING", "audience program does not identify the packaged plan");
     if (pkg.teaching.selectedAudience && !pkg.teaching.audiencePrograms.some((program) => program.audience === pkg.teaching!.selectedAudience)) return fail("SCENE_PACKAGE_REFERENCE_MISSING", "selected audience is not packaged");
@@ -140,6 +160,10 @@ export function validateScenePackage(pkg: ScenePackageV1): PackageFailureV1 | un
 export async function buildScenePackage(input: ScenePackageInputV1): Promise<Readonly<{ ok: true; package: ScenePackageV1 } | PackageFailureV1>> {
   if (!id.test(input.packageId)) return fail("SCENE_PACKAGE_INVALID", "packageId must be a stable ID");
   const sceneResult = validateScientificSceneSpec(input.scientificSceneSpec); if (!sceneResult.valid) return fail("SCENE_PACKAGE_INVALID", ...sceneResult.issues.map((issue) => `${issue.path}: ${issue.message}`));
+  if (input.cellularScientificExtension) { const cellularResult = validateCellularScientificScene({ scene: input.scientificSceneSpec, cellular: input.cellularScientificExtension }, input.scientificTimeline); if (!cellularResult.valid) return fail("SCENE_PACKAGE_INVALID", ...cellularResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
+  if (input.membraneProteinTopology) { const topologyResult = validateMembraneProteinTopologyContract(input.membraneProteinTopology); if (!topologyResult.valid) return fail("SCENE_PACKAGE_INVALID", ...topologyResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
+  if (input.intracellularTransportProgram) { const transportResult = validateIntracellularTransportProgram(input.intracellularTransportProgram); if (!transportResult.valid) return fail("SCENE_PACKAGE_INVALID", ...transportResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
+  if (input.cellularSignalingProgram) { const signalingResult = validateCellularSignalingProgram(input.cellularSignalingProgram); if (!signalingResult.valid) return fail("SCENE_PACKAGE_INVALID", ...signalingResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
   if (input.scientificTimeline) { const timelineResult = validateScientificTimeline(input.scientificTimeline, timelineContextFromScene(input.scientificSceneSpec)); if (!timelineResult.valid) return fail("SCENE_PACKAGE_INVALID", ...timelineResult.issues.map((issue) => `${issue.path}: ${issue.message}`)); }
   const assets: AssetManifestV1 = { schemaVersion: "1", assets: [...(input.assets ?? [])].sort((a, b) => a.assetId.localeCompare(b.assetId)) };
   const assetFailure = validateAssets(assets); if (assetFailure) return assetFailure;
@@ -147,7 +171,7 @@ export async function buildScenePackage(input: ScenePackageInputV1): Promise<Rea
   const optionalArtifacts = [...(input.optionalArtifacts ?? [])].sort((a, b) => a.assetId.localeCompare(b.assetId));
   const limitations = [...(input.limitations ?? [])].sort();
   const partial = limitations.length > 0 || optionalArtifacts.some((artifact) => artifact.status === "UNAVAILABLE");
-  const packageWithoutIntegrity = { schemaVersion: "1" as const, packageId: input.packageId, packageVersion: "1" as const, sceneId: input.scientificSceneSpec.sceneId, ...(input.capabilityId ? { capabilityId: input.capabilityId } : {}), ...(input.ownerId ? { ownerId: input.ownerId } : {}), ...(input.representation ? { representation: input.representation } : {}), scientificSceneSpec: input.scientificSceneSpec, ...(input.scientificTimeline ? { scientificTimeline: input.scientificTimeline } : {}), ...(input.teaching ? { teaching: input.teaching } : {}), viewer: input.viewer, provenance: { sourceRefs: uniqueRefs(input.provenance?.sourceRefs ?? []), fidelityRefs: uniqueRefs(input.provenance?.fidelityRefs ?? []), citationRefs: uniqueStrings(input.provenance?.citationRefs ?? []), licenseRefs: uniqueStrings(input.provenance?.licenseRefs ?? []) }, assets, optionalArtifacts, compatibility: { sceneSpec: "1" as const, scientificTimeline: "1" as const, teachingPlan: ["1", "2", "3"] as const, teachingRuntime: "1" as const, exportPackage: "1" as const, requiredRuntimeVersion: runtime }, support: { status: partial ? "PARTIAL" as const : "SUPPORTED" as const, limitations } };
+  const packageWithoutIntegrity = { schemaVersion: "1" as const, packageId: input.packageId, packageVersion: "1" as const, sceneId: input.scientificSceneSpec.sceneId, ...(input.capabilityId ? { capabilityId: input.capabilityId } : {}), ...(input.ownerId ? { ownerId: input.ownerId } : {}), ...(input.representation ? { representation: input.representation } : {}), scientificSceneSpec: input.scientificSceneSpec, ...(input.cellularScientificExtension ? { cellularScientificExtension: input.cellularScientificExtension } : {}), ...(input.membraneProteinTopology ? { membraneProteinTopology: input.membraneProteinTopology } : {}), ...(input.intracellularTransportProgram ? { intracellularTransportProgram: input.intracellularTransportProgram } : {}), ...(input.cellularSignalingProgram ? { cellularSignalingProgram: input.cellularSignalingProgram } : {}), ...(input.scientificTimeline ? { scientificTimeline: input.scientificTimeline } : {}), ...(input.teaching ? { teaching: input.teaching } : {}), viewer: input.viewer, provenance: { sourceRefs: uniqueRefs(input.provenance?.sourceRefs ?? []), fidelityRefs: uniqueRefs(input.provenance?.fidelityRefs ?? []), citationRefs: uniqueStrings(input.provenance?.citationRefs ?? []), licenseRefs: uniqueStrings(input.provenance?.licenseRefs ?? []) }, assets, optionalArtifacts, compatibility: { sceneSpec: "1" as const, scientificTimeline: "1" as const, teachingPlan: ["1", "2", "3"] as const, teachingRuntime: "1" as const, exportPackage: "1" as const, requiredRuntimeVersion: runtime }, support: { status: partial ? "PARTIAL" as const : "SUPPORTED" as const, limitations } };
   const payload = canonicalJson(packageWithoutIntegrity);
   const semanticHash = await digest(payload);
   const pkg: ScenePackageV1 = { ...packageWithoutIntegrity, integrity: { semanticHash, canonicalPayloadHash: await digest(payload) } };

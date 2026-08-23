@@ -4,6 +4,7 @@ import type { ScientificActorId, ScientificGroupId } from "./scientific-actor.ts
 import type { ScientificClaimId, ProvenanceSourceId, ScientificInteractionId } from "./scientific-fidelity-provenance.ts";
 import type { ScientificSceneSpec } from "./scientific-scene-spec.ts";
 import type { ScientificTimeline } from "./scientific-timeline.ts";
+import type { CellularScientificExtensionV1 } from "./cellular-localization.ts";
 
 export const teachingRequestModes = ["show", "explain", "compare", "why", "misconceptionCorrection"] as const;
 export type TeachingRequestMode = (typeof teachingRequestModes)[number];
@@ -28,7 +29,11 @@ export type TeachingReference =
   | { kind: "topologyChange"; topologyChangeId: string }
   | { kind: "timelineChapter"; timelineChapterId: string }
   | { kind: "timelineEvent"; timelineEventId: string }
-  | { kind: "timelineTransition"; timelineTransitionId: string };
+  | { kind: "timelineTransition"; timelineTransitionId: string }
+  /** D-C additive refs: cellular truth remains owned by the cellular scene extension. */
+  | { kind: "compartment"; compartmentId: string }
+  | { kind: "cellularLocalization"; actorId: ScientificActorId; compartmentId: string }
+  | { kind: "localizationChange"; changeId: string };
 
 export type TeachingAnnotation = {
   annotationId: string;
@@ -115,17 +120,24 @@ const keys = (value: unknown, path: string, allowed: readonly string[], issue: (
 const validId = (value: unknown): value is string => typeof value === "string" && idPattern.test(value);
 const text = (value: unknown) => typeof value === "string" && value.trim().length > 0;
 
-type ReferenceContext = { actors: Set<string>; groups: Set<string>; claims: Set<string>; sources: Set<string>; states: Set<string>; interactions: Set<string>; topologyChanges: Set<string>; timelineChapters: Set<string>; timelineEvents: Set<string>; timelineTransitions: Set<string>; allowExtended: boolean };
+type ReferenceContext = { actors: Set<string>; groups: Set<string>; claims: Set<string>; sources: Set<string>; states: Set<string>; interactions: Set<string>; topologyChanges: Set<string>; timelineChapters: Set<string>; timelineEvents: Set<string>; timelineTransitions: Set<string>; compartments: Set<string>; cellularLocalizations: Set<string>; localizationChanges: Set<string>; allowExtended: boolean };
 function validateReference(value: unknown, path: string, context: ReferenceContext, issue: (path: string, message: string) => void): void {
-  if (!keys(value, path, ["kind", "actorId", "groupId", "claimId", "sourceId", "stateId", "interactionId", "topologyChangeId", "timelineChapterId", "timelineEventId", "timelineTransitionId"], issue)) return;
+  if (!keys(value, path, ["kind", "actorId", "groupId", "claimId", "sourceId", "stateId", "interactionId", "topologyChangeId", "timelineChapterId", "timelineEventId", "timelineTransitionId", "compartmentId", "changeId"], issue)) return;
   const ref = value as UnknownRecord;
-  const expected = ref.kind === "actor" ? "actorId" : ref.kind === "group" ? "groupId" : ref.kind === "claim" ? "claimId" : ref.kind === "source" ? "sourceId" : ref.kind === "scientificState" ? "stateId" : ref.kind === "interaction" ? "interactionId" : ref.kind === "topologyChange" ? "topologyChangeId" : ref.kind === "timelineChapter" ? "timelineChapterId" : ref.kind === "timelineEvent" ? "timelineEventId" : ref.kind === "timelineTransition" ? "timelineTransitionId" : undefined;
+  const expected = ref.kind === "actor" ? "actorId" : ref.kind === "group" ? "groupId" : ref.kind === "claim" ? "claimId" : ref.kind === "source" ? "sourceId" : ref.kind === "scientificState" ? "stateId" : ref.kind === "interaction" ? "interactionId" : ref.kind === "topologyChange" ? "topologyChangeId" : ref.kind === "timelineChapter" ? "timelineChapterId" : ref.kind === "timelineEvent" ? "timelineEventId" : ref.kind === "timelineTransition" ? "timelineTransitionId" : ref.kind === "compartment" ? "compartmentId" : ref.kind === "localizationChange" ? "changeId" : ref.kind === "cellularLocalization" ? "actorId" : undefined;
   if (!expected) { issue(`${path}.kind`, "must be a supported teaching reference kind"); return; }
   if (!context.allowExtended && !["actor", "group", "claim", "source"].includes(String(ref.kind))) issue(`${path}.kind`, "requires TeachingPlan schemaVersion 2");
-  ["actorId", "groupId", "claimId", "sourceId", "stateId", "interactionId", "topologyChangeId", "timelineChapterId", "timelineEventId", "timelineTransitionId"].forEach((key) => { if (key !== expected && ref[key] !== undefined) issue(`${path}.${key}`, "does not match reference kind"); });
+  const allowedForKind = ref.kind === "cellularLocalization" ? ["actorId", "compartmentId"] : [expected];
+  ["actorId", "groupId", "claimId", "sourceId", "stateId", "interactionId", "topologyChangeId", "timelineChapterId", "timelineEventId", "timelineTransitionId", "compartmentId", "changeId"].forEach((key) => { if (!allowedForKind.includes(key) && ref[key] !== undefined) issue(`${path}.${key}`, "does not match reference kind"); });
   if (!text(ref[expected])) { issue(`${path}.${expected}`, "is required"); return; }
-  const collection = expected === "actorId" ? context.actors : expected === "groupId" ? context.groups : expected === "claimId" ? context.claims : expected === "sourceId" ? context.sources : expected === "stateId" ? context.states : expected === "interactionId" ? context.interactions : expected === "topologyChangeId" ? context.topologyChanges : expected === "timelineChapterId" ? context.timelineChapters : expected === "timelineEventId" ? context.timelineEvents : context.timelineTransitions;
-  if (!collection.has(String(ref[expected]))) issue(`${path}.${expected}`, "references a missing F2 target");
+  if (ref.kind === "cellularLocalization") {
+    if (!text(ref.compartmentId) || !context.compartments.has(String(ref.compartmentId))) issue(`${path}.compartmentId`, "references a missing cellular compartment");
+    if (!context.actors.has(String(ref.actorId))) issue(`${path}.actorId`, "references a missing actor");
+    if (!context.cellularLocalizations.has(`${String(ref.actorId)}:${String(ref.compartmentId)}`)) issue(path, "references a missing cellular localization");
+    return;
+  }
+  const collection = expected === "actorId" ? context.actors : expected === "groupId" ? context.groups : expected === "claimId" ? context.claims : expected === "sourceId" ? context.sources : expected === "stateId" ? context.states : expected === "interactionId" ? context.interactions : expected === "topologyChangeId" ? context.topologyChanges : expected === "timelineChapterId" ? context.timelineChapters : expected === "timelineEventId" ? context.timelineEvents : expected === "timelineTransitionId" ? context.timelineTransitions : expected === "compartmentId" ? context.compartments : context.localizationChanges;
+  if (!collection.has(String(ref[expected]))) issue(`${path}.${expected}`, expected === "compartmentId" || expected === "changeId" ? "references a missing cellular target" : "references a missing F2 target");
 }
 function list(value: unknown, path: string, issue: (path: string, message: string) => void): unknown[] {
   if (!Array.isArray(value)) { issue(path, "must be an array"); return []; }
@@ -136,7 +148,7 @@ function ids(values: unknown[], path: string, known: Set<string>, issue: (path: 
   values.forEach((value, index) => { if (!validId(value)) issue(`${path}[${index}]`, "must be a stable ID"); else if (seen.has(value)) issue(`${path}[${index}]`, "must be unique"); else { seen.add(value); if (!known.has(value)) issue(`${path}[${index}]`, "references a missing item"); } });
 }
 
-export function validateTeachingPlan(plan: TeachingPlan, scene: ScientificSceneSpec, timeline?: ScientificTimeline): TeachingPlanValidationResult {
+export function validateTeachingPlan(plan: TeachingPlan, scene: ScientificSceneSpec, timeline?: ScientificTimeline, cellular?: CellularScientificExtensionV1): TeachingPlanValidationResult {
   const issues: TeachingPlanValidationIssue[] = [];
   const issue = (path: string, message: string) => issues.push({ path, message });
   if (!keys(plan, "plan", ["schemaVersion", "planId", "sceneId", "requestMode", "learningObjective", "objectiveTrace", "prerequisiteAssumptions", "chapters", "narrationCues", "annotations", "causalSteps", "contrasts", "misconceptionCorrection", "projections"], issue)) return { valid: false, issues };
@@ -163,7 +175,7 @@ export function validateTeachingPlan(plan: TeachingPlan, scene: ScientificSceneS
     }
   }
   list(value.prerequisiteAssumptions, "plan.prerequisiteAssumptions", issue).forEach((entry, index) => { if (!text(entry)) issue(`plan.prerequisiteAssumptions[${index}]`, "must be non-empty"); });
-  const context: ReferenceContext = { actors: new Set(scene.actors.map((actor) => String(actor.actorId))), groups: new Set(scene.groups.map((group) => String(group.groupId))), claims: new Set((scene.claimIds ?? []).map(String)), sources: new Set(scene.fidelityProvenance.sources.map((source) => String(source.sourceId))), states: new Set(scene.states.map((state) => state.stateId)), interactions: new Set(scene.topology.interactions.map((interaction) => interaction.interactionId)), topologyChanges: new Set((scene.topology.changes ?? []).map((change) => change.changeId)), timelineChapters: new Set((timeline?.chapters ?? []).map((chapter) => chapter.chapterId)), timelineEvents: new Set((timeline?.events ?? []).map((event) => event.eventId)), timelineTransitions: new Set((timeline?.transitions ?? []).map((transition) => transition.transitionId)), allowExtended: value.schemaVersion === "2" || value.schemaVersion === "3" };
+  const context: ReferenceContext = { actors: new Set(scene.actors.map((actor) => String(actor.actorId))), groups: new Set(scene.groups.map((group) => String(group.groupId))), claims: new Set((scene.claimIds ?? []).map(String)), sources: new Set(scene.fidelityProvenance.sources.map((source) => String(source.sourceId))), states: new Set(scene.states.map((state) => state.stateId)), interactions: new Set(scene.topology.interactions.map((interaction) => interaction.interactionId)), topologyChanges: new Set((scene.topology.changes ?? []).map((change) => change.changeId)), timelineChapters: new Set((timeline?.chapters ?? []).map((chapter) => chapter.chapterId)), timelineEvents: new Set((timeline?.events ?? []).map((event) => event.eventId)), timelineTransitions: new Set((timeline?.transitions ?? []).map((transition) => transition.transitionId)), compartments: new Set((cellular?.compartments ?? []).map((entry) => entry.compartmentId)), cellularLocalizations: new Set((cellular?.localizations ?? []).map((entry) => `${String(entry.actorId)}:${entry.compartmentId}`)), localizationChanges: new Set((cellular?.localizationChanges ?? []).map((entry) => entry.changeId)), allowExtended: value.schemaVersion === "2" || value.schemaVersion === "3" };
   const chapters = list(value.chapters, "plan.chapters", issue);
   const chapterIds = new Set<string>();
   chapters.forEach((chapter, index) => {

@@ -41,6 +41,10 @@ const ref = (kind: TeachingReference["kind"], id: string): TeachingReference => 
     case "timelineChapter": return { kind, timelineChapterId: id };
     case "timelineEvent": return { kind, timelineEventId: id };
     case "timelineTransition": return { kind, timelineTransitionId: id };
+    case "compartment": return { kind, compartmentId: id };
+    case "localizationChange": return { kind, changeId: id };
+    case "cellularLocalization": return { kind, actorId: id as never, compartmentId: id };
+    default: throw new Error(`Unsupported teaching reference kind: ${String(kind)}`);
   }
 };
 const fail = (code: TeachingCompileFailureCode, ...reasons: string[]): TeachingCompileResult => ({ ok: false, code, reasons });

@@ -2,6 +2,11 @@
 
 import type { PresentationMechanismSnapshotV1, PresentationOwnerId, PresentationOwnerInput } from "./p3-e-presentation-synchronization.ts";
 import { createProductionTemporalCursor, evaluateProductionTemporalFrame, seekProductionTemporalCursor, type ProductionTemporalMigrationV1 } from "./p3-g-production-temporal-migration.ts";
+import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production.ts";
+import type { SecretoryProductionProjectionV1 } from "./secretory-production.ts";
+import type { MembraneProteinProductionProjectionV1 } from "./membrane-protein-production.ts";
+import type { IntracellularTransportProductionProjectionV1 } from "./intracellular-transport-production.ts";
+import type { CellularSignalingProductionProjectionV1 } from "./cellular-signaling-production.ts";
 
 export type ExactFrameFailureCode =
   | "EXACT_FRAME_REQUEST_INVALID"
@@ -201,3 +206,70 @@ export function applyRenderState(target: ExactFrameOwnerTarget, state: AppliedRe
 
 export function serializeExactFrameRequest(request: ExactFrameRequestV1): string { return JSON.stringify(request); }
 export function serializeAppliedRenderState(state: AppliedRenderStateV1): string { return JSON.stringify(state); }
+
+/** Additive P4 seam for the D-C production owner. The projection is already
+ * evaluated by the canonical D-C timeline; this function only applies the
+ * fixed render configuration and deterministic camera cue. */
+export type CellularGeneExpressionAppliedRenderStateV1 = Readonly<{
+  schemaVersion: "1";
+  ownerId: "GENE_EXPRESSION_CELLULAR_V1";
+  timeSeconds: number;
+  renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"]; runtimeMode: "EXACT_FRAME" }>;
+  projection: GeneExpressionProductionProjectionV1;
+  cameraCue: Readonly<{ kind: "overview" | "focusNucleus" | "focusTranscription" | "focusProcessing" | "focusExport" | "focusTranslation"; actorIds: readonly string[] }>;
+}>;
+
+export function applyCellularGeneExpressionExactFrame(
+  projection: GeneExpressionProductionProjectionV1,
+  renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"] }>,
+): Readonly<{ ok: true; state: CellularGeneExpressionAppliedRenderStateV1 } | ExactFrameFailure> {
+  if (projection.ownerId !== "GENE_EXPRESSION_CELLULAR_V1") return failure("OWNER_UNAVAILABLE", "D-C production owner is unavailable");
+  if (!Number.isInteger(renderConfig.width) || renderConfig.width <= 0 || !Number.isInteger(renderConfig.height) || renderConfig.height <= 0 || !finitePositive(renderConfig.pixelRatio)) return failure("RENDER_STATE_INCOMPLETE", "fixed render dimensions are required");
+  const kind = projection.focus === "NUCLEAR" ? "focusNucleus" : projection.focus === "MOLECULAR_TRANSCRIPTION" ? "focusTranscription" : projection.focus === "RNA_PROCESSING" ? "focusProcessing" : projection.focus === "CELLULAR_EXPORT" ? "focusExport" : projection.focus === "MOLECULAR_TRANSLATION" ? "focusTranslation" : "overview";
+  const actorIds = [projection.dna.templateStrandId, projection.dna.nonTemplateStrandId, projection.transcription.rnaActorId, projection.translation.peptideId];
+  return { ok: true, state: { schemaVersion: "1", ownerId: "GENE_EXPRESSION_CELLULAR_V1", timeSeconds: projection.timeSeconds, renderConfig: { ...renderConfig, runtimeMode: "EXACT_FRAME" }, projection, cameraCue: { kind, actorIds } } };
+}
+
+export type CellularSecretoryAppliedRenderStateV1 = Readonly<{
+  schemaVersion: "1";
+  ownerId: "SECRETORY_PATHWAY_CELLULAR_V1";
+  timeSeconds: number;
+  renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"]; runtimeMode: "EXACT_FRAME" }>;
+  projection: SecretoryProductionProjectionV1;
+  cameraCue: Readonly<{ kind: "overview" | "focusErTargeting" | "focusErLumen" | "focusGolgi" | "focusVesicle" | "focusExocytosis"; actorIds: readonly string[] }>;
+}>;
+
+/** Additive P4 application seam. It copies D-D projection state and adds only deterministic presentation focus. */
+export function applyCellularSecretoryExactFrame(
+  projection: SecretoryProductionProjectionV1,
+  renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"] }>,
+): Readonly<{ ok: true; state: CellularSecretoryAppliedRenderStateV1 } | ExactFrameFailure> {
+  if (projection.ownerId !== "SECRETORY_PATHWAY_CELLULAR_V1") return failure("OWNER_UNAVAILABLE", "D-D production owner is unavailable");
+  if (!Number.isInteger(renderConfig.width) || renderConfig.width <= 0 || !Number.isInteger(renderConfig.height) || renderConfig.height <= 0 || !finitePositive(renderConfig.pixelRatio)) return failure("RENDER_STATE_INCOMPLETE", "fixed render dimensions are required");
+  const kind = projection.focus === "ER_TARGETING" ? "focusErTargeting" : projection.focus === "ER_LUMEN" || projection.focus === "ER_QUALITY" ? "focusErLumen" : projection.focus === "GOLGI" ? "focusGolgi" : projection.focus === "SECRETORY_VESICLE" ? "focusVesicle" : projection.focus === "EXOCYTOSIS" ? "focusExocytosis" : "overview";
+  return { ok: true, state: { schemaVersion: "1", ownerId: "SECRETORY_PATHWAY_CELLULAR_V1", timeSeconds: projection.timeSeconds, renderConfig: { ...renderConfig, runtimeMode: "EXACT_FRAME" }, projection, cameraCue: { kind, actorIds: [projection.protein.actorId, ...(projection.vesicle.id ? [projection.vesicle.id] : [])] } } };
+}
+
+export type CellularMembraneProteinAppliedRenderStateV1 = Readonly<{ schemaVersion: "1"; ownerId: "SECRETORY_PATHWAY_CELLULAR_V1"; timeSeconds: number; renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"]; runtimeMode: "EXACT_FRAME" }>; projection: MembraneProteinProductionProjectionV1; cameraCue: Readonly<{ kind: "focusErInsertion" | "focusTopology" | "focusQuality" | "focusGolgi" | "focusPlasmaMembrane"; actorIds: readonly string[] }> }>;
+export function applyCellularMembraneProteinExactFrame(projection: MembraneProteinProductionProjectionV1, renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"] }>): Readonly<{ ok: true; state: CellularMembraneProteinAppliedRenderStateV1 } | ExactFrameFailure> {
+  if (projection.ownerId !== "SECRETORY_PATHWAY_CELLULAR_V1") return failure("OWNER_UNAVAILABLE", "D-E production owner is unavailable");
+  if (!Number.isInteger(renderConfig.width) || renderConfig.width <= 0 || !Number.isInteger(renderConfig.height) || renderConfig.height <= 0 || !finitePositive(renderConfig.pixelRatio)) return failure("RENDER_STATE_INCOMPLETE", "fixed render dimensions are required");
+  const kind = projection.focus === "ER_INSERTION" ? "focusErInsertion" : projection.focus === "TOPOLOGY" ? "focusTopology" : projection.focus === "ER_QUALITY" ? "focusQuality" : projection.focus === "GOLGI" ? "focusGolgi" : "focusPlasmaMembrane";
+  return { ok: true, state: { schemaVersion: "1", ownerId: "SECRETORY_PATHWAY_CELLULAR_V1", timeSeconds: projection.timeSeconds, renderConfig: { ...renderConfig, runtimeMode: "EXACT_FRAME" }, projection, cameraCue: { kind, actorIds: [projection.proteinId] } } };
+}
+
+export type CellularIntracellularTransportAppliedRenderStateV1 = Readonly<{ schemaVersion: "1"; ownerId: "INTRACELLULAR_TRANSPORT_CELLULAR_V1"; timeSeconds: number; renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"]; runtimeMode: "EXACT_FRAME" }>; projection: IntracellularTransportProductionProjectionV1; cameraCue: Readonly<{ kind: "overview" | "focusTransport" | "focusEndocytosis" | "focusEndosome"; actorIds: readonly string[] }> }>;
+export function applyCellularIntracellularTransportExactFrame(projection: IntracellularTransportProductionProjectionV1, renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"] }>): Readonly<{ ok: true; state: CellularIntracellularTransportAppliedRenderStateV1 } | ExactFrameFailure> {
+  if (projection.ownerId !== "INTRACELLULAR_TRANSPORT_CELLULAR_V1") return failure("OWNER_UNAVAILABLE", "D-F production owner is unavailable");
+  if (!Number.isInteger(renderConfig.width) || renderConfig.width <= 0 || !Number.isInteger(renderConfig.height) || renderConfig.height <= 0 || !finitePositive(renderConfig.pixelRatio)) return failure("RENDER_STATE_INCOMPLETE", "fixed render dimensions are required");
+  const kind = projection.focus === "ENDOSOME" ? "focusEndosome" : projection.focus === "ENDOCYTOSIS" ? "focusEndocytosis" : projection.focus === "TRANSPORT" ? "focusTransport" : "overview";
+  return { ok: true, state: { schemaVersion: "1", ownerId: "INTRACELLULAR_TRANSPORT_CELLULAR_V1", timeSeconds: projection.timeSeconds, renderConfig: { ...renderConfig, runtimeMode: "EXACT_FRAME" }, projection, cameraCue: { kind, actorIds: [projection.endocytosis.receptorId, ...(projection.cargo.id ? [projection.cargo.id] : []), ...(projection.track.id ? [projection.track.id] : [])] } } };
+}
+
+export type CellularSignalingAppliedRenderStateV1 = Readonly<{ schemaVersion: "1"; ownerId: "CELL_SIGNALING_RTK_MAPK_V1"; timeSeconds: number; renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"]; runtimeMode: "EXACT_FRAME" }>; projection: CellularSignalingProductionProjectionV1; cameraCue: Readonly<{ kind: "focusExtracellularBinding" | "focusMembraneReceptor" | "focusCytosolicCascade" | "focusNuclearResponse"; actorIds: readonly string[] }> }>;
+export function applyCellularSignalingExactFrame(projection: CellularSignalingProductionProjectionV1, renderConfig: Readonly<{ width: number; height: number; pixelRatio: number; background: RenderConfigV1["background"] }>): Readonly<{ ok: true; state: CellularSignalingAppliedRenderStateV1 } | ExactFrameFailure> {
+  if (projection.ownerId !== "CELL_SIGNALING_RTK_MAPK_V1") return failure("OWNER_UNAVAILABLE", "D-G production owner is unavailable");
+  if (!Number.isInteger(renderConfig.width) || renderConfig.width <= 0 || !Number.isInteger(renderConfig.height) || renderConfig.height <= 0 || !finitePositive(renderConfig.pixelRatio)) return failure("RENDER_STATE_INCOMPLETE", "fixed render dimensions are required");
+  const kind = projection.focus === "EXTRACELLULAR_BINDING" ? "focusExtracellularBinding" : projection.focus === "MEMBRANE_RECEPTOR" ? "focusMembraneReceptor" : projection.focus === "CYTOSOLIC_CASCADE" ? "focusCytosolicCascade" : "focusNuclearResponse";
+  return { ok: true, state: { schemaVersion: "1", ownerId: "CELL_SIGNALING_RTK_MAPK_V1", timeSeconds: projection.timeSeconds, renderConfig: { ...renderConfig, runtimeMode: "EXACT_FRAME" }, projection, cameraCue: { kind, actorIds: [projection.ligand.id, projection.receptor.id, projection.cascade.erk, projection.nuclearResponse.targetGeneId] } } };
+}
