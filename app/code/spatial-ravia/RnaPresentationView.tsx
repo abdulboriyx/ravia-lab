@@ -3,8 +3,10 @@
 import type { RnaPresentationRoute } from "./RnaPresentationRouter";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 import { ProductionRnaScene } from "./ProductionRnaScene";
+import { ProductionTeachingPanel } from "./ProductionTeachingPanel";
+import type { ProductionTeachingViewV1 } from "./production-teaching-adapter";
 
-export function RnaPresentationView({ route, theme }: { route: RnaPresentationRoute; theme: SpatialRaviaTheme }) {
+export function RnaPresentationView({ route, theme, teachingView }: { route: RnaPresentationRoute; theme: SpatialRaviaTheme; teachingView?: ProductionTeachingViewV1 }) {
   return (
     <section
       aria-label={`RNA presentation: ${route.family}`}
@@ -17,6 +19,7 @@ export function RnaPresentationView({ route, theme }: { route: RnaPresentationRo
       data-rna-theme={theme}
     >
       <ProductionRnaScene route={route} theme={theme} />
+      {teachingView && <ProductionTeachingPanel view={teachingView} />}
       {process.env.NODE_ENV !== "production" && (
         <details className="rnaProductionMetadata">
           <summary>RNA presentation metadata</summary>

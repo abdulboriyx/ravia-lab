@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T19:34:25.076Z",
+  "generatedAt": "2026-08-23T03:55:58.136Z",
   "holdoutFrozen": true,
   "datasetVersion": "semantic-holdout-v1",
   "baselineBeforeParserImprovements": {
@@ -28,25 +28,25 @@
     "total": 108,
     "supportedCount": 93,
     "unsupportedCount": 15,
-    "exactSemanticPassRate": 0.9814814814814815,
-    "supportedClassPassRate": 0.978494623655914,
-    "supportClassificationAccuracy": 1,
+    "exactSemanticPassRate": 0.9444444444444444,
+    "supportedClassPassRate": 0.946236559139785,
+    "supportClassificationAccuracy": 0.9907407407407407,
     "intentAccuracy": 1,
-    "rendererAccuracy": 1,
-    "requiredEntityRecall": 1,
-    "forbiddenEntityFalsePositiveRate": 0.06666666666666667,
-    "actionAccuracy": 1,
-    "relationAccuracy": 0.9807692307692307,
+    "rendererAccuracy": 0.978494623655914,
+    "requiredEntityRecall": 0.9946236559139785,
+    "forbiddenEntityFalsePositiveRate": 0.2,
+    "actionAccuracy": 0.9736842105263158,
+    "relationAccuracy": 1,
     "organismContextAccuracy": 1,
     "unsupportedPrecision": 1,
-    "unsupportedRecall": 1,
-    "falseSupportedCount": 0,
-    "falseSupportedRate": 0,
+    "unsupportedRecall": 0.9333333333333333,
+    "falseSupportedCount": 1,
+    "falseSupportedRate": 0.06666666666666667,
     "falseUnsupportedCount": 0,
     "categoryMetrics": {
       "helicase": {
         "count": 10,
-        "exactSemanticPassRate": 1,
+        "exactSemanticPassRate": 0.9,
         "supportAccuracy": 1
       },
       "strand-stabilization": {
@@ -61,17 +61,17 @@
       },
       "primase": {
         "count": 10,
-        "exactSemanticPassRate": 1,
+        "exactSemanticPassRate": 0.9,
         "supportAccuracy": 1
       },
       "polymerase": {
         "count": 12,
-        "exactSemanticPassRate": 1,
+        "exactSemanticPassRate": 0.9166666666666666,
         "supportAccuracy": 1
       },
       "leading-strand": {
         "count": 8,
-        "exactSemanticPassRate": 0.875,
+        "exactSemanticPassRate": 1,
         "supportAccuracy": 1
       },
       "lagging-okazaki": {
@@ -91,19 +91,20 @@
       },
       "dna-structure": {
         "count": 5,
-        "exactSemanticPassRate": 1,
+        "exactSemanticPassRate": 0.8,
         "supportAccuracy": 1
       },
       "unsupported": {
         "count": 15,
-        "exactSemanticPassRate": 1,
-        "supportAccuracy": 1
+        "exactSemanticPassRate": 0.9333333333333333,
+        "supportAccuracy": 0.9333333333333333
       }
     },
     "failureCounts": {
-      "none": 106,
-      "wrong relation": 1,
-      "extra incorrect entity": 1
+      "none": 102,
+      "wrong renderer": 2,
+      "extra incorrect entity": 3,
+      "ambiguity handled too confidently": 1
     }
   },
   "cases": [
@@ -243,16 +244,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
-        "relations": [],
+        "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          }
+        ],
         "source": "semantic",
         "intent": "mechanism",
         "renderer": "three"
@@ -298,37 +386,34 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.94,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
-          "dna",
-          "helicase"
+          "dna"
         ],
-        "actions": [
-          {
-            "actor": "helicase",
-            "action": "unwinds",
-            "target": "dna"
-          }
-        ],
+        "actions": [],
         "relations": [],
         "source": "semantic",
-        "intent": "mechanism",
-        "renderer": "three"
+        "intent": "structure",
+        "renderer": "molstar"
       },
       "score": {
         "supportCorrect": true,
         "intentCorrect": null,
-        "rendererCorrect": true,
-        "requiredEntityRecall": 1,
+        "rendererCorrect": false,
+        "requiredEntityRecall": 0.5,
         "forbiddenEntityFalsePositiveRate": 0,
-        "actionAccuracy": 1,
+        "actionAccuracy": 0,
         "relationAccuracy": null,
         "organismContextCorrect": null,
-        "exactSemanticPass": true
+        "exactSemanticPass": false
       },
-      "failureCategory": "none",
-      "failureReasons": []
+      "failureCategory": "wrong renderer",
+      "failureReasons": [
+        "Expected renderer three, got molstar.",
+        "Missing required entity helicase.",
+        "Missing action helicase/unwinds/dna."
+      ]
     },
     {
       "id": "hel-005",
@@ -410,16 +495,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
-        "relations": [],
+        "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          }
+        ],
         "source": "semantic",
         "intent": "mechanism",
         "renderer": "three"
@@ -464,16 +636,89 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript",
           "helicase"
         ],
         "actions": [
+          {
+            "actor": "rna-polymerase",
+            "action": "binds",
+            "target": "promoter"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "locally_unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "synthesizes",
+            "target": "rna-transcript"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "moves_along",
+            "target": "template-strand"
+          },
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
           }
         ],
-        "relations": [],
+        "relations": [
+          {
+            "subject": "gene",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "promoter",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "template-strand",
+            "relation": "part_of",
+            "object": "dna"
+          },
+          {
+            "subject": "coding-strand",
+            "relation": "part_of",
+            "object": "dna"
+          },
+          {
+            "subject": "transcription-bubble",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "rna-polymerase",
+            "relation": "binds_to",
+            "object": "promoter"
+          },
+          {
+            "subject": "rna-polymerase",
+            "relation": "positioned_at",
+            "object": "transcription-bubble"
+          },
+          {
+            "subject": "rna-transcript",
+            "relation": "extends_from",
+            "object": "rna-polymerase"
+          },
+          {
+            "subject": "rna-transcript",
+            "relation": "complementary_to",
+            "object": "template-strand"
+          }
+        ],
         "source": "semantic",
         "intent": "mechanism",
         "renderer": "three"
@@ -629,16 +874,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
-        "relations": [],
+        "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          }
+        ],
         "source": "semantic",
         "intent": "mechanism",
         "renderer": "three"
@@ -742,10 +1074,103 @@
         "organismContext": "bacterial",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "ssb"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          }
+        ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "ssb",
             "relation": "stabilizes",
@@ -753,7 +1178,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -916,10 +1341,103 @@
         "organismContext": "eukaryotic",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "rpa"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          }
+        ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "rpa",
             "relation": "stabilizes",
@@ -927,7 +1445,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1027,10 +1545,103 @@
         "organismContext": "bacterial",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "ssb"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          }
+        ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "ssb",
             "relation": "stabilizes",
@@ -1038,7 +1649,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1084,10 +1695,103 @@
         "organismContext": "eukaryotic",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "rpa"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          }
+        ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "rpa",
             "relation": "stabilizes",
@@ -1095,7 +1799,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1192,10 +1896,83 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "gene",
+          "promoter",
+          "template-strand",
+          "coding-strand",
+          "rna-polymerase",
+          "transcription-bubble",
+          "rna-transcript",
           "ssdna-binding-protein"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "rna-polymerase",
+            "action": "binds",
+            "target": "promoter"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "locally_unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "synthesizes",
+            "target": "rna-transcript"
+          },
+          {
+            "actor": "rna-polymerase",
+            "action": "moves_along",
+            "target": "template-strand"
+          }
+        ],
         "relations": [
+          {
+            "subject": "gene",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "promoter",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "template-strand",
+            "relation": "part_of",
+            "object": "dna"
+          },
+          {
+            "subject": "coding-strand",
+            "relation": "part_of",
+            "object": "dna"
+          },
+          {
+            "subject": "transcription-bubble",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "rna-polymerase",
+            "relation": "binds_to",
+            "object": "promoter"
+          },
+          {
+            "subject": "rna-polymerase",
+            "relation": "positioned_at",
+            "object": "transcription-bubble"
+          },
+          {
+            "subject": "rna-transcript",
+            "relation": "extends_from",
+            "object": "rna-polymerase"
+          },
+          {
+            "subject": "rna-transcript",
+            "relation": "complementary_to",
+            "object": "template-strand"
+          },
           {
             "subject": "ssdna-binding-protein",
             "relation": "stabilizes",
@@ -1203,7 +1980,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1250,10 +2027,103 @@
         "organismContext": "eukaryotic",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "rpa"
         ],
-        "actions": [],
+        "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          }
+        ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "rpa",
             "relation": "stabilizes",
@@ -1261,7 +2131,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1363,17 +2233,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1381,7 +2337,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1485,17 +2441,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1503,7 +2545,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1546,17 +2588,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1564,7 +2692,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1729,17 +2857,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1747,7 +2961,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1790,17 +3004,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1808,7 +3108,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -1851,17 +3151,103 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
-          "topoisomerase",
-          "helicase"
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
+          "topoisomerase"
         ],
         "actions": [
           {
             "actor": "helicase",
             "action": "unwinds",
             "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "topoisomerase",
             "relation": "acts_ahead_of",
@@ -1869,7 +3255,7 @@
           }
         ],
         "source": "semantic",
-        "intent": "relation",
+        "intent": "mechanism",
         "renderer": "three"
       },
       "score": {
@@ -2115,10 +3501,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2126,6 +3548,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2255,10 +3732,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2266,6 +3779,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2286,14 +3854,16 @@
         "intentCorrect": null,
         "rendererCorrect": true,
         "requiredEntityRecall": 1,
-        "forbiddenEntityFalsePositiveRate": 0,
+        "forbiddenEntityFalsePositiveRate": 1,
         "actionAccuracy": 1,
         "relationAccuracy": null,
         "organismContextCorrect": null,
-        "exactSemanticPass": true
+        "exactSemanticPass": false
       },
-      "failureCategory": "none",
-      "failureReasons": []
+      "failureCategory": "extra incorrect entity",
+      "failureReasons": [
+        "Forbidden entity ligase present."
+      ]
     },
     {
       "id": "prim-006",
@@ -2322,10 +3892,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2333,6 +3939,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2389,10 +4050,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2400,6 +4097,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2456,10 +4208,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2467,6 +4255,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2523,10 +4366,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2534,6 +4413,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2590,10 +4524,46 @@
         "organismContext": "unspecified",
         "entities": [
           "dna",
+          "fork",
+          "polymerase",
+          "leading-template",
+          "lagging-template",
+          "daughter-leading-strand",
+          "daughter-lagging-strand",
+          "rna-primer-leading",
+          "rna-primer-lagging",
+          "okazaki-fragment",
+          "helicase",
           "primase",
+          "ligase",
           "rna-primer"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-leading-strand"
+          },
+          {
+            "actor": "polymerase",
+            "action": "synthesizes",
+            "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
+          },
           {
             "actor": "primase",
             "action": "synthesizes",
@@ -2601,6 +4571,61 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
+          {
+            "subject": "polymerase",
+            "relation": "binds_to",
+            "object": "dna"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-leading"
+          },
+          {
+            "subject": "daughter-lagging-strand",
+            "relation": "extends_from",
+            "object": "rna-primer-lagging"
+          },
+          {
+            "subject": "rna-primer-leading",
+            "relation": "placed_on",
+            "object": "leading-template"
+          },
+          {
+            "subject": "rna-primer-lagging",
+            "relation": "placed_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "part_of",
+            "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
+          },
           {
             "subject": "primase",
             "relation": "binds_to",
@@ -2665,9 +4690,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -2677,9 +4710,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -2709,6 +4762,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -2764,9 +4832,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -2776,9 +4852,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -2808,6 +4904,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -2863,9 +4974,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -2875,9 +4994,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -2907,6 +5046,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -2962,9 +5116,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -2974,9 +5136,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -3006,6 +5188,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -3064,9 +5261,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -3076,9 +5281,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -3108,6 +5333,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -3119,14 +5359,16 @@
         "intentCorrect": null,
         "rendererCorrect": true,
         "requiredEntityRecall": 1,
-        "forbiddenEntityFalsePositiveRate": 0,
+        "forbiddenEntityFalsePositiveRate": 1,
         "actionAccuracy": 1,
         "relationAccuracy": null,
         "organismContextCorrect": null,
-        "exactSemanticPass": true
+        "exactSemanticPass": false
       },
-      "failureCategory": "none",
-      "failureReasons": []
+      "failureCategory": "extra incorrect entity",
+      "failureReasons": [
+        "Forbidden entity helicase present."
+      ]
     },
     {
       "id": "pol-006",
@@ -3959,9 +6201,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -3971,9 +6221,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4008,6 +6278,16 @@
             "subject": "daughter-leading-strand",
             "relation": "continuous_with",
             "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4061,9 +6341,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4073,9 +6361,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4110,6 +6418,16 @@
             "subject": "daughter-leading-strand",
             "relation": "continuous_with",
             "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4164,9 +6482,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4181,9 +6506,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4215,9 +6555,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4231,14 +6581,12 @@
         "requiredEntityRecall": 1,
         "forbiddenEntityFalsePositiveRate": null,
         "actionAccuracy": null,
-        "relationAccuracy": 0,
+        "relationAccuracy": 1,
         "organismContextCorrect": null,
-        "exactSemanticPass": false
+        "exactSemanticPass": true
       },
-      "failureCategory": "wrong relation",
-      "failureReasons": [
-        "Missing relation daughter-leading-strand/continuous_with/fork."
-      ]
+      "failureCategory": "none",
+      "failureReasons": []
     },
     {
       "id": "lead-005",
@@ -4579,9 +6927,17 @@
           "daughter-lagging-strand",
           "rna-primer-leading",
           "rna-primer-lagging",
-          "okazaki-fragment"
+          "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4591,9 +6947,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4628,6 +7004,16 @@
             "subject": "daughter-leading-strand",
             "relation": "continuous_with",
             "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4683,9 +7069,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4700,9 +7093,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4734,9 +7142,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4792,9 +7210,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4809,9 +7234,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4843,9 +7283,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -4901,9 +7351,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -4918,9 +7375,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -4952,9 +7424,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -5227,9 +7709,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5244,9 +7733,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5278,9 +7782,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -5592,9 +8106,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5609,9 +8130,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5651,6 +8187,11 @@
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -5706,9 +8247,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
-          "primase"
+          "helicase",
+          "primase",
+          "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5723,9 +8271,24 @@
             "actor": "primase",
             "action": "synthesizes",
             "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5757,9 +8320,19 @@
             "object": "daughter-lagging-strand"
           },
           {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
             "subject": "okazaki-fragment",
             "relation": "discontinuous_on",
             "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           }
         ],
         "source": "semantic",
@@ -5822,10 +8395,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5848,6 +8427,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5877,6 +8466,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -5942,10 +8536,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -5968,6 +8568,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -5997,6 +8607,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -6182,10 +8797,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6208,6 +8829,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6237,6 +8868,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -6302,10 +8938,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6328,6 +8970,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6357,6 +9009,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -6547,10 +9204,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6573,6 +9236,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6602,6 +9275,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -6667,10 +9345,16 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
           "primase",
           "ligase"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6693,6 +9377,16 @@
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6722,6 +9416,11 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
           },
           {
             "subject": "okazaki-fragment",
@@ -6788,11 +9487,19 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "template-5-prime",
           "template-3-prime",
           "5-to-3"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6802,9 +9509,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6834,6 +9561,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           },
           {
             "subject": "daughter-leading-strand",
@@ -6900,11 +9642,19 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "template-5-prime",
           "template-3-prime",
           "5-to-3"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -6914,9 +9664,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -6946,6 +9716,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           },
           {
             "subject": "daughter-leading-strand",
@@ -7124,11 +9909,19 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "template-5-prime",
           "template-3-prime",
           "5-to-3"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -7138,9 +9931,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -7170,6 +9983,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           },
           {
             "subject": "daughter-leading-strand",
@@ -7348,11 +10176,19 @@
           "rna-primer-leading",
           "rna-primer-lagging",
           "okazaki-fragment",
+          "helicase",
+          "primase",
+          "ligase",
           "template-5-prime",
           "template-3-prime",
           "5-to-3"
         ],
         "actions": [
+          {
+            "actor": "helicase",
+            "action": "unwinds",
+            "target": "dna"
+          },
           {
             "actor": "polymerase",
             "action": "synthesizes",
@@ -7362,9 +10198,29 @@
             "actor": "polymerase",
             "action": "synthesizes",
             "target": "daughter-lagging-strand"
+          },
+          {
+            "actor": "primase",
+            "action": "synthesizes",
+            "target": "rna-primer-lagging"
+          },
+          {
+            "actor": "ligase",
+            "action": "ligates",
+            "target": "okazaki-fragment"
           }
         ],
         "relations": [
+          {
+            "subject": "helicase",
+            "relation": "located_at",
+            "object": "fork"
+          },
+          {
+            "subject": "helicase",
+            "relation": "unwinds",
+            "object": "dna"
+          },
           {
             "subject": "polymerase",
             "relation": "binds_to",
@@ -7394,6 +10250,21 @@
             "subject": "okazaki-fragment",
             "relation": "part_of",
             "object": "daughter-lagging-strand"
+          },
+          {
+            "subject": "daughter-leading-strand",
+            "relation": "continuous_with",
+            "object": "fork"
+          },
+          {
+            "subject": "okazaki-fragment",
+            "relation": "discontinuous_on",
+            "object": "lagging-template"
+          },
+          {
+            "subject": "ligase",
+            "relation": "joins",
+            "object": "okazaki-fragment"
           },
           {
             "subject": "daughter-leading-strand",
@@ -7663,7 +10534,7 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.92,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
           "dna"
@@ -7743,7 +10614,7 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.92,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
           "dna"
@@ -7783,30 +10654,39 @@
       },
       "actual": {
         "status": "supported",
-        "confidence": 0.92,
+        "confidence": 0.96,
         "organismContext": "unspecified",
         "entities": [
-          "dna"
+          "dna",
+          "base-pair"
         ],
         "actions": [],
-        "relations": [],
+        "relations": [
+          {
+            "subject": "base-pair",
+            "relation": "part_of",
+            "object": "dna"
+          }
+        ],
         "source": "semantic",
         "intent": "structure",
-        "renderer": "molstar"
+        "renderer": "three"
       },
       "score": {
         "supportCorrect": true,
         "intentCorrect": true,
-        "rendererCorrect": true,
+        "rendererCorrect": false,
         "requiredEntityRecall": 1,
         "forbiddenEntityFalsePositiveRate": null,
         "actionAccuracy": null,
         "relationAccuracy": null,
         "organismContextCorrect": null,
-        "exactSemanticPass": true
+        "exactSemanticPass": false
       },
-      "failureCategory": "none",
-      "failureReasons": []
+      "failureCategory": "wrong renderer",
+      "failureReasons": [
+        "Expected renderer molstar, got three."
+      ]
     },
     {
       "id": "struct-005",
@@ -7987,7 +10867,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8018,7 +10898,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8049,7 +10929,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8074,16 +10954,39 @@
         "supported": false
       },
       "actual": {
-        "status": "unsupported",
-        "confidence": 0,
+        "status": "supported",
+        "confidence": 0.96,
         "organismContext": "unspecified",
-        "entities": [],
-        "actions": [],
-        "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "entities": [
+          "dna",
+          "repair-machinery",
+          "damage"
+        ],
+        "actions": [
+          {
+            "actor": "repair-machinery",
+            "action": "repairs",
+            "target": "damage"
+          }
+        ],
+        "relations": [
+          {
+            "subject": "damage",
+            "relation": "located_on",
+            "object": "dna"
+          },
+          {
+            "subject": "repair-machinery",
+            "relation": "binds_to",
+            "object": "damage"
+          }
+        ],
+        "source": "semantic",
+        "intent": "mechanism",
+        "renderer": "three"
       },
       "score": {
-        "supportCorrect": true,
+        "supportCorrect": false,
         "intentCorrect": null,
         "rendererCorrect": null,
         "requiredEntityRecall": null,
@@ -8091,10 +10994,12 @@
         "actionAccuracy": null,
         "relationAccuracy": null,
         "organismContextCorrect": null,
-        "exactSemanticPass": true
+        "exactSemanticPass": false
       },
-      "failureCategory": "none",
-      "failureReasons": []
+      "failureCategory": "ambiguity handled too confidently",
+      "failureReasons": [
+        "Expected unsupported prompt but parser returned a scene."
+      ]
     },
     {
       "id": "neg-009",
@@ -8111,7 +11016,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8142,7 +11047,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8173,7 +11078,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,
@@ -8297,7 +11202,7 @@
         "entities": [],
         "actions": [],
         "relations": [],
-        "reason": "This prompt is too ambiguous for a confident biology scene."
+        "reason": "I cannot interpret this biology prompt yet."
       },
       "score": {
         "supportCorrect": true,

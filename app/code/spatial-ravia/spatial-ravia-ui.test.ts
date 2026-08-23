@@ -27,6 +27,14 @@ const themeSource = readFileSync(
   new URL("./spatial-ravia-theme.ts", import.meta.url),
   "utf8"
 );
+const teachingPanelSource = readFileSync(
+  new URL("./ProductionTeachingPanel.tsx", import.meta.url),
+  "utf8"
+);
+const teachingAdapterSource = readFileSync(
+  new URL("./production-teaching-adapter.ts", import.meta.url),
+  "utf8"
+);
 const globalCssSource = readFileSync(
   new URL("../../globals.css", import.meta.url),
   "utf8"
@@ -100,4 +108,14 @@ test("Spatial Ravia owns one persistent workspace light and dark background pref
   assert.match(themeSource, /canvasBackground/);
   assert.match(mechanismSource, /spatialRaviaThemePresentation\[theme\]\.canvasBackground/);
   assert.match(molecularViewSource, /theme=\{theme\}/);
+});
+
+test("production teaching surfaces consume canonical view data through optional seams", () => {
+  assert.match(pageSource, /DnaMechanismPresentationView/);
+  assert.match(pageSource, /RnaPresentationView/);
+  assert.match(teachingPanelSource, /ProductionTeachingViewV1/);
+  assert.match(teachingPanelSource, /onAudienceChange/);
+  assert.match(teachingPanelSource, /onChapterChange/);
+  assert.match(teachingAdapterSource, /TEACHING_DOM_EXPORT_NOT_YET_GUARANTEED/);
+  assert.doesNotMatch(teachingAdapterSource, /\b(camera|geometry)\s*[:=]|from ["']three|requestAnimationFrame|Date\.now/);
 });

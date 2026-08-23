@@ -5,15 +5,19 @@ import { DnaMolecularView } from "./DnaMolecularView";
 import type { DnaVisualTemplate } from "./biology-dna-visual-dispatcher";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 import type { DnaMechanismPresentationRoute } from "./DnaMechanismPresentationRouter";
+import { ProductionTeachingPanel } from "./ProductionTeachingPanel";
+import type { ProductionTeachingViewV1 } from "./production-teaching-adapter";
 
 export function DnaMechanismPresentationView({
   route,
   theme,
   visualTemplate,
+  teachingView,
 }: {
   route: DnaMechanismPresentationRoute;
   theme: SpatialRaviaTheme;
   visualTemplate?: DnaVisualTemplate;
+  teachingView?: ProductionTeachingViewV1;
 }) {
   const localSubject = route.localChemistrySubject;
   return (
@@ -30,7 +34,7 @@ export function DnaMechanismPresentationView({
       ) : (
         <DnaMolecularView embedded theme={theme} visualTemplate={visualTemplate} />
       )}
+      {teachingView && <ProductionTeachingPanel view={teachingView} />}
     </section>
   );
 }
-

@@ -2018,3 +2018,96 @@ body:has(.spatialWorkspace) .siteHeader {
     grid-template-columns: 1fr;
   }
 }
+
+.productionTeachingPanel {
+  position: fixed;
+  z-index: 12;
+  top: 16px;
+  right: 16px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: min(62vh, 520px);
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid rgba(133, 202, 215, 0.28);
+  border-radius: 18px;
+  background: rgba(8, 26, 32, 0.88);
+  color: #e8f8fc;
+  backdrop-filter: blur(16px);
+}
+
+.productionTeachingHeader,
+.productionTeachingNavigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.productionTeachingEyebrow,
+.productionTeachingObjective,
+.productionTeachingProvenance {
+  margin: 0;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(213, 239, 244, 0.66);
+}
+
+.productionTeachingPanel h2 {
+  margin: 4px 0 0;
+  font-size: 1.12rem;
+}
+
+.productionTeachingObjective {
+  margin-top: 14px;
+  line-height: 1.45;
+  text-transform: none;
+  letter-spacing: 0;
+  color: rgba(232, 248, 252, 0.84);
+}
+
+.productionTeachingSegments {
+  margin: 14px 0;
+}
+
+.productionTeachingSegments p {
+  margin: 8px 0;
+  line-height: 1.45;
+}
+
+.productionTeachingAudience,
+.productionTeachingNavigation {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.productionTeachingPanel button {
+  border: 1px solid rgba(161, 222, 231, 0.32);
+  border-radius: 999px;
+  padding: 6px 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.productionTeachingPanel button[aria-pressed="true"] {
+  background: rgba(113, 205, 220, 0.2);
+}
+
+.productionTeachingPanel button:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.productionTeachingProvenance {
+  margin-top: 14px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.productionTeachingFailure {
+  margin: 0;
+  line-height: 1.5;
+}
