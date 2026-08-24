@@ -28,6 +28,35 @@ test("RNA visual geometry is deterministic, frame-oriented, and chemically conne
   assert.ok(first.nucleotides.every((nucleotide) => [nucleotide.tangent, nucleotide.normal, nucleotide.binormal].flat().every(Number.isFinite)));
   assert.ok(first.nucleotides.every((nucleotide) => nucleotide.base !== ("T" as never)));
   assert.ok(first.backboneLinks.every((link) => link.from.length === 3 && link.to.length === 3));
+  assert.ok(first.nucleotides.every((nucleotide) => {
+    const sugar = nucleotide.sugarPosition;
+    const base = nucleotide.basePosition;
+    const distance = Math.hypot(base[0] - sugar[0], base[1] - sugar[1], base[2] - sugar[2]);
+    return distance > 0.1 && distance < 0.25;
+  }));
+  assert.ok(first.nucleotides.slice(1).every((nucleotide, index) => {
+    const previous = first.nucleotides[index]!;
+    const dot = previous.orientation.dot(nucleotide.orientation);
+    return Math.abs(dot) > 0.75;
+  }));
+});
+
+test("default conformation is gently irregular rather than a periodic helix", () => {
+  const strand = buildRnaVisualStrand({ sequence: ["A", "U", "G", "C", "A", "U", "G", "C", "U", "A"] });
+  const y = strand.nucleotides.map((nucleotide) => nucleotide.position[1]);
+  assert.ok(new Set(y.map((value) => value.toFixed(3))).size > 5);
+  assert.ok(y.some((value, index) => index > 1 && value < y[index - 1]! && y[index - 1]! > y[index - 2]!));
+});
+
+test("one- and two-nucleotide strands remain safe and preserve polarity", () => {
+  const one = buildRnaVisualStrand({ sequence: ["A"] });
+  assert.equal(one.nucleotides.length, 1);
+  assert.equal(one.fivePrimeIndex, 0);
+  assert.equal(one.threePrimeIndex, 0);
+  const two = buildRnaVisualStrand({ sequence: ["A", "U"] });
+  assert.equal(two.backboneLinks.length, 1);
+  assert.equal(two.fivePrimeIndex, 0);
+  assert.equal(two.threePrimeIndex, 1);
 });
 
 test("empty and malformed RNA paths fail safely while thymine is rejected", () => {

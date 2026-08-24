@@ -29,18 +29,19 @@ function RnaBond({ from, to, color = rnaVisualTokens.backbone, radius = 0.022 }:
 export function RnaNucleotide3D({ nucleotide }: { nucleotide: RnaNucleotideVisual }) {
   return <group position={nucleotide.position} quaternion={nucleotide.orientation}>
     <mesh>
-      <torusGeometry args={[0.085, 0.019, 8, 12]} />
-      <meshStandardMaterial color={rnaVisualTokens.sugar} roughness={0.62} />
+      <dodecahedronGeometry args={[0.095, 0]} />
+      <meshStandardMaterial color={rnaVisualTokens.sugar} roughness={0.78} metalness={0.015} />
     </mesh>
-    <mesh position={[0.16, -0.055, 0]}>
-      <sphereGeometry args={[0.042, 10, 8]} />
-      <meshStandardMaterial color={rnaVisualTokens.phosphate} roughness={0.7} />
+    <RnaBond from={[0, 0, 0]} to={[0.14, -0.035, 0]} color={rnaVisualTokens.backbone} radius={0.018} />
+    <mesh position={[0.14, -0.035, 0]}>
+      <octahedronGeometry args={[0.045, 0]} />
+      <meshStandardMaterial color={rnaVisualTokens.phosphate} roughness={0.76} metalness={0.01} />
     </mesh>
-    <mesh position={[0, 0.15, 0]}>
-      <cylinderGeometry args={[0.072, 0.072, 0.032, 6]} />
-      <meshStandardMaterial color={rnaVisualTokens.base[nucleotide.base]} roughness={0.64} />
+    <RnaBond from={[0, 0.035, 0]} to={[0, 0.125, 0.01]} color={rnaVisualTokens.backbone} radius={0.014} />
+    <mesh position={[0, 0.145, 0.012]} rotation={[0, 0, Math.PI / 6]}>
+      <cylinderGeometry args={[0.067, 0.067, 0.028, 6]} />
+      <meshStandardMaterial color={rnaVisualTokens.base[nucleotide.base]} roughness={0.72} metalness={0.01} />
     </mesh>
-    <RnaBond from={[0, 0.02, 0]} to={[0, 0.14, 0]} color={rnaVisualTokens.backbone} radius={0.012} />
   </group>;
 }
 
