@@ -11,6 +11,8 @@ import { resolveTranscriptionStructuralActorPackage } from "./transcription-stru
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
+import { RnaStrand3D } from "./RnaMolecularStrand3D";
+import { deriveFreeRnaContinuation } from "./transcription-free-rna-continuation";
 
 type Props = { projection: GeneExpressionProductionProjectionV1; presentation: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
 type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentation?: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
@@ -108,6 +110,11 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
   const colors = spatialRaviaThemePresentation[normalizedTheme];
   const engaged = presentation.polymeraseEngagement > 0.01;
   const polymerasePosition = new THREE.Vector3(sceneXFromProgress(presentation.polymeraseGenePosition), engaged ? 0 : 0.42, 0.1);
+  const freeRna = useMemo(() => deriveFreeRnaContinuation({
+    canonicalVisibleLength: presentation.nascentRnaVisualLength,
+    exitAnchor: [sceneXFromProgress(presentation.nascentRnaAnchor), -0.22, 0.18],
+    exitDirection: [1, 0, 0],
+  }), [presentation.nascentRnaAnchor, presentation.nascentRnaVisualLength]);
   return <group>
     <NuclearContext3D theme={normalizedTheme} />
     <group rotation={[0.16, -0.28, 0]} scale={1.35}>
@@ -124,6 +131,7 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
       </group>
       <PromoterRegion3D />
       <PolIIComplex3D engaged={engaged} position={polymerasePosition} />
+      {freeRna.strand && <RnaStrand3D input={{ sequence: freeRna.strand.nucleotides.map((nucleotide) => nucleotide.base), positions: freeRna.positions, direction: "5-to-3" }} showPolarity={false} />}
       <Text position={[-2.9, 0.72, 0.12]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">DNA</Text>
     </group>
   </group>;
@@ -146,7 +154,8 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
   }
   const normalizedTheme = normalizeSpatialRaviaTheme(theme);
   const colors = spatialRaviaThemePresentation[normalizedTheme];
-  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)}>
+  const freeTail = deriveFreeRnaContinuation({ canonicalVisibleLength: presentation.nascentRnaVisualLength, exitAnchor: [0, 0, 0], exitDirection: [1, 0, 0] });
+  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
     <Canvas shadows dpr={[1, 2]} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }}>
       <color attach="background" args={[colors.canvasBackground]} />
       <fog attach="fog" args={[colors.canvasFog, 6.2, 13]} />
