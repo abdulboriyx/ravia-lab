@@ -23,8 +23,8 @@ const structurePrimitiveSource = readFileSync(
   new URL("./StructureDerivedPrimitive.tsx", import.meta.url),
   "utf8"
 );
-const themeSource = readFileSync(
-  new URL("./spatial-ravia-theme.ts", import.meta.url),
+const scinaThemeSource = readFileSync(
+  new URL("../../scina-theme.ts", import.meta.url),
   "utf8"
 );
 const teachingPanelSource = readFileSync(
@@ -99,13 +99,13 @@ test("mechanistic canvas fills the visualization surface", () => {
 });
 
 test("Spatial Ravia owns one persistent workspace light and dark background preference", () => {
-  assert.match(pageSource, /spatialRaviaThemeStorageKey/);
-  assert.match(pageSource, /localStorage\.getItem/);
-  assert.match(pageSource, /localStorage\.setItem/);
+  assert.match(pageSource, /readScinaTheme/);
+  assert.match(pageSource, /applyScinaTheme\(next, true\)/);
+  assert.match(pageSource, /subscribeToScinaTheme/);
   assert.match(pageSource, /data-spatial-theme=\{theme\}/);
   assert.match(pageSource, /Switch to dark background/);
   assert.match(pageSource, /Switch to light background/);
-  assert.match(themeSource, /canvasBackground/);
+  assert.match(scinaThemeSource, /canvasBackground/);
   assert.match(mechanismSource, /spatialRaviaThemePresentation\[theme\]\.canvasBackground/);
   assert.match(molecularViewSource, /theme=\{theme\}/);
 });

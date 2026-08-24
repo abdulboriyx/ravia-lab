@@ -1,60 +1,25 @@
 "use client";
 
 import { useEffect, useSyncExternalStore } from "react";
+import { applyScinaTheme, readScinaTheme, subscribeToScinaTheme, type ScinaTheme } from "@/app/scina-theme";
 
-type Theme = "light" | "dark";
-const themeChangeEvent = "ravia-theme-change";
-
-function getStoredTheme(): Theme | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  const stored = window.localStorage.getItem("theme");
-  return stored === "light" || stored === "dark" ? stored : null;
-}
-
-function getThemeSnapshot(): Theme {
+function getThemeSnapshot(): ScinaTheme {
   const theme = document.documentElement.dataset.theme;
-  return theme === "light" || theme === "dark" ? theme : "dark";
-}
-
-function getServerSnapshot(): Theme {
-  return "dark";
-}
-
-function subscribe(onStoreChange: () => void) {
-  window.addEventListener(themeChangeEvent, onStoreChange);
-  window.addEventListener("storage", onStoreChange);
-
-  return () => {
-    window.removeEventListener(themeChangeEvent, onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
-}
-
-function applyTheme(theme: Theme) {
-  const root = document.documentElement;
-  root.dataset.theme = theme;
-  root.style.colorScheme = theme;
-  document.body.dataset.theme = theme;
-  window.dispatchEvent(new Event(themeChangeEvent));
+  return theme === "light" || theme === "dark" ? theme : readScinaTheme();
 }
 
 export function ThemeToggle() {
-  const theme = useSyncExternalStore(subscribe, getThemeSnapshot, getServerSnapshot);
+  const theme = useSyncExternalStore(subscribeToScinaTheme, getThemeSnapshot, () => "dark");
 
   useEffect(() => {
-    const activeTheme = getStoredTheme() ?? "dark";
-    applyTheme(activeTheme);
+    applyScinaTheme(readScinaTheme());
   }, []);
 
   function toggleTheme() {
     // Read the applied value so a click remains correct even while React is
     // hydrating around the small pre-paint theme script in the root layout.
     const nextTheme = getThemeSnapshot() === "dark" ? "light" : "dark";
-    window.localStorage.setItem("theme", nextTheme);
-    applyTheme(nextTheme);
+    applyScinaTheme(nextTheme, true);
   }
 
   return (
