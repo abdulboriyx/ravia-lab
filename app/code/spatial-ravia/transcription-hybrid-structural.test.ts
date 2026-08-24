@@ -23,11 +23,12 @@ test("Mol* transcription path requests structural RNA and hybrid representations
   assert.doesNotMatch(source, /CatmullRomCurve3/);
 });
 
-test("production transcription opts into the deposited RNA/hybrid path", () => {
+test("production transcription uses one shared structure-derived viewport", () => {
   const source = readFileSync(new URL("./GeneExpression3DScene.tsx", import.meta.url), "utf8");
-  assert.match(source, /includeRna: true/);
-  assert.match(source, /hybridWindow: structuralPackage\.selectors\.hybrid/);
-  assert.match(source, /data-rna-chain/);
-  assert.match(source, /STRUCTURAL SNAPSHOT · 6ALH · BACTERIAL RNAP/);
+  assert.match(source, /StructureDerivedPrimitive/);
+  assert.match(source, /data-molecular-viewport-owner="r3f"/);
+  assert.match(source, /data-structural-scale/);
+  assert.match(source, /STRUCTURAL ACTOR · 6ALH · BACTERIAL RNAP/);
+  assert.doesNotMatch(source, /MolstarStructurePresentationAdapter/);
   assert.doesNotMatch(source, /<MolecularNascentRNA3D/);
 });

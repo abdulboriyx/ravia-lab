@@ -43,11 +43,10 @@ test("structural failure is explicitly downgraded instead of masquerading as dep
   assert.match(fallback.fallbackDisclosure ?? "", /unavailable/);
 });
 
-test("live production scene mounts Mol* as primary polymerase and not the old lobe body", () => {
+test("live production scene mounts the shared structure-derived actor in the single R3F viewport", () => {
   const source = readFileSync(new URL("./GeneExpression3DScene.tsx", import.meta.url), "utf8");
-  assert.match(source, /MolstarStructurePresentationAdapter/);
-  assert.match(source, /polymeraseOnly: true/);
+  assert.match(source, /StructureDerivedPrimitive/);
+  assert.match(source, /data-camera-owner="r3f"/);
   assert.doesNotMatch(source, /<TranscriptionRnapPresentation/);
   assert.doesNotMatch(source, /<derived-lobe/);
 });
-

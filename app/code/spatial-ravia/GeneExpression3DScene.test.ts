@@ -10,8 +10,8 @@ test("transcription production is backed by the R3F 3D mechanism scene", () => {
   assert.match(sceneSource, /<Canvas\b/);
   assert.match(sceneSource, /<OrbitControls\b/);
   assert.match(sceneSource, /TranscriptionDnaTemplate/);
-  assert.match(sceneSource, /MolstarStructurePresentationAdapter/);
-  assert.match(sceneSource, /data-molecular-owner="molstar"/);
+  assert.match(sceneSource, /StructureDerivedPrimitive/);
+  assert.match(sceneSource, /data-molecular-viewport-owner="r3f"/);
   assert.match(sceneSource, /function PolIIComplex3D/);
   assert.match(sceneSource, /function BubbleEnvelope3D/);
   assert.match(sceneSource, /<torusGeometry/);
@@ -23,10 +23,7 @@ test("transcription production is backed by the R3F 3D mechanism scene", () => {
   assert.match(sceneSource, /bubbleOpen/);
   assert.match(sceneSource, /nascentRnaVisualLength/);
   assert.doesNotMatch(sceneSource, /<TranscriptionRnapPresentation/);
-  const molstarSource = readFileSync(fileURLToPath(new URL("./MolstarStructurePresentationAdapter.tsx", import.meta.url)), "utf8");
-  assert.match(molstarSource, /gaussian-surface/);
-  assert.match(molstarSource, /polymeraseOnly/);
-  assert.match(molstarSource, /transparentBackground/);
+  assert.doesNotMatch(sceneSource, /MolstarStructurePresentationAdapter/);
   const dnaTemplateSource = readFileSync(fileURLToPath(new URL("./TranscriptionDnaTemplate.tsx", import.meta.url)), "utf8");
   assert.match(dnaTemplateSource, /points\.length >= 2/);
   assert.match(dnaTemplateSource, /if \(!curve\) return null/);

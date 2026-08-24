@@ -5,8 +5,9 @@ import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
-import { MolstarStructurePresentationAdapter } from "./MolstarStructurePresentationAdapter";
-import { resolveTranscriptionStructuralActorPackage } from "./transcription-structural-actors";
+import { StructureDerivedPrimitive } from "./StructureDerivedPrimitive";
+import { resolveTranscriptionStructureGrounding } from "./biology-transcription-structure-grounding";
+import { transcriptionStructuralScalePolicy } from "./transcription-structural-actors";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
@@ -91,25 +92,18 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
 }
 
 export function GeneExpression3DScene({ projection, presentation, theme }: SceneProps) {
-  const structuralPackage = useMemo(() => resolveTranscriptionStructuralActorPackage(), []);
-  const molecularOptions = useMemo(() => ({
-    sourceId: structuralPackage.source.sourceId,
-    frameId: `${structuralPackage.packageId}:active-site-frame`,
-    polymeraseChains: structuralPackage.selectors.polymeraseChains,
-    dnaChains: structuralPackage.selectors.dnaChains,
-    rnaChain: structuralPackage.selectors.rnaChain,
-    hybridWindow: structuralPackage.selectors.hybrid,
-    includeRna: true,
-    polymeraseOnly: true,
-  }), [structuralPackage]);
+  const structuralManifest = useMemo(() => resolveTranscriptionStructureGrounding(), []);
   if (!isValidTranscriptionPresentationState(presentation)) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>GeneExpression3DScene received no complete presentation state.</div>}</section>;
+  }
+  if (!structuralManifest) {
+    return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_STRUCTURAL_SOURCE_UNSUPPORTED"><strong>TRANSCRIPTION_STRUCTURAL_SOURCE_UNSUPPORTED</strong></section>;
   }
   const normalizedTheme = normalizeSpatialRaviaTheme(theme);
   const colors = spatialRaviaThemePresentation[normalizedTheme];
   const mechanismState = deriveTranscriptionMechanismVisualState(presentation);
   const freeTail = deriveFreeRnaContinuation({ canonicalVisibleLength: presentation.nascentRnaVisualLength, exitAnchor: [0, 0, 0], exitDirection: [1, 0, 0] });
-  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-stage={mechanismState.stage} data-polymerase-presentation={mechanismState.polymeraseMode} data-teaching-label={mechanismState.teachingLabel} data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
+  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-stage={mechanismState.stage} data-polymerase-presentation={mechanismState.polymeraseMode} data-teaching-label={mechanismState.teachingLabel} data-molecular-viewport-owner="r3f" data-camera-owner="r3f" data-structural-scale={transcriptionStructuralScalePolicy.angstromToScene} data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
     <Canvas shadows dpr={[1, 2]} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }}>
       <color attach="background" args={[colors.canvasBackground]} />
       <fog attach="fog" args={[colors.canvasFog, 6.2, 13]} />
@@ -117,16 +111,10 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
       <directionalLight castShadow position={[3.5, 5, 5]} intensity={normalizedTheme === "dark" ? 2.8 : 2.35} color={colors.sceneKey} />
       <directionalLight position={[-4, 1.5, -2]} intensity={normalizedTheme === "dark" ? 1.2 : 0.9} color={colors.sceneFill} />
       <pointLight position={[0, -1.2, 2.6]} intensity={1.4} distance={7} color="#6bd5bd" />
+      <StructureDerivedPrimitive entry={structuralManifest} position={new THREE.Vector3(0, 0, 0)} scale={transcriptionStructuralScalePolicy.angstromToScene} visible fallback={null} />
       <TranscriptionMechanism3D projection={projection} presentation={presentation} theme={theme} />
       <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} minDistance={4.2} maxDistance={9} />
     </Canvas>
-    <div className="geneExpressionMolecularLayer" data-molecular-owner="molstar" data-polymerase-source={structuralPackage.source.sourceId} data-polymerase-class={structuralPackage.source.polymeraseClass} data-dna-chains={structuralPackage.selectors.dnaChains.join(",")} data-rna-chain={structuralPackage.selectors.rnaChain} data-hybrid-window="A:1-10;B:1-10;R:1-10" data-active-site-frame={`${structuralPackage.packageId}:active-site-frame`} aria-label="deposited bacterial RNA polymerase molecular layer">
-      <MolstarStructurePresentationAdapter
-        kind="transcription"
-        theme={normalizedTheme}
-        transcription={molecularOptions}
-      />
-      <div className="transcriptionStructuralNotice" role="note">STRUCTURAL SNAPSHOT · 6ALH · BACTERIAL RNAP · E0_DEPOSITED</div>
-    </div>
+    <div className="transcriptionStructuralNotice" role="note">STRUCTURAL ACTOR · 6ALH · BACTERIAL RNAP · E0_DEPOSITED · SHARED R3F FRAME</div>
   </div>;
 }
