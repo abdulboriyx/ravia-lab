@@ -17,9 +17,10 @@ function Backbone({ points, color, opacity = 1 }: { points: THREE.Vector3[]; col
   // smooths coarse helix samples without allowing a spline to bridge across
   // the open interval and manufacture a global DNA loop.
   const curve = useMemo(
-    () => new THREE.CatmullRomCurve3(points, false, "centripetal", 0.1),
+    () => points.length >= 2 ? new THREE.CatmullRomCurve3(points, false, "centripetal", 0.1) : null,
     [points]
   );
+  if (!curve) return null;
   const segments = Math.max(8, (points.length - 1) * 6);
   return <mesh>
     <tubeGeometry args={[curve, segments, 0.016, 8, false]} />

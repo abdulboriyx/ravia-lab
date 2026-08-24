@@ -8,7 +8,7 @@ import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
 import { TranscriptionRnapPresentation } from "./TranscriptionRnapPresentation";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
-import { spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
+import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 type Props = { projection: GeneExpressionProductionProjectionV1; presentation: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
 type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentation?: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
@@ -16,15 +16,16 @@ type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentati
 const sceneXFromProgress = (progress: number) => -2.8 + Math.max(0, Math.min(1, progress)) * 5.6;
 
 function NuclearContext3D({ theme }: Pick<Props, "theme">) {
-  const colors = spatialRaviaThemePresentation[theme];
+  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
+  const colors = spatialRaviaThemePresentation[normalizedTheme];
   return <group aria-label="nuclear context">
     <mesh scale={[6.8, 4.3, 3.1]} rotation={[0.08, 0.12, -0.08]} renderOrder={-2}>
       <sphereGeometry args={[1, 48, 32]} />
-      <meshBasicMaterial color={colors.canvasFog} transparent opacity={theme === "dark" ? 0.16 : 0.1} side={THREE.BackSide} depthWrite={false} />
+      <meshBasicMaterial color={colors.canvasFog} transparent opacity={normalizedTheme === "dark" ? 0.16 : 0.1} side={THREE.BackSide} depthWrite={false} />
     </mesh>
     <mesh scale={[6.95, 4.42, 3.2]} rotation={[0.08, 0.12, -0.08]} renderOrder={-1}>
       <sphereGeometry args={[1, 48, 32]} />
-      <meshBasicMaterial color={colors.sceneFill} transparent opacity={theme === "dark" ? 0.08 : 0.05} side={THREE.FrontSide} depthWrite={false} />
+      <meshBasicMaterial color={colors.sceneFill} transparent opacity={normalizedTheme === "dark" ? 0.08 : 0.05} side={THREE.FrontSide} depthWrite={false} />
     </mesh>
   </group>;
 }
@@ -47,7 +48,7 @@ function BubbleEnvelope3D({ openFraction, center }: { openFraction: number; cent
 }
 
 function PolymeraseHero3D({ engaged, position, scale, theme }: { engaged: boolean; position: THREE.Vector3; scale: number; theme: SpatialRaviaTheme }) {
-  const colors = spatialRaviaThemePresentation[theme];
+  const colors = spatialRaviaThemePresentation[normalizeSpatialRaviaTheme(theme)];
   return <group position={position} scale={scale}>
     <mesh scale={[1.24, 0.86, 0.78]} castShadow>
       <icosahedronGeometry args={[0.62, 3]} />
@@ -73,13 +74,12 @@ function PolymeraseHero3D({ engaged, position, scale, theme }: { engaged: boolea
       <sphereGeometry args={[1, 20, 14]} />
       <meshStandardMaterial color="#f0c875" emissive="#9b5d20" emissiveIntensity={engaged ? 0.55 : 0.2} roughness={0.44} />
     </mesh>
-    <TranscriptionRnapPresentation position={new THREE.Vector3(0, 0, 0)} scale={0.92} opacity={engaged ? 0.34 : 0.2} />
     <Text position={[0, 1.05, 0.15]} fontSize={0.2} color={colors.labelPrimary} anchorX="center">Pol II</Text>
   </group>;
 }
 
 function NascentRNA3D({ length, anchorProgress, theme }: { length: number; anchorProgress: number; theme: SpatialRaviaTheme }) {
-  const colors = spatialRaviaThemePresentation[theme];
+  const colors = spatialRaviaThemePresentation[normalizeSpatialRaviaTheme(theme)];
   const points = useMemo(() => {
     const count = Math.max(2, Math.min(11, Math.ceil(length) + 1));
     const anchorX = sceneXFromProgress(anchorProgress);
@@ -111,12 +111,13 @@ function NascentRNA3D({ length, anchorProgress, theme }: { length: number; ancho
 }
 
 function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
-  const colors = spatialRaviaThemePresentation[theme];
+  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
+  const colors = spatialRaviaThemePresentation[normalizedTheme];
   const engaged = presentation.polymeraseEngagement > 0.01;
   const polymerasePosition = new THREE.Vector3(sceneXFromProgress(presentation.polymeraseGenePosition), engaged ? 0 : 0.42, 0.1);
   const polymeraseScale = 1.12 + presentation.polymeraseEngagement * 0.2;
   return <group>
-    <NuclearContext3D theme={theme} />
+    <NuclearContext3D theme={normalizedTheme} />
     <group rotation={[0.16, -0.28, 0]} scale={1.35}>
       <BubbleEnvelope3D openFraction={presentation.bubbleOpenFraction} center={presentation.bubbleCenter} />
       <group scale={1.32}>
@@ -130,8 +131,9 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
         />
       </group>
       <PromoterRegion3D />
-      <PolymeraseHero3D engaged={engaged} position={polymerasePosition} scale={polymeraseScale} theme={theme} />
-      <NascentRNA3D length={presentation.nascentRnaVisualLength} anchorProgress={presentation.nascentRnaAnchor} theme={theme} />
+      <PolymeraseHero3D engaged={engaged} position={polymerasePosition} scale={polymeraseScale} theme={normalizedTheme} />
+      <TranscriptionRnapPresentation position={new THREE.Vector3(0, 0, 0)} scale={0.92} opacity={engaged ? 0.34 : 0.2} />
+      <NascentRNA3D length={presentation.nascentRnaVisualLength} anchorProgress={presentation.nascentRnaAnchor} theme={normalizedTheme} />
       <Text position={[-2.9, 0.72, 0.12]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">DNA</Text>
     </group>
   </group>;
@@ -141,14 +143,15 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
   if (!isValidTranscriptionPresentationState(presentation)) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>GeneExpression3DScene received no complete presentation state.</div>}</section>;
   }
-  const colors = spatialRaviaThemePresentation[theme];
+  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
+  const colors = spatialRaviaThemePresentation[normalizedTheme];
   return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)}>
     <Canvas shadows dpr={[1, 2]} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }}>
       <color attach="background" args={[colors.canvasBackground]} />
       <fog attach="fog" args={[colors.canvasFog, 6.2, 13]} />
-      <ambientLight intensity={theme === "dark" ? 0.48 : 0.72} color={colors.sceneAmbient} />
-      <directionalLight castShadow position={[3.5, 5, 5]} intensity={theme === "dark" ? 2.8 : 2.35} color={colors.sceneKey} />
-      <directionalLight position={[-4, 1.5, -2]} intensity={theme === "dark" ? 1.2 : 0.9} color={colors.sceneFill} />
+      <ambientLight intensity={normalizedTheme === "dark" ? 0.48 : 0.72} color={colors.sceneAmbient} />
+      <directionalLight castShadow position={[3.5, 5, 5]} intensity={normalizedTheme === "dark" ? 2.8 : 2.35} color={colors.sceneKey} />
+      <directionalLight position={[-4, 1.5, -2]} intensity={normalizedTheme === "dark" ? 1.2 : 0.9} color={colors.sceneFill} />
       <pointLight position={[0, -1.2, 2.6]} intensity={1.4} distance={7} color="#6bd5bd" />
       <TranscriptionMechanism3D projection={projection} presentation={presentation} theme={theme} />
       <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} minDistance={4.2} maxDistance={9} />

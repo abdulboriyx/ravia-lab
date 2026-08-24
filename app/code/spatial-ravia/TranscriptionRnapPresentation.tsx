@@ -11,6 +11,8 @@ import {
 import { resolveTranscriptionStructureGrounding, createTranscriptionStructureTransform } from "./biology-transcription-structure-grounding.ts";
 import type { StructureDerivedGeometry } from "./biology-structure-grounding.ts";
 import { StructureDerivedPrimitive } from "./StructureDerivedPrimitive.tsx";
+import { isFiniteRnapPresentation, isFiniteVector3 } from "./transcription-runtime-safety.ts";
+export { isFiniteRnapPresentation } from "./transcription-runtime-safety.ts";
 
 type Props = {
   position: THREE.Vector3;
@@ -31,18 +33,30 @@ export function TranscriptionRnapPresentation({ position, opacity, scale }: Prop
   }, [geometry]);
   const transform = useMemo(() => {
     if (!geometry) return null;
-    const active = geometry.anchors.find((anchor) => anchor.id === "active-center");
-    const upstream = geometry.anchors.find((anchor) => anchor.id === "upstream-dna");
-    const downstream = geometry.anchors.find((anchor) => anchor.id === "downstream-dna");
-    if (!active || !upstream || !downstream) return null;
-    const sourceDirection = downstream.point.clone().sub(upstream.point);
-    if (sourceDirection.lengthSq() < 1e-8) return null;
-    return createTranscriptionStructureTransform({
-      sourceAnchor: { point: active.point, direction: sourceDirection },
-      targetAnchor: position,
-      targetDirection: new THREE.Vector3(1, 0, 0),
-      scale: transcriptionRnapPresentationPolicy.groundedWorldScale * scale,
-    });
+    try {
+      const anchors = (geometry as unknown as { anchors?: unknown }).anchors;
+      if (!Array.isArray(anchors)) return null;
+      const anchorFor = (id: string) => anchors.find((candidate) => {
+        if (candidate === null || typeof candidate !== "object") return false;
+        const record = candidate as { id?: unknown; point?: unknown };
+        return record.id === id && isFiniteVector3(record.point);
+      }) as { point: THREE.Vector3 } | undefined;
+      const active = anchorFor("active-center");
+      const upstream = anchorFor("upstream-dna");
+      const downstream = anchorFor("downstream-dna");
+      if (!active || !upstream || !downstream || !isFiniteVector3(position)) return null;
+      const sourceDirection = downstream.point.clone().sub(upstream.point);
+      if (!isFiniteVector3(sourceDirection) || sourceDirection.lengthSq() < 1e-8) return null;
+      const result = createTranscriptionStructureTransform({
+        sourceAnchor: { point: active.point, direction: sourceDirection },
+        targetAnchor: position,
+        targetDirection: new THREE.Vector3(1, 0, 0),
+        scale: transcriptionRnapPresentationPolicy.groundedWorldScale * scale,
+      });
+      return result && isFiniteTransform(result) ? result : null;
+    } catch {
+      return null;
+    }
   }, [geometry, position, scale]);
 
   if (!entry) return <SchematicRnapBody position={position} opacity={opacity} scale={scale} />;
@@ -60,18 +74,12 @@ export function TranscriptionRnapPresentation({ position, opacity, scale }: Prop
   </>;
 }
 
-function isFiniteRnapPresentation(
-  presentation: RnapPresentationGeometry,
-  transform: { position: THREE.Vector3; quaternion: THREE.Quaternion; scale: number },
-) {
-  const vector = (value: THREE.Vector3) => Number.isFinite(value.x) && Number.isFinite(value.y) && Number.isFinite(value.z);
-  return vector(transform.position)
-    && Number.isFinite(transform.scale) && transform.scale > 0
-    && Number.isFinite(transform.quaternion.x) && Number.isFinite(transform.quaternion.y)
-    && Number.isFinite(transform.quaternion.z) && Number.isFinite(transform.quaternion.w)
-    && vector(presentation.cleft.center) && vector(presentation.cleft.axis)
-    && Number.isFinite(presentation.cleft.length) && Number.isFinite(presentation.cleft.radius)
-    && presentation.lobes.every((lobe) => vector(lobe.center) && vector(lobe.radii));
+function isFiniteTransform(value: unknown): value is { position: THREE.Vector3; quaternion: THREE.Quaternion; scale: number } {
+  if (value === null || typeof value !== "object") return false;
+  const candidate = value as { position?: unknown; quaternion?: unknown; scale?: unknown };
+  if (!isFiniteVector3(candidate.position) || !isFiniteVector3(candidate.quaternion)) return false;
+  const quaternion = candidate.quaternion as { w?: unknown };
+  return Number.isFinite(quaternion.w) && typeof candidate.scale === "number" && Number.isFinite(candidate.scale) && candidate.scale > 0;
 }
 
 function GroundedRnapBody({

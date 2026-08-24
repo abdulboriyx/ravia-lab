@@ -19,6 +19,9 @@ test("transcription production is backed by the R3F 3D mechanism scene", () => {
   assert.match(sceneSource, /function NascentRNA3D/);
   assert.match(sceneSource, /bubbleOpen/);
   assert.match(sceneSource, /nascentRnaVisualLength/);
+  const dnaTemplateSource = readFileSync(fileURLToPath(new URL("./TranscriptionDnaTemplate.tsx", import.meta.url)), "utf8");
+  assert.match(dnaTemplateSource, /points\.length >= 2/);
+  assert.match(dnaTemplateSource, /if \(!curve\) return null/);
   assert.match(sceneSource, /TRANSCRIPTION_PRESENTATION_STATE_INVALID/);
   assert.doesNotMatch(sceneSource, /gl=\{\{ alpha: true \}\}/);
   assert.doesNotMatch(sceneSource, /<svg\b/);
