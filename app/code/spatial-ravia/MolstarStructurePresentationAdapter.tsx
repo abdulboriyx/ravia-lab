@@ -126,12 +126,13 @@ async function addRepresentation(viewer: Viewer, component: unknown, props: Reco
   return viewer.plugin.builders.structure.representation.addRepresentation(component, props);
 }
 
-function focusPresentation(viewer: Viewer, representations: readonly unknown[], minRadius: number) {
+function focusPresentation(viewer: Viewer, representations: readonly unknown[], minRadius: number): readonly { targetRef: string }[] {
   const targets = representations
     .map((representation) => (representation as { ref?: string } | undefined)?.ref)
     .filter((ref): ref is string => Boolean(ref))
     .map((targetRef) => ({ targetRef }));
   if (targets.length > 0) viewer.plugin.managers.camera.focusObject({ targets, minRadius, durationMs: 0 });
+  return targets;
 }
 
 async function applyTranslation(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, intent: TranslationDisplayIntent = "overview") {
@@ -166,15 +167,15 @@ async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record
   // teaching hierarchy; protein simply establishes the molecular machine.
   const proteinChains = options?.polymeraseChains ?? ["G", "H", "I", "J", "K"];
   const protein = await chainsComponent(viewer, structure, MS, "rnap", proteinChains);
-  await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 2.8, smoothness: 1.65, alpha: 0.095, quality: "medium" }, color: "uniform", colorParams: uniform(0x78838d) });
+  const proteinRepresentation = await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 3.2, smoothness: 1.8, alpha: 0.18, quality: "medium" }, color: "uniform", colorParams: uniform(0x65747c) });
   if (options?.polymeraseOnly) {
     const structuralDna: unknown[] = [];
     for (const [id, chain, color] of [["dna-a", "A", 0x77aaca], ["dna-b", "B", 0x9f8cc5]] as const) {
       const component = await chainComponent(viewer, structure, MS, id, chain);
       structuralDna.push(await addRepresentation(viewer, component, cartoon(color, 0.9, 0.42)));
     }
-    focusPresentation(viewer, structuralDna, 16);
-    return;
+    const focusTargets = focusPresentation(viewer, [proteinRepresentation, ...structuralDna], 10);
+    return focusTargets;
   }
   const nucleicRepresentations: unknown[] = [];
   for (const [id, chain, color, sizeFactor] of [["dna-a", "A", 0x77aaca, 0.42], ["dna-b", "B", 0x9f8cc5, 0.42], ["rna", "R", 0x38c58e, 0.48]] as const) {
@@ -188,15 +189,25 @@ async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record
   // This intentionally does not include RNAP in the framing calculation: the
   // deposited duplex/RNA region is the teaching target, while RNAP surrounds
   // it as quiet structural context rather than determining a full-model shot.
-  focusPresentation(viewer, nucleicRepresentations, 16);
+  return focusPresentation(viewer, [proteinRepresentation, ...nucleicRepresentations], 10);
 }
 
 export function MolstarStructurePresentationAdapter({ kind, theme, translationIntent, transcription }: { kind: PresentationKind; theme: SpatialRaviaTheme; translationIntent?: TranslationDisplayIntent; transcription?: TranscriptionMolecularPresentationOptions }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
   const rebuildGateRef = useRef(new MolstarPresentationRebuildGate());
+  const focusTargetsRef = useRef<readonly { targetRef: string }[]>([]);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const resetView = () => {
+    const viewer = viewerRef.current;
+    if (!viewer) return;
+    if (focusTargetsRef.current.length > 0) {
+      viewer.plugin.managers.camera.focusObject({ targets: focusTargetsRef.current, minRadius: kind === "transcription" ? 10 : 20, durationMs: 0 });
+    } else {
+      viewer.plugin.managers.camera.reset(undefined, 0);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -239,8 +250,11 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
       const withProperties = await viewer.plugin.builders.structure.insertStructureProperties(structure) ?? structure;
       const { MolScriptBuilder } = await queryRuntime();
       if (!isCurrent() || viewerRef.current !== viewer) return;
+      const focusTargets = kind === "translation"
+        ? undefined
+        : await applyTranscription(viewer, withProperties, MolScriptBuilder, transcription);
       if (kind === "translation") await applyTranslation(viewer, withProperties, MolScriptBuilder, translationIntent);
-      else await applyTranscription(viewer, withProperties, MolScriptBuilder, transcription);
+      focusTargetsRef.current = focusTargets ?? [];
       if (!isCurrent() || viewerRef.current !== viewer) return;
     };
     setError(null);
@@ -252,6 +266,7 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
   }, [kind, ready, translationIntent, transcription]);
 
   return <div ref={mountRef} className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} aria-label={`${kind} structure-derived Mol* presentation`}>
+    {kind === "transcription" && <button type="button" className="molstarFocusButton" onClick={resetView}>RESET VIEW</button>}
     {error && kind === "transcription" && <div className="molstarStructurePresentationError" role="status">STRUCTURAL_POLYMERASE_UNAVAILABLE</div>}
   </div>;
 }
