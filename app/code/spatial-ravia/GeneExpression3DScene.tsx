@@ -6,6 +6,7 @@ import * as THREE from "three";
 import { useMemo } from "react";
 import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
 import { TranscriptionRnapPresentation } from "./TranscriptionRnapPresentation";
+import { sampleTranscriptionMolecularRna, type TranscriptionRnaUnit } from "./transcription-molecular-actors";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
@@ -47,66 +48,56 @@ function BubbleEnvelope3D({ openFraction, center }: { openFraction: number; cent
   </mesh>;
 }
 
-function PolymeraseHero3D({ engaged, position, scale, theme }: { engaged: boolean; position: THREE.Vector3; scale: number; theme: SpatialRaviaTheme }) {
-  const colors = spatialRaviaThemePresentation[normalizeSpatialRaviaTheme(theme)];
-  return <group position={position} scale={scale}>
-    <mesh scale={[1.24, 0.86, 0.78]} castShadow>
-      <icosahedronGeometry args={[0.62, 3]} />
-      <meshStandardMaterial color="#9b514d" roughness={0.72} metalness={0.02} transparent={!engaged} opacity={engaged ? 0.98 : 0.72} />
+function MolecularBond({ from, to, color, radius = 0.018, opacity = 1 }: { from: readonly [number, number, number]; to: readonly [number, number, number]; color: string; radius?: number; opacity?: number }) {
+  const geometry = useMemo(() => {
+    const start = new THREE.Vector3(...from);
+    const end = new THREE.Vector3(...to);
+    const direction = end.clone().sub(start);
+    if (direction.lengthSq() < 1e-8) return null;
+    return {
+      midpoint: start.clone().add(end).multiplyScalar(0.5),
+      quaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()),
+      length: start.distanceTo(end),
+    };
+  }, [from, to]);
+  if (!geometry) return null;
+  return <mesh position={geometry.midpoint} quaternion={geometry.quaternion}>
+    <cylinderGeometry args={[radius, radius, geometry.length, 8]} />
+    <meshStandardMaterial color={color} transparent={opacity < 1} opacity={opacity} roughness={0.72} />
+  </mesh>;
+}
+
+function RnaNucleotideActor({ unit }: { unit: TranscriptionRnaUnit }) {
+  const baseColor = unit.base === "U" ? "#e4b36b" : unit.base === "A" ? "#66b8db" : unit.base === "G" ? "#c885a8" : "#8ec68a";
+  return <group position={unit.position}>
+    <mesh rotation={[Math.PI / 2, 0, 0]}>
+      <torusGeometry args={[0.075, 0.018, 8, 12]} />
+      <meshStandardMaterial color="#58c6a2" roughness={0.62} />
     </mesh>
-    <mesh position={[-0.28, 0.22, 0.08]} scale={[0.72, 0.56, 0.62]} castShadow>
-      <sphereGeometry args={[0.62, 24, 18]} />
-      <meshStandardMaterial color="#d18b58" roughness={0.65} transparent={!engaged} opacity={engaged ? 0.98 : 0.72} />
+    <mesh position={[0.13, -0.08, -0.015]}>
+      <sphereGeometry args={[0.038, 10, 8]} />
+      <meshStandardMaterial color="#d49b57" roughness={0.7} />
     </mesh>
-    <mesh position={[0.3, 0.18, -0.04]} scale={[0.74, 0.62, 0.68]} castShadow>
-      <sphereGeometry args={[0.62, 24, 18]} />
-      <meshStandardMaterial color="#754653" roughness={0.68} transparent={!engaged} opacity={engaged ? 0.98 : 0.72} />
+    <mesh position={[0, 0.14, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
+      <cylinderGeometry args={[0.065, 0.065, 0.026, 6]} />
+      <meshStandardMaterial color={baseColor} roughness={0.64} emissive={unit.inHybrid ? "#8c5d2f" : "#000000"} emissiveIntensity={unit.inHybrid ? 0.22 : 0} />
     </mesh>
-    <mesh rotation={[0, Math.PI / 2, 0]} position={[0, -0.04, 0.08]}>
-      <torusGeometry args={[0.46, 0.075, 16, 36, Math.PI * 1.52]} />
-      <meshStandardMaterial color="#e4b473" emissive="#6d3d1c" emissiveIntensity={engaged ? 0.38 : 0.14} roughness={0.56} />
-    </mesh>
-    <mesh rotation={[0, 0, Math.PI / 2]} position={[0, -0.02, 0.09]}>
-      <cylinderGeometry args={[0.16, 0.16, 1.2, 24]} />
-      <meshStandardMaterial color="#2a2029" roughness={0.88} />
-    </mesh>
-    <mesh position={[0, -0.28, 0.12]} scale={[0.32, 0.16, 0.22]}>
-      <sphereGeometry args={[1, 20, 14]} />
-      <meshStandardMaterial color="#f0c875" emissive="#9b5d20" emissiveIntensity={engaged ? 0.55 : 0.2} roughness={0.44} />
-    </mesh>
-    <Text position={[0, 1.05, 0.15]} fontSize={0.2} color={colors.labelPrimary} anchorX="center">Pol II</Text>
   </group>;
 }
 
-function NascentRNA3D({ length, anchorProgress, theme }: { length: number; anchorProgress: number; theme: SpatialRaviaTheme }) {
-  const colors = spatialRaviaThemePresentation[normalizeSpatialRaviaTheme(theme)];
-  const points = useMemo(() => {
-    const count = Math.max(2, Math.min(11, Math.ceil(length) + 1));
-    const anchorX = sceneXFromProgress(anchorProgress);
-    const extent = Math.min(1.35, 0.35 + length * 0.12);
-    return Array.from({ length: count }, (_, index) => {
-      const t = index / (count - 1);
-      return new THREE.Vector3(
-        anchorX + Math.sin(t * Math.PI * 1.15) * 0.24 + t * extent * 0.34,
-        -0.25 - t * (0.46 + Math.min(0.5, length * 0.05)),
-        0.22 + Math.cos(t * Math.PI) * 0.14 + t * 0.24,
-      );
-    });
-  }, [anchorProgress, length]);
-  const curve = useMemo(() => new THREE.CatmullRomCurve3(points), [points]);
-  if (length <= 0) return null;
-  const end = points[points.length - 1]!;
-  return <group aria-label="nascent RNA">
-    <mesh>
-      <tubeGeometry args={[curve, Math.max(16, points.length * 8), 0.055, 10, false]} />
-      <meshStandardMaterial color="#52cda9" emissive="#164f43" emissiveIntensity={0.18} roughness={0.5} metalness={0.04} />
-    </mesh>
-    <mesh position={end}>
-      <sphereGeometry args={[0.09, 16, 12]} />
-      <meshStandardMaterial color="#b9f3db" emissive="#4fd8af" emissiveIntensity={0.4} roughness={0.42} />
-    </mesh>
-    <Text position={end.clone().add(new THREE.Vector3(0.16, -0.02, 0.02))} fontSize={0.14} color={colors.labelPrimary} anchorX="left">5′</Text>
-    <Text position={[0.72, -0.98, 0.36]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">nascent RNA</Text>
+function PolIIComplex3D({ engaged, position }: { engaged: boolean; position: THREE.Vector3 }) {
+  return <group aria-label="RNA polymerase II molecular complex">
+    <TranscriptionRnapPresentation position={position} scale={1} opacity={engaged ? 1 : 0.48} />
+  </group>;
+}
+
+function MolecularNascentRNA3D({ presentation }: { presentation: TranscriptionPresentationStateV1 }) {
+  const rna = useMemo(() => sampleTranscriptionMolecularRna(presentation), [presentation]);
+  if (rna.units.length === 0) return null;
+  return <group aria-label="nascent RNA molecular polymer">
+    {rna.backboneSegments.map((segment, index) => <MolecularBond key={`backbone-${index}`} from={segment.from} to={segment.to} color="#58c6a2" radius={0.022} />)}
+    {rna.hybridPairs.map((pair) => <MolecularBond key={`hybrid-${pair.rnaUnitIndex}`} from={pair.rnaPosition} to={pair.dnaPosition} color="#e4b36b" radius={0.014} opacity={0.8} />)}
+    {rna.units.map((unit) => <RnaNucleotideActor key={unit.index} unit={unit} />)}
   </group>;
 }
 
@@ -115,7 +106,6 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
   const colors = spatialRaviaThemePresentation[normalizedTheme];
   const engaged = presentation.polymeraseEngagement > 0.01;
   const polymerasePosition = new THREE.Vector3(sceneXFromProgress(presentation.polymeraseGenePosition), engaged ? 0 : 0.42, 0.1);
-  const polymeraseScale = 1.12 + presentation.polymeraseEngagement * 0.2;
   return <group>
     <NuclearContext3D theme={normalizedTheme} />
     <group rotation={[0.16, -0.28, 0]} scale={1.35}>
@@ -131,9 +121,8 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
         />
       </group>
       <PromoterRegion3D />
-      <PolymeraseHero3D engaged={engaged} position={polymerasePosition} scale={polymeraseScale} theme={normalizedTheme} />
-      <TranscriptionRnapPresentation position={new THREE.Vector3(0, 0, 0)} scale={0.92} opacity={engaged ? 0.34 : 0.2} />
-      <NascentRNA3D length={presentation.nascentRnaVisualLength} anchorProgress={presentation.nascentRnaAnchor} theme={normalizedTheme} />
+      <PolIIComplex3D engaged={engaged} position={polymerasePosition} />
+      <MolecularNascentRNA3D presentation={presentation} />
       <Text position={[-2.9, 0.72, 0.12]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">DNA</Text>
     </group>
   </group>;

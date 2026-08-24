@@ -64,12 +64,14 @@ export function TranscriptionRnapPresentation({ position, opacity, scale }: Prop
   return <>
     <StructureDerivedPrimitive
       entry={entry}
-      position={position}
-      visible={false}
+      position={transform?.position ?? position}
+      quaternion={transform?.quaternion}
+      scale={transform?.scale ?? 1}
+      visible={Boolean(transform)}
       onResolved={({ geometry: resolved }) => setGeometry(resolved)}
     />
     {presentationRenderable && presentation && transform
-      ? <GroundedRnapBody presentation={presentation} position={transform.position} quaternion={transform.quaternion} scale={transform.scale} opacity={opacity} />
+      ? <GroundedRnapCleft presentation={presentation} position={transform.position} quaternion={transform.quaternion} scale={transform.scale} opacity={opacity} />
       : <SchematicRnapBody position={position} opacity={opacity} scale={scale} />}
   </>;
 }
@@ -82,7 +84,7 @@ function isFiniteTransform(value: unknown): value is { position: THREE.Vector3; 
   return Number.isFinite(quaternion.w) && typeof candidate.scale === "number" && Number.isFinite(candidate.scale) && candidate.scale > 0;
 }
 
-function GroundedRnapBody({
+function GroundedRnapCleft({
   presentation,
   position,
   quaternion,
@@ -101,18 +103,12 @@ function GroundedRnapBody({
   );
   return <group position={position} quaternion={quaternion} scale={scale}>
     {presentation.lobes.map((lobe, index) => (
-      <mesh key={index} position={lobe.center} scale={lobe.radii}>
-        <sphereGeometry args={[1, 22, 16]} />
-        <meshStandardMaterial
-          color="#5f7882"
-          roughness={0.84}
-          metalness={0.01}
-          transparent={opacity < 0.98}
-          opacity={Math.min(0.94, opacity)}
-        />
+      <mesh key={`derived-lobe-${index}`} position={lobe.center} scale={lobe.radii}>
+        <sphereGeometry args={[1, 18, 14]} />
+        <meshStandardMaterial color="#5f7882" roughness={0.84} metalness={0.01} transparent opacity={Math.min(0.86, opacity * 0.9)} />
       </mesh>
     ))}
-    {/* A shallow, open channel cue. The residue-derived lobes avoid this corridor,
+    {/* A shallow, open channel cue. The residue-derived surface avoids this corridor,
         so DNA remains physically visible instead of being hidden by a shell. */}
     <mesh position={presentation.cleft.center} quaternion={channelQuaternion} renderOrder={1}>
       <cylinderGeometry args={[presentation.cleft.radius, presentation.cleft.radius, presentation.cleft.length, 20]} />
