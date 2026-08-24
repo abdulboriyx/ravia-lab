@@ -16,10 +16,10 @@ test("transcription production is backed by the R3F 3D mechanism scene", () => {
   assert.match(sceneSource, /function BubbleEnvelope3D/);
   assert.match(sceneSource, /<torusGeometry/);
   assert.match(sceneSource, /camera=\{\{ position: \[3\.6, 2\.25, 4\.7\]/);
-  assert.match(sceneSource, /function MolecularNascentRNA3D/);
+  assert.match(sceneSource, /<RnaStrand3D/);
   assert.doesNotMatch(sceneSource, /function PolymeraseHero3D/);
   assert.doesNotMatch(sceneSource, /<icosahedronGeometry/);
-  assert.match(sceneSource, /sampleTranscriptionMolecularRna/);
+  assert.match(sceneSource, /deriveFreeRnaContinuation/);
   assert.match(sceneSource, /bubbleOpen/);
   assert.match(sceneSource, /nascentRnaVisualLength/);
   assert.doesNotMatch(sceneSource, /<TranscriptionRnapPresentation/);

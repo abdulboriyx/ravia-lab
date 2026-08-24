@@ -6,13 +6,13 @@ import * as THREE from "three";
 import { useMemo } from "react";
 import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
 import { MolstarStructurePresentationAdapter } from "./MolstarStructurePresentationAdapter";
-import { sampleTranscriptionMolecularRna, type TranscriptionRnaUnit } from "./transcription-molecular-actors";
 import { resolveTranscriptionStructuralActorPackage } from "./transcription-structural-actors";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
 import { RnaStrand3D } from "./RnaMolecularStrand3D";
 import { deriveFreeRnaContinuation } from "./transcription-free-rna-continuation";
+import { deriveTranscriptionMechanismVisualState } from "./transcription-mechanism-presentation";
 
 type Props = { projection: GeneExpressionProductionProjectionV1; presentation: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
 type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentation?: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
@@ -51,58 +51,11 @@ function BubbleEnvelope3D({ openFraction, center }: { openFraction: number; cent
   </mesh>;
 }
 
-function MolecularBond({ from, to, color, radius = 0.018, opacity = 1 }: { from: readonly [number, number, number]; to: readonly [number, number, number]; color: string; radius?: number; opacity?: number }) {
-  const geometry = useMemo(() => {
-    const start = new THREE.Vector3(...from);
-    const end = new THREE.Vector3(...to);
-    const direction = end.clone().sub(start);
-    if (direction.lengthSq() < 1e-8) return null;
-    return {
-      midpoint: start.clone().add(end).multiplyScalar(0.5),
-      quaternion: new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.normalize()),
-      length: start.distanceTo(end),
-    };
-  }, [from, to]);
-  if (!geometry) return null;
-  return <mesh position={geometry.midpoint} quaternion={geometry.quaternion}>
-    <cylinderGeometry args={[radius, radius, geometry.length, 8]} />
-    <meshStandardMaterial color={color} transparent={opacity < 1} opacity={opacity} roughness={0.72} />
-  </mesh>;
-}
-
-function RnaNucleotideActor({ unit }: { unit: TranscriptionRnaUnit }) {
-  const baseColor = unit.base === "U" ? "#e4b36b" : unit.base === "A" ? "#66b8db" : unit.base === "G" ? "#c885a8" : "#8ec68a";
-  return <group position={unit.position}>
-    <mesh rotation={[Math.PI / 2, 0, 0]}>
-      <torusGeometry args={[0.075, 0.018, 8, 12]} />
-      <meshStandardMaterial color="#58c6a2" roughness={0.62} />
-    </mesh>
-    <mesh position={[0.13, -0.08, -0.015]}>
-      <sphereGeometry args={[0.038, 10, 8]} />
-      <meshStandardMaterial color="#d49b57" roughness={0.7} />
-    </mesh>
-    <mesh position={[0, 0.14, 0.03]} rotation={[Math.PI / 2, 0, 0]}>
-      <cylinderGeometry args={[0.065, 0.065, 0.026, 6]} />
-      <meshStandardMaterial color={baseColor} roughness={0.64} emissive={unit.inHybrid ? "#8c5d2f" : "#000000"} emissiveIntensity={unit.inHybrid ? 0.22 : 0} />
-    </mesh>
-  </group>;
-}
-
 function PolIIComplex3D({ engaged, position }: { engaged: boolean; position: THREE.Vector3 }) {
   // The primary body is now owned by the deposited Mol* layer. Keep this
   // group as a structured anchor for exact-time overlays only; it deliberately
   // mounts no hand-authored protein geometry.
   return <group aria-label="deposited bacterial RNA polymerase structural anchor" position={position} visible={false} />;
-}
-
-function MolecularNascentRNA3D({ presentation }: { presentation: TranscriptionPresentationStateV1 }) {
-  const rna = useMemo(() => sampleTranscriptionMolecularRna(presentation), [presentation]);
-  if (rna.units.length === 0) return null;
-  return <group aria-label="nascent RNA molecular polymer">
-    {rna.backboneSegments.map((segment, index) => <MolecularBond key={`backbone-${index}`} from={segment.from} to={segment.to} color="#58c6a2" radius={0.022} />)}
-    {rna.hybridPairs.map((pair) => <MolecularBond key={`hybrid-${pair.rnaUnitIndex}`} from={pair.rnaPosition} to={pair.dnaPosition} color="#e4b36b" radius={0.014} opacity={0.8} />)}
-    {rna.units.map((unit) => <RnaNucleotideActor key={unit.index} unit={unit} />)}
-  </group>;
 }
 
 function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
@@ -154,8 +107,9 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
   }
   const normalizedTheme = normalizeSpatialRaviaTheme(theme);
   const colors = spatialRaviaThemePresentation[normalizedTheme];
+  const mechanismState = deriveTranscriptionMechanismVisualState(presentation);
   const freeTail = deriveFreeRnaContinuation({ canonicalVisibleLength: presentation.nascentRnaVisualLength, exitAnchor: [0, 0, 0], exitDirection: [1, 0, 0] });
-  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
+  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-stage={mechanismState.stage} data-polymerase-presentation={mechanismState.polymeraseMode} data-teaching-label={mechanismState.teachingLabel} data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
     <Canvas shadows dpr={[1, 2]} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }}>
       <color attach="background" args={[colors.canvasBackground]} />
       <fog attach="fog" args={[colors.canvasFog, 6.2, 13]} />

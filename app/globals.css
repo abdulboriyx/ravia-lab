@@ -1297,6 +1297,13 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   pointer-events: none;
 }
 
+/* Exact-time presentation disclosure: the deposited snapshot remains the
+   structural core, while availability/release are explicit schematic states. */
+[data-transcription-stage="START"] .geneExpressionMolecularLayer { opacity: 0.38; }
+[data-transcription-stage="INITIATION"] .geneExpressionMolecularLayer,
+[data-transcription-stage="ELONGATION"] .geneExpressionMolecularLayer { opacity: 1; }
+[data-transcription-stage="TERMINATION"] .geneExpressionMolecularLayer { opacity: 0.52; }
+
 .nucleusHalo {
   position: absolute;
   inset: 9% 7%;

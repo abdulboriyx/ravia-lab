@@ -12,6 +12,7 @@ import { applyCellularGeneExpressionExactFrame, applyCellularSecretoryExactFrame
 import { cellularProductionOwnerComponents } from "./cellular-production-dispatch";
 import { GeneExpression3DScene } from "./GeneExpression3DScene";
 import { deriveTranscriptionPresentationState, isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
+import { deriveTranscriptionMechanismVisualState } from "./transcription-mechanism-presentation";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 type DisplayItem = Readonly<{ label: string; value: string | number | boolean }>;
@@ -133,7 +134,8 @@ function GeneExpressionProductionView({ route, theme }: { route: ProductionPromp
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>{presentationResult.details}</div>}</section>;
   }
   const presentation = presentationResult.state;
-  const bubbleOpen = projection.dna.transcriptionBubble === "OPEN";
+  const mechanismState = deriveTranscriptionMechanismVisualState(presentation);
+  const bubbleOpen = presentation.bubbleOpenFraction > 0.01;
   const rnaLength = projection.transcription.visibleRnaLength;
   const activeStep = transcriptionSteps.find((step) => step.time === timeSeconds)?.label ?? "EXACT TIME";
   const explanation = timeSeconds === 0
@@ -144,7 +146,7 @@ function GeneExpressionProductionView({ route, theme }: { route: ProductionPromp
         ? "The template is read 3′→5′ while the nascent RNA grows 5′→3′ from its 3′ end."
         : "Transcription has ended; the transcript is no longer polymerase-growing and DNA re-pairs.";
   return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={projection.timeSeconds} data-presentation-progress={presentation.normalizedProgress.toFixed(3)}>
-    <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep}</span></header>
+    <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep} · {mechanismState.stage}</span></header>
     <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${presentation.bubbleOpenFraction > 0.01 ? "open transcription bubble" : "closed DNA"}, and ${presentation.nascentRnaVisualLength.toFixed(1)} nascent RNA nucleotides`}>
       <GeneExpression3DScene projection={projection} presentation={presentation} theme={theme} />
       <details className="transcriptionTeachingCue">
