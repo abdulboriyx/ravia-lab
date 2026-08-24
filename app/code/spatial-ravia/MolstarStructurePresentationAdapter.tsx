@@ -265,7 +265,8 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
     return () => { rebuildGate.invalidate(); };
   }, [kind, ready, translationIntent, transcription]);
 
-  return <div ref={mountRef} className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} aria-label={`${kind} structure-derived Mol* presentation`}>
+  return <div className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} aria-label={`${kind} structure-derived Mol* presentation`}>
+    <div ref={mountRef} className="molstarStructureViewport" />
     {kind === "transcription" && <button type="button" className="molstarFocusButton" onClick={resetView}>RESET VIEW</button>}
     {error && kind === "transcription" && <div className="molstarStructurePresentationError" role="status">STRUCTURAL_POLYMERASE_UNAVAILABLE</div>}
   </div>;

@@ -1069,6 +1069,11 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   overflow: hidden;
 }
 
+.molstarStructureViewport {
+  position: absolute;
+  inset: 0;
+}
+
 .molstarStructurePresentation .msp-plugin,
 .molstarStructurePresentation .msp-layout-main,
 .molstarStructurePresentation .msp-viewport,
