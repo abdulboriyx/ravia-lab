@@ -50,8 +50,8 @@ test("Spatial Ravia route uses one bottom command dock instead of the old top pr
 test("Spatial prompt dock supports collapse, expand, and keyboard reopening", () => {
   assert.match(dockSource, /data-state="expanded"/);
   assert.match(dockSource, /data-state="collapsed"/);
-  assert.match(dockSource, /Collapse Spatial Ravia prompt/);
-  assert.match(dockSource, /Open Spatial Ravia prompt/);
+  assert.match(dockSource, /Collapse Scina prompt/);
+  assert.match(dockSource, /Open Scina prompt/);
   assert.match(dockSource, /event\.key === "\/"/);
   assert.match(dockSource, /event\.key === "Escape"/);
 });

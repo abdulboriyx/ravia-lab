@@ -1,5 +1,7 @@
 # Spatial Ravia Foundation v1 Baseline
 
+> Product note (2026-08-24): Spatial Ravia was renamed to Scina. This frozen baseline retains its historical title; internal identifiers remain unchanged.
+
 Status: **FROZEN**. This is the authoritative Foundation baseline for future Spatial Ravia work. It declares architecture and migration status only; it does not introduce a renderer migration or feature work.
 
 ## Canonical pipeline and boundaries (F0)

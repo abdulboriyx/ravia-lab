@@ -422,4 +422,4 @@ No D phase should begin with a renderer-first implementation. Each capability mu
 
 ## Audit conclusion
 
-Spatial Ravia has a strong reusable molecular DNA/RNA foundation and several valuable legacy/structural cell-biology footholds. It does not yet have one authoritative cell-biology ontology. The correct next step is the additive D-B compartment/localization extension, followed by bounded mechanisms with explicit grounding and unsupported behavior. This map is the single D-A planning boundary; it does not activate any listed future capability.
+Scina has a strong reusable molecular DNA/RNA foundation and several valuable legacy/structural cell-biology footholds. It does not yet have one authoritative cell-biology ontology. The correct next step is the additive D-B compartment/localization extension, followed by bounded mechanisms with explicit grounding and unsupported behavior. This map is the single D-A planning boundary; it does not activate any listed future capability.

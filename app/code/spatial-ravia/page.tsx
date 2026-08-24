@@ -86,7 +86,7 @@ export default function Page() {
     <main className="spatialRaviaWorkspace" data-spatial-theme={theme}>
       <section
         className="spatialRaviaViewport"
-        aria-label="Spatial Ravia visualization"
+        aria-label="Scina visualization"
       >
         {!error && !isCellularProductionRoute && !rnaPresentationRoute && dnaMechanismRoute && (
           <DnaMechanismPresentationView route={dnaMechanismRoute} theme={theme} visualTemplate={dnaTemplate ?? undefined} />

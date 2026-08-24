@@ -92,10 +92,10 @@ export function SpatialPromptDock({
         <button
           type="button"
           className="spatialPromptDockExpand"
-          aria-label="Open Spatial Ravia prompt"
+          aria-label="Open Scina prompt"
           onClick={openAndFocus}
         >
-          Ask Ravia ↑
+          Ask Scina ↑
         </button>
       </div>
     );
@@ -105,12 +105,12 @@ export function SpatialPromptDock({
     <form
       className="spatialPromptDock"
       data-state="expanded"
-      aria-label="Spatial Ravia command dock"
+      aria-label="Scina command dock"
       onSubmit={handleSubmit}
     >
       <div className="spatialPromptDockPanel">
         <label className="spatialPromptDockLabel" htmlFor="spatial-ravia-prompt">
-          Spatial Ravia prompt
+          Scina prompt
         </label>
         <input
           id="spatial-ravia-prompt"
@@ -118,8 +118,8 @@ export function SpatialPromptDock({
           className="spatialPromptDockInput"
           type="text"
           value={prompt}
-          aria-label="Spatial Ravia prompt"
-          placeholder="Ask Spatial Ravia..."
+          aria-label="Scina prompt"
+          placeholder="Ask Scina..."
           onChange={(event) => onPromptChange(event.currentTarget.value)}
           onKeyDown={handleInputKeyDown}
         />
@@ -133,7 +133,7 @@ export function SpatialPromptDock({
         <button
           type="button"
           className="spatialPromptDockCollapse"
-          aria-label="Collapse Spatial Ravia prompt"
+          aria-label="Collapse Scina prompt"
           onClick={collapse}
         >
           ↓

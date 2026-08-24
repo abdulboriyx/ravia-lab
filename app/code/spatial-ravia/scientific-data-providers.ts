@@ -697,7 +697,7 @@ const offlineFixtures: NormalizedScientificDataRecord[] = [
     kind: "structure",
     canonicalName: "B-DNA dodecamer crystal structure",
     aliases: ["B-DNA", "DNA double helix", "1ZF5"],
-    description: "Reviewed fixture for the deposited B-DNA structure used by the Spatial Ravia molecular viewer.",
+    description: "Reviewed fixture for the deposited B-DNA structure used by the Scina molecular viewer.",
     identifiers: { pdb: ["1ZF5"], chebi: ["CHEBI:16991"] },
     structuralDataAvailable: true,
     quantitativeDataAvailable: false,

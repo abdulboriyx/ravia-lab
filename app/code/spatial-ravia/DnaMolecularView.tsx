@@ -294,7 +294,7 @@ export function DnaMolecularView({
      {!embedded ? (
   <form
     className={sceneStarted ? "structurePromptBar isDocked" : "structurePromptBar"}
-    aria-label="Spatial Ravia prompt"
+    aria-label="Scina prompt"
     onSubmit={handlePromptSubmit}
   >
     <input

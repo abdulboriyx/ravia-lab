@@ -31,7 +31,7 @@ export function parseSpatialScenePrompt(prompt: string): PromptResolution {
   if (!isDnaStructurePrompt(normalized, words)) {
     return {
       supported: false,
-      reason: "Spatial Ravia no longer supports schematic biological process simulations."
+      reason: "Scina no longer supports schematic biological process simulations."
     };
   }
 
