@@ -110,6 +110,16 @@ test("transcription calibration keeps at least two paired canonical turns on bot
   assert.ok(transcriptionDuplexCalibration.maximumOpenDisplacementAngstrom < dnaVisualSystem.geometry.localOpenDisplacementAngstrom);
 });
 
+test("continuous presentation inputs move and scale the local bubble", () => {
+  const early = deriveTranscriptionTemplatePlan({ hasRnap: true, hasNascentRna: false, bubbleCenterNormalized: 0.2, bubbleOpenFraction: 0.35, bubbleWidth: 0.08 });
+  const late = deriveTranscriptionTemplatePlan({ hasRnap: true, hasNascentRna: false, bubbleCenterNormalized: 0.8, bubbleOpenFraction: 1, bubbleWidth: 0.15 });
+  const earlyOpen = sampleTranscriptionDuplexGeometry(early).filter((sample) => sample.opening > 0.01);
+  const lateOpen = sampleTranscriptionDuplexGeometry(late).filter((sample) => sample.opening > 0.01);
+  assert.ok(earlyOpen.length > 0 && lateOpen.length > 0);
+  assert.ok(earlyOpen.reduce((sum, sample) => sum + sample.index, 0) / earlyOpen.length < lateOpen.reduce((sum, sample) => sum + sample.index, 0) / lateOpen.length);
+  assert.ok(Math.max(...lateOpen.map((sample) => sample.opening)) > Math.max(...earlyOpen.map((sample) => sample.opening)));
+});
+
 function distance(a: readonly number[], b: readonly number[]) {
   return Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 }

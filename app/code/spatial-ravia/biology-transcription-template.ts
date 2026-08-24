@@ -25,7 +25,10 @@ export type TranscriptionTemplatePlan = {
   dna: {
     basePairCount: number;
     openCenter: number;
+    bubbleCenterNormalized: number;
     openBasePairs: number;
+    bubbleOpenFraction: number;
+    bubbleWidth: number;
     /** The two backbones remain paired outside this short local interval. */
     pairedOutsideBubble: true;
     templateStrand: "strandB";
@@ -40,6 +43,9 @@ export type TranscriptionTemplatePlan = {
 export function deriveTranscriptionTemplatePlan(input: {
   hasRnap: boolean;
   hasNascentRna: boolean;
+  bubbleCenterNormalized?: number;
+  bubbleOpenFraction?: number;
+  bubbleWidth?: number;
 }): TranscriptionTemplatePlan {
   const mode: TranscriptionTemplateMode = input.hasNascentRna
     ? "dna-to-rna"
@@ -47,6 +53,9 @@ export function deriveTranscriptionTemplatePlan(input: {
       ? "rnap-on-dna"
       : "bubble-only";
   const rnapPrimary = mode === "rnap-on-dna" || mode === "dna-to-rna";
+  const bubbleCenterNormalized = Math.max(0, Math.min(1, input.bubbleCenterNormalized ?? 0.5));
+  const bubbleOpenFraction = Math.max(0, Math.min(1, input.bubbleOpenFraction ?? 1));
+  const bubbleWidth = Math.max(0.02, Math.min(0.3, input.bubbleWidth ?? 0.12));
 
   return {
     mode,
@@ -54,9 +63,12 @@ export function deriveTranscriptionTemplatePlan(input: {
       // Keep more than two B-DNA turns visibly paired on each side of the
       // compact RNAP-bound opening.
       basePairCount: transcriptionDuplexCalibration.basePairCount,
-      openCenter: transcriptionDuplexCalibration.basePairCount / 2,
+      openCenter: bubbleCenterNormalized * (transcriptionDuplexCalibration.basePairCount - 1),
+      bubbleCenterNormalized,
       // A six-base-pair teaching bubble avoids replication-fork-like width.
       openBasePairs: transcriptionDuplexCalibration.openBasePairs,
+      bubbleOpenFraction,
+      bubbleWidth,
       pairedOutsideBubble: true,
       templateStrand: "strandB",
     },
@@ -102,14 +114,14 @@ export function sampleTranscriptionDuplexGeometry(plan: TranscriptionTemplatePla
   });
   const canonicalHalfSeparation = dnaVisualSystem.geometry.helixRadiusAngstrom;
   const baseHalfWidth = dnaVisualSystem.geometry.basePairWidthAngstrom / 2;
-  const bubbleHalfLength = plan.dna.openBasePairs / 2;
+  const bubbleHalfLength = Math.max(0.75, plan.dna.bubbleWidth * plan.dna.basePairCount / 2);
   const transitionBasePairs = transcriptionDuplexCalibration.transitionBasePairs;
 
   return canonical.map((sample) => {
     const center = midpoint(sample.strandA, sample.strandB);
     const frameNormal = normalize(subtract(sample.strandA, center));
     const distanceFromBubbleCenter = Math.abs(sample.index - plan.dna.openCenter);
-    const opening = smoothBubbleEnvelope(distanceFromBubbleCenter, bubbleHalfLength, transitionBasePairs);
+    const opening = smoothBubbleEnvelope(distanceFromBubbleCenter, bubbleHalfLength, transitionBasePairs) * plan.dna.bubbleOpenFraction;
     const halfSeparation = canonicalHalfSeparation + opening * transcriptionDuplexCalibration.maximumOpenDisplacementAngstrom;
     const halfBaseWidth = baseHalfWidth + opening * transcriptionDuplexCalibration.maximumOpenDisplacementAngstrom * 0.55;
 

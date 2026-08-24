@@ -57,11 +57,24 @@ function PairedDuplexSection({
   </group>;
 }
 
-export function TranscriptionDnaTemplate({ hasRnap, hasNascentRna, bubbleOpen = true }: { hasRnap: boolean; hasNascentRna: boolean; bubbleOpen?: boolean }) {
+export function TranscriptionDnaTemplate({
+  hasRnap,
+  hasNascentRna,
+  bubbleOpen = true,
+  bubbleCenterNormalized = 0.5,
+  bubbleOpenFraction = bubbleOpen ? 1 : 0,
+  bubbleWidth = 0.12,
+}: {
+  hasRnap: boolean;
+  hasNascentRna: boolean;
+  bubbleOpen?: boolean;
+  bubbleCenterNormalized?: number;
+  bubbleOpenFraction?: number;
+  bubbleWidth?: number;
+}) {
   const plan = useMemo(() => {
-    const derived = deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna });
-    return bubbleOpen ? derived : { ...derived, dna: { ...derived.dna, openBasePairs: 0 } };
-  }, [bubbleOpen, hasNascentRna, hasRnap]);
+    return deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna, bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth });
+  }, [bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth, hasNascentRna, hasRnap]);
   const sections = useMemo(() => partitionTranscriptionDuplex(plan), [plan]);
   const { samples, upstream, bubble, downstream } = sections;
   const bubbleA = useMemo(() => bubble.map((sample) => point(sample.strandA)), [bubble]);
@@ -71,7 +84,7 @@ export function TranscriptionDnaTemplate({ hasRnap, hasNascentRna, bubbleOpen = 
     [bubble]
   );
   const bubbleIsPrimary = plan.presentation.bubbleEmphasis === "primary";
-  const bubbleCenter = point(samples[plan.dna.openCenter].strandB);
+  const bubbleCenter = point(samples[Math.round(plan.dna.openCenter)]?.strandB ?? samples[Math.floor(samples.length / 2)]!.strandB);
   const rnaCurve = useMemo(() => new THREE.CatmullRomCurve3([
     bubbleCenter.clone(),
     bubbleCenter.clone().add(new THREE.Vector3(-0.18, -0.22, 0.08)),

@@ -46,6 +46,7 @@ export function TranscriptionRnapPresentation({ position, opacity, scale }: Prop
   }, [geometry, position, scale]);
 
   if (!entry) return <SchematicRnapBody position={position} opacity={opacity} scale={scale} />;
+  const presentationRenderable = presentation && transform && isFiniteRnapPresentation(presentation, transform);
   return <>
     <StructureDerivedPrimitive
       entry={entry}
@@ -53,10 +54,24 @@ export function TranscriptionRnapPresentation({ position, opacity, scale }: Prop
       visible={false}
       onResolved={({ geometry: resolved }) => setGeometry(resolved)}
     />
-    {presentation && transform
+    {presentationRenderable && presentation && transform
       ? <GroundedRnapBody presentation={presentation} position={transform.position} quaternion={transform.quaternion} scale={transform.scale} opacity={opacity} />
       : <SchematicRnapBody position={position} opacity={opacity} scale={scale} />}
   </>;
+}
+
+function isFiniteRnapPresentation(
+  presentation: RnapPresentationGeometry,
+  transform: { position: THREE.Vector3; quaternion: THREE.Quaternion; scale: number },
+) {
+  const vector = (value: THREE.Vector3) => Number.isFinite(value.x) && Number.isFinite(value.y) && Number.isFinite(value.z);
+  return vector(transform.position)
+    && Number.isFinite(transform.scale) && transform.scale > 0
+    && Number.isFinite(transform.quaternion.x) && Number.isFinite(transform.quaternion.y)
+    && Number.isFinite(transform.quaternion.z) && Number.isFinite(transform.quaternion.w)
+    && vector(presentation.cleft.center) && vector(presentation.cleft.axis)
+    && Number.isFinite(presentation.cleft.length) && Number.isFinite(presentation.cleft.radius)
+    && presentation.lobes.every((lobe) => vector(lobe.center) && vector(lobe.radii));
 }
 
 function GroundedRnapBody({

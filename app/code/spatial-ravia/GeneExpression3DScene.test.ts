@@ -18,8 +18,10 @@ test("transcription production is backed by the R3F 3D mechanism scene", () => {
   assert.match(sceneSource, /camera=\{\{ position: \[3\.6, 2\.25, 4\.7\]/);
   assert.match(sceneSource, /function NascentRNA3D/);
   assert.match(sceneSource, /bubbleOpen/);
-  assert.match(sceneSource, /visibleRnaLength/);
+  assert.match(sceneSource, /nascentRnaVisualLength/);
+  assert.match(sceneSource, /TRANSCRIPTION_PRESENTATION_STATE_INVALID/);
+  assert.doesNotMatch(sceneSource, /gl=\{\{ alpha: true \}\}/);
   assert.doesNotMatch(sceneSource, /<svg\b/);
-  assert.match(ownerSource, /<GeneExpression3DScene projection=\{projection\} \/>/);
+  assert.match(ownerSource, /<GeneExpression3DScene projection=\{projection\} presentation=\{presentation\} theme=\{theme\} \/>/);
   assert.doesNotMatch(ownerSource, /<svg className="transcriptionDiagram"/);
 });

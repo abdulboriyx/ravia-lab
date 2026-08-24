@@ -1,6 +1,6 @@
 "use client";
 
-import { Component, useMemo, useState, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, useMemo, useState, type ErrorInfo, type ReactNode } from "react";
 import type { ProductionPromptRoute } from "./production-prompt-router";
 import { createCanonicalEukaryoticGeneExpressionProgram, type GeneExpressionProgramV1 } from "./cellular-gene-expression";
 import { projectGeneExpressionProductionAtTime, type GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
@@ -11,6 +11,8 @@ import { createCanonicalCellularSignalingProductionProgram, projectCellularSigna
 import { applyCellularGeneExpressionExactFrame, applyCellularSecretoryExactFrame, applyCellularIntracellularTransportExactFrame, applyCellularSignalingExactFrame } from "./p4-b-exact-frame-runtime";
 import { cellularProductionOwnerComponents } from "./cellular-production-dispatch";
 import { GeneExpression3DScene } from "./GeneExpression3DScene";
+import { deriveTranscriptionPresentationState, isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
+import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 type DisplayItem = Readonly<{ label: string; value: string | number | boolean }>;
 type CellularProjection = Readonly<{ ownerId: string; timeSeconds: number; focus: string; items: readonly DisplayItem[] }>;
@@ -80,8 +82,8 @@ class ProductionRenderBoundary extends Component<{ route: ProductionPromptRoute;
   }
 }
 
-export function CellularProductionOwnerView({ route }: { route: ProductionPromptRoute }) {
-  return <ProductionRenderBoundary route={route}>{route.productionOwner === "GENE_EXPRESSION_CELLULAR_V1" ? <GeneExpressionProductionView route={route} /> : <CellularProductionOwnerFrame route={route} />}</ProductionRenderBoundary>;
+export function CellularProductionOwnerView({ route, theme }: { route: ProductionPromptRoute; theme: SpatialRaviaTheme }) {
+  return <ProductionRenderBoundary route={route}>{route.productionOwner === "GENE_EXPRESSION_CELLULAR_V1" ? <GeneExpressionProductionView route={route} theme={theme} /> : <CellularProductionOwnerFrame route={route} />}</ProductionRenderBoundary>;
 }
 
 function CellularProductionOwnerFrame({ route }: { route: ProductionPromptRoute }) {
@@ -94,10 +96,43 @@ function CellularProductionOwnerFrame({ route }: { route: ProductionPromptRoute 
   </section>;
 }
 
-function GeneExpressionProductionView({ route }: { route: ProductionPromptRoute }) {
+function GeneExpressionProductionView({ route, theme }: { route: ProductionPromptRoute; theme: SpatialRaviaTheme }) {
   const program = useMemo(() => createCanonicalEukaryoticGeneExpressionProgram(), []);
   const [timeSeconds, setTimeSeconds] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const transcriptionDuration = transcriptionSteps[transcriptionSteps.length - 1]!.time;
+  useEffect(() => {
+    if (!playing) return undefined;
+    let frame = 0;
+    let previous = performance.now();
+    const tick = (now: number) => {
+      const delta = Math.max(0, Math.min(0.1, (now - previous) / 1000));
+      previous = now;
+      setTimeSeconds((current) => {
+        const next = Math.min(transcriptionDuration, current + delta);
+        if (next >= transcriptionDuration) setPlaying(false);
+        return next;
+      });
+      frame = window.requestAnimationFrame(tick);
+    };
+    frame = window.requestAnimationFrame(tick);
+    return () => window.cancelAnimationFrame(frame);
+  }, [playing, transcriptionDuration]);
   const projection = useMemo(() => geneProjection(program, timeSeconds), [program, timeSeconds]);
+  const presentationResult = useMemo((): Readonly<{ ok: true; state: TranscriptionPresentationStateV1 } | { ok: false; details: string }> => {
+    try {
+      const state = deriveTranscriptionPresentationState(program, projection);
+      return isValidTranscriptionPresentationState(state)
+        ? { ok: true, state }
+        : { ok: false, details: "derived state failed finite-field validation" };
+    } catch (error) {
+      return { ok: false, details: error instanceof Error ? error.message : "unknown derivation failure" };
+    }
+  }, [program, projection]);
+  if (!presentationResult.ok) {
+    return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>{presentationResult.details}</div>}</section>;
+  }
+  const presentation = presentationResult.state;
   const bubbleOpen = projection.dna.transcriptionBubble === "OPEN";
   const rnaLength = projection.transcription.visibleRnaLength;
   const activeStep = transcriptionSteps.find((step) => step.time === timeSeconds)?.label ?? "EXACT TIME";
@@ -108,17 +143,18 @@ function GeneExpressionProductionView({ route }: { route: ProductionPromptRoute 
       : timeSeconds < 2
         ? "The template is read 3′→5′ while the nascent RNA grows 5′→3′ from its 3′ end."
         : "Transcription has ended; the transcript is no longer polymerase-growing and DNA re-pairs.";
-  return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={projection.timeSeconds}>
+  return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={projection.timeSeconds} data-presentation-progress={presentation.normalizedProgress.toFixed(3)}>
     <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep}</span></header>
-    <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${bubbleOpen ? "open transcription bubble" : "closed DNA"}, and ${rnaLength} nascent RNA nucleotides`}>
-      <GeneExpression3DScene projection={projection} />
+    <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${presentation.bubbleOpenFraction > 0.01 ? "open transcription bubble" : "closed DNA"}, and ${presentation.nascentRnaVisualLength.toFixed(1)} nascent RNA nucleotides`}>
+      <GeneExpression3DScene projection={projection} presentation={presentation} theme={theme} />
       <details className="transcriptionTeachingCue">
         <summary>{bubbleOpen ? "Pol II opens DNA and builds RNA." : "A gene segment inside the nucleus."}</summary>
         <span>{explanation}</span>
       </details>
     </div>
-    <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => setTimeSeconds(step.time)}>{step.label}</button>)}</div>
+    <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => { setPlaying(false); setTimeSeconds(step.time); }}>{step.label}</button>)}<button type="button" onClick={() => setPlaying((value) => !value)} aria-label={playing ? "Pause transcription playback" : "Play transcription playback"}>{playing ? "PAUSE" : "PLAY"}</button><label className="transcriptionScrubber">time <input type="range" min="0" max={transcriptionDuration} step="0.01" value={timeSeconds} onChange={(event) => { setPlaying(false); setTimeSeconds(Number(event.target.value)); }} aria-label="Transcription exact time" /><output>{timeSeconds.toFixed(2)}s</output></label></div>
     <details className="cellularProductionDetails"><summary>State details</summary><div className="cellularProductionSchematic">{[["DNA bubble", projection.dna.transcriptionBubble], ["RNA Pol II", projection.transcription.polymeraseState], ["Nascent RNA", rnaLength], ["RNA localization", projection.exportState.localization], ["Transcript", projection.transcription.transcriptState], ["Template read", "3′ → 5′"]].map(([label, value]) => <div className="cellularProductionCard" key={String(label)}><span>{label}</span><strong>{String(value)}</strong></div>)}</div></details>
+    {process.env.NODE_ENV !== "production" && <details className="transcriptionDebugState"><summary>Presentation debug</summary><code>progress={presentation.normalizedProgress.toFixed(3)} · PolII={presentation.polymeraseGenePosition.toFixed(3)} · bubble={presentation.bubbleCenter.toFixed(3)} / {presentation.bubbleOpenFraction.toFixed(3)} · RNA={presentation.nascentRnaVisualLength.toFixed(2)} · repair={presentation.dnaRepairProgress.toFixed(3)}</code></details>}
     <small>S2_SCHEMATIC · canonical D-C projection + P4 exact-frame application · owner {route.productionOwner}</small>
   </section>;
 }
