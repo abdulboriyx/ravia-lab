@@ -1228,6 +1228,39 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   height: 100%;
 }
 
+/* Mol* owns the deposited polymerase body; the R3F canvas remains the owner
+   of exact-time DNA and presentation overlays. Mol* is transparent so the
+   accepted DNA scene remains visible beneath the structural protein layer. */
+.geneExpressionMolecularLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.geneExpressionMolecularLayer .molstarStructurePresentation {
+  pointer-events: none;
+}
+
+.geneExpressionMolecularLayer .msp-plugin {
+  background: transparent !important;
+}
+
+.geneExpressionMolecularLayer .msp-canvas3d,
+.geneExpressionMolecularLayer .msp-canvas3d canvas {
+  background: transparent !important;
+}
+
+.molstarStructurePresentationError {
+  position: absolute;
+  inset: 1rem;
+  display: grid;
+  place-items: start end;
+  color: #f4b6b6;
+  font: 600 0.68rem/1.2 ui-monospace, SFMono-Regular, Menlo, monospace;
+  pointer-events: none;
+}
+
 .nucleusHalo {
   position: absolute;
   inset: 9% 7%;

@@ -6,6 +6,13 @@ import { MolstarPresentationRebuildGate } from "./MolstarPresentationRebuildGate
 import type { TranslationDisplayIntent } from "./biology-translation-display-intent";
 
 type PresentationKind = "translation" | "transcription";
+export type TranscriptionMolecularPresentationOptions = {
+  sourceId: string;
+  frameId: string;
+  polymeraseChains: readonly string[];
+  /** When true, keep the R3F DNA/RNA overlays as the temporal owners. */
+  polymeraseOnly?: boolean;
+};
 type Viewer = {
   dispose: () => void;
   plugin: {
@@ -154,11 +161,21 @@ async function applyTranslation(viewer: Viewer, structure: unknown, MS: Record<s
   focusPresentation(viewer, functionalRepresentations, transferFocus ? 20 : 24);
 }
 
-async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record<string, unknown>) {
+async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, options?: TranscriptionMolecularPresentationOptions) {
   // One quiet RNAP envelope. Nucleic acids and the local chemistry own the
   // teaching hierarchy; protein simply establishes the molecular machine.
-  const protein = await chainsComponent(viewer, structure, MS, "rnap", ["G", "H", "I", "J", "K"]);
+  const proteinChains = options?.polymeraseChains ?? ["G", "H", "I", "J", "K"];
+  const protein = await chainsComponent(viewer, structure, MS, "rnap", proteinChains);
   await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 2.8, smoothness: 1.65, alpha: 0.095, quality: "medium" }, color: "uniform", colorParams: uniform(0x78838d) });
+  if (options?.polymeraseOnly) {
+    const structuralDna: unknown[] = [];
+    for (const [id, chain, color] of [["dna-a", "A", 0x77aaca], ["dna-b", "B", 0x9f8cc5]] as const) {
+      const component = await chainComponent(viewer, structure, MS, id, chain);
+      structuralDna.push(await addRepresentation(viewer, component, cartoon(color, 0.9, 0.42)));
+    }
+    focusPresentation(viewer, structuralDna, 16);
+    return;
+  }
   const nucleicRepresentations: unknown[] = [];
   for (const [id, chain, color, sizeFactor] of [["dna-a", "A", 0x77aaca, 0.42], ["dna-b", "B", 0x9f8cc5, 0.42], ["rna", "R", 0x38c58e, 0.48]] as const) {
     const component = await chainComponent(viewer, structure, MS, id, chain);
@@ -174,11 +191,12 @@ async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record
   focusPresentation(viewer, nucleicRepresentations, 16);
 }
 
-export function MolstarStructurePresentationAdapter({ kind, theme, translationIntent }: { kind: PresentationKind; theme: SpatialRaviaTheme; translationIntent?: TranslationDisplayIntent }) {
+export function MolstarStructurePresentationAdapter({ kind, theme, translationIntent, transcription }: { kind: PresentationKind; theme: SpatialRaviaTheme; translationIntent?: TranslationDisplayIntent; transcription?: TranscriptionMolecularPresentationOptions }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
   const rebuildGateRef = useRef(new MolstarPresentationRebuildGate());
   const [ready, setReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -188,15 +206,18 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
       if (cancelled) { viewer.dispose(); return; }
       viewerRef.current = viewer;
       setReady(true);
-    }).catch((error) => console.error("[Spatial Ravia] Mol* presentation adapter unavailable", error));
+    }).catch((cause) => {
+      setError(cause instanceof Error ? cause.message : "Mol* viewer unavailable");
+      console.error("[Spatial Ravia] Mol* presentation adapter unavailable", cause);
+    });
     return () => { cancelled = true; viewerRef.current?.dispose(); viewerRef.current = null; };
   }, []);
 
   useEffect(() => {
     const viewer = viewerRef.current;
     if (!ready || !viewer) return;
-    viewer.plugin.canvas3d?.setProps({ renderer: { backgroundColor: theme === "dark" ? 0x020305 : 0xf6f8f7 } });
-  }, [ready, theme]);
+    viewer.plugin.canvas3d?.setProps({ transparentBackground: kind === "transcription", checkeredTransparentBackground: false, renderer: { backgroundColor: theme === "dark" ? 0x020305 : 0xf6f8f7 } });
+  }, [kind, ready, theme]);
 
   useEffect(() => {
     const viewer = viewerRef.current;
@@ -219,14 +240,18 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
       const { MolScriptBuilder } = await queryRuntime();
       if (!isCurrent() || viewerRef.current !== viewer) return;
       if (kind === "translation") await applyTranslation(viewer, withProperties, MolScriptBuilder, translationIntent);
-      else await applyTranscription(viewer, withProperties, MolScriptBuilder);
+      else await applyTranscription(viewer, withProperties, MolScriptBuilder, transcription);
       if (!isCurrent() || viewerRef.current !== viewer) return;
     };
-    void rebuildGate.schedule(rebuild).catch((error) =>
-      console.error("[Spatial Ravia] Mol* structure presentation failed", error)
-    );
+    setError(null);
+    void rebuildGate.schedule(rebuild).catch((cause) => {
+      setError(cause instanceof Error ? cause.message : "Mol* structure presentation failed");
+      console.error("[Spatial Ravia] Mol* structure presentation failed", cause);
+    });
     return () => { rebuildGate.invalidate(); };
-  }, [kind, ready, translationIntent]);
+  }, [kind, ready, translationIntent, transcription]);
 
-  return <div ref={mountRef} className="molstarStructurePresentation" aria-label={`${kind} structure-derived Mol* presentation`} />;
+  return <div ref={mountRef} className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} aria-label={`${kind} structure-derived Mol* presentation`}>
+    {error && kind === "transcription" && <div className="molstarStructurePresentationError" role="status">STRUCTURAL_POLYMERASE_UNAVAILABLE</div>}
+  </div>;
 }

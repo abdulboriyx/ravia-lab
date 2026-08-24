@@ -5,8 +5,9 @@ import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
-import { TranscriptionRnapPresentation } from "./TranscriptionRnapPresentation";
+import { MolstarStructurePresentationAdapter } from "./MolstarStructurePresentationAdapter";
 import { sampleTranscriptionMolecularRna, type TranscriptionRnaUnit } from "./transcription-molecular-actors";
+import { resolveTranscriptionStructuralActorPackage } from "./transcription-structural-actors";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
 import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
@@ -86,9 +87,10 @@ function RnaNucleotideActor({ unit }: { unit: TranscriptionRnaUnit }) {
 }
 
 function PolIIComplex3D({ engaged, position }: { engaged: boolean; position: THREE.Vector3 }) {
-  return <group aria-label="RNA polymerase II molecular complex">
-    <TranscriptionRnapPresentation position={position} scale={1} opacity={engaged ? 1 : 0.48} />
-  </group>;
+  // The primary body is now owned by the deposited Mol* layer. Keep this
+  // group as a structured anchor for exact-time overlays only; it deliberately
+  // mounts no hand-authored protein geometry.
+  return <group aria-label="deposited bacterial RNA polymerase structural anchor" position={position} visible={false} />;
 }
 
 function MolecularNascentRNA3D({ presentation }: { presentation: TranscriptionPresentationStateV1 }) {
@@ -129,6 +131,13 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
 }
 
 export function GeneExpression3DScene({ projection, presentation, theme }: SceneProps) {
+  const structuralPackage = useMemo(() => resolveTranscriptionStructuralActorPackage(), []);
+  const molecularOptions = useMemo(() => ({
+    sourceId: structuralPackage.source.sourceId,
+    frameId: `${structuralPackage.packageId}:active-site-frame`,
+    polymeraseChains: structuralPackage.selectors.polymeraseChains,
+    polymeraseOnly: true,
+  }), [structuralPackage]);
   if (!isValidTranscriptionPresentationState(presentation)) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>GeneExpression3DScene received no complete presentation state.</div>}</section>;
   }
@@ -145,5 +154,12 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
       <TranscriptionMechanism3D projection={projection} presentation={presentation} theme={theme} />
       <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} minDistance={4.2} maxDistance={9} />
     </Canvas>
+    <div className="geneExpressionMolecularLayer" data-molecular-owner="molstar" data-polymerase-source={structuralPackage.source.sourceId} data-polymerase-class={structuralPackage.source.polymeraseClass} data-active-site-frame={`${structuralPackage.packageId}:active-site-frame`} aria-label="deposited bacterial RNA polymerase molecular layer">
+      <MolstarStructurePresentationAdapter
+        kind="transcription"
+        theme={normalizedTheme}
+        transcription={molecularOptions}
+      />
+    </div>
   </div>;
 }

@@ -2190,9 +2190,9 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
       "release-factor",
     ].includes(e.id)
   );
-  // DNA-side transcription is deliberately procedural and bubble-first. The
-  // full 6ALH coordinate presentation is unsuitable for this local template.
-  const useMolstarStructuralPresentation = isTranslationScene;
+  // Mol* owns deposited transcription/translation molecular bodies. R3F
+  // remains responsible for exact-time orchestration and semantic overlays.
+  const useMolstarStructuralPresentation = isTranslationScene || isTranscriptionScene;
   const isSignalingScene = scene.entities.some((e) =>
     [
       "plasma-membrane",
@@ -2751,14 +2751,14 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
         )}
 
 
-        {transcriptionTemplate?.rnap.visible && !timeline.hasTemporal && (
+        {transcriptionTemplate?.rnap.visible && !timeline.hasTemporal && !useMolstarStructuralPresentation && (
           <TranscriptionRnapPresentation
             position={new THREE.Vector3(0, 0, 0)}
             scale={transcriptionTemplate.rnap.scale}
             opacity={transcriptionTemplate.rnap.opacity}
           />
         )}
-        {transcriptionTemplate?.rnap.visible && timeline.hasTemporal && (
+        {transcriptionTemplate?.rnap.visible && timeline.hasTemporal && !useMolstarStructuralPresentation && (
           <TranscriptionRnapPresentation
             position={new THREE.Vector3(transcriptionMotion.polymeraseX, transcriptionMotion.polymeraseY, 0)}
             scale={transcriptionTemplate.rnap.scale * 1.12}
