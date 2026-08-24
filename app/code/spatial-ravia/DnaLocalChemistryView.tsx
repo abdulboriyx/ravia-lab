@@ -5,6 +5,7 @@ import { OrbitControls, Text } from "@react-three/drei";
 import { useMemo, useState } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
+import { spatialRaviaThemePresentation } from "./spatial-ravia-theme";
 import { DnaLocalChemistryPrimitive } from "./DnaLocalChemistryPrimitive";
 import { getDnaLocalChemistryPlan, type LocalChemistrySubject } from "./DnaLocalChemistryRepresentation";
 import { boundsForDnaCamera, deriveDnaSceneCameraFrame, getDnaSceneCameraContract } from "./DnaSceneCamera";
@@ -44,18 +45,18 @@ export function DnaLocalChemistryView({ subject, theme }: { subject: LocalChemis
     boundsForDnaCamera(plan.atoms.map((atom) => atom.position)),
     16 / 9,
   ), [plan, subject]);
-  const isDark = theme === "dark";
+  const colors = spatialRaviaThemePresentation[theme];
   const [controls, setControls] = useState<OrbitControlsImpl | null>(null);
   return (
     <section className="mechanisticSceneSurface" aria-label="DNA local chemistry visualization" data-local-chemistry={subject}>
       <Canvas camera={{ position: frame.position, fov: frame.fov }}>
-        <color attach="background" args={[isDark ? "#020305" : "#f6f8f7"]} />
+        <color attach="background" args={[colors.canvasBackground]} />
         <ambientLight intensity={1.8} />
         <directionalLight position={[3, 4, 6]} intensity={2.4} />
         <DnaSceneCameraRig frame={frame} controls={controls} />
         <DnaLocalChemistryPrimitive plan={plan} />
         {labelLayouts[subject].map((label) => (
-          <Text key={label.label} position={label.position} fontSize={0.13} fillOpacity={0.72} color={isDark ? "#eaf1f3" : "#26343b"}>
+          <Text key={label.label} position={label.position} fontSize={0.13} fillOpacity={0.72} color={colors.labelPrimary}>
             {label.label}
           </Text>
         ))}

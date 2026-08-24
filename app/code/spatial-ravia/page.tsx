@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore, useState } from "react";
+import { applyScinaTheme, readScinaTheme, subscribeToScinaTheme, type ScinaTheme } from "@/app/scina-theme";
 
 import MechanisticScene from "./MechanisticScene";
 import { DnaMolecularView } from "./DnaMolecularView";
@@ -17,38 +18,21 @@ import { resolveProductionPromptRoute } from "./production-prompt-router";
 import { ProductionRoutingStatus } from "./ProductionRoutingStatus";
 import { CellularProductionOwnerView } from "./CellularProductionOwnerView";
 import { RnaPresentationView } from "./RnaPresentationView";
-import { normalizeSpatialRaviaTheme, spatialRaviaThemeStorageKey, type SpatialRaviaTheme } from "./spatial-ravia-theme";
-
-const spatialRaviaThemeChangeEvent = "spatial-ravia-theme-change";
-
-function subscribeToSpatialRaviaTheme(onStoreChange: () => void) {
-  window.addEventListener(spatialRaviaThemeChangeEvent, onStoreChange);
-  window.addEventListener("storage", onStoreChange);
-  return () => {
-    window.removeEventListener(spatialRaviaThemeChangeEvent, onStoreChange);
-    window.removeEventListener("storage", onStoreChange);
-  };
-}
-
-function readSpatialRaviaTheme(): SpatialRaviaTheme {
-  return normalizeSpatialRaviaTheme(window.localStorage.getItem(spatialRaviaThemeStorageKey));
-}
 
 export default function Page() {
   const [prompt, setPrompt] = useState("show helicase opening DNA");
   const [submittedPrompt, setSubmittedPrompt] = useState(
     "show helicase opening DNA"
   );
-  const theme = useSyncExternalStore<SpatialRaviaTheme>(
-    subscribeToSpatialRaviaTheme,
-    readSpatialRaviaTheme,
-    () => "light"
+  const theme = useSyncExternalStore<ScinaTheme>(
+    subscribeToScinaTheme,
+    readScinaTheme,
+    () => "dark"
   );
 
   const toggleTheme = () => {
     const next = theme === "light" ? "dark" : "light";
-    window.localStorage.setItem(spatialRaviaThemeStorageKey, next);
-    window.dispatchEvent(new Event(spatialRaviaThemeChangeEvent));
+    applyScinaTheme(next, true);
   };
 
   let scene = null;
@@ -94,7 +78,7 @@ export default function Page() {
 
         {!error && !isCellularProductionRoute && rnaPresentationRoute && <RnaPresentationView route={rnaPresentationRoute} theme={theme} />}
 
-        {isCellularProductionRoute && <CellularProductionOwnerView route={productionRoute} />}
+        {isCellularProductionRoute && <CellularProductionOwnerView route={productionRoute} theme={theme} />}
 
         {!error && !isCellularProductionRoute && !rnaPresentationRoute && !dnaMechanismRoute && scene && renderer === "three" && (
           <MechanisticScene key={submittedPrompt} scene={scene} theme={theme} />

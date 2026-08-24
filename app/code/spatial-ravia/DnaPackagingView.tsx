@@ -4,7 +4,7 @@ import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { useState } from "react";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
+import { spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
 import { derivePackagingMode, linkerPath, nucleosomeUnits, wrappedDnaPaths, type NucleosomeUnit } from "./DnaPackagingGeometry";
 import { boundsForDnaCamera, deriveDnaSceneCameraFrame, getDnaSceneCameraContract } from "./DnaSceneCamera";
 import { DnaSceneCameraRig } from "./DnaSceneCameraRig";
@@ -31,5 +31,6 @@ export function DnaPackagingView({ prompt, theme }: { prompt: string; theme: Spa
   })();
   const labelPosition: [number, number, number] = [frame.bounds.center[0], frame.bounds.center[1] - frame.bounds.halfExtent[1] - 0.52, frame.bounds.center[2]];
   const [controls, setControls] = useState<OrbitControlsImpl | null>(null);
-  return <section className="mechanisticSceneSurface" aria-label="DNA packaging visualization" data-packaging-mode={mode}><Canvas camera={{ position: frame.position, fov: frame.fov }}><color attach="background" args={[theme === "dark" ? "#05080b" : "#f6f8f7"]} /><ambientLight intensity={1.6} /><directionalLight position={[5,7,8]} intensity={2.4} /><DnaSceneCameraRig frame={frame} controls={controls} />{units.map((unit,index) => <Nucleosome key={index} unit={unit} />)}{mode === "chromatin" && units.slice(0,-1).map((unit,index) => <Tube key={index} points={linkerPath(unit,units[index+1])} color="#4d8db7" radius={.1} />)}<Text position={labelPosition} fontSize={.24} fillOpacity={0.7} color={theme === "dark" ? "#eaf1f3" : "#26343b"}>{mode === "chromatin" ? "Chromatin" : "Nucleosome core"}</Text><OrbitControls ref={setControls} enablePan={false} target={frame.target} /></Canvas></section>;
+  const colors = spatialRaviaThemePresentation[theme];
+  return <section className="mechanisticSceneSurface" aria-label="DNA packaging visualization" data-packaging-mode={mode}><Canvas camera={{ position: frame.position, fov: frame.fov }}><color attach="background" args={[colors.canvasBackground]} /><ambientLight intensity={1.6} /><directionalLight position={[5,7,8]} intensity={2.4} /><DnaSceneCameraRig frame={frame} controls={controls} />{units.map((unit,index) => <Nucleosome key={index} unit={unit} />)}{mode === "chromatin" && units.slice(0,-1).map((unit,index) => <Tube key={index} points={linkerPath(unit,units[index+1])} color="#4d8db7" radius={.1} />)}<Text position={labelPosition} fontSize={.24} fillOpacity={0.7} color={colors.labelPrimary}>{mode === "chromatin" ? "Chromatin" : "Nucleosome core"}</Text><OrbitControls ref={setControls} enablePan={false} target={frame.target} /></Canvas></section>;
 }

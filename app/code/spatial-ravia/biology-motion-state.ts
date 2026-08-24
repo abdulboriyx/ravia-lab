@@ -96,9 +96,9 @@ export function getTranscriptionMotionState(
 ): TranscriptionMotionState {
   if (!frame) {
     return {
-      polymeraseX: -1.65,
+      polymeraseX: -2.25,
       polymeraseY: 0.18,
-      bubbleCenterX: -1.65,
+      bubbleCenterX: -2.25,
       bubbleRadius: 0,
       bubbleOpenAmount: 0,
       rnaLength: 0,
@@ -110,7 +110,7 @@ export function getTranscriptionMotionState(
   const progress = smoothstep(frame.phaseProgress);
 
   if (frame.phaseId === "initiation") {
-    const polymeraseX = lerpNumber(-2.25, -1.7, progress);
+    const polymeraseX = lerpNumber(-2.25, -1.45, progress);
     return {
       polymeraseX,
       polymeraseY: lerpNumber(0.72, 0.18, progress),
@@ -125,9 +125,9 @@ export function getTranscriptionMotionState(
 
   if (frame.phaseId === "opening") {
     return {
-      polymeraseX: -1.45,
+      polymeraseX: lerpNumber(-1.45, -1.35, progress),
       polymeraseY: 0.18,
-      bubbleCenterX: -1.45,
+      bubbleCenterX: lerpNumber(-1.45, -1.35, progress),
       bubbleRadius: lerpNumber(0.26, 0.58, progress),
       bubbleOpenAmount: progress,
       rnaLength: lerpNumber(0, 0.18, progress),

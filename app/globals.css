@@ -17,6 +17,14 @@
   --archive-grid: 120px 150px minmax(340px, 1fr) minmax(260px, 380px) 40px;
   --archive-gap: clamp(12px, 2vw, 28px);
   --archive-width: 1280px;
+  --scina-page-background: #020305;
+  --scina-surface-background: #091016;
+  --scina-elevated-surface: rgba(9, 14, 18, 0.9);
+  --scina-primary-text: #eef7fa;
+  --scina-secondary-text: #a9c0c5;
+  --scina-border: rgba(191, 218, 224, 0.24);
+  --scina-control-background: #111a20;
+  --scina-control-selected: #73e3c6;
 }
 
 :root[data-theme="light"] {
@@ -32,6 +40,14 @@
   --brain-dim: 0.72;
   --brain-peak: 1.08;
   --brain-rest: 0.94;
+  --scina-page-background: #f6f8f7;
+  --scina-surface-background: #ffffff;
+  --scina-elevated-surface: rgba(255, 255, 255, 0.9);
+  --scina-primary-text: #142226;
+  --scina-secondary-text: #597076;
+  --scina-border: rgba(45, 63, 69, 0.22);
+  --scina-control-background: #eef3f4;
+  --scina-control-selected: #2b8c79;
 }
 
 * {
@@ -909,8 +925,8 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   min-height: 100svh;
   overflow: hidden;
   padding: 0;
-  color: #142226;
-  background: #f6f8f7;
+  color: var(--scina-primary-text);
+  background: var(--scina-page-background);
 }
 
 .spatialRaviaViewport {
@@ -918,7 +934,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   inset: 0;
   z-index: 1;
   overflow: hidden;
-  background: #f6f8f7;
+  background: var(--scina-page-background);
 }
 
 .spatialRaviaThemeToggle {
@@ -928,10 +944,10 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   z-index: 85;
   min-width: 62px;
   height: 32px;
-  border: 1px solid rgba(45, 63, 69, 0.28);
+  border: 1px solid var(--scina-border);
   border-radius: 4px;
-  color: #142226;
-  background: rgba(255, 255, 255, 0.9);
+  color: var(--scina-primary-text);
+  background: var(--scina-elevated-surface);
   box-shadow: 0 10px 24px rgba(24, 37, 43, 0.14);
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-size: 0.65rem;
@@ -957,6 +973,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   width: 100%;
   height: 100%;
   min-height: 100%;
+  background: inherit;
 }
 
 /* R3F's canvas otherwise falls back to the browser's 300 × 150 intrinsic size. */
@@ -1082,7 +1099,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   place-items: center;
   width: min(720px, calc(100vw - 32px));
   margin: auto;
-  color: #26383e;
+  color: var(--scina-primary-text);
   font-family: var(--font-display), var(--font-sans), sans-serif;
   font-size: 0.9rem;
   font-weight: 700;
@@ -1098,8 +1115,8 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   min-height: 100svh;
   padding: clamp(72px, 12vh, 128px) clamp(16px, 5vw, 72px) 128px;
   overflow: auto;
-  background: radial-gradient(circle at 50% 24%, rgba(255, 255, 255, 0.98), rgba(232, 241, 239, 0.96));
-  color: #173037;
+  background: radial-gradient(circle at 50% 24%, var(--scina-surface-background), var(--scina-page-background));
+  color: var(--scina-primary-text);
   font-family: var(--font-display), var(--font-sans), sans-serif;
 }
 
@@ -1114,7 +1131,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 
 .cellularProductionMount header span,
 .cellularProductionMount > small {
-  color: #597076;
+  color: var(--scina-secondary-text);
   font-size: 0.72rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -1133,14 +1150,14 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   gap: 0.5rem;
   min-height: 86px;
   padding: 16px;
-  border: 1px solid rgba(44, 89, 96, 0.2);
+  border: 1px solid var(--scina-border);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--scina-elevated-surface);
   box-shadow: 0 10px 30px rgba(31, 70, 76, 0.08);
 }
 
 .cellularProductionCard span {
-  color: #597076;
+  color: var(--scina-secondary-text);
   font-size: 0.72rem;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -1154,8 +1171,8 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .transcriptionProductionMount {
   min-height: 100%;
   padding: clamp(52px, 7vh, 86px) clamp(12px, 4vw, 56px) 142px;
-  color: #d8e7ec;
-  background: #050b13;
+  color: var(--scina-primary-text);
+  background: transparent;
   overflow: auto;
 }
 
@@ -1164,8 +1181,8 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   justify-content: space-between;
 }
 
-.transcriptionProductionHeader strong { color: #eaf4f6; letter-spacing: 0.1em; font-size: clamp(0.78rem, 1.5vw, 1rem); }
-.transcriptionProductionHeader span { color: #7f9aa4; }
+.transcriptionProductionHeader strong { color: var(--scina-primary-text); letter-spacing: 0.1em; font-size: clamp(0.78rem, 1.5vw, 1rem); }
+.transcriptionProductionHeader span { color: var(--scina-secondary-text); }
 
 .transcriptionProductionHeader > div {
   display: flex;
@@ -1178,8 +1195,8 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   padding: 0.35rem 0.55rem;
   border: 1px solid rgba(50, 116, 127, 0.34);
   border-radius: 999px;
-  color: #1c7180;
-  background: rgba(219, 244, 241, 0.76);
+  color: var(--scina-control-selected);
+  background: var(--scina-elevated-surface);
   font-size: 0.66rem;
   font-weight: 800;
   letter-spacing: 0.08em;
@@ -1283,18 +1300,18 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   padding: 0.5rem 0.7rem;
   border: 1px solid rgba(133, 222, 204, 0.22);
   border-radius: 999px;
-  color: #d8e9eb;
-  background: rgba(4, 12, 20, 0.7);
+  color: var(--scina-primary-text);
+  background: var(--scina-elevated-surface);
   backdrop-filter: blur(8px);
   font-size: 0.72rem;
   line-height: 1.35;
 }
-.transcriptionTeachingCue summary { cursor: pointer; color: #f4fcf7; font-size: 0.75rem; list-style: none; }
+.transcriptionTeachingCue summary { cursor: pointer; color: var(--scina-primary-text); font-size: 0.75rem; list-style: none; }
 .transcriptionTeachingCue summary::-webkit-details-marker { display: none; }
 .transcriptionTeachingCue summary::after { content: "＋"; float: right; color: #82e6c9; }
 .transcriptionTeachingCue[open] { border-radius: 12px; }
 .transcriptionTeachingCue[open] summary::after { content: "−"; }
-.transcriptionTeachingCue span { color: #a9c6ca; }
+.transcriptionTeachingCue span { color: var(--scina-secondary-text); }
 
 .transcriptionLegend span { display: inline-flex; align-items: center; gap: 0.3rem; }
 .legendSwatch { display: inline-block; width: 11px; height: 11px; border-radius: 50%; }
@@ -1317,9 +1334,9 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   padding: 0.55rem 0.45rem;
   border: 1px solid rgba(49, 104, 111, 0.28);
   border-radius: 8px;
-  color: #c7e0e2;
-  background: rgba(17, 35, 45, 0.92);
-  border-color: rgba(146, 208, 212, 0.24);
+  color: var(--scina-primary-text);
+  background: var(--scina-control-background);
+  border-color: var(--scina-border);
   font: inherit;
   font-size: 0.68rem;
   font-weight: 800;
@@ -1327,12 +1344,17 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   cursor: pointer;
 }
 
-.transcriptionControls button.isSelected, .transcriptionControls button:hover { color: #07141a; background: #73e3c6; }
+.transcriptionControls button.isSelected, .transcriptionControls button:hover { color: var(--scina-page-background); background: var(--scina-control-selected); }
+.transcriptionScrubber { display: inline-flex; align-items: center; gap: 0.35rem; min-width: 170px; color: var(--scina-secondary-text); font-size: 0.68rem; white-space: nowrap; }
+.transcriptionScrubber input { width: 120px; accent-color: var(--scina-control-selected); }
+.transcriptionScrubber output { min-width: 3.2em; color: var(--scina-primary-text); font-variant-numeric: tabular-nums; }
+.transcriptionDebugState { width: min(920px, 100%); margin: 0 auto 0.75rem; color: #55737a; font-size: 0.68rem; }
+.transcriptionDebugState code { display: block; margin-top: 0.35rem; color: #31545b; font-variant-numeric: tabular-nums; }
 .cellularProductionDetails { width: min(920px, 100%); margin: 0 auto 0.75rem; color: #4c656c; }
 .cellularProductionDetails summary { cursor: pointer; font-size: 0.73rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .cellularProductionDetails .cellularProductionSchematic { margin-top: 0.65rem; }
 
-.spatialRaviaWorkspace[data-spatial-theme="light"] .transcriptionProductionMount { background: #07111b; }
+.spatialRaviaWorkspace[data-spatial-theme="light"] .transcriptionProductionMount { background: transparent; }
 
 @media (max-width: 640px) {
   .transcriptionProductionMount { padding: 48px 8px 146px; }
@@ -1413,9 +1435,9 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   align-items: center;
   gap: 8px;
   padding: 8px;
-  border: 1px solid rgba(45, 63, 69, 0.2);
+  border: 1px solid var(--scina-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--scina-elevated-surface);
   box-shadow: 0 18px 40px rgba(24, 37, 43, 0.16);
 }
 
@@ -1435,10 +1457,10 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   min-width: 0;
   flex: 1 1 auto;
   height: 38px;
-  border: 1px solid rgba(45, 63, 69, 0.26);
+  border: 1px solid var(--scina-border);
   border-radius: 3px;
-  color: #142226;
-  background: #ffffff;
+  color: var(--scina-primary-text);
+  background: var(--scina-surface-background);
   font: inherit;
   font-size: 0.92rem;
   font-weight: 700;
@@ -1448,7 +1470,7 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 }
 
 .spatialPromptDockInput::placeholder {
-  color: rgba(20, 34, 38, 0.42);
+  color: var(--scina-secondary-text);
 }
 
 .spatialPromptDockInput:focus-visible,
@@ -1463,10 +1485,10 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .spatialPromptDockCollapse,
 .spatialPromptDockExpand {
   appearance: none;
-  border: 1px solid rgba(45, 63, 69, 0.28);
+  border: 1px solid var(--scina-border);
   border-radius: 3px;
-  color: #142226;
-  background: #eef3f4;
+  color: var(--scina-primary-text);
+  background: var(--scina-control-background);
   font: inherit;
   font-size: 0.78rem;
   font-weight: 800;
@@ -1547,11 +1569,12 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   gap: 8px;
   align-items: center;
   max-width: min(720px, calc(100vw - 32px));
-  padding: 8px;
-  border: 1px solid rgba(45, 63, 69, 0.2);
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 18px 40px rgba(24, 37, 43, 0.14);
+  padding: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  box-shadow: none;
+  backdrop-filter: blur(10px);
   font-family: var(--font-display), var(--font-sans), sans-serif;
 }
 
