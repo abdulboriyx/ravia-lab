@@ -945,12 +945,12 @@ function GroundedTranslationMachine({ motion, fallback, displayIntent, controls,
       <Text position={grounding.codonContact.clone().add(new THREE.Vector3(0, -0.12, 0))} fontSize={0.07}>CODON</Text>
       <Text position={incomingAnticodon.clone().add(new THREE.Vector3(0, 0.1, 0))} fontSize={0.07}>ANTICODON</Text>
     </>}
-    {plan.annotations.ptc && <><mesh position={grounding.peptidylTransferCenter}><sphereGeometry args={[plan.scale.ptcGlyphRadius, 14, 12]} /><meshStandardMaterial color={spatialRaviaColors.stateMarker} emissive={spatialRaviaColors.stateMarker} emissiveIntensity={0.56} /></mesh>{plan.annotations.peptideTransfer && !transferFocus && <Text position={grounding.peptidylTransferCenter.clone().add(new THREE.Vector3(0, 0.14, 0))} fontSize={plan.scale.labelFontSize} color={sceneTheme.foreground}>PEPTIDE TRANSFER</Text>}</>}
+    {plan.annotations.ptc && <><mesh position={grounding.peptidylTransferCenter}><sphereGeometry args={[plan.scale.ptcGlyphRadius, 14, 12]} /><meshStandardMaterial color={spatialRaviaColors.stateMarker} emissive={spatialRaviaColors.stateMarker} emissiveIntensity={0.56} /></mesh>{plan.annotations.peptideTransfer && !transferFocus && <Text position={grounding.peptidylTransferCenter.clone().add(new THREE.Vector3(0, 0.14, 0))} fontSize={plan.scale.labelFontSize} color={sceneTheme.primaryText}>PEPTIDE TRANSFER</Text>}</>}
     {renderStructuralActors && displayIntent === "transfer" && <>
       <SelectedResidueDetailPrimitive atoms={grounding.activeAtoms.acceptor.a} reactionAtomIndices={aReactionAtoms} highlighted opacity={0.98} atomScale={plan.scale.activeAtomScale} bondRadius={plan.scale.activeBondRadius} supportingOpacity={plan.scale.supportingAtomOpacity} />
       <SelectedResidueDetailPrimitive atoms={grounding.activeAtoms.acceptor.p} reactionAtomIndices={pReactionAtoms} highlighted opacity={0.98} atomScale={plan.scale.activeAtomScale} bondRadius={plan.scale.activeBondRadius} supportingOpacity={plan.scale.supportingAtomOpacity} />
-      <TransferOwnershipLabel position={ownershipLabels.a} label="A" role={transferRole.a} color={spatialRaviaColors.trnaIncoming} foreground={sceneTheme.foreground} />
-      <TransferOwnershipLabel position={ownershipLabels.p} label="P" role={transferRole.p} color={spatialRaviaColors.trnaPeptidyl} foreground={sceneTheme.foreground} />
+      <TransferOwnershipLabel position={ownershipLabels.a} label="A" role={transferRole.a} color={spatialRaviaColors.trnaIncoming} foreground={sceneTheme.primaryText} />
+      <TransferOwnershipLabel position={ownershipLabels.p} label="P" role={transferRole.p} color={spatialRaviaColors.trnaPeptidyl} foreground={sceneTheme.primaryText} />
       {transferInProgress && <mesh><tubeGeometry args={[new THREE.QuadraticBezierCurve3(p.acceptor, p.acceptor.clone().lerp(a.acceptor, 0.5).add(new THREE.Vector3(0.015, 0.025, 0)), peptide.carrier.root), 8, 0.003, 5, false]} /><meshStandardMaterial color={spatialRaviaColors.stateMarker} emissive={spatialRaviaColors.stateMarker} emissiveIntensity={0.18} transparent opacity={0.82} /></mesh>}
     </>}
     {renderStructuralActors && plan.activeSite.anticodon && grounding.activeAtoms.anticodon.a.length > 0 && <SelectedResidueDetailPrimitive atoms={grounding.activeAtoms.anticodon.a} reactionAtomIndices={anticodonAtoms} highlighted opacity={0.82} atomScale={plan.scale.activeAtomScale} bondRadius={plan.scale.activeBondRadius} supportingOpacity={plan.scale.supportingAtomOpacity} />}
@@ -2707,11 +2707,18 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
 
         {hasDNA && !isReplicationScene && !isTranscriptionScene && !isTranslationScene && !isSignalingScene && !isActionPotentialScene && <DNAFork />}
 
-        {hasDNA && isTranscriptionScene && (
+        {hasDNA && isTranscriptionScene && !timeline.hasTemporal && (
           <TranscriptionDnaTemplate
             hasRnap={transcriptionTemplate?.rnap.visible ?? false}
             hasNascentRna={transcriptionTemplate?.nascentRna.visible ?? false}
           />
+        )}
+
+        {hasDNA && isTranscriptionScene && timeline.hasTemporal && (
+          <>
+            <AnimatedTranscriptionDna motion={transcriptionMotion} />
+            <AnimatedRnaTranscript motion={transcriptionMotion} />
+          </>
         )}
 
         {isTranscriptionScene && !timeline.hasTemporal && !useMolstarStructuralPresentation && dnaPresentation?.regions.map((region) => (
@@ -2744,11 +2751,18 @@ export default function MechanisticScene({ scene, theme = "light" }: Props) {
         )}
 
 
-        {transcriptionTemplate?.rnap.visible && (
+        {transcriptionTemplate?.rnap.visible && !timeline.hasTemporal && (
           <TranscriptionRnapPresentation
             position={new THREE.Vector3(0, 0, 0)}
             scale={transcriptionTemplate.rnap.scale}
             opacity={transcriptionTemplate.rnap.opacity}
+          />
+        )}
+        {transcriptionTemplate?.rnap.visible && timeline.hasTemporal && (
+          <TranscriptionRnapPresentation
+            position={new THREE.Vector3(transcriptionMotion.polymeraseX, transcriptionMotion.polymeraseY, 0)}
+            scale={transcriptionTemplate.rnap.scale * 1.12}
+            opacity={0.98}
           />
         )}
 
