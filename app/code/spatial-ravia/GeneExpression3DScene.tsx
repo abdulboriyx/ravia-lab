@@ -124,7 +124,6 @@ function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
       </group>
       <PromoterRegion3D />
       <PolIIComplex3D engaged={engaged} position={polymerasePosition} />
-      <MolecularNascentRNA3D presentation={presentation} />
       <Text position={[-2.9, 0.72, 0.12]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">DNA</Text>
     </group>
   </group>;
@@ -136,6 +135,10 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
     sourceId: structuralPackage.source.sourceId,
     frameId: `${structuralPackage.packageId}:active-site-frame`,
     polymeraseChains: structuralPackage.selectors.polymeraseChains,
+    dnaChains: structuralPackage.selectors.dnaChains,
+    rnaChain: structuralPackage.selectors.rnaChain,
+    hybridWindow: structuralPackage.selectors.hybrid,
+    includeRna: true,
     polymeraseOnly: true,
   }), [structuralPackage]);
   if (!isValidTranscriptionPresentationState(presentation)) {
@@ -154,12 +157,13 @@ export function GeneExpression3DScene({ projection, presentation, theme }: Scene
       <TranscriptionMechanism3D projection={projection} presentation={presentation} theme={theme} />
       <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} minDistance={4.2} maxDistance={9} />
     </Canvas>
-    <div className="geneExpressionMolecularLayer" data-molecular-owner="molstar" data-polymerase-source={structuralPackage.source.sourceId} data-polymerase-class={structuralPackage.source.polymeraseClass} data-active-site-frame={`${structuralPackage.packageId}:active-site-frame`} aria-label="deposited bacterial RNA polymerase molecular layer">
+    <div className="geneExpressionMolecularLayer" data-molecular-owner="molstar" data-polymerase-source={structuralPackage.source.sourceId} data-polymerase-class={structuralPackage.source.polymeraseClass} data-dna-chains={structuralPackage.selectors.dnaChains.join(",")} data-rna-chain={structuralPackage.selectors.rnaChain} data-hybrid-window="A:1-10;B:1-10;R:1-10" data-active-site-frame={`${structuralPackage.packageId}:active-site-frame`} aria-label="deposited bacterial RNA polymerase molecular layer">
       <MolstarStructurePresentationAdapter
         kind="transcription"
         theme={normalizedTheme}
         transcription={molecularOptions}
       />
+      <div className="transcriptionStructuralNotice" role="note">STRUCTURAL SNAPSHOT · 6ALH · BACTERIAL RNAP · E0_DEPOSITED</div>
     </div>
   </div>;
 }

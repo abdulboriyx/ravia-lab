@@ -15,6 +15,6 @@ test("Mol* is the sole interactive camera owner for the polymerase layer", () =>
 
 test("active-site focus includes polymerase and selected DNA, not the whole assembly", () => {
   const adapter = readFileSync(new URL("./MolstarStructurePresentationAdapter.tsx", import.meta.url), "utf8");
-  assert.match(adapter, /focusPresentation\(viewer, \[proteinRepresentation, \.\.\.structuralDna\], 10\)/);
+  assert.match(adapter, /focusPresentation\(viewer, \[proteinRepresentation, \.\.\.structuralDna, \.\.\.structuralRna, \.\.\.hybridRepresentations\], 10\)/);
   assert.match(adapter, /options\?\.polymeraseOnly/);
 });

@@ -10,6 +10,13 @@ export type TranscriptionMolecularPresentationOptions = {
   sourceId: string;
   frameId: string;
   polymeraseChains: readonly string[];
+  dnaChains?: readonly string[];
+  rnaChain?: string;
+  hybridWindow?: {
+    dna: readonly { chainId: string; residueRange?: { start: number; end: number }; residueIds?: readonly number[] }[];
+    rna: readonly { chainId: string; residueRange?: { start: number; end: number }; residueIds?: readonly number[] }[];
+  };
+  includeRna?: boolean;
   /** When true, keep the R3F DNA/RNA overlays as the temporal owners. */
   polymeraseOnly?: boolean;
 };
@@ -108,6 +115,13 @@ function residueComponent(viewer: Viewer, structure: unknown, MS: Record<string,
     "residue-test": oneOf(MS, seqIds.map((seq) => equals(MS, ammp(MS, "label_seq_id"), seq))),
   }), `spatial-ravia-${id}`, { label: `${chain}:${seqIds.join(",")}` });
 }
+function selectorResidues(selector: { residueRange?: { start: number; end: number }; residueIds?: readonly number[] }) {
+  if (selector.residueIds) return selector.residueIds;
+  if (!selector.residueRange) return [];
+  const values: number[] = [];
+  for (let seq = selector.residueRange.start; seq <= selector.residueRange.end; seq += 1) values.push(seq);
+  return values;
+}
 function entityComponent(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, id: string, entityIds: readonly string[]) {
   const set = (MS.set as (...values: string[]) => unknown)(...entityIds);
   const has = ((MS.core as { set: { has: (args: unknown[]) => unknown } }).set.has)([set, ammp(MS, "label_entity_id")]);
@@ -168,21 +182,53 @@ async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record
   const proteinChains = options?.polymeraseChains ?? ["G", "H", "I", "J", "K"];
   const protein = await chainsComponent(viewer, structure, MS, "rnap", proteinChains);
   const proteinRepresentation = await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 3.2, smoothness: 1.8, alpha: 0.18, quality: "medium" }, color: "uniform", colorParams: uniform(0x65747c) });
+  const dnaChains = options?.dnaChains ?? ["A", "B"];
+  const rnaChain = options?.rnaChain ?? "R";
+  const hybridWindow = options?.hybridWindow;
+  const includeRna = options?.includeRna ?? true;
   if (options?.polymeraseOnly) {
     const structuralDna: unknown[] = [];
-    for (const [id, chain, color] of [["dna-a", "A", 0x77aaca], ["dna-b", "B", 0x9f8cc5]] as const) {
+    for (const [index, chain] of dnaChains.entries()) {
+      // 6ALH does not deposit template/coding strand role metadata. Keep the
+      // source chain identity explicit instead of inventing a biological role.
+      const id = `dna-${index === 0 ? "a" : "b"}`;
+      const color = index === 0 ? 0x77aaca : 0x9f8cc5;
       const component = await chainComponent(viewer, structure, MS, id, chain);
       structuralDna.push(await addRepresentation(viewer, component, cartoon(color, 0.9, 0.42)));
     }
-    const focusTargets = focusPresentation(viewer, [proteinRepresentation, ...structuralDna], 10);
+    const structuralRna: unknown[] = [];
+    if (includeRna) {
+      const component = await chainComponent(viewer, structure, MS, "rna-nascent", rnaChain);
+      structuralRna.push(await addRepresentation(viewer, component, cartoon(0x38c58e, 1, 0.48)));
+    }
+    const hybridRepresentations: unknown[] = [];
+    for (const [index, selector] of (hybridWindow?.dna ?? []).entries()) {
+      const component = await residueComponent(viewer, structure, MS, `hybrid-dna-${index}`, selector.chainId, selectorResidues(selector));
+      hybridRepresentations.push(await addRepresentation(viewer, component, atoms(0x6c9fbc, 0.2)));
+    }
+    for (const [index, selector] of (hybridWindow?.rna ?? []).entries()) {
+      const component = await residueComponent(viewer, structure, MS, `hybrid-rna-${index}`, selector.chainId, selectorResidues(selector));
+      hybridRepresentations.push(await addRepresentation(viewer, component, atoms(0x5dc99f, 0.2)));
+    }
+    const focusTargets = focusPresentation(viewer, [proteinRepresentation, ...structuralDna, ...structuralRna, ...hybridRepresentations], 10);
     return focusTargets;
   }
   const nucleicRepresentations: unknown[] = [];
-  for (const [id, chain, color, sizeFactor] of [["dna-a", "A", 0x77aaca, 0.42], ["dna-b", "B", 0x9f8cc5, 0.42], ["rna", "R", 0x38c58e, 0.48]] as const) {
+  for (const [index, chain] of dnaChains.entries()) {
+    const id = `dna-${index === 0 ? "a" : "b"}`;
+    const color = index === 0 ? 0x77aaca : 0x9f8cc5;
     const component = await chainComponent(viewer, structure, MS, id, chain);
-    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(color, 1, sizeFactor)));
+    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(color, 1, 0.42)));
   }
-  for (const [id, chain, residues] of [["active-dna-a", "A", [1, 2, 3]], ["active-dna-b", "B", [1, 2, 3]], ["active-rna", "R", [18, 19, 20]]] as const) {
+  if (includeRna) {
+    const component = await chainComponent(viewer, structure, MS, "rna", rnaChain);
+    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(0x38c58e, 1, 0.48)));
+  }
+  const localSelectors = [...(hybridWindow?.dna ?? []), ...(hybridWindow?.rna ?? [])];
+  for (const [index, selector] of localSelectors.entries()) {
+    const id = `active-${index}`;
+    const chain = selector.chainId;
+    const residues = selectorResidues(selector);
     const component = await residueComponent(viewer, structure, MS, id, chain, residues);
     await addRepresentation(viewer, component, atoms(0x4c5964, 0.16));
   }
@@ -265,7 +311,10 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
     return () => { rebuildGate.invalidate(); };
   }, [kind, ready, translationIntent, transcription]);
 
-  return <div className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} aria-label={`${kind} structure-derived Mol* presentation`}>
+  const hybridLabel = transcription?.hybridWindow
+    ? [...transcription.hybridWindow.dna, ...transcription.hybridWindow.rna].map((selector) => `${selector.chainId}:${selector.residueRange ? `${selector.residueRange.start}-${selector.residueRange.end}` : (selector.residueIds ?? []).join(",")}`).join(";")
+    : undefined;
+  return <div className="molstarStructurePresentation" data-structure-status={error ? "STRUCTURAL_POLYMERASE_UNAVAILABLE" : "STRUCTURE_DERIVED_PRIMARY"} data-structure-source={transcription?.sourceId} data-active-site-frame={transcription?.frameId} data-polymerase-chains={transcription?.polymeraseChains.join(",")} data-dna-chains={transcription?.dnaChains?.join(",")} data-rna-chain={transcription?.rnaChain} data-hybrid-window={hybridLabel} aria-label={`${kind} structure-derived Mol* presentation`}>
     <div ref={mountRef} className="molstarStructureViewport" />
     {kind === "transcription" && <button type="button" className="molstarFocusButton" onClick={resetView}>RESET VIEW</button>}
     {error && kind === "transcription" && <div className="molstarStructurePresentationError" role="status">STRUCTURAL_POLYMERASE_UNAVAILABLE</div>}
