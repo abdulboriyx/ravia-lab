@@ -1,6 +1,6 @@
 "use client";
 
-import { Component, useEffect, useMemo, useState, type ErrorInfo, type ReactNode } from "react";
+import { Component, useEffect, useMemo, useReducer, type ErrorInfo, type ReactNode } from "react";
 import type { ProductionPromptRoute } from "./production-prompt-router";
 import { createCanonicalEukaryoticGeneExpressionProgram, type GeneExpressionProgramV1 } from "./cellular-gene-expression";
 import { projectGeneExpressionProductionAtTime, type GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
@@ -13,14 +13,16 @@ import { cellularProductionOwnerComponents } from "./cellular-production-dispatc
 import { GeneExpression3DScene } from "./GeneExpression3DScene";
 import { deriveTranscriptionPresentationState, isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
 import { deriveTranscriptionMechanismVisualState } from "./transcription-mechanism-presentation";
+import { deriveEukaryoticTranscriptionCausalStateAtTime, eukaryoticTranscriptionActionTypes } from "./eukaryotic-transcription-causal-state";
+import { createExpertTranscriptionControlState, deriveTranscriptionChapterSteps, deriveTranscriptionExpertEvents, reduceExpertTranscriptionControl, type ExpertTranscriptionTarget, type ExpertTranscriptionGeometryMode } from "./transcription-expert-controls";
+import { resolveTranscriptionProvenance } from "./transcription-provenance";
 import type { SpatialRaviaTheme } from "./spatial-ravia-theme";
 
 type DisplayItem = Readonly<{ label: string; value: string | number | boolean }>;
 type CellularProjection = Readonly<{ ownerId: string; timeSeconds: number; focus: string; items: readonly DisplayItem[] }>;
 const renderConfig = { width: 1280, height: 720, pixelRatio: 1, background: { mode: "opaque" as const, color: "#f7fafb" } };
-const transcriptionSteps = [
-  { label: "START", time: 0 }, { label: "INITIATION", time: 0.5 }, { label: "ELONGATION", time: 1.5 }, { label: "TERMINATION", time: 2 },
-] as const;
+const transcriptionDisplayDuration = 8;
+const transcriptionSourceDuration = 2.35;
 
 function geneProjection(program: GeneExpressionProgramV1, timeSeconds: number): GeneExpressionProductionProjectionV1 {
   const result = projectGeneExpressionProductionAtTime(program, timeSeconds);
@@ -99,27 +101,37 @@ function CellularProductionOwnerFrame({ route }: { route: ProductionPromptRoute 
 
 function GeneExpressionProductionView({ route, theme }: { route: ProductionPromptRoute; theme: SpatialRaviaTheme }) {
   const program = useMemo(() => createCanonicalEukaryoticGeneExpressionProgram(), []);
-  const [timeSeconds, setTimeSeconds] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const transcriptionDuration = transcriptionSteps[transcriptionSteps.length - 1]!.time;
+  // Land on the first mechanistically informative frame so the prompt never
+  // opens to a blank pre-initiation state.
+  const transcriptionDuration = transcriptionDisplayDuration;
+  const expertEvents = useMemo(() => deriveTranscriptionExpertEvents(program, transcriptionDisplayDuration, transcriptionSourceDuration), [program]);
+  const transcriptionSteps = useMemo(() => deriveTranscriptionChapterSteps(expertEvents, transcriptionDuration), [expertEvents, transcriptionDuration]);
+  const initialTime = transcriptionSteps.find((step) => step.label === "INITIATION")?.time ?? 0;
+  const initialControls = useMemo(() => createExpertTranscriptionControlState(expertEvents, transcriptionDuration, initialTime), [expertEvents, initialTime, transcriptionDuration]);
+  const [controls, dispatchControl] = useReducer(reduceExpertTranscriptionControl, initialControls);
+  const timeSeconds = controls.exactTime;
+  const playing = controls.playing;
+  const sourceTimeSeconds = Math.min(transcriptionSourceDuration, (timeSeconds / transcriptionDisplayDuration) * transcriptionSourceDuration);
   useEffect(() => {
-    if (!playing) return undefined;
+    if (!controls.playing) return undefined;
     let frame = 0;
     let previous = performance.now();
     const tick = (now: number) => {
       const delta = Math.max(0, Math.min(0.1, (now - previous) / 1000));
       previous = now;
-      setTimeSeconds((current) => {
-        const next = Math.min(transcriptionDuration, current + delta);
-        if (next >= transcriptionDuration) setPlaying(false);
-        return next;
-      });
+      dispatchControl({ type: "ADVANCE_TIME", deltaSeconds: delta });
       frame = window.requestAnimationFrame(tick);
     };
     frame = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(frame);
-  }, [playing, transcriptionDuration]);
-  const projection = useMemo(() => geneProjection(program, timeSeconds), [program, timeSeconds]);
+  }, [controls.playing, transcriptionDuration]);
+  useEffect(() => {
+    window.requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>(".spatialRaviaViewport")?.scrollTo({ top: 0, behavior: "auto" });
+    });
+  }, [timeSeconds]);
+  const projection = useMemo(() => geneProjection(program, sourceTimeSeconds), [program, sourceTimeSeconds]);
+  const causalState = useMemo(() => deriveEukaryoticTranscriptionCausalStateAtTime(program, sourceTimeSeconds), [program, sourceTimeSeconds]);
   const presentationResult = useMemo((): Readonly<{ ok: true; state: TranscriptionPresentationStateV1 } | { ok: false; details: string }> => {
     try {
       const state = deriveTranscriptionPresentationState(program, projection);
@@ -130,6 +142,7 @@ function GeneExpressionProductionView({ route, theme }: { route: ProductionPromp
       return { ok: false, details: error instanceof Error ? error.message : "unknown derivation failure" };
     }
   }, [program, projection]);
+  const provenance = useMemo(() => resolveTranscriptionProvenance(controls.selectedTarget, controls.geometryMode), [controls.selectedTarget, controls.geometryMode]);
   if (!presentationResult.ok) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>{presentationResult.details}</div>}</section>;
   }
@@ -138,25 +151,32 @@ function GeneExpressionProductionView({ route, theme }: { route: ProductionPromp
   const bubbleOpen = presentation.bubbleOpenFraction > 0.01;
   const rnaLength = projection.transcription.visibleRnaLength;
   const activeStep = transcriptionSteps.find((step) => step.time === timeSeconds)?.label ?? "EXACT TIME";
-  const explanation = timeSeconds === 0
-    ? "In the nucleus, RNA polymerase II is available near the promoter before RNA synthesis begins."
-    : timeSeconds <= 0.5
-      ? "Polymerase II associates with the promoter and opens a local transcription bubble."
-      : timeSeconds < 2
+  const explanation = sourceTimeSeconds === 0
+    ? "Eukaryotic RNA polymerase II is positioned near the promoter context before RNA synthesis begins."
+    : sourceTimeSeconds <= 0.5
+      ? "Eukaryotic RNA polymerase II engages the promoter context and opens a local transcription bubble."
+      : sourceTimeSeconds < 2
         ? "The template is read 3′→5′ while the nascent RNA grows 5′→3′ from its 3′ end."
         : "Transcription has ended; the transcript is no longer polymerase-growing and DNA re-pairs.";
-  return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={projection.timeSeconds} data-presentation-progress={presentation.normalizedProgress.toFixed(3)}>
-    <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · NUCLEUS</strong><span> · {projection.fidelity} · EXACT_FRAME · t={projection.timeSeconds}s</span></div><span className="transcriptionProductionStatus">{activeStep} · {mechanismState.stage}</span></header>
-    <div className="transcriptionScene" role="img" aria-label={`Nuclear transcription scene: DNA, promoter, RNA polymerase II, ${presentation.bubbleOpenFraction > 0.01 ? "open transcription bubble" : "closed DNA"}, and ${presentation.nascentRnaVisualLength.toFixed(1)} nascent RNA nucleotides`}>
-      <GeneExpression3DScene projection={projection} presentation={presentation} theme={theme} />
+  return <section className="cellularProductionMount transcriptionProductionMount" aria-label="Gene expression transcription production view" data-production-owner={projection.ownerId} data-production-focus={projection.focus} data-exact-time={timeSeconds} data-source-time={projection.timeSeconds} data-presentation-progress={presentation.normalizedProgress.toFixed(3)} data-causal-state-schema={causalState.schemaVersion} data-causal-action-contract={eukaryoticTranscriptionActionTypes.join(",")} data-dna-opening={causalState.dnaOpening.toFixed(3)} data-polymerase-engagement={causalState.polymeraseEngagement.toFixed(3)} data-polymerase-axis-position={causalState.polymeraseAxisPosition.toFixed(3)} data-hybrid-length={causalState.hybridLength.toFixed(2)} data-transcript-release={causalState.transcriptRelease.toFixed(3)} data-expert-selected-target={controls.selectedTarget} data-expert-geometry-mode={controls.geometryMode} data-expert-event-index={controls.eventIndex} data-expert-camera-revision={controls.cameraRevision} data-expert-scene-revision={controls.sceneRevision} data-expert-inspector={provenance ? "OPEN" : "CLOSED"}>
+    <header className="transcriptionProductionHeader"><div><strong>TRANSCRIPTION · DNA → RNA</strong><span> · EUKARYOTIC POL II · 5FLM_SOURCE_ANCHORED · COMPUTED_SURFACES · INFERRED_MOTION · t={timeSeconds.toFixed(2)}s</span></div><span className="transcriptionProductionStatus">{activeStep} · {mechanismState.stage}</span></header>
+    <div className="transcriptionScene" role="img" aria-label={`Transcription mechanism: DNA, promoter context, eukaryotic RNA polymerase II, ${presentation.bubbleOpenFraction > 0.01 ? "open transcription bubble" : "closed DNA"}, and ${presentation.nascentRnaVisualLength.toFixed(1)} nascent RNA nucleotides`}>
+      <GeneExpression3DScene projection={projection} presentation={presentation} theme={theme} selectedTarget={controls.selectedTarget} geometryMode={controls.geometryMode} cameraRevision={controls.cameraRevision} sceneRevision={controls.sceneRevision} />
       <details className="transcriptionTeachingCue">
-        <summary>{bubbleOpen ? "Pol II opens DNA and builds RNA." : "A gene segment inside the nucleus."}</summary>
+        <summary>{bubbleOpen ? "Eukaryotic Pol II opens DNA locally and builds RNA." : "A deposited DNA segment inside the molecular machine."}</summary>
         <span>{explanation}</span>
       </details>
     </div>
-    <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => { setPlaying(false); setTimeSeconds(step.time); }}>{step.label}</button>)}<button type="button" onClick={() => setPlaying((value) => !value)} aria-label={playing ? "Pause transcription playback" : "Play transcription playback"}>{playing ? "PAUSE" : "PLAY"}</button><label className="transcriptionScrubber">time <input type="range" min="0" max={transcriptionDuration} step="0.01" value={timeSeconds} onChange={(event) => { setPlaying(false); setTimeSeconds(Number(event.target.value)); }} aria-label="Transcription exact time" /><output>{timeSeconds.toFixed(2)}s</output></label></div>
-    <details className="cellularProductionDetails"><summary>State details</summary><div className="cellularProductionSchematic">{[["DNA bubble", projection.dna.transcriptionBubble], ["RNA Pol II", projection.transcription.polymeraseState], ["Nascent RNA", rnaLength], ["RNA localization", projection.exportState.localization], ["Transcript", projection.transcription.transcriptState], ["Template read", "3′ → 5′"]].map(([label, value]) => <div className="cellularProductionCard" key={String(label)}><span>{label}</span><strong>{String(value)}</strong></div>)}</div></details>
-    {process.env.NODE_ENV !== "production" && <details className="transcriptionDebugState"><summary>Presentation debug</summary><code>progress={presentation.normalizedProgress.toFixed(3)} · PolII={presentation.polymeraseGenePosition.toFixed(3)} · bubble={presentation.bubbleCenter.toFixed(3)} / {presentation.bubbleOpenFraction.toFixed(3)} · RNA={presentation.nascentRnaVisualLength.toFixed(2)} · repair={presentation.dnaRepairProgress.toFixed(3)}</code></details>}
-    <small>S2_SCHEMATIC · canonical D-C projection + P4 exact-frame application · owner {route.productionOwner}</small>
+    <div className="transcriptionControls" aria-label="Transcription exact-time chapters">{transcriptionSteps.map((step) => <button key={step.label} type="button" className={step.time === timeSeconds ? "isSelected" : ""} onClick={() => dispatchControl({ type: "SEEK_EXACT_TIME", exactTime: step.time })}>{step.label}</button>)}<button type="button" onClick={() => dispatchControl({ type: "STEP_BACK_EVENT" })} aria-label="Step back one transcription event">◀ EVENT</button><button type="button" onClick={() => dispatchControl({ type: "TOGGLE_PLAY" })} aria-label={playing ? "Pause transcription playback" : "Play transcription playback"}>{playing ? "PAUSE" : "PLAY"}</button><button type="button" onClick={() => dispatchControl({ type: "STEP_FORWARD_EVENT" })} aria-label="Step forward one transcription event">EVENT ▶</button><label className="transcriptionScrubber">time <input type="range" min="0" max={transcriptionDuration} step="0.01" value={timeSeconds} onChange={(event) => dispatchControl({ type: "SEEK_EXACT_TIME", exactTime: Number(event.target.value) })} aria-label="Transcription exact time" /><input className="transcriptionExactTimeInput" type="number" min="0" max={transcriptionDuration} step="0.01" value={timeSeconds.toFixed(2)} onChange={(event) => { const exactTime = Number(event.target.value); if (Number.isFinite(exactTime)) dispatchControl({ type: "SEEK_EXACT_TIME", exactTime }); }} aria-label="Transcription exact time value" /><output>{timeSeconds.toFixed(2)}s</output></label></div>
+    <div className="transcriptionExpertControls" aria-label="Expert transcription controls"><label>focus <select value={controls.selectedTarget} onChange={(event) => dispatchControl({ type: "SELECT_TARGET", target: event.target.value as ExpertTranscriptionTarget })} aria-label="Select transcription target"><option value="NONE">NONE</option><option value="POL_II">Pol II</option><option value="DNA">DNA</option><option value="RNA">RNA</option><option value="HYBRID">Hybrid</option><option value="MG">Mg</option></select></label><label>geometry <select value={controls.geometryMode} onChange={(event) => dispatchControl({ type: "SET_GEOMETRY_MODE", mode: event.target.value as ExpertTranscriptionGeometryMode })} aria-label="Select geometry mode"><option value="DEPOSITED">DEPOSITED</option><option value="DERIVED">DERIVED</option></select></label><button type="button" onClick={() => dispatchControl({ type: "RESET_CAMERA" })}>RESET CAMERA</button><button type="button" onClick={() => dispatchControl({ type: "RESET_SCENE" })}>RESET SCENE</button></div>
+    {provenance && <aside className="transcriptionProvenanceInspector" aria-label="Inspectable provenance" data-provenance-target={provenance.target} data-provenance-status={provenance.displayStatus} data-provenance-structure={provenance.structureId} data-provenance-residue-range={provenance.residueRange}>
+      <header><div><span className="transcriptionProvenanceEyebrow">INSPECTABLE PROVENANCE</span><strong>{provenance.label}</strong></div><span className={`transcriptionProvenanceBadge transcriptionProvenanceBadge--${provenance.displayStatus.toLowerCase()}`}>{provenance.displayStatus}</span></header>
+      <dl className="transcriptionProvenanceFacts"><div><dt>Structure</dt><dd>{provenance.structureId} · assembly {provenance.assemblyId}</dd></div><div><dt>Chain</dt><dd>{provenance.chains.join(", ")}</dd></div><div><dt>Residue range</dt><dd>{provenance.residueRange}</dd></div><div><dt>Source status</dt><dd>{provenance.sourceStatus}</dd></div><div><dt>Display status</dt><dd>{provenance.displayStatus}</dd></div><div><dt>Fidelity</dt><dd>{provenance.fidelity.join(" · ")}</dd></div></dl>
+      <div className="transcriptionProvenanceColumns"><section><h4>Experimentally present</h4><ul>{provenance.experimentallyPresent.map((item) => <li key={item}>{item}</li>)}</ul></section><section><h4>Animated or inferred</h4><ul>{provenance.animatedOrInferred.map((item) => <li key={item}>{item}</li>)}</ul></section><section><h4>Known limitations</h4><ul>{provenance.knownLimitations.map((item) => <li key={item}>{item}</li>)}</ul></section></div>
+      <footer><span>{provenance.organism} · {provenance.citation}</span><a href={provenance.sourceUrl} target="_blank" rel="noreferrer">View {provenance.sourceTitle} ↗</a></footer>
+    </aside>}
+    <details className="cellularProductionDetails"><summary>State details</summary><div className="cellularProductionSchematic">{[["DNA bubble", projection.dna.transcriptionBubble], ["Eukaryotic Pol II", projection.transcription.polymeraseState], ["Nascent RNA", rnaLength], ["RNA localization", projection.exportState.localization], ["Transcript", projection.transcription.transcriptState], ["Template read", "3′ → 5′"]].map(([label, value]) => <div className="cellularProductionCard" key={String(label)}><span>{label}</span><strong>{String(value)}</strong></div>)}</div></details>
+    {process.env.NODE_ENV !== "production" && <details className="transcriptionDebugState"><summary>Presentation debug</summary><code>progress={presentation.normalizedProgress.toFixed(3)} · RNAP={presentation.polymeraseGenePosition.toFixed(3)} · bubble={presentation.bubbleCenter.toFixed(3)} / {presentation.bubbleOpenFraction.toFixed(3)} · RNA={presentation.nascentRnaVisualLength.toFixed(2)} · repair={presentation.dnaRepairProgress.toFixed(3)}</code></details>}
+    <small>TRANSCRIPTION_ONLY · promoter context → initiation → elongation → termination · program timing mapped to 8s · E0 5FLM coordinates → C0 computed surfaces → S2 inferred Pol II translocation · owner {route.productionOwner}</small>
   </section>;
 }

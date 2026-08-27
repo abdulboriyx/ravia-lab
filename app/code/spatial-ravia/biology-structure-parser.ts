@@ -217,11 +217,13 @@ export function selectStructureChains(
   structure: NormalizedMolecularStructure,
   selectedChains: string[]
 ): NormalizedMolecularStructure {
-  const chains = structure.chains.filter((chain) => selectedChains.includes(chain.id));
-  if (chains.length !== selectedChains.length) {
-    const missing = selectedChains.filter((chainId) => !chains.some((chain) => chain.id === chainId));
-    throw new StructureGroundingError("chain-not-found", `Missing requested chains: ${missing.join(", ")}`);
-  }
+  const chains = selectedChains.map((chainId) => {
+    const matches = structure.chains.filter((chain) => chain.id === chainId || chain.sourceChainId === chainId || chain.labelAsymId === chainId);
+    if (matches.length !== 1) {
+      throw new StructureGroundingError(matches.length ? "ambiguous-chain-reference" : "chain-not-found", matches.length ? `Ambiguous requested chain: ${chainId}` : `Missing requested chains: ${chainId}`);
+    }
+    return matches[0]!;
+  });
   const atoms = chains.flatMap((chain) => chain.atoms);
   const points = atoms.map((atom) => new THREE.Vector3(atom.x, atom.y, atom.z));
   const bounds = boundsOfVectors(points);
@@ -258,7 +260,7 @@ export function applyCuratedChainEntityTypes(
 ): NormalizedMolecularStructure {
   if (!chainEntityTypes) return structure;
   const chains = structure.chains.map((chain) => {
-    const entityType = chainEntityTypes[chain.id] ?? chain.entityType;
+    const entityType = chainEntityTypes[chain.id] ?? (chain.sourceChainId ? chainEntityTypes[chain.sourceChainId] : undefined) ?? (chain.labelAsymId ? chainEntityTypes[chain.labelAsymId] : undefined) ?? chain.entityType;
     const atoms = chain.atoms.map((atom) => ({ ...atom, entityType }));
     const atomBySerial = new Map(atoms.map((atom) => [atom.serial, atom]));
     return {
@@ -318,6 +320,12 @@ export function extractNucleicTrace(chain: MolecularChain) {
   return points;
 }
 
+function resolveNormalizedChain(structure: NormalizedMolecularStructure, requestedChainId: string) {
+  const matches = structure.chains.filter((chain) => chain.id === requestedChainId || chain.sourceChainId === requestedChainId || chain.labelAsymId === requestedChainId);
+  if (matches.length > 1) throw new StructureGroundingError("ambiguous-chain-reference", `Ambiguous chain ${requestedChainId}`);
+  return matches[0];
+}
+
 function resolveAnchor(
   structure: NormalizedMolecularStructure,
   definition: StructureAnchorDefinition
@@ -334,7 +342,7 @@ function resolveAnchor(
   }
 
   if (definition.kind === "residue-range-centroid") {
-    const chain = structure.chains.find((candidate) => candidate.id === definition.chainId);
+    const chain = resolveNormalizedChain(structure, definition.chainId);
     const residues = chain?.residues.filter(
       (residue) => residue.residueSequence >= definition.startResidue && residue.residueSequence <= definition.endResidue
     ) ?? [];
@@ -348,7 +356,7 @@ function resolveAnchor(
   }
 
   if (definition.kind === "atom-centroid") {
-    const chain = structure.chains.find((candidate) => candidate.id === definition.chainId);
+    const chain = resolveNormalizedChain(structure, definition.chainId);
     const atoms = chain?.atoms.filter((atom) => {
       if (definition.residueSequence !== undefined && atom.residueSequence !== definition.residueSequence) return false;
       if (definition.atomNames && !definition.atomNames.includes(atom.atomName.trim())) return false;
@@ -363,7 +371,7 @@ function resolveAnchor(
     return { id: definition.id, point, direction };
   }
 
-  const chain = structure.chains.find((candidate) => candidate.id === definition.chainId);
+  const chain = resolveNormalizedChain(structure, definition.chainId);
   if (!chain) {
     throw new StructureGroundingError("anchor-resolution-failed", `No chain found for anchor ${definition.id}`);
   }

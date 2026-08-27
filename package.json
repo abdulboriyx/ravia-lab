@@ -9,6 +9,7 @@
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit",
     "test:spatial": "node --test app/code/spatial-ravia/*.test.ts",
+    "test:spatial:routing-browser": "tsx scripts/check-spatial-ravia-routing-browser.ts",
     "eval:spatial": "npm run test:spatial",
     "eval:spatial:semantic-holdout": "tsx scripts/run-spatial-ravia-semantic-holdout.ts",
     "eval:spatial:dna-family-benchmark": "tsx scripts/run-spatial-ravia-dna-family-benchmark.ts",

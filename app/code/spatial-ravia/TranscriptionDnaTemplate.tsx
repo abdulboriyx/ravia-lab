@@ -4,10 +4,11 @@ import * as THREE from "three";
 import { useMemo } from "react";
 import { dnaVisualSystem } from "./DnaVisualSystem.ts";
 import { deriveTranscriptionTemplatePlan, partitionTranscriptionDuplex, transcriptionDnaTemplateTransform } from "./biology-transcription-template.ts";
+import { transcriptionStructuralScalePolicy } from "./transcription-structural-actors.ts";
 
 // Keep the longer paired–bubble–paired canonical segment in the same local
 // transcription composition rather than letting it dominate the scene bounds.
-const coordinateScale = 0.052;
+const coordinateScale = transcriptionStructuralScalePolicy.angstromToScene;
 function point(value: readonly [number, number, number]) {
   return new THREE.Vector3(value[0] * coordinateScale, value[1] * coordinateScale, value[2] * coordinateScale);
 }
@@ -65,6 +66,7 @@ export function TranscriptionDnaTemplate({
   bubbleCenterNormalized = 0.5,
   bubbleOpenFraction = bubbleOpen ? 1 : 0,
   bubbleWidth = 0.12,
+  basePairCount,
 }: {
   hasRnap: boolean;
   hasNascentRna: boolean;
@@ -72,10 +74,11 @@ export function TranscriptionDnaTemplate({
   bubbleCenterNormalized?: number;
   bubbleOpenFraction?: number;
   bubbleWidth?: number;
+  basePairCount?: number;
 }) {
   const plan = useMemo(() => {
-    return deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna, bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth });
-  }, [bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth, hasNascentRna, hasRnap]);
+    return deriveTranscriptionTemplatePlan({ hasRnap, hasNascentRna, basePairCount, bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth });
+  }, [basePairCount, bubbleCenterNormalized, bubbleOpenFraction, bubbleWidth, hasNascentRna, hasRnap]);
   const sections = useMemo(() => partitionTranscriptionDuplex(plan), [plan]);
   const { samples, upstream, bubble, downstream } = sections;
   const bubbleA = useMemo(() => bubble.map((sample) => point(sample.strandA)), [bubble]);

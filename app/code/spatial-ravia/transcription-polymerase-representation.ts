@@ -15,9 +15,11 @@ export type PrimaryPolymeraseRepresentation = {
   fallbackDisclosure?: string;
 };
 
-/** Exact plumbing requirements for the future eukaryotic Pol II source. */
+export type EukaryoticPolIIElongationSourceStatus = "REQUIRED_NOT_CONFIGURED" | "CONFIGURED";
+
+/** Exact plumbing requirements for the mounted eukaryotic Pol II source. */
 export const eukaryoticPolIIElongationSourceRequirements = {
-  status: "NOT_CONFIGURED" as const,
+  status: "CONFIGURED" as EukaryoticPolIIElongationSourceStatus,
   required: [
     "eukaryotic RNA polymerase II complex",
     "elongation state with DNA",
@@ -62,4 +64,3 @@ export function structuralPolymeraseUnavailable(sourceId: string, frameId: strin
     fallbackDisclosure: "Deposited polymerase geometry is unavailable; no deposited-looking body is mounted.",
   };
 }
-

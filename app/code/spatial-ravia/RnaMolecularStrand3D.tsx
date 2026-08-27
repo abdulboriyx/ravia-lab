@@ -51,7 +51,7 @@ export function RnaStrand3D({ input, theme = "dark", showPolarity = true }: { in
   const fivePrime = strand.nucleotides[strand.fivePrimeIndex];
   const threePrime = strand.nucleotides[strand.threePrimeIndex];
   const markerOffset = strand.direction === "5-to-3" ? -0.2 : 0.2;
-  return <group aria-label="canonical molecular RNA strand">
+  return <group name="canonical-molecular-rna-strand">
     {strand.backboneLinks.map((link, index) => <RnaBond key={`backbone-${index}`} from={link.from} to={link.to} />)}
     {strand.nucleotides.map((nucleotide) => <RnaNucleotide3D key={nucleotide.index} nucleotide={nucleotide} />)}
     {showPolarity && fivePrime && threePrime && <>

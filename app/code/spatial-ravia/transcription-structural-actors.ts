@@ -1,5 +1,6 @@
 import type { StructureDerivedGeometry, StructureManifestEntry } from "./biology-structure-grounding.ts";
 import { resolveTranscriptionStructureGrounding } from "./biology-transcription-structure-grounding.ts";
+import { resolveEukaryoticPolIIAssetManifest } from "./eukaryotic-pol-ii-asset-selection.ts";
 
 export type StructuralVector3 = readonly [number, number, number];
 export type StructuralActorKind = "DNA" | "POLYMERASE" | "RNA" | "RNA_DNA_HYBRID";
@@ -184,7 +185,7 @@ function actor(kind: StructuralActorKind, actorId: string, sourceId: string, sel
 
 function boundsForChains(geometry: StructureDerivedGeometry | undefined, chains: readonly string[]): StructuralActor["bounds"] {
   if (!geometry) return undefined;
-  const selected = geometry.residuePoints.filter((point) => chains.includes(point.chainId)).map((point) => point.position);
+  const selected = geometry.residuePoints.filter((point) => chains.some((chainId) => point.chainId === chainId || point.chainId.startsWith(`${chainId}::`))).map((point) => point.position);
   if (selected.length === 0) return undefined;
   const min: StructuralVector3 = [Math.min(...selected.map((point) => point.x)), Math.min(...selected.map((point) => point.y)), Math.min(...selected.map((point) => point.z))];
   const max: StructuralVector3 = [Math.max(...selected.map((point) => point.x)), Math.max(...selected.map((point) => point.y)), Math.max(...selected.map((point) => point.z))];
@@ -220,6 +221,42 @@ export function resolveTranscriptionStructuralActorPackage(manifest: StructureMa
       promoter: { actorId: "transcription-promoter-region", anchoredToActorId: "transcription-dna-substrate-6ALH", sourceSelector: dna[0], semanticOnly: true },
     },
     selectors: { dnaChains: ["A", "B"], rnaChain: "R", polymeraseChains: ["G", "H", "I", "J", "K"], hybrid: { dna: hybridDna, rna: hybridRna, selectionBasis: "source-bounded-window" } },
+  };
+}
+
+/**
+ * Builds the eukaryotic Pol II package from the validated 5FLM manifest. The
+ * elongation source does not contain a promoter, so that role is deliberately
+ * semantic-only rather than attached to an invented coordinate range.
+ */
+export function resolveEukaryoticPolIIStructuralActorPackage(
+  manifest: StructureManifestEntry = resolveEukaryoticPolIIAssetManifest(),
+  geometry?: StructureDerivedGeometry,
+): TranscriptionStructuralActorPackage {
+  if (manifest.structureId !== "5FLM") throw new Error("TRANSCRIPTION_EUKARYOTIC_SOURCE_UNSUPPORTED");
+  const structureId = manifest.structureId;
+  const sourceId = `${manifest.provider}:${structureId}:assembly-${manifest.assemblyId ?? "1"}:model-1`;
+  const dna = [selector(structureId, "M", 1, 39), selector(structureId, "O", 1, 39)] as const;
+  const rna = [selector(structureId, "N", 7, 20)] as const;
+  const polymerase = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"].map((chainId) => ({ structureId, chainId }));
+  const hybridDna = [selector(structureId, "O", 7, 20)] as const;
+  const hybridRna = [selector(structureId, "N", 7, 20)] as const;
+  return {
+    schemaVersion: "1",
+    packageId: "transcription-5FLM-eukaryotic-pol-ii-elongation-v1",
+    source: {
+      sourceId, structureId, sourceType: "depositedStructure", organism: manifest.organism,
+      polymeraseClass: "EUKARYOTIC_POL_II", modelId: "1", assemblyId: manifest.assemblyId ?? "1", provider: manifest.provider, accession: "5FLM",
+      fidelity: "E0_DEPOSITED", coordinateUnits: "angstrom", citation: "doi:10.1038/nature16482", license: "RCSB-PDB data policy",
+    },
+    actors: {
+      dna: actor("DNA", "transcription-dna-substrate-5FLM", sourceId, dna, boundsForChains(geometry, ["M", "O"])),
+      polymerase: actor("POLYMERASE", "transcription-eukaryotic-pol-ii-5FLM", sourceId, polymerase, boundsForChains(geometry, ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"])),
+      rna: actor("RNA", "transcription-rna-chain-n-5FLM", sourceId, rna, boundsForChains(geometry, ["N"])),
+      hybrid: actor("RNA_DNA_HYBRID", "transcription-rna-dna-hybrid-5FLM", sourceId, [...hybridDna, ...hybridRna], boundsForChains(geometry, ["O", "N"])),
+      promoter: { actorId: "transcription-promoter-region", anchoredToActorId: "transcription-dna-substrate-5FLM", semanticOnly: true },
+    },
+    selectors: { dnaChains: ["M", "O"], rnaChain: "N", polymeraseChains: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"], hybrid: { dna: hybridDna, rna: hybridRna, selectionBasis: "source-bounded-window" } },
   };
 }
 
@@ -309,7 +346,11 @@ export function isValidTranscriptionActiveSiteFrame(frame: TranscriptionActiveSi
 
 export function validateTranscriptionStructuralActorPackage(packageValue: TranscriptionStructuralActorPackage): void {
   if (packageValue.schemaVersion !== "1" || packageValue.source.coordinateUnits !== "angstrom") throw new Error("TRANSCRIPTION_ACTOR_PACKAGE_VERSION_OR_UNITS_INVALID");
-  if (packageValue.source.structureId !== "6ALH" || packageValue.source.polymeraseClass !== "BACTERIAL_RNAP") throw new Error("TRANSCRIPTION_6ALH_MUST_BE_BACTERIAL_RNAP");
+  const isBacterialPackage = packageValue.source.structureId === "6ALH" && packageValue.source.polymeraseClass === "BACTERIAL_RNAP";
+  const isEukaryoticPackage = packageValue.source.structureId === "5FLM" && packageValue.source.polymeraseClass === "EUKARYOTIC_POL_II";
+  if (packageValue.source.structureId === "6ALH" && !isBacterialPackage) throw new Error("TRANSCRIPTION_6ALH_MUST_BE_BACTERIAL_RNAP");
+  if (packageValue.source.structureId === "5FLM" && !isEukaryoticPackage) throw new Error("TRANSCRIPTION_5FLM_MUST_BE_EUKARYOTIC_POL_II");
+  if (!isBacterialPackage && !isEukaryoticPackage) throw new Error("TRANSCRIPTION_SOURCE_IDENTITY_INVALID");
   if (packageValue.source.sourceType === "depositedStructure" && (!packageValue.source.provider || !packageValue.source.accession || !packageValue.source.citation || !packageValue.source.license)) throw new Error("TRANSCRIPTION_DEPOSITED_PROVENANCE_INCOMPLETE");
   const actors = Object.values(packageValue.actors).filter((value): value is StructuralActor => typeof value === "object" && value !== null && "actorKind" in value);
   if (actors.length !== 4 || new Set(actors.map((value) => value.actorId)).size !== actors.length) throw new Error("TRANSCRIPTION_ACTOR_IDS_INVALID");

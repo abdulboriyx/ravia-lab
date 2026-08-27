@@ -25,10 +25,10 @@ test("Mol* transcription path requests structural RNA and hybrid representations
 
 test("production transcription uses one shared structure-derived viewport", () => {
   const source = readFileSync(new URL("./GeneExpression3DScene.tsx", import.meta.url), "utf8");
-  assert.match(source, /StructureDerivedPrimitive/);
-  assert.match(source, /data-molecular-viewport-owner="r3f"/);
-  assert.match(source, /data-structural-scale/);
-  assert.match(source, /STRUCTURAL ACTOR · 6ALH · BACTERIAL RNAP/);
-  assert.doesNotMatch(source, /MolstarStructurePresentationAdapter/);
+  assert.match(source, /BakedTranscriptionMolecularActor/);
+  assert.match(source, /data-molecular-viewport-owner="r3f-structure-derived"/);
+  assert.match(source, /data-structural-source=\{transcriptionVisualContract\.source\.structureId\}/);
+  assert.match(source, /5FLM DEPOSITED GEOMETRY/);
+  assert.match(source, /data-motion-source="5FLM_STRUCTURE_DERIVED_KINEMATIC_TRANSLOCATION"/);
   assert.doesNotMatch(source, /<MolecularNascentRNA3D/);
 });

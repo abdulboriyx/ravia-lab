@@ -31,8 +31,8 @@ test("6ALH is rejected if relabeled as eukaryotic Pol II", async () => {
   assert.throws(() => resolvePrimaryPolymeraseRepresentation(invalid, frame), /SOURCE_CLASS_MISMATCH/);
 });
 
-test("future eukaryotic Pol II source requirements are explicit and not satisfied by 6ALH", () => {
-  assert.equal(eukaryoticPolIIElongationSourceRequirements.status, "NOT_CONFIGURED");
+test("eukaryotic Pol II source requirements are configured and still exclude 6ALH", () => {
+  assert.equal(eukaryoticPolIIElongationSourceRequirements.status, "CONFIGURED");
   assert.match(eukaryoticPolIIElongationSourceRequirements.prohibition, /6ALH/);
 });
 
@@ -43,10 +43,12 @@ test("structural failure is explicitly downgraded instead of masquerading as dep
   assert.match(fallback.fallbackDisclosure ?? "", /unavailable/);
 });
 
-test("live production scene mounts the shared structure-derived actor in the single R3F viewport", () => {
+test("live production scene mounts deposited polymerase geometry with derived translocation", () => {
   const source = readFileSync(new URL("./GeneExpression3DScene.tsx", import.meta.url), "utf8");
-  assert.match(source, /StructureDerivedPrimitive/);
-  assert.match(source, /data-camera-owner="r3f"/);
+  assert.match(source, /BakedTranscriptionMolecularActor/);
+  assert.match(source, /data-camera-owner="r3f-structure-derived"/);
+  assert.match(source, /data-structural-source=\{transcriptionVisualContract\.source\.structureId\}/);
+  assert.match(source, /data-motion-source="5FLM_STRUCTURE_DERIVED_KINEMATIC_TRANSLOCATION"/);
   assert.doesNotMatch(source, /<TranscriptionRnapPresentation/);
   assert.doesNotMatch(source, /<derived-lobe/);
 });

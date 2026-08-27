@@ -6,6 +6,12 @@ import { MolstarPresentationRebuildGate } from "./MolstarPresentationRebuildGate
 import type { TranslationDisplayIntent } from "./biology-translation-display-intent";
 
 type PresentationKind = "translation" | "transcription";
+export type TranscriptionMolecularTemporalState = {
+  stage: "START" | "INITIATION" | "ELONGATION" | "TERMINATION";
+  bubbleOpenFraction: number;
+  nascentRnaVisualLength: number;
+  transcriptReleaseProgress: number;
+};
 export type TranscriptionMolecularPresentationOptions = {
   sourceId: string;
   frameId: string;
@@ -25,6 +31,7 @@ type Viewer = {
   plugin: {
     clear: (resetViewport?: boolean) => Promise<unknown>;
     canvas3d?: { setProps: (props: Record<string, unknown>) => void };
+    state: { data: { updateCellState: (ref: string, state: { isHidden?: boolean }) => void } };
     managers: { camera: { reset: (snapshot?: unknown, durationMs?: number) => void; focusObject: (options: Record<string, unknown>) => void } };
     builders: {
       data: { download: (params: { url: string; isBinary: boolean }) => Promise<unknown> };
@@ -131,13 +138,13 @@ const uniform = (color: number) => ({ value: color });
 const cartoon = (color: number, alpha = 1, sizeFactor = 0.55) => ({
   type: "cartoon", typeParams: { visuals: ["polymer-trace", "nucleotide-ring", "nucleotide-block"], sizeFactor, alpha, quality: "medium" }, color: "uniform", colorParams: uniform(color),
 });
-const atoms = (color = 0xffffff, sizeFactor = 0.22) => ({
-  type: "ball-and-stick", typeParams: { visuals: ["element-sphere", "intra-bond"], sizeFactor, sizeAspectRatio: 0.5, linkScale: 0.34, ignoreHydrogens: true, radialSegments: 10 }, color: "element-symbol", colorParams: { carbonColor: { name: "uniform", params: uniform(color) } },
+const atoms = (color = 0xffffff, sizeFactor = 0.22, alpha = 1) => ({
+  type: "ball-and-stick", typeParams: { visuals: ["element-sphere", "intra-bond"], sizeFactor, sizeAspectRatio: 0.5, linkScale: 0.34, ignoreHydrogens: true, radialSegments: 10, alpha }, color: "element-symbol", colorParams: { carbonColor: { name: "uniform", params: uniform(color) } },
 });
 
-async function addRepresentation(viewer: Viewer, component: unknown, props: Record<string, unknown>) {
+async function addRepresentation(viewer: Viewer, component: unknown, props: Record<string, unknown>, options?: Record<string, unknown>) {
   if (!component) return;
-  return viewer.plugin.builders.structure.representation.addRepresentation(component, props);
+  return viewer.plugin.builders.structure.representation.addRepresentation(component, props, options);
 }
 
 function focusPresentation(viewer: Viewer, representations: readonly unknown[], minRadius: number): readonly { targetRef: string }[] {
@@ -147,6 +154,31 @@ function focusPresentation(viewer: Viewer, representations: readonly unknown[], 
     .map((targetRef) => ({ targetRef }));
   if (targets.length > 0) viewer.plugin.managers.camera.focusObject({ targets, minRadius, durationMs: 0 });
   return targets;
+}
+
+type TemporalRepresentationRefs = {
+  rnaPrefixes: readonly string[];
+  hybrid: readonly string[];
+};
+type TranscriptionBuildResult = {
+  focusTargets: readonly { targetRef: string }[];
+  temporalRefs: TemporalRepresentationRefs;
+};
+
+function representationRef(value: unknown): string | null {
+  return (value as { ref?: string } | undefined)?.ref ?? null;
+}
+
+function setRepresentationVisibility(viewer: Viewer, refs: readonly string[], visible: boolean) {
+  for (const ref of refs) viewer.plugin.state.data.updateCellState(ref, { isHidden: !visible });
+}
+
+function applyTranscriptionTemporalState(viewer: Viewer, refs: TemporalRepresentationRefs | null, temporal: TranscriptionMolecularTemporalState | undefined) {
+  if (!refs) return;
+  const rnaLength = Math.max(0, Math.min(refs.rnaPrefixes.length, Math.round(temporal?.nascentRnaVisualLength ?? 0)));
+  refs.rnaPrefixes.forEach((ref, index) => setRepresentationVisibility(viewer, [ref], index === rnaLength - 1));
+  const bubbleVisible = (temporal?.bubbleOpenFraction ?? 0) > 0.02 && temporal?.stage !== "TERMINATION";
+  setRepresentationVisibility(viewer, refs.hybrid, bubbleVisible);
 }
 
 async function applyTranslation(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, intent: TranslationDisplayIntent = "overview") {
@@ -176,12 +208,12 @@ async function applyTranslation(viewer: Viewer, structure: unknown, MS: Record<s
   focusPresentation(viewer, functionalRepresentations, transferFocus ? 20 : 24);
 }
 
-async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, options?: TranscriptionMolecularPresentationOptions) {
+async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record<string, unknown>, options?: TranscriptionMolecularPresentationOptions): Promise<TranscriptionBuildResult> {
   // One quiet RNAP envelope. Nucleic acids and the local chemistry own the
   // teaching hierarchy; protein simply establishes the molecular machine.
   const proteinChains = options?.polymeraseChains ?? ["G", "H", "I", "J", "K"];
   const protein = await chainsComponent(viewer, structure, MS, "rnap", proteinChains);
-  const proteinRepresentation = await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 3.2, smoothness: 1.8, alpha: 0.18, quality: "medium" }, color: "uniform", colorParams: uniform(0x65747c) });
+  const proteinRepresentation = await addRepresentation(viewer, protein, { type: "gaussian-surface", typeParams: { resolution: 3.2, smoothness: 1.8, alpha: 0.075, quality: "medium" }, color: "uniform", colorParams: uniform(0x65747c) });
   const dnaChains = options?.dnaChains ?? ["A", "B"];
   const rnaChain = options?.rnaChain ?? "R";
   const hybridWindow = options?.hybridWindow;
@@ -211,49 +243,69 @@ async function applyTranscription(viewer: Viewer, structure: unknown, MS: Record
       hybridRepresentations.push(await addRepresentation(viewer, component, atoms(0x5dc99f, 0.2)));
     }
     const focusTargets = focusPresentation(viewer, [proteinRepresentation, ...structuralDna, ...structuralRna, ...hybridRepresentations], 10);
-    return focusTargets;
+    return { focusTargets, temporalRefs: { rnaPrefixes: [], hybrid: hybridRepresentations.map(representationRef).filter((ref): ref is string => Boolean(ref)) } };
   }
   const nucleicRepresentations: unknown[] = [];
   for (const [index, chain] of dnaChains.entries()) {
     const id = `dna-${index === 0 ? "a" : "b"}`;
-    const color = index === 0 ? 0x77aaca : 0x9f8cc5;
+    const color = index === 0 ? 0x4e8de2 : 0x8568c4;
     const component = await chainComponent(viewer, structure, MS, id, chain);
-    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(color, 1, 0.42)));
+    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(color, 1, 0.78)));
   }
+  const rnaRepresentations: unknown[] = [];
   if (includeRna) {
-    const component = await chainComponent(viewer, structure, MS, "rna", rnaChain);
-    nucleicRepresentations.push(await addRepresentation(viewer, component, cartoon(0x38c58e, 1, 0.48)));
+    // Build cumulative residue windows from the deposited R chain. The
+    // temporal controller swaps these molecular prefixes as RNA grows.
+    const rnaResidueCount = 11;
+    for (let length = 1; length <= rnaResidueCount; length += 1) {
+      const component = await residueComponent(viewer, structure, MS, `rna-prefix-${length}`, rnaChain, Array.from({ length }, (_, index) => index + 1));
+      rnaRepresentations.push(await addRepresentation(viewer, component, cartoon(0x18b981, 1, 0.86), { initialState: { isHidden: true } }));
+    }
   }
   const localSelectors = [...(hybridWindow?.dna ?? []), ...(hybridWindow?.rna ?? [])];
+  const activeRepresentations: unknown[] = [];
   for (const [index, selector] of localSelectors.entries()) {
     const id = `active-${index}`;
     const chain = selector.chainId;
     const residues = selectorResidues(selector);
     const component = await residueComponent(viewer, structure, MS, id, chain, residues);
-    await addRepresentation(viewer, component, atoms(0x4c5964, 0.16));
+    activeRepresentations.push(await addRepresentation(viewer, component, atoms(selector.chainId === rnaChain ? 0x13d69a : 0x9c78ff, 0.34, 0.92)));
   }
-  // This intentionally does not include RNAP in the framing calculation: the
-  // deposited duplex/RNA region is the teaching target, while RNAP surrounds
-  // it as quiet structural context rather than determining a full-model shot.
-  return focusPresentation(viewer, [proteinRepresentation, ...nucleicRepresentations], 10);
+  // Frame the deposited DNA/RNA window. The complete RNAP surface remains in
+  // the scene as structural context, but it must not force a full-machine shot
+  // that makes the mechanism unreadable.
+  const focusTargets = focusPresentation(viewer, [...nucleicRepresentations, rnaRepresentations[rnaRepresentations.length - 1], ...activeRepresentations], 8);
+  return {
+    focusTargets,
+    temporalRefs: {
+      rnaPrefixes: rnaRepresentations.map(representationRef).filter((ref): ref is string => Boolean(ref)),
+      hybrid: activeRepresentations.map(representationRef).filter((ref): ref is string => Boolean(ref)),
+    },
+  };
 }
 
-export function MolstarStructurePresentationAdapter({ kind, theme, translationIntent, transcription }: { kind: PresentationKind; theme: SpatialRaviaTheme; translationIntent?: TranslationDisplayIntent; transcription?: TranscriptionMolecularPresentationOptions }) {
+export function MolstarStructurePresentationAdapter({ kind, theme, translationIntent, transcription, transcriptionTemporal }: { kind: PresentationKind; theme: SpatialRaviaTheme; translationIntent?: TranslationDisplayIntent; transcription?: TranscriptionMolecularPresentationOptions; transcriptionTemporal?: TranscriptionMolecularTemporalState }) {
   const mountRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<Viewer | null>(null);
   const rebuildGateRef = useRef(new MolstarPresentationRebuildGate());
   const focusTargetsRef = useRef<readonly { targetRef: string }[]>([]);
+  const temporalRefsRef = useRef<TemporalRepresentationRefs | null>(null);
+  const transcriptionTemporalRef = useRef<TranscriptionMolecularTemporalState | undefined>(transcriptionTemporal);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const resetView = () => {
     const viewer = viewerRef.current;
     if (!viewer) return;
     if (focusTargetsRef.current.length > 0) {
-      viewer.plugin.managers.camera.focusObject({ targets: focusTargetsRef.current, minRadius: kind === "transcription" ? 10 : 20, durationMs: 0 });
+      viewer.plugin.managers.camera.focusObject({ targets: focusTargetsRef.current, minRadius: kind === "transcription" ? 8 : 20, durationMs: 0 });
     } else {
       viewer.plugin.managers.camera.reset(undefined, 0);
     }
   };
+
+  useEffect(() => {
+    transcriptionTemporalRef.current = transcriptionTemporal;
+  }, [transcriptionTemporal]);
 
   useEffect(() => {
     let cancelled = false;
@@ -285,6 +337,7 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
       // completed and cleared before this begins, or skipped before it can
       // create a component in the newer structure subtree.
       if (!isCurrent() || viewerRef.current !== viewer) return;
+      temporalRefsRef.current = null;
       await viewer.plugin.clear(false);
       if (!isCurrent() || viewerRef.current !== viewer) return;
       const format = kind === "translation" ? "mmcif" : "pdb";
@@ -296,11 +349,13 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
       const withProperties = await viewer.plugin.builders.structure.insertStructureProperties(structure) ?? structure;
       const { MolScriptBuilder } = await queryRuntime();
       if (!isCurrent() || viewerRef.current !== viewer) return;
-      const focusTargets = kind === "translation"
+      const buildResult = kind === "translation"
         ? undefined
         : await applyTranscription(viewer, withProperties, MolScriptBuilder, transcription);
       if (kind === "translation") await applyTranslation(viewer, withProperties, MolScriptBuilder, translationIntent);
-      focusTargetsRef.current = focusTargets ?? [];
+      focusTargetsRef.current = buildResult?.focusTargets ?? [];
+      temporalRefsRef.current = buildResult?.temporalRefs ?? null;
+      applyTranscriptionTemporalState(viewer, temporalRefsRef.current, transcriptionTemporalRef.current);
       if (!isCurrent() || viewerRef.current !== viewer) return;
     };
     setError(null);
@@ -310,6 +365,12 @@ export function MolstarStructurePresentationAdapter({ kind, theme, translationIn
     });
     return () => { rebuildGate.invalidate(); };
   }, [kind, ready, translationIntent, transcription]);
+
+  useEffect(() => {
+    const viewer = viewerRef.current;
+    if (!ready || !viewer || kind !== "transcription") return;
+    applyTranscriptionTemporalState(viewer, temporalRefsRef.current, transcriptionTemporal);
+  }, [kind, ready, transcriptionTemporal]);
 
   const hybridLabel = transcription?.hybridWindow
     ? [...transcription.hybridWindow.dna, ...transcription.hybridWindow.rna].map((selector) => `${selector.chainId}:${selector.residueRange ? `${selector.residueRange.start}-${selector.residueRange.end}` : (selector.residueIds ?? []).join(",")}`).join(";")

@@ -8,16 +8,12 @@ import { DnaMolecularView } from "./DnaMolecularView";
 import { DnaPackagingView } from "./DnaPackagingView";
 import { DnaLocalChemistryView } from "./DnaLocalChemistryView";
 import { SpatialPromptDock } from "./SpatialPromptDock";
-import { parseBiologyScenePrompt } from "./biology-parser";
-import { chooseBiologyRenderer } from "./biology-renderer-router";
-import { resolveDnaTemplateRendererOwner, resolveDnaVisualTemplate } from "./biology-dna-visual-dispatcher";
+import { resolveDnaTemplateRendererOwner } from "./biology-dna-visual-dispatcher";
 import { DnaMechanismPresentationView } from "./DnaMechanismPresentationView";
-import { resolveDnaMechanismPresentation } from "./DnaMechanismPresentationRouter";
-import { resolveRnaPresentation } from "./RnaPresentationRouter";
-import { resolveProductionPromptRoute } from "./production-prompt-router";
 import { ProductionRoutingStatus } from "./ProductionRoutingStatus";
 import { CellularProductionOwnerView } from "./CellularProductionOwnerView";
 import { RnaPresentationView } from "./RnaPresentationView";
+import { resolveScinaRequest } from "./scina-request-resolver";
 
 export default function Page() {
   const [prompt, setPrompt] = useState("show helicase opening DNA");
@@ -35,26 +31,8 @@ export default function Page() {
     applyScinaTheme(next, true);
   };
 
-  let scene = null;
-  let renderer = null;
-  let dnaTemplate = null;
-  let parseSource = null;
-  let error: string | null = null;
-
-  const rnaPresentationRoute = resolveRnaPresentation(submittedPrompt);
-  const productionRoute = resolveProductionPromptRoute(submittedPrompt);
-  const isCellularProductionRoute = productionRoute.productionOwner.startsWith("GENE_") || productionRoute.productionOwner.startsWith("SECRETORY_") || productionRoute.productionOwner.startsWith("INTRACELLULAR_") || productionRoute.productionOwner.startsWith("CELL_SIGNALING_");
-  const result = rnaPresentationRoute ? null : parseBiologyScenePrompt(submittedPrompt);
-  const dnaMechanismRoute = resolveDnaMechanismPresentation(submittedPrompt);
-
-  if (result?.status === "supported") {
-    scene = result.scene;
-    parseSource = result.source;
-    dnaTemplate = resolveDnaVisualTemplate(scene, result.dnaSelection);
-    renderer = chooseBiologyRenderer(scene, dnaTemplate);
-  } else if (!rnaPresentationRoute && result) {
-    error = result.reason;
-  }
+  const resolved = resolveScinaRequest(submittedPrompt);
+  const route = resolved.route;
 
   const submitPrompt = () => {
     const trimmedPrompt = prompt.trim();
@@ -67,46 +45,66 @@ export default function Page() {
   };
 
   return (
-    <main className="spatialRaviaWorkspace" data-spatial-theme={theme}>
+    <main
+      className="spatialRaviaWorkspace"
+      data-spatial-theme={theme}
+      data-scina-domain={resolved.request.domain}
+      data-scina-organism={resolved.request.organism}
+      data-scina-capability={resolved.request.capabilityId}
+      data-scina-identity={resolved.request.identity.polymeraseClass ?? resolved.request.identity.entity}
+      data-scina-owner={resolved.request.owner.production}
+      data-scina-renderer={resolved.request.renderer}
+      data-scina-fidelity={resolved.request.fidelity}
+    >
+      <header className="scinaWorkspaceHeader" aria-label="Scina workspace header">
+        <div className="scinaWorkspaceBrand">
+          <span className="scinaMark" aria-hidden="true"><i /><i /><i /></span>
+          <div>
+            <strong>Scina</strong>
+            <span>Interactive molecular notebook</span>
+          </div>
+        </div>
+        <div className="scinaWorkspaceMeta">
+          <span className="scinaLiveIndicator"><i aria-hidden="true" /> Live local</span>
+          <span>{resolved.request.domain}{resolved.request.identity.polymeraseClass ? ` / ${resolved.request.identity.polymeraseClass}` : ""} · {resolved.request.renderer}</span>
+        </div>
+      </header>
+
       <section
         className="spatialRaviaViewport"
         aria-label="Scina visualization"
       >
-        {!error && !isCellularProductionRoute && !rnaPresentationRoute && dnaMechanismRoute && (
-          <DnaMechanismPresentationView route={dnaMechanismRoute} theme={theme} visualTemplate={dnaTemplate ?? undefined} />
+        {route.kind === "dna-mechanism" && <DnaMechanismPresentationView route={route.route} theme={theme} />}
+
+        {route.kind === "rna" && <RnaPresentationView route={route.route} theme={theme} />}
+
+        {route.kind === "cellular" && <CellularProductionOwnerView route={route.route} theme={theme} />}
+
+        {route.kind === "dna-scene" && route.renderer === "three" && <MechanisticScene key={submittedPrompt} scene={route.scene} theme={theme} />}
+
+        {route.kind === "dna-scene" && route.renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
+
+        {route.kind === "dna-scene" && route.renderer === "dna-template" && (
+          resolveDnaTemplateRendererOwner(route.template) === "mechanistic-dna"
+            ? <MechanisticScene key={`dna-${route.template.templateId}-${submittedPrompt}`} scene={route.scene} theme={theme} />
+            : resolveDnaTemplateRendererOwner(route.template) === "packaging"
+              ? <DnaPackagingView key={`dna-${route.template.templateId}-${submittedPrompt}`} prompt={submittedPrompt} theme={theme} />
+              : resolveDnaTemplateRendererOwner(route.template) === "local-chemistry"
+                ? <DnaLocalChemistryView key={`dna-${route.template.templateId}-${submittedPrompt}`} subject={route.template.localChemistrySubject ?? (route.template.family === "damageRepair" ? "mismatch" : "gc-base-pair")} theme={theme} />
+                : <DnaMolecularView key={`dna-${route.template.templateId}-${submittedPrompt}`} embedded theme={theme} visualTemplate={route.template} regulationPrompt={submittedPrompt} />
         )}
 
-        {!error && !isCellularProductionRoute && rnaPresentationRoute && <RnaPresentationView route={rnaPresentationRoute} theme={theme} />}
-
-        {isCellularProductionRoute && <CellularProductionOwnerView route={productionRoute} theme={theme} />}
-
-        {!error && !isCellularProductionRoute && !rnaPresentationRoute && !dnaMechanismRoute && scene && renderer === "three" && (
-          <MechanisticScene key={submittedPrompt} scene={scene} theme={theme} />
-        )}
-
-        {!error && !isCellularProductionRoute && !rnaPresentationRoute && !dnaMechanismRoute && renderer === "molstar" && <DnaMolecularView embedded theme={theme} />}
-
-        {!error && !isCellularProductionRoute && !rnaPresentationRoute && !dnaMechanismRoute && scene && renderer === "dna-template" && dnaTemplate && (
-          resolveDnaTemplateRendererOwner(dnaTemplate) === "mechanistic-dna"
-            ? <MechanisticScene key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} scene={scene} theme={theme} />
-            : resolveDnaTemplateRendererOwner(dnaTemplate) === "packaging"
-              ? <DnaPackagingView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} prompt={submittedPrompt} theme={theme} />
-              : resolveDnaTemplateRendererOwner(dnaTemplate) === "local-chemistry"
-                ? <DnaLocalChemistryView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} subject={dnaTemplate.localChemistrySubject ?? (dnaTemplate.family === "damageRepair" ? "mismatch" : "gc-base-pair")} theme={theme} />
-                : <DnaMolecularView key={`dna-${dnaTemplate.templateId}-${submittedPrompt}`} embedded theme={theme} visualTemplate={dnaTemplate} regulationPrompt={submittedPrompt} />
-        )}
-
-        {!error && !isCellularProductionRoute && !rnaPresentationRoute && renderer === "cell-context" && (
+        {route.kind === "dna-scene" && route.renderer === "cell-context" && (
           <p className="spatialRaviaStatus">
             Cell-context rendering is not implemented yet.
           </p>
         )}
 
-        {error && <ProductionRoutingStatus route={productionRoute} />}
+        {route.kind === "error" && <ProductionRoutingStatus route={route.route} />}
 
-        {!error && !rnaPresentationRoute && parseSource && (
+        {route.kind === "dna-scene" && route.parseSource && (
           <p aria-label="Parser source" className="spatialRaviaParseSource">
-            Parsed by {parseSource}
+            Parsed by {route.parseSource}
           </p>
         )}
       </section>

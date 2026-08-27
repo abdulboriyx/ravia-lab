@@ -43,6 +43,7 @@ export type TranscriptionTemplatePlan = {
 export function deriveTranscriptionTemplatePlan(input: {
   hasRnap: boolean;
   hasNascentRna: boolean;
+  basePairCount?: number;
   bubbleCenterNormalized?: number;
   bubbleOpenFraction?: number;
   bubbleWidth?: number;
@@ -62,8 +63,8 @@ export function deriveTranscriptionTemplatePlan(input: {
     dna: {
       // Keep more than two B-DNA turns visibly paired on each side of the
       // compact RNAP-bound opening.
-      basePairCount: transcriptionDuplexCalibration.basePairCount,
-      openCenter: bubbleCenterNormalized * (transcriptionDuplexCalibration.basePairCount - 1),
+      basePairCount: Math.max(12, Math.floor(input.basePairCount ?? transcriptionDuplexCalibration.basePairCount)),
+      openCenter: bubbleCenterNormalized * (Math.max(12, Math.floor(input.basePairCount ?? transcriptionDuplexCalibration.basePairCount)) - 1),
       bubbleCenterNormalized,
       // A six-base-pair teaching bubble avoids replication-fork-like width.
       openBasePairs: transcriptionDuplexCalibration.openBasePairs,

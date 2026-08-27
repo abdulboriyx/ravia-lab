@@ -17,8 +17,8 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Ravia Lab",
-  description: "A public record of inquiry."
+  title: "Scina",
+  description: "An interactive molecular notebook."
 };
 
 const themeScript = `
@@ -49,13 +49,13 @@ export default function RootLayout({
       </head>
       <body className={`${oxanium.variable} ${spaceGrotesk.variable}`}>
         <header className="siteHeader" aria-label="Site header">
-          <Link className="brand" href="/" aria-label="Ravia Lab home">
+          <Link className="brand" href="/" aria-label="Scina home">
             <span className="emblem" aria-hidden="true">
               <span />
               <span />
               <span />
             </span>
-            <span>Ravia Lab</span>
+            <span>Scina</span>
           </Link>
           <nav aria-label="Primary navigation">
             <Link href="/about">About</Link>

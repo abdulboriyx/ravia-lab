@@ -1,120 +1,99 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
+import { Canvas, useThree } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
-import { useMemo } from "react";
-import { TranscriptionDnaTemplate } from "./TranscriptionDnaTemplate";
-import { StructureDerivedPrimitive } from "./StructureDerivedPrimitive";
-import { resolveTranscriptionStructureGrounding } from "./biology-transcription-structure-grounding";
-import { transcriptionStructuralScalePolicy } from "./transcription-structural-actors";
+import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import type { GeneExpressionProductionProjectionV1 } from "./gene-expression-production";
-import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
+import { BakedTranscriptionMolecularActor } from "./BakedTranscriptionMolecularActor";
+import { deriveTranscriptionCameraFrame, type TranscriptionActiveSiteRoi } from "./transcription-active-site-camera";
+import { resolveEukaryoticPolIIStructureGrounding } from "./biology-transcription-structure-grounding";
+import { resolveEukaryoticPolIIStructuralActorPackage, transcriptionStructuralScalePolicy } from "./transcription-structural-actors";
 import { normalizeSpatialRaviaTheme, spatialRaviaThemePresentation, type SpatialRaviaTheme } from "./spatial-ravia-theme";
-import { RnaStrand3D } from "./RnaMolecularStrand3D";
-import { deriveFreeRnaContinuation } from "./transcription-free-rna-continuation";
-import { deriveTranscriptionMechanismVisualState } from "./transcription-mechanism-presentation";
+import { isValidTranscriptionPresentationState, type TranscriptionPresentationStateV1 } from "./transcription-presentation-state";
+import type { ExpertTranscriptionGeometryMode, ExpertTranscriptionTarget } from "./transcription-expert-controls";
+import { transcriptionVisualContract, transcriptionVisualLayer } from "./transcription-visual-contract";
 
-type Props = { projection: GeneExpressionProductionProjectionV1; presentation: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
-type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentation?: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme };
+type SceneProps = { projection: GeneExpressionProductionProjectionV1; presentation?: TranscriptionPresentationStateV1; theme: SpatialRaviaTheme; selectedTarget?: ExpertTranscriptionTarget; geometryMode?: ExpertTranscriptionGeometryMode; cameraRevision?: number; sceneRevision?: number };
 
-const sceneXFromProgress = (progress: number) => -2.8 + Math.max(0, Math.min(1, progress)) * 5.6;
-
-function NuclearContext3D({ theme }: Pick<Props, "theme">) {
-  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
-  const colors = spatialRaviaThemePresentation[normalizedTheme];
-  return <group aria-label="nuclear context">
-    <mesh scale={[6.8, 4.3, 3.1]} rotation={[0.08, 0.12, -0.08]} renderOrder={-2}>
-      <sphereGeometry args={[1, 48, 32]} />
-      <meshBasicMaterial color={colors.canvasFog} transparent opacity={normalizedTheme === "dark" ? 0.16 : 0.1} side={THREE.BackSide} depthWrite={false} />
-    </mesh>
-    <mesh scale={[6.95, 4.42, 3.2]} rotation={[0.08, 0.12, -0.08]} renderOrder={-1}>
-      <sphereGeometry args={[1, 48, 32]} />
-      <meshBasicMaterial color={colors.sceneFill} transparent opacity={normalizedTheme === "dark" ? 0.08 : 0.05} side={THREE.FrontSide} depthWrite={false} />
-    </mesh>
-  </group>;
+function applyTranscriptionCameraFrame(camera: THREE.Camera, frame: ReturnType<typeof deriveTranscriptionCameraFrame>) {
+  const perspectiveCamera = camera as THREE.PerspectiveCamera;
+  perspectiveCamera.fov = frame.fov;
+  perspectiveCamera.position.copy(frame.position);
+  perspectiveCamera.lookAt(frame.target);
+  perspectiveCamera.updateProjectionMatrix();
 }
 
-function PromoterRegion3D() {
-  return <group position={[-2.5, 0.04, 0.12]}>
-    <mesh rotation={[0, Math.PI / 2, 0]}>
-      <torusGeometry args={[0.18, 0.035, 10, 24]} />
-      <meshStandardMaterial color="#d6a85e" emissive="#5f3c18" emissiveIntensity={0.24} roughness={0.62} />
-    </mesh>
-  </group>;
+/** Reapplies the active-site fit after the structure-derived ROI has loaded. */
+function TranscriptionCameraRig({ roi, controls, cameraRevision = 0 }: { roi: TranscriptionActiveSiteRoi | null; controls: OrbitControlsImpl | null; cameraRevision?: number }) {
+  const { camera, size } = useThree();
+  const frame = useMemo(() => roi ? deriveTranscriptionCameraFrame({ roi, width: size.width, height: size.height, fov: 34 }) : null, [roi, size.width, size.height]);
+
+  useLayoutEffect(() => {
+    if (!frame) return;
+    applyTranscriptionCameraFrame(camera, frame);
+    controls?.target.copy(frame.target);
+    controls?.update();
+    const request = window.requestAnimationFrame(() => {
+      applyTranscriptionCameraFrame(camera, frame);
+      controls?.target.copy(frame.target);
+      controls?.update();
+    });
+    return () => window.cancelAnimationFrame(request);
+  }, [camera, controls, frame, cameraRevision]);
+
+  return null;
 }
 
-function BubbleEnvelope3D({ openFraction, center }: { openFraction: number; center: number }) {
-  if (openFraction <= 0.01) return null;
-  return <mesh position={[sceneXFromProgress(center), 0, 0.04]} scale={[0.56 + openFraction * 0.42, 0.38 + openFraction * 0.14, 0.48]} renderOrder={0}>
-    <sphereGeometry args={[1, 32, 20]} />
-    <meshStandardMaterial color="#c98d43" emissive="#6d3e19" emissiveIntensity={0.34} transparent opacity={0.12} roughness={0.76} depthWrite={false} side={THREE.DoubleSide} />
-  </mesh>;
-}
+/**
+ * 5FLM DEPOSITED GEOMETRY supplies the eukaryotic Pol II molecular geometry. Translocation is
+ * explicitly derived between its grounded DNA anchors, so the viewport is an animation of a
+ * deposited molecular state rather than a falsely claimed experimental movie.
+ */
+export function GeneExpression3DScene({ presentation, theme, selectedTarget = "NONE", geometryMode = "DEPOSITED", cameraRevision = 0, sceneRevision = 0 }: SceneProps) {
+  const [roi, setRoi] = useState<TranscriptionActiveSiteRoi | null>(null);
+  const [controls, setControls] = useState<OrbitControlsImpl | null>(null);
+  const structuralEntry = useMemo(() => resolveEukaryoticPolIIStructureGrounding(), []);
+  const structuralPackage = useMemo(() => {
+    try {
+      return structuralEntry ? resolveEukaryoticPolIIStructuralActorPackage(structuralEntry) : null;
+    } catch {
+      return null;
+    }
+  }, [structuralEntry]);
+  const handleRoiReady = useCallback((nextRoi: TranscriptionActiveSiteRoi | null) => setRoi(nextRoi), []);
+  const exactTime = presentation?.exactTimeSeconds ?? 0;
+  const temporalStage = exactTime <= 0.001 ? "START" : exactTime <= 0.5 ? "INITIATION" : exactTime < 2 ? "ELONGATION" : "TERMINATION";
+  const colors = spatialRaviaThemePresentation[normalizeSpatialRaviaTheme(theme)];
+  const depositedLayer = transcriptionVisualLayer("DEPOSITED_COORDINATES");
+  const proteinLayer = transcriptionVisualLayer("COMPUTED_PROTEIN_ENVELOPE");
+  const nucleicLayer = transcriptionVisualLayer("COMPUTED_NUCLEIC_RENDER");
+  const motionLayer = transcriptionVisualLayer("INFERRED_MOTION");
 
-function PolIIComplex3D({ engaged, position }: { engaged: boolean; position: THREE.Vector3 }) {
-  // The primary body is now owned by the deposited Mol* layer. Keep this
-  // group as a structured anchor for exact-time overlays only; it deliberately
-  // mounts no hand-authored protein geometry.
-  return <group aria-label="deposited bacterial RNA polymerase structural anchor" position={position} visible={false} />;
-}
-
-function TranscriptionMechanism3D({ projection, presentation, theme }: Props) {
-  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
-  const colors = spatialRaviaThemePresentation[normalizedTheme];
-  const engaged = presentation.polymeraseEngagement > 0.01;
-  const polymerasePosition = new THREE.Vector3(sceneXFromProgress(presentation.polymeraseGenePosition), engaged ? 0 : 0.42, 0.1);
-  const freeRna = useMemo(() => deriveFreeRnaContinuation({
-    canonicalVisibleLength: presentation.nascentRnaVisualLength,
-    exitAnchor: [sceneXFromProgress(presentation.nascentRnaAnchor), -0.22, 0.18],
-    exitDirection: [1, 0, 0],
-  }), [presentation.nascentRnaAnchor, presentation.nascentRnaVisualLength]);
-  return <group>
-    <NuclearContext3D theme={normalizedTheme} />
-    <group rotation={[0.16, -0.28, 0]} scale={1.35}>
-      <BubbleEnvelope3D openFraction={presentation.bubbleOpenFraction} center={presentation.bubbleCenter} />
-      <group scale={1.32}>
-        <TranscriptionDnaTemplate
-          hasRnap={engaged}
-          hasNascentRna={false}
-          bubbleOpen={presentation.bubbleOpenFraction > 0.01}
-          bubbleCenterNormalized={presentation.bubbleCenter}
-          bubbleOpenFraction={presentation.bubbleOpenFraction}
-          bubbleWidth={presentation.bubbleWidth}
-        />
-      </group>
-      <PromoterRegion3D />
-      <PolIIComplex3D engaged={engaged} position={polymerasePosition} />
-      {freeRna.strand && <RnaStrand3D input={{ sequence: freeRna.strand.nucleotides.map((nucleotide) => nucleotide.base), positions: freeRna.positions, direction: "5-to-3" }} showPolarity={false} />}
-      <Text position={[-2.9, 0.72, 0.12]} fontSize={0.18} color={colors.labelPrimary} anchorX="center">DNA</Text>
-    </group>
-  </group>;
-}
-
-export function GeneExpression3DScene({ projection, presentation, theme }: SceneProps) {
-  const structuralManifest = useMemo(() => resolveTranscriptionStructureGrounding(), []);
   if (!isValidTranscriptionPresentationState(presentation)) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_PRESENTATION_STATE_INVALID"><strong>TRANSCRIPTION_PRESENTATION_STATE_INVALID</strong>{process.env.NODE_ENV !== "production" && <div>GeneExpression3DScene received no complete presentation state.</div>}</section>;
   }
-  if (!structuralManifest) {
+  if (!structuralEntry || !structuralPackage) {
     return <section className="spatialRaviaStatus" role="alert" data-error-code="TRANSCRIPTION_STRUCTURAL_SOURCE_UNSUPPORTED"><strong>TRANSCRIPTION_STRUCTURAL_SOURCE_UNSUPPORTED</strong></section>;
   }
-  const normalizedTheme = normalizeSpatialRaviaTheme(theme);
-  const colors = spatialRaviaThemePresentation[normalizedTheme];
-  const mechanismState = deriveTranscriptionMechanismVisualState(presentation);
-  const freeTail = deriveFreeRnaContinuation({ canonicalVisibleLength: presentation.nascentRnaVisualLength, exitAnchor: [0, 0, 0], exitDirection: [1, 0, 0] });
-  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-transcription-stage={mechanismState.stage} data-polymerase-presentation={mechanismState.polymeraseMode} data-teaching-label={mechanismState.teachingLabel} data-molecular-viewport-owner="r3f" data-camera-owner="r3f" data-structural-scale={transcriptionStructuralScalePolicy.angstromToScene} data-transcription-bubble={projection.dna.transcriptionBubble} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={projection.transcription.polymeraseState} data-polymerase-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(3)} data-rna-tail-count={freeTail.tailCount} data-rna-tail-fidelity={freeTail.fidelity} data-rna-boundary="6ALH:R:11" data-rna-exit-evidence={freeTail.exitEvidence}>
-    <Canvas shadows dpr={[1, 2]} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }}>
+
+  return <div className="geneExpression3DCanvas" data-3d-transcription-scene="true" data-visual-contract-version={transcriptionVisualContract.schemaVersion} data-visual-contract-modes={Object.keys(transcriptionVisualContract.modes).join(",")} data-transcription-stage={temporalStage} data-polymerase-presentation={temporalStage === "ELONGATION" ? "TRANSLOCATING" : temporalStage} data-molecular-viewport-owner="r3f-structure-derived" data-camera-owner="r3f-structure-derived" data-camera-fit={roi ? "STRUCTURE_DERIVED_ACTIVE_SITE" : "WAITING_FOR_STRUCTURE_ROI"} data-structural-source={transcriptionVisualContract.source.structureId} data-polymerase-class="EUKARYOTIC_POL_II" data-transcription-bubble={presentation.bubbleOpenFraction > 0.02 ? "OPEN" : "CLOSED"} data-bubble-open-fraction={presentation.bubbleOpenFraction.toFixed(3)} data-polymerase-state={temporalStage} data-polymerase-gene-position={presentation.polymeraseGenePosition.toFixed(3)} data-rna-length={presentation.nascentRnaVisualLength.toFixed(2)} data-rna-boundary="5FLM:N:7-20" data-hybrid-window="5FLM:O:7-20+N:7-20" data-active-center="5FLM:R:active-mg" data-rna-exit-evidence="GROUNDED_SOURCE_REFERENCE" data-source-coordinate-status={depositedLayer.fidelity} data-surface-render-status={proteinLayer.fidelity} data-nucleic-render-status={nucleicLayer.fidelity} data-motion-status={motionLayer.fidelity} data-nucleic-representation="MOLSTAR_POLYMER_TRACE_PLUS_LOCAL_ATOMISTIC" data-motion-source="5FLM_STRUCTURE_DERIVED_KINEMATIC_TRANSLOCATION" data-expert-selected-target={selectedTarget} data-expert-geometry-mode={geometryMode} data-expert-camera-revision={cameraRevision} data-expert-scene-revision={sceneRevision}>
+    <Canvas key={sceneRevision} camera={{ position: [3.6, 2.25, 4.7], fov: 34 }} dpr={[1, 2]} onCreated={({ gl }) => { gl.toneMapping = THREE.ACESFilmicToneMapping; gl.toneMappingExposure = 1.08; gl.outputColorSpace = THREE.SRGBColorSpace; }}>
       <color attach="background" args={[colors.canvasBackground]} />
-      <fog attach="fog" args={[colors.canvasFog, 6.2, 13]} />
-      <ambientLight intensity={normalizedTheme === "dark" ? 0.48 : 0.72} color={colors.sceneAmbient} />
-      <directionalLight castShadow position={[3.5, 5, 5]} intensity={normalizedTheme === "dark" ? 2.8 : 2.35} color={colors.sceneKey} />
-      <directionalLight position={[-4, 1.5, -2]} intensity={normalizedTheme === "dark" ? 1.2 : 0.9} color={colors.sceneFill} />
-      <pointLight position={[0, -1.2, 2.6]} intensity={1.4} distance={7} color="#6bd5bd" />
-      <StructureDerivedPrimitive entry={structuralManifest} position={new THREE.Vector3(0, 0, 0)} scale={transcriptionStructuralScalePolicy.angstromToScene} visible fallback={null} />
-      <TranscriptionMechanism3D projection={projection} presentation={presentation} theme={theme} />
-      <OrbitControls enablePan={false} enableDamping dampingFactor={0.08} minDistance={4.2} maxDistance={9} />
+      <hemisphereLight args={["#f7fbff", "#20333a", 0.9]} />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[3.5, 5, 6]} intensity={3.2} color="#fffaf2" />
+      <directionalLight position={[-4, 1, -2]} intensity={1.15} color="#9fc6dc" />
+      <TranscriptionCameraRig roi={roi} controls={controls} cameraRevision={cameraRevision} />
+      <BakedTranscriptionMolecularActor entry={structuralEntry} scale={transcriptionStructuralScalePolicy.angstromToScene} presentation={presentation} selectedTarget={selectedTarget} geometryMode={geometryMode} onRoiReady={handleRoiReady} />
+      <OrbitControls ref={setControls} enablePan={false} enableDamping dampingFactor={0.08} />
     </Canvas>
-    <div className="transcriptionStructuralNotice" role="note">STRUCTURAL ACTOR · 6ALH · BACTERIAL RNAP · E0_DEPOSITED · SHARED R3F FRAME</div>
+    <div className="transcriptionStructuralNotice" role="note">{transcriptionVisualContract.source.structureId} SOURCE-ANCHORED FRAME · {proteinLayer.label.toUpperCase()} · {motionLayer.label.toUpperCase()}</div>
+    <div className="transcriptionVisualTruthLegend" role="note" aria-label="Transcription visual evidence legend">
+      <span><i className="transcriptionTruthSwatch transcriptionTruthSwatch--deposited" /> {depositedLayer.label}: 5FLM</span>
+      <span><i className="transcriptionTruthSwatch transcriptionTruthSwatch--computed" /> C0 computed surface/mesh</span>
+      <span><i className="transcriptionTruthSwatch transcriptionTruthSwatch--inferred" /> {motionLayer.label}</span>
+    </div>
   </div>;
 }

@@ -6,6 +6,11 @@ export function resolveTranscriptionStructureGrounding() {
   return resolveStructureManifest("rna-polymerase");
 }
 
+/** Selected eukaryotic source; the live renderer remains on the bacterial role until migration. */
+export function resolveEukaryoticPolIIStructureGrounding() {
+  return resolveStructureManifest("eukaryotic-pol-ii-elongation");
+}
+
 export function getTranscriptionStructureProvenance() {
   return getStructureGroundingProvenance(["rna-polymerase"], "hybrid");
 }

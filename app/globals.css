@@ -918,6 +918,97 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   display: none;
 }
 
+/* Scina molecular workspace chrome. The viewer is intentionally framed as a
+   workbench so the structure reads as the primary object, not as a loose
+   canvas behind a pile of floating controls. */
+.scinaWorkspaceHeader {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  height: 72px;
+  padding: 0 140px 0 28px;
+  border-bottom: 1px solid rgba(135, 174, 180, 0.16);
+  background: rgba(7, 16, 20, 0.72);
+  color: #e8f4f3;
+  box-shadow: 0 12px 36px rgba(3, 9, 12, 0.14);
+  backdrop-filter: blur(18px);
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+}
+
+.scinaWorkspaceBrand,
+.scinaWorkspaceMeta {
+  display: flex;
+  align-items: center;
+}
+
+.scinaWorkspaceBrand { gap: 11px; }
+.scinaWorkspaceBrand > div { display: grid; gap: 3px; }
+.scinaWorkspaceBrand strong { font-size: 0.94rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.scinaWorkspaceBrand span:not(.scinaMark) { color: rgba(197, 222, 222, 0.62); font-size: 0.59rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+.scinaMark {
+  position: relative;
+  display: block;
+  width: 22px;
+  height: 22px;
+}
+
+.scinaMark i {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid #69d8be;
+  border-radius: 50%;
+  background: #69d8be;
+  box-shadow: 0 0 14px rgba(105, 216, 190, 0.3);
+}
+
+.scinaMark i:nth-child(1) { top: 0; left: 6px; }
+.scinaMark i:nth-child(2) { bottom: 0; left: 0; }
+.scinaMark i:nth-child(3) { right: 0; bottom: 0; }
+
+.scinaWorkspaceMeta {
+  gap: 18px;
+  color: rgba(197, 222, 222, 0.54);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.scinaLiveIndicator { display: inline-flex; align-items: center; gap: 7px; color: #7ce7ca; }
+.scinaLiveIndicator i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; box-shadow: 0 0 0 4px rgba(124, 231, 202, 0.12); }
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .scinaWorkspaceHeader {
+  border-bottom-color: rgba(38, 83, 88, 0.14);
+  background: rgba(244, 248, 247, 0.78);
+  color: #183137;
+  box-shadow: 0 12px 36px rgba(41, 74, 79, 0.08);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .scinaWorkspaceBrand span:not(.scinaMark),
+.spatialRaviaWorkspace[data-spatial-theme="light"] .scinaWorkspaceMeta { color: rgba(35, 70, 76, 0.58); }
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .scinaLiveIndicator { color: #277f6f; }
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"],
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .molstarWorkspace {
+  --scina-stage-border: rgba(144, 206, 204, 0.17);
+  --scina-stage-shadow: rgba(0, 0, 0, 0.38);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"],
+.spatialRaviaWorkspace[data-spatial-theme="light"] .molstarWorkspace {
+  --scina-stage-border: rgba(39, 78, 83, 0.16);
+  --scina-stage-shadow: rgba(40, 76, 81, 0.14);
+}
+
 .spatialRaviaWorkspace {
   position: fixed;
   inset: 0;
@@ -1219,6 +1310,10 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
   background: transparent;
   box-shadow: none;
 }
+.transcriptionProductionMount[data-expert-inspector="OPEN"] .transcriptionScene {
+  height: min(36svh, 420px);
+  min-height: 250px;
+}
 
 .geneExpression3DCanvas {
   position: absolute;
@@ -1417,12 +1512,83 @@ body:has(.spatialRaviaWorkspace) .siteHeader {
 .transcriptionControls button.isSelected, .transcriptionControls button:hover { color: var(--scina-page-background); background: var(--scina-control-selected); }
 .transcriptionScrubber { display: inline-flex; align-items: center; gap: 0.35rem; min-width: 170px; color: var(--scina-secondary-text); font-size: 0.68rem; white-space: nowrap; }
 .transcriptionScrubber input { width: 120px; accent-color: var(--scina-control-selected); }
+.transcriptionScrubber .transcriptionExactTimeInput { width: 3.85rem; padding: 0.25rem 0.2rem; border: 1px solid var(--scina-border); border-radius: 5px; color: var(--scina-primary-text); background: var(--scina-control-background); font: inherit; font-size: 0.65rem; font-variant-numeric: tabular-nums; }
 .transcriptionScrubber output { min-width: 3.2em; color: var(--scina-primary-text); font-variant-numeric: tabular-nums; }
+.transcriptionExpertControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  width: min(920px, 100%);
+  margin: 0 auto 0.7rem;
+  color: var(--scina-secondary-text);
+  font-size: 0.66rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.transcriptionExpertControls label { display: inline-flex; align-items: center; gap: 0.3rem; }
+.transcriptionExpertControls select,
+.transcriptionExpertControls button {
+  min-height: 30px;
+  border: 1px solid var(--scina-border);
+  border-radius: 7px;
+  color: var(--scina-primary-text);
+  background: var(--scina-control-background);
+  font: inherit;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+.transcriptionExpertControls select { padding: 0.35rem 0.45rem; }
+.transcriptionExpertControls button { padding: 0.35rem 0.55rem; cursor: pointer; }
+.transcriptionExpertControls button:hover { color: var(--scina-page-background); background: var(--scina-control-selected); }
+.transcriptionProvenanceInspector {
+  width: min(920px, 100%);
+  margin: 0 auto 0.85rem;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--scina-border);
+  border-radius: 10px;
+  color: var(--scina-primary-text);
+  background: color-mix(in srgb, var(--scina-surface-background) 92%, transparent);
+  box-shadow: 0 8px 22px rgba(35, 71, 78, 0.07);
+  font-size: 0.68rem;
+}
+.transcriptionProvenanceInspector > header,
+.transcriptionProvenanceInspector > footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.transcriptionProvenanceInspector > header { padding-bottom: 0.65rem; border-bottom: 1px solid var(--scina-border); }
+.transcriptionProvenanceInspector > header strong { display: block; margin-top: 0.18rem; font-size: 0.86rem; }
+.transcriptionProvenanceEyebrow { display: block; color: var(--scina-secondary-text); font-size: 0.58rem; font-weight: 800; letter-spacing: 0.11em; }
+.transcriptionProvenanceBadge { flex: 0 0 auto; padding: 0.28rem 0.45rem; border-radius: 999px; font-size: 0.57rem; font-weight: 900; letter-spacing: 0.08em; }
+.transcriptionProvenanceBadge--deposited { color: #195a46; background: rgba(71, 190, 142, 0.16); }
+.transcriptionProvenanceBadge--derived { color: #81500f; background: rgba(232, 174, 72, 0.2); }
+.transcriptionProvenanceBadge--mixed { color: #315f73; background: rgba(98, 169, 199, 0.18); }
+.transcriptionProvenanceFacts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.55rem 0.8rem; margin: 0.7rem 0; }
+.transcriptionProvenanceFacts div { min-width: 0; }
+.transcriptionProvenanceFacts dt { color: var(--scina-secondary-text); font-size: 0.58rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.transcriptionProvenanceFacts dd { margin: 0.18rem 0 0; overflow-wrap: anywhere; color: var(--scina-primary-text); font-size: 0.67rem; font-weight: 700; }
+.transcriptionProvenanceColumns { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+.transcriptionProvenanceColumns section { min-width: 0; }
+.transcriptionProvenanceColumns h4 { margin: 0 0 0.25rem; color: var(--scina-primary-text); font-size: 0.63rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.transcriptionProvenanceColumns ul { margin: 0; padding-left: 1rem; color: var(--scina-secondary-text); line-height: 1.42; }
+.transcriptionProvenanceColumns li + li { margin-top: 0.22rem; }
+.transcriptionProvenanceInspector > footer { margin-top: 0.7rem; padding-top: 0.55rem; border-top: 1px solid var(--scina-border); color: var(--scina-secondary-text); font-size: 0.61rem; }
+.transcriptionProvenanceInspector a { color: var(--scina-primary-text); font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
 .transcriptionDebugState { width: min(920px, 100%); margin: 0 auto 0.75rem; color: #55737a; font-size: 0.68rem; }
 .transcriptionDebugState code { display: block; margin-top: 0.35rem; color: #31545b; font-variant-numeric: tabular-nums; }
 .cellularProductionDetails { width: min(920px, 100%); margin: 0 auto 0.75rem; color: #4c656c; }
 .cellularProductionDetails summary { cursor: pointer; font-size: 0.73rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
 .cellularProductionDetails .cellularProductionSchematic { margin-top: 0.65rem; }
+@media (max-width: 700px) {
+  .transcriptionProvenanceFacts,
+  .transcriptionProvenanceColumns { grid-template-columns: 1fr; }
+  .transcriptionProvenanceInspector > footer { align-items: flex-start; flex-direction: column; }
+}
 
 .spatialRaviaWorkspace[data-spatial-theme="light"] .transcriptionProductionMount { background: transparent; }
 
@@ -2366,6 +2532,462 @@ body:has(.spatialWorkspace) .siteHeader {
   display: grid;
   gap: 12px;
   margin: 0;
+}
+
+/* Workspace composition pass ------------------------------------------------
+   Keep the molecular canvas visually quiet and give the surrounding UI a
+   deliberate hierarchy: app bar, evidence rail, framed stage, command dock. */
+.spatialRaviaWorkspace {
+  background:
+    radial-gradient(circle at 62% 42%, rgba(57, 119, 128, 0.2), transparent 30%),
+    linear-gradient(135deg, #061014 0%, #0b1a1f 54%, #071014 100%);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] {
+  background:
+    radial-gradient(circle at 64% 40%, rgba(126, 191, 191, 0.2), transparent 32%),
+    linear-gradient(135deg, #edf3f1 0%, #e3edeb 54%, #dce8e6 100%);
+}
+
+.spatialRaviaWorkspace .molstarWorkspace {
+  background: transparent;
+}
+
+.spatialRaviaWorkspace .molstarStage {
+  inset: 98px clamp(28px, 3.5vw, 54px) 138px clamp(276px, 24vw, 356px);
+  overflow: hidden;
+  border: 1px solid var(--scina-stage-border);
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at 52% 46%, rgba(73, 141, 151, 0.2), transparent 35%),
+    linear-gradient(145deg, rgba(13, 29, 34, 0.96), rgba(5, 13, 17, 0.92));
+  box-shadow: 0 22px 64px var(--scina-stage-shadow), inset 0 1px 0 rgba(231, 249, 247, 0.06);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .molstarStage {
+  background:
+    radial-gradient(circle at 52% 46%, rgba(148, 207, 203, 0.24), transparent 36%),
+    linear-gradient(145deg, rgba(239, 247, 245, 0.98), rgba(218, 232, 230, 0.96));
+  box-shadow: 0 22px 64px var(--scina-stage-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.spatialRaviaWorkspace .molstarMount .msp-plugin,
+.spatialRaviaWorkspace .molstarMount .msp-layout-main,
+.spatialRaviaWorkspace .molstarMount .msp-viewport,
+.spatialRaviaWorkspace .molstarMount .msp-canvas3d {
+  background: transparent !important;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .molstarMount canvas {
+  filter: brightness(1.45) contrast(1.16) saturate(1.18);
+}
+
+.spatialRaviaWorkspace .structureIdentity {
+  top: 102px;
+  left: 28px;
+  width: min(220px, calc(100vw - 56px));
+  padding: 0 0 0 14px;
+  border-left: 2px solid #69d8be;
+  background: transparent;
+  backdrop-filter: none;
+}
+
+.spatialRaviaWorkspace .structureIdentity strong {
+  color: var(--scina-primary-text);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+}
+
+.spatialRaviaWorkspace .structureIdentity span {
+  color: var(--scina-secondary-text);
+  font-size: 0.66rem;
+  line-height: 1.5;
+}
+
+.spatialRaviaWorkspace .structureScaleBadge,
+.spatialRaviaWorkspace .structureEndpointBadge {
+  left: 28px;
+  width: min(220px, calc(100vw - 56px));
+  padding: 14px 16px;
+  border: 1px solid var(--scina-stage-border);
+  border-radius: 14px;
+  background: rgba(7, 18, 22, 0.48);
+  box-shadow: 0 16px 36px rgba(5, 16, 19, 0.12);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .structureScaleBadge,
+.spatialRaviaWorkspace[data-spatial-theme="light"] .structureEndpointBadge {
+  background: rgba(244, 250, 248, 0.66);
+}
+
+.spatialRaviaWorkspace .structureEndpointBadge { bottom: 262px; }
+.spatialRaviaWorkspace .structureScaleBadge { bottom: 138px; }
+
+.spatialRaviaWorkspace .structureScaleBadge strong,
+.spatialRaviaWorkspace .structureEndpointBadge strong {
+  color: var(--scina-primary-text);
+  font-size: 0.62rem;
+  letter-spacing: 0.11em;
+}
+
+.spatialRaviaWorkspace .structureScaleBadge span,
+.spatialRaviaWorkspace .structureEndpointBadge span {
+  color: var(--scina-secondary-text);
+  font-size: 0.62rem;
+  line-height: 1.45;
+}
+
+.spatialRaviaWorkspace .structureControls {
+  top: 102px;
+  right: 28px;
+  bottom: auto;
+  align-items: flex-start;
+}
+
+.spatialRaviaWorkspace .structureToolbarPopover {
+  top: calc(100% + 10px);
+  right: 0;
+  bottom: auto;
+  max-height: min(68vh, 620px);
+  overflow: auto;
+}
+
+.spatialRaviaWorkspace .structureControls button,
+.spatialRaviaWorkspace .structureToolbarMenu summary {
+  border-radius: 999px;
+  border-color: var(--scina-stage-border);
+  background: rgba(8, 21, 25, 0.78);
+  box-shadow: 0 10px 24px rgba(3, 12, 15, 0.12);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .structureControls button,
+.spatialRaviaWorkspace[data-spatial-theme="light"] .structureToolbarMenu summary {
+  background: rgba(247, 251, 250, 0.78);
+}
+
+.spatialRaviaWorkspace .structureSelectionReadout {
+  left: auto;
+  right: 28px;
+  bottom: 138px;
+  width: min(270px, calc(100vw - 56px));
+  border-radius: 14px;
+}
+
+.spatialRaviaWorkspace .spatialRaviaParseSource {
+  top: 80px;
+  left: 28px;
+  color: var(--scina-secondary-text);
+  font-size: 0.56rem;
+  letter-spacing: 0.12em;
+}
+
+.spatialRaviaWorkspace .spatialRaviaThemeToggle {
+  top: 20px;
+  right: 28px;
+  z-index: 95;
+  min-width: 74px;
+  height: 32px;
+  border-radius: 999px;
+  border-color: rgba(124, 231, 202, 0.3);
+  color: #bfeee1;
+  background: rgba(9, 27, 30, 0.82);
+  box-shadow: none;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .spatialRaviaThemeToggle {
+  border-color: rgba(39, 127, 111, 0.24);
+  color: #236f64;
+  background: rgba(241, 249, 247, 0.88);
+}
+
+.spatialRaviaWorkspace .spatialPromptDock {
+  bottom: 28px;
+  width: min(680px, calc(100vw - 56px));
+}
+
+.spatialRaviaWorkspace .spatialPromptDock::before {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 4px;
+  color: var(--scina-secondary-text);
+  content: "SCINA COMMAND CONSOLE  /  ASK THE MOLECULE";
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  font-size: 0.54rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+}
+
+.spatialRaviaWorkspace .spatialPromptDockPanel {
+  padding: 7px;
+  border-radius: 16px;
+  border-color: var(--scina-stage-border);
+  background: rgba(7, 18, 22, 0.86);
+  box-shadow: 0 22px 56px rgba(1, 8, 10, 0.28);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .spatialPromptDockPanel {
+  background: rgba(246, 251, 249, 0.88);
+  box-shadow: 0 22px 56px rgba(32, 72, 75, 0.16);
+}
+
+.spatialRaviaWorkspace .spatialPromptDockInput {
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(13, 31, 35, 0.88);
+  font-size: 0.83rem;
+  letter-spacing: 0.02em;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="light"] .spatialPromptDockInput {
+  background: rgba(229, 240, 237, 0.74);
+}
+
+.spatialRaviaWorkspace .spatialPromptDockSubmit,
+.spatialRaviaWorkspace .spatialPromptDockCollapse {
+  height: 42px;
+  border-radius: 10px;
+}
+
+.spatialRaviaWorkspace .spatialPromptDockSubmit {
+  padding: 0 18px;
+  border-color: rgba(105, 216, 190, 0.55);
+  color: #06201b;
+  background: #69d8be;
+}
+
+.spatialRaviaWorkspace .spatialPromptDockCollapse { width: 42px; }
+
+@media (max-width: 900px) {
+  .scinaWorkspaceHeader { height: 64px; padding: 0 112px 0 18px; }
+  .scinaWorkspaceMeta > span:last-child { display: none; }
+  .spatialRaviaWorkspace .molstarStage { inset: 88px 18px 132px; }
+  .spatialRaviaWorkspace .structureIdentity { top: 82px; left: 22px; }
+  .spatialRaviaWorkspace .structureControls { top: 80px; right: 22px; }
+  .spatialRaviaWorkspace .structureScaleBadge,
+  .spatialRaviaWorkspace .structureEndpointBadge { left: 22px; width: min(240px, calc(100vw - 44px)); }
+  .spatialRaviaWorkspace .structureScaleBadge { bottom: 132px; }
+  .spatialRaviaWorkspace .structureEndpointBadge { bottom: 238px; }
+}
+
+@media (max-width: 640px) {
+  .scinaWorkspaceHeader { padding: 0 100px 0 14px; }
+  .scinaWorkspaceBrand span:not(.scinaMark) { display: none; }
+  .scinaWorkspaceMeta { font-size: 0.54rem; }
+  .spatialRaviaWorkspace .molstarStage { inset: 78px 10px 126px; border-radius: 20px; }
+  .spatialRaviaWorkspace .structureIdentity { top: 80px; left: 18px; max-width: 180px; }
+  .spatialRaviaWorkspace .structureControls { top: 76px; right: 16px; }
+  .spatialRaviaWorkspace .structureScaleBadge,
+  .spatialRaviaWorkspace .structureEndpointBadge { display: none; }
+  .spatialRaviaWorkspace .spatialRaviaParseSource { top: 66px; left: 18px; }
+  .spatialRaviaWorkspace .spatialPromptDock { right: 10px; bottom: 14px; left: 10px; width: auto; }
+  .spatialRaviaWorkspace .spatialPromptDock::before { left: 2px; font-size: 0.47rem; }
+}
+
+/* Transcription is a structure-first view: Mol* owns the deposited molecule;
+   exact-time state and restrained teaching copy sit around the viewport. */
+.spatialRaviaWorkspace .transcriptionProductionMount {
+  min-height: 100%;
+  padding: 104px clamp(18px, 4vw, 58px) 186px;
+  overflow: auto;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(88, 164, 165, 0.13), transparent 34%),
+    linear-gradient(135deg, rgba(239, 246, 244, 0.96), rgba(222, 235, 232, 0.95));
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionProductionMount {
+  background:
+    radial-gradient(circle at 50% 34%, rgba(41, 111, 119, 0.22), transparent 34%),
+    linear-gradient(135deg, #071418, #0b2023 60%, #061014);
+}
+
+.spatialRaviaWorkspace .transcriptionProductionHeader,
+.spatialRaviaWorkspace .transcriptionScene,
+.spatialRaviaWorkspace .transcriptionControls,
+.spatialRaviaWorkspace .cellularProductionDetails,
+.spatialRaviaWorkspace .transcriptionDebugState,
+.spatialRaviaWorkspace .transcriptionProductionMount > small {
+  width: min(1360px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.spatialRaviaWorkspace .transcriptionProductionHeader {
+  position: relative;
+  z-index: 6;
+  margin-bottom: 14px;
+}
+
+.spatialRaviaWorkspace .transcriptionScene {
+  height: min(52svh, 560px);
+  min-height: 380px;
+  margin-bottom: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(55, 108, 112, 0.22);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 62% 48%, rgba(120, 195, 185, 0.13), transparent 30%),
+    rgba(246, 250, 248, 0.74);
+  box-shadow: 0 24px 70px rgba(34, 76, 78, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.82);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionScene {
+  border-color: rgba(126, 224, 211, 0.18);
+  background:
+    radial-gradient(circle at 62% 48%, rgba(65, 142, 145, 0.2), transparent 30%),
+    rgba(5, 17, 20, 0.86);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(228, 255, 247, 0.05);
+}
+
+.spatialRaviaWorkspace .transcriptionScene .geneExpressionMolecularLayer {
+  z-index: 2;
+}
+
+.transcriptionMechanismDiagram {
+  position: absolute;
+  top: 22px;
+  left: 22px;
+  z-index: 8;
+  width: min(500px, calc(100% - 44px));
+  padding: 16px 18px 14px;
+  border: 1px solid rgba(39, 96, 101, 0.22);
+  border-radius: 18px;
+  color: #18363a;
+  background: rgba(248, 252, 250, 0.9);
+  box-shadow: 0 18px 48px rgba(25, 70, 72, 0.16);
+  backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionMechanismDiagram {
+  border-color: rgba(122, 227, 205, 0.26);
+  color: #e5f5f2;
+  background: rgba(7, 26, 29, 0.9);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+}
+
+.transcriptionMechanismHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.transcriptionMechanismHeader div { display: grid; gap: 4px; }
+.transcriptionMechanismHeader span { color: #4c7778; font-size: 0.55rem; font-weight: 800; letter-spacing: 0.14em; }
+.transcriptionMechanismHeader strong { font-size: 0.86rem; letter-spacing: 0.08em; }
+.transcriptionMechanismHeader b { padding: 6px 9px; border-radius: 999px; color: #0f665b; background: rgba(106, 220, 192, 0.2); font-size: 0.58rem; letter-spacing: 0.1em; }
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionMechanismHeader span { color: #94c7c2; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionMechanismHeader b { color: #9bf0d5; background: rgba(83, 194, 169, 0.18); }
+
+.transcriptionMechanismDiagram svg { display: block; width: 100%; height: auto; margin-top: 8px; }
+.transcriptionDiagramGrid path { fill: none; stroke: rgba(76, 119, 120, 0.14); stroke-dasharray: 2 7; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionDiagramGrid path { stroke: rgba(163, 226, 219, 0.12); }
+.transcriptionDnaStrand { fill: none; stroke: url(#transcriptionDnaGradient); stroke-width: 5; stroke-linecap: round; }
+.transcriptionDnaTop { stroke: #748cf0; }
+.transcriptionDnaBottom { stroke: #55cbbd; }
+.transcriptionBubbleStrand { fill: none; stroke: #e8ad51; stroke-width: 5; stroke-linecap: round; filter: url(#transcriptionGlow); }
+.transcriptionDnaRung { stroke: #9a83bf; stroke-width: 2; stroke-dasharray: 3 3; opacity: 0.75; }
+.transcriptionPolymerase { fill: #e58a5b; stroke: #ffd09a; stroke-width: 2; }
+.transcriptionPolymeraseLabel { fill: #fff8eb; font-size: 8px; font-weight: 800; letter-spacing: 0.6px; text-anchor: middle; }
+.transcriptionPolymeraseSub { fill: #fff0dc; font-size: 7px; text-anchor: middle; }
+.transcriptionNascentRna { fill: none; stroke: #36c994; stroke-width: 5; stroke-linecap: round; stroke-dasharray: 2 8; filter: url(#transcriptionGlow); }
+.transcriptionDiagramLabel,
+.transcriptionDiagramAnnotation,
+.transcriptionRnaLabel { fill: #4f7375; font-size: 7px; font-weight: 800; letter-spacing: 0.7px; }
+.transcriptionDiagramLabelRight,
+.transcriptionDiagramAnnotationRight { text-anchor: end; }
+.transcriptionRnaLabel { fill: #168765; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionDiagramLabel,
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionDiagramAnnotation { fill: #a3c9c6; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionRnaLabel { fill: #7be6be; }
+
+.transcriptionMechanismDiagram > p {
+  margin: 5px 0 10px;
+  color: #29585b;
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionMechanismDiagram > p { color: #b6d8d4; }
+
+.transcriptionMechanismLegend { display: flex; flex-wrap: wrap; gap: 12px; color: #5d7b7c; font-size: 0.56rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
+.transcriptionMechanismLegend span { display: inline-flex; align-items: center; gap: 5px; }
+.transcriptionMechanismLegend i { display: inline-block; width: 9px; height: 9px; border-radius: 50%; }
+.legendDna { background: #6f8ef1; }.legendPolymerase { background: #e58a5b; }.legendRna { background: #36c994; }
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionMechanismLegend { color: #9bb9b7; }
+
+.spatialRaviaWorkspace .transcriptionStructuralNotice {
+  top: auto;
+  right: auto;
+  bottom: 20px;
+  left: 22px;
+  max-width: min(430px, calc(100% - 44px));
+  border-color: rgba(39, 96, 101, 0.18);
+  color: #476568;
+  background: rgba(247, 251, 249, 0.82);
+}
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionStructuralNotice {
+  border-color: rgba(122, 227, 205, 0.2);
+  color: #b3d0ce;
+  background: rgba(5, 20, 22, 0.82);
+}
+
+.spatialRaviaWorkspace .transcriptionVisualTruthLegend {
+  position: absolute;
+  right: 22px;
+  top: 20px;
+  z-index: 4;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px 12px;
+  max-width: min(610px, calc(100% - 44px));
+  padding: 8px 10px;
+  border: 1px solid rgba(39, 96, 101, 0.16);
+  border-radius: 9px;
+  color: #527174;
+  background: rgba(247, 251, 249, 0.78);
+  font-size: 0.55rem;
+  font-weight: 800;
+  letter-spacing: 0.035em;
+  line-height: 1.25;
+  text-transform: uppercase;
+  backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.transcriptionVisualTruthLegend span { display: inline-flex; align-items: center; gap: 5px; }
+.transcriptionTruthSwatch { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+.transcriptionTruthSwatch--deposited { background: #d59b3e; }
+.transcriptionTruthSwatch--computed { background: #658bd8; }
+.transcriptionTruthSwatch--inferred { background: #52b9a5; border: 1px dashed #26796d; }
+
+.spatialRaviaWorkspace[data-spatial-theme="dark"] .transcriptionVisualTruthLegend {
+  border-color: rgba(122, 227, 205, 0.18);
+  color: #b3d0ce;
+  background: rgba(5, 20, 22, 0.78);
+}
+
+.spatialRaviaWorkspace .transcriptionControls { margin-bottom: 16px; }
+.spatialRaviaWorkspace .cellularProductionDetails,
+.spatialRaviaWorkspace .transcriptionDebugState,
+.spatialRaviaWorkspace .transcriptionProductionMount > small { margin-bottom: 12px; }
+
+.spatialRaviaWorkspace:has(.transcriptionProductionMount) .spatialRaviaViewport {
+  overflow: clip;
+}
+
+.spatialRaviaWorkspace:has(.transcriptionProductionMount) .spatialPromptDock::before {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  .spatialRaviaWorkspace .transcriptionProductionMount { padding: 92px 12px 176px; }
+  .spatialRaviaWorkspace .transcriptionScene { min-height: 520px; }
+  .spatialRaviaWorkspace .transcriptionStructuralNotice { right: 16px; bottom: 16px; left: 16px; max-width: none; }
+  .spatialRaviaWorkspace .transcriptionVisualTruthLegend { top: 62px; right: 16px; left: 16px; justify-content: flex-start; max-width: none; }
 }
 
 .structureInspector dl div,
