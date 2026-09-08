@@ -4,7 +4,7 @@
 
 Create a subject-by-session manifest from the BIDS folders and participant table. Freeze it with subject ID, session label/date/order, target availability, recording condition, usable-channel/quality fields, and exclusions. Do not infer a missing visit date or label. Publish the manifest and its script output.
 
-For ds004148, the paper reports three sessions: two close repeats and a roughly one-month repeat. The official dataset metadata provide repeated mental-health, affect, and sleep-related fields. This supports a *discovery* longitudinal evaluation, not a claim about clinical trajectories. [Wang et al., 2022; `sources/datasets/ds004148-*`]
+For ds004148, the paper reports three sessions: two close repeats and a roughly one-month repeat. The official dataset metadata provide repeated mental-health, affect, and sleep-related fields. This supports a *discovery* evaluation of session drift, not a claim about clinical trajectories or reliable psychiatric symptom transitions. [Wang et al., 2022; `sources/datasets/ds004148-*`]
 
 ## 2. Splits that measure the stability problem
 
@@ -20,22 +20,24 @@ Do not randomize EEG windows across partitions. Segment-level splits can leak pe
 
 ## 3. Matched methods
 
-Compare under identical target, preprocessing, model-selection, and calibration information:
+Run the following models in order under identical target, preprocessing, model-selection, and calibration information. Do not introduce EEG foundation models unless the simpler EEG baselines show incremental signal over historical/context baselines on the later-session split.
 
 1. historical-mean / last-observation baseline (non-EEG);
 2. context-only baseline (sleepiness and documented quality fields, where available);
-3. fixed population EEG model;
-4. fixed model + personal baseline/intercept;
-5. fixed model + supervised calibration head or adapters;
-6. partial or full fine-tuning only if the calibration-label budget supports it.
+3. spectral EEG features + regularized linear model;
+4. covariance/Riemannian model;
+5. small EEG neural network;
+6. the strongest fixed population EEG model + personal baseline/intercept;
+7. the strongest fixed model + supervised calibration head/adapters; then partial or full fine-tuning only if the calibration-label budget supports it;
+8. optional EEG foundation model only after step 3–5 establish later-session EEG signal.
 
 If a method uses unlabeled target-session data, label it **transductive** and evaluate it separately. It must never use the future test recording to normalize an earlier prediction.
 
 ## 4. Outcomes and uncertainty
 
-For continuous targets, report MAE/RMSE, calibration (where predictive intervals exist), and a within-person change metric. Report participant-level values and confidence intervals produced by resampling participants (and sessions where appropriate), not correlated windows as independent people. Predeclare the primary metric after checking target distribution but before looking at final split outcomes.
+The primary metric is later-session **SAS MAE standardized by the training-set SAS standard deviation**. The primary change metric is anchored-SAS-change MAE, with within-person Spearman correlation reported descriptively. Report participant-level values and confidence intervals produced by resampling participants (and sessions where appropriate), not correlated windows as independent people. The frozen decision thresholds are in `RESEARCH_QUESTION.md`.
 
-Report: fixed-model result, adapted result, paired recovery, calibration labels/minutes, usable recording coverage, abstentions, and per-person direction of change. Do not substitute classification accuracy for a continuous measure without a prespecified, source-justified threshold.
+Report: fixed-model result, adapted result, paired recovery, calibration labels/minutes, usable recording coverage, abstentions, and percentage of participants improved. Do not substitute classification accuracy for a continuous measure without a prespecified, source-justified threshold.
 
 ## 5. Anti-cheating / change-preservation checks
 
