@@ -1,0 +1,76 @@
+{
+  "dataset": "ds004148",
+  "audit_type": "manifest-only; no model trained",
+  "input_participants": 60,
+  "raw_eeg_sessions_with_all_five_tasks": {
+    "session1": 60,
+    "session2": 60,
+    "session3": 60
+  },
+  "usable_repeated_session_subjects_with_SAS": 58,
+  "sas_distribution_all_observed": {
+    "n": 117,
+    "mean": 41.256410256410255,
+    "sd": 8.768236017849969,
+    "min": 25,
+    "q1": 35,
+    "median": 39,
+    "q3": 45,
+    "max": 69
+  },
+  "anchored_sas_change_session2": {
+    "n": 58,
+    "mean": 1.1551724137931034,
+    "sd": 6.376496657168006,
+    "min": -15,
+    "q1": -2.75,
+    "median": 1,
+    "q3": 3,
+    "max": 18
+  },
+  "anchored_sas_change_zero_count": 6,
+  "anchored_sas_change_absolute_at_least_5_count": 23,
+  "measurement_missingness_across_180_subject_sessions": {
+    "sas": 63,
+    "sds": 62,
+    "ess": 62,
+    "kss": 8,
+    "panas_positive": 8,
+    "panas_negative": 8
+  },
+  "measurement_missingness_by_session": {
+    "session1": {
+      "sas": 2,
+      "sds": 2,
+      "ess": 2,
+      "kss": 3,
+      "panas_positive": 3,
+      "panas_negative": 3
+    },
+    "session2": {
+      "sas": 1,
+      "sds": 0,
+      "ess": 0,
+      "kss": 2,
+      "panas_positive": 2,
+      "panas_negative": 2
+    },
+    "session3": {
+      "sas": 60,
+      "sds": 60,
+      "ess": 60,
+      "kss": 3,
+      "panas_positive": 3,
+      "panas_negative": 3
+    }
+  },
+  "session3_sas_available": 0,
+  "source_checksums": {
+    "ds004148-participants.tsv": "fefc3a5b0c4a28d3cb5370bb1d0ac9be2565ad70dbe8f94c82ff619460b01521",
+    "ds004148-participants.json": "8f4428f6eec77e1ce08b20cc858331433b029cc71761324d15996daddbefb451",
+    "ds004148-description.json": "bcbc4f1e38f80d41a554e6a466c4678e468d36b1447b62a833b4b6691d1f662d",
+    "ds004148-README.md": "e5d237b42e26fddc8a9a82260dd55011f0b2c2d79e27e693add2d77ba6b75795",
+    "sample-raw.vhdr": "b3f437f5e1cc95b3dbedb989d9c637c832ae4406b55782f8c8aeeb2fefc96061",
+    "sample-raw.json": "32250367bdfbf78d674e6badb67519c409782f4b4b1b4b370c67c0dc14ef8f9d"
+  }
+}
