@@ -50,14 +50,6 @@ export const archiveEntries: ArchiveEntry[] = [
     status: "planned"
   },
   {
-    date: "2026-05-12",
-    type: "Argument",
-    title: "Reality has a user interface problem",
-    description:
-      "A claim about feeds, dashboards, metrics, language, and the surfaces that teach us what counts as real.",
-    status: "planned"
-  },
-  {
     date: "2026-04-03",
     type: "Code",
     title: "Signal notebook",
@@ -66,28 +58,18 @@ export const archiveEntries: ArchiveEntry[] = [
     status: "planned"
   },
   {
-    date: "2026-02-19",
-    type: "Research note",
-    title: "Memory is not storage",
-    description:
-      "Notes on recollection, identity drift, emotional revision, and memory as reconstruction rather than retrieval.",
-    status: "planned"
-  },
-  {
-    date: "2025-12-06",
-    type: "Essay",
-    title: "The institutions are tired",
-    description:
-      "A draft map of legitimacy, bureaucracy, spectacle, and systems that continue after belief goes missing.",
-    status: "planned"
-  },
-  {
-    date: "2025-10-14",
+    date: "2026-09-08",
     type: "Paper",
-    title: "Desire as an operating system",
-    description:
-      "A formal attempt to describe motivation, compulsion, avoidance, appetite, and repeated behavior.",
-    status: "planned"
+    title: "Personalization of BCI",
+    description: "Research page for personalization of brain-computer interfaces.",
+    href: "/papers/personalization-of-bci"
+  },
+  {
+    date: "2026-09-08",
+    type: "Paper",
+    title: "Biomarkers for pscyhiatry",
+    description: "Research page for biomarkers in psychiatry.",
+    href: "/papers/biomarkers-for-pscyhiatry"
   },
   {
     date: "2025-08-22",
