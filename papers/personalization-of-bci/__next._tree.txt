@@ -1,0 +1,5 @@
+:HL["/_next/static/media/36966cca54120369-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/media/93bd5b8e056bd94c-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
+:HL["/_next/static/css/e092076cf57c165e.css","style"]
+:HL["/_next/static/css/9cf70080172d14ab.css","style"]
+0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"papers","param":null,"prefetchHints":4192,"slots":{"children":{"name":"personalization-of-bci","param":null,"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"tqmmqwcYA_MpKMFab-o1D"}

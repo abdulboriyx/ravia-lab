@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunk_N_E=self.webpackChunk_N_E||[]).push([[7295],{37295:(s,t,e)=>{e.r(t),e.d(t,{RuntimeContext:()=>n});var n,u=e(51696);(n||(n={})).Synchronous=u.f},51696:(s,t,e)=>{e.d(t,{f:()=>u});class n{constructor(){this.shouldUpdate=!1,this.isSynchronous=!0}update(s,t){}}let u=new n}}]);
