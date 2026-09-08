@@ -1,0 +1,30 @@
+.paper {
+  min-height: 100vh;
+  padding: 120px 24px 80px;
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.125rem;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+.paper article { max-width: 760px; margin: 0 auto; }
+.paper h1, .paper h2 { color: #000; font-family: inherit; font-weight: 700; letter-spacing: -0.025em; line-height: 1.25; scroll-margin-top: 110px; }
+.paper h1 { font-size: clamp(2.25rem, 6vw, 3.7rem); margin: 28px 0 24px; }
+.paper h2 { font-size: 1.8rem; margin: 60px 0 22px; }
+.paper p { margin: 0 0 22px; }
+.paper li { margin-bottom: 14px; }
+.paper ul, .paper ol { padding-left: 24px; }
+.paper a, .paper a:visited { color: #000; text-decoration: underline; text-underline-offset: 4px; }
+.paper a:focus-visible { outline: 2px solid #000; outline-offset: 5px; }
+.date { font-size: .95rem; }
+.contents { border-block: 1px solid #000; padding: 24px 0; margin: 36px 0; }
+.contents h2 { font-size: 1.125rem; margin: 0 0 16px; }
+.contents ol { list-style: none; padding: 0; margin: 0; }
+.contents li { margin: 5px 0; font-size: 1rem; }
+.footer { border-top: 1px solid #000; margin-top: 48px; padding-top: 24px; }
+:global(html):has(.paper), :global(body):has(.paper) { background: #fff; color-scheme: light; }
+:global(body):has(.paper) :global(.siteHeader) { color: #000; background: #fff; border-color: #000; backdrop-filter: none; font-family: Arial, Helvetica, sans-serif; }
+:global(body):has(.paper) :global(.emblem) span { background: #000; border-color: #000; }
+:global(body):has(.paper) :global(.themeToggle) { display: none; }
+@media (max-width: 600px) { .paper { padding: 104px 20px 48px; font-size: 1.0625rem; } .paper h2 { font-size: 1.5rem; margin-top: 48px; } }
