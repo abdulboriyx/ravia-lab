@@ -24,6 +24,7 @@ export default function PersonalizationOfBciPage() {
           <h1 id="personalization-title">Personalized BCI<br />for mental health</h1>
         </header>
         <p className={styles.date}>{report[0].text}</p>
+        <p><Link href="/papers/personalization-of-bci/research-1-bci-personalized/">Open Research #1 - BCI personalized →</Link></p>
         <nav className={styles.contents} aria-label="Article contents">
           <h2>In this report</h2>
           <ol>{report.filter(block => block.kind === "h2").map(block => (
