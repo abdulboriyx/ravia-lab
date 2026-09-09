@@ -59,7 +59,7 @@ export default function RootLayout({
           </Link>
           <nav aria-label="Primary navigation">
             <Link href="/about">About</Link>
-            <Link href="/papers">Papers</Link>
+            <Link href="/papers/research/">Papers</Link>
             <Link href="/code">Code</Link>
             <ThemeToggle />
           </nav>

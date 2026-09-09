@@ -62,7 +62,7 @@ export const archiveEntries: ArchiveEntry[] = [
     type: "Paper",
     title: "Personalized BCI",
     description: "EEG generalization, anxiety measurement, longitudinal stability, and a research roadmap for rapid personalization.",
-    href: "/papers/personalization-of-bci"
+    href: "/papers/research"
   },
   {
     date: "2026-09-08",
