@@ -16,7 +16,7 @@ function parseTsv(source: string) {
 }
 
 function parseS3Objects(xml: string) {
-  return [...xml.matchAll(/<Contents><Key>(.*?)<\/Key>.*?<Size>(\d+)<\/Size>.*?<\/Contents>/gs)]
+  return [...xml.matchAll(/<Contents><Key>([\s\S]*?)<\/Key>[\s\S]*?<Size>(\d+)<\/Size>[\s\S]*?<\/Contents>/g)]
     .map((match) => ({ key: match[1], size: Number(match[2]) }));
 }
 
