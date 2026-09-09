@@ -72,6 +72,13 @@ export const archiveEntries: ArchiveEntry[] = [
     href: "/papers/biomarkers-for-pscyhiatry"
   },
   {
+    date: "2026-09-10",
+    type: "Research note",
+    title: "Unequal Research",
+    description: "A research note on unequal research.",
+    href: "/papers/unequal-research"
+  },
+  {
     date: "2025-08-22",
     type: "Fragment",
     title: "Faith after certainty",
