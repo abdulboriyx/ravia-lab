@@ -6,6 +6,8 @@ This directory makes the associated research page reproducible and source-tracea
 
 - `RESEARCH_QUESTION.md` — registered-style question, estimands, and decision rule.
 - `EVALUATION_PROTOCOL.md` — time-ordered splits, calibration budgets, controls, and reporting requirements.
+- `BASELINE_PROTOCOL.md` — frozen eyes-closed, session-1-to-session-2 fixed-population benchmark; no personalization.
+- `audit/EYESCLOSED_FIXED_POPULATION_BASELINE.md` — completed fixed-model result and its later-session stability comparison.
 - `citations.bib` — the cited primary paper and data record.
 - `sources/` — local copies of the paper and official dataset metadata used to justify eligibility. `SOURCE_MANIFEST.md` records provenance and retrieval date.
 

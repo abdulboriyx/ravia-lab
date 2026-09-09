@@ -2,7 +2,7 @@
 
 ## Primary question
 
-**Does personalization improve future-session mental-state prediction while preserving sensitivity to real within-person change?**
+**Does personalization improve later repeated-session mental-state prediction while preserving sensitivity to real within-person change?**
 
 ## Population and data currently in scope
 
@@ -10,14 +10,15 @@ The discovery analysis uses OpenNeuro ds004148 only after programmatic eligibili
 
 ## Frozen targets
 
-- **Primary discovery target: anchored SAS change**, \(\Delta SAS_{i,t}=SAS_{i,t}-SAS_{i,1}\). This is fixed before any model result is inspected. The first valid SAS is the immutable personal anchor.
+- **Primary discovery target: anchored SAS change**, \(\Delta SAS_{i,2}=SAS_{i,2}-SAS_{i,1}\). This is fixed before any model result is inspected; session-1 SAS is the immutable personal anchor. The fixed population baseline predicts raw session-2 SAS and derives its anchored-change prediction by subtracting the observed anchor.
 - Secondary descriptive/control measures: absolute SAS, SDS, PANAS positive/negative affect, KSS, ESS, and recording-quality/context variables. They may explain or challenge a result; they cannot replace the primary endpoint because they perform better.
+- The first benchmark has no session-3 SAS target: the dataset audit found `SAS_3rdVisit` absent for all 60 people. It therefore tests one later repeated session only.
 
 No threshold for “clinically meaningful psychiatric change” is assumed. ds004148 has only three sessions, and its documentation/paper does not establish that it contains enough large, clinically meaningful SAS transitions. It can test **whether personalization survives session drift**. It may be underpowered to test **whether personalization preserves genuine psychiatric symptom change**; a null or positive result on the latter is therefore not clinical validation.
 
 ## Estimands
 
-1. **Future-session stability loss**: the participant-level change in performance from earlier-session evaluation to a strictly later session for the same people.
+1. **Later-session stability loss**: the participant-level change in performance from earlier-session evaluation to a strictly later session for the same people.
 2. **Unseen-person generalization loss**: the difference between the fixed population model’s held-out-person result and its development result.
 3. **Personalization recovery**: the participant-level difference between an adaptation method and the fixed population model on the same, later held-out session under the same permitted calibration budget.
 4. **Change preservation (exploratory only in ds004148)**: performance for predicting anchored SAS change, plus evidence that adaptation does not systematically attenuate observed change toward zero.

@@ -10,3 +10,6 @@ dist
 *.log
 .DS_Store
 *.tsbuildinfo
+
+# Downloaded public EEG used by reproducible research scripts; never commit raw recordings.
+research/personalized-bci/local-data/

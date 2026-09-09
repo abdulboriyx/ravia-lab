@@ -1,0 +1,1350 @@
+{
+  "status": "complete",
+  "scope": "fixed population model only; no personalization or target-session fitting",
+  "task": "eyes-closed resting EEG",
+  "frozen_cohort_subjects": 58,
+  "features": {
+    "spectral_bands_hz": {
+      "delta": [
+        1,
+        4
+      ],
+      "theta": [
+        4,
+        8
+      ],
+      "alpha": [
+        8,
+        13
+      ],
+      "beta": [
+        13,
+        30
+      ],
+      "gamma": [
+        30,
+        45
+      ]
+    },
+    "window_seconds": 5,
+    "channels": 61,
+    "correlation_upper_triangle_features": 1891,
+    "total_feature_count": 2196
+  },
+  "model": {
+    "type": "ridge regression",
+    "alpha": 100.0,
+    "selection": "fixed before execution; no hyperparameter search"
+  },
+  "fit_boundary": "all imputers, feature standardizers, and ridge fits use session-1 training participants only",
+  "session1_participant_disjoint_reference": {
+    "mae": 8.49987721154647,
+    "rmse": 10.558995867582873
+  },
+  "session2_participant_disjoint_later_test": {
+    "mae": 7.929594122498498,
+    "rmse": 10.235155624659185
+  },
+  "session2_direct_later_test": {
+    "mae": 6.641138978851947,
+    "rmse": 8.425659502287363
+  },
+  "later_session_mae_drop": {
+    "metric": "MAE(participant-disjoint session2) - MAE(participant-disjoint session1)",
+    "bootstrap_participants": 10000,
+    "seed": 20260910,
+    "mean": -0.5621356620412825,
+    "ci_95": [
+      -2.0601404437820308,
+      0.9245598375709533
+    ]
+  },
+  "anchored_session2_change": {
+    "observed_definition": "SAS_session2 - SAS_session1",
+    "predicted_definition": "predicted_SAS_session2 - observed_SAS_session1",
+    "metrics": {
+      "mae": 6.641138978851947,
+      "rmse": 8.425659502287363
+    }
+  },
+  "predictions": [
+    {
+      "subject_id": "sub-01",
+      "session1_sas": 30.0,
+      "session1_participant_disjoint_prediction": 45.31111049584188,
+      "session2_sas": 33.0,
+      "session2_participant_disjoint_prediction": 39.372435622932215,
+      "session2_direct_prediction": 33.40420923912368,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 3.4042092391236807
+    },
+    {
+      "subject_id": "sub-02",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 43.99479324724337,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 39.69957815994431,
+      "session2_direct_prediction": 36.77421929266512,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 0.7742192926651228
+    },
+    {
+      "subject_id": "sub-03",
+      "session1_sas": 69.0,
+      "session1_participant_disjoint_prediction": 39.41801388982966,
+      "session2_sas": 69.0,
+      "session2_participant_disjoint_prediction": 36.44604924690524,
+      "session2_direct_prediction": 46.38059249267326,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": -22.61940750732674
+    },
+    {
+      "subject_id": "sub-04",
+      "session1_sas": 41.0,
+      "session1_participant_disjoint_prediction": 40.02702423896648,
+      "session2_sas": 43.0,
+      "session2_participant_disjoint_prediction": 34.297205370646594,
+      "session2_direct_prediction": 34.63972950838436,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": -6.360270491615637
+    },
+    {
+      "subject_id": "sub-05",
+      "session1_sas": 35.0,
+      "session1_participant_disjoint_prediction": 40.98919513895414,
+      "session2_sas": 34.0,
+      "session2_participant_disjoint_prediction": 37.678144584283025,
+      "session2_direct_prediction": 34.427477156331406,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": -0.5725228436685939
+    },
+    {
+      "subject_id": "sub-06",
+      "session1_sas": 34.0,
+      "session1_participant_disjoint_prediction": 42.58728193278291,
+      "session2_sas": 46.0,
+      "session2_participant_disjoint_prediction": 42.10859658477043,
+      "session2_direct_prediction": 39.25995162481485,
+      "observed_anchored_change": 12.0,
+      "predicted_anchored_change": 5.259951624814853
+    },
+    {
+      "subject_id": "sub-07",
+      "session1_sas": 35.0,
+      "session1_participant_disjoint_prediction": 38.93207018746762,
+      "session2_sas": 34.0,
+      "session2_participant_disjoint_prediction": 45.629742877154094,
+      "session2_direct_prediction": 44.55204980419446,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": 9.55204980419446
+    },
+    {
+      "subject_id": "sub-08",
+      "session1_sas": 34.0,
+      "session1_participant_disjoint_prediction": 41.10057084044379,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 50.13912821827244,
+      "session2_direct_prediction": 49.341196407363256,
+      "observed_anchored_change": 1.0,
+      "predicted_anchored_change": 15.341196407363256
+    },
+    {
+      "subject_id": "sub-09",
+      "session1_sas": 48.0,
+      "session1_participant_disjoint_prediction": 41.57338701917429,
+      "session2_sas": 41.0,
+      "session2_participant_disjoint_prediction": 48.52860871710759,
+      "session2_direct_prediction": 49.63501758609497,
+      "observed_anchored_change": -7.0,
+      "predicted_anchored_change": 1.6350175860949676
+    },
+    {
+      "subject_id": "sub-10",
+      "session1_sas": 34.0,
+      "session1_participant_disjoint_prediction": 37.488205986807635,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 36.331276447726744,
+      "session2_direct_prediction": 33.916477018487,
+      "observed_anchored_change": 1.0,
+      "predicted_anchored_change": -0.0835229815129992
+    },
+    {
+      "subject_id": "sub-11",
+      "session1_sas": 35.0,
+      "session1_participant_disjoint_prediction": 41.8754676161497,
+      "session2_sas": 38.0,
+      "session2_participant_disjoint_prediction": 41.59690683083273,
+      "session2_direct_prediction": 39.79436208479557,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 4.794362084795573
+    },
+    {
+      "subject_id": "sub-12",
+      "session1_sas": 45.0,
+      "session1_participant_disjoint_prediction": 41.99301831625936,
+      "session2_sas": 50.0,
+      "session2_participant_disjoint_prediction": 48.780803648661596,
+      "session2_direct_prediction": 49.87413042361681,
+      "observed_anchored_change": 5.0,
+      "predicted_anchored_change": 4.874130423616812
+    },
+    {
+      "subject_id": "sub-13",
+      "session1_sas": 48.0,
+      "session1_participant_disjoint_prediction": 35.0440480051564,
+      "session2_sas": 49.0,
+      "session2_participant_disjoint_prediction": 40.42954543450482,
+      "session2_direct_prediction": 47.35616589338142,
+      "observed_anchored_change": 1.0,
+      "predicted_anchored_change": -0.6438341066185771
+    },
+    {
+      "subject_id": "sub-14",
+      "session1_sas": 39.0,
+      "session1_participant_disjoint_prediction": 43.09678305561612,
+      "session2_sas": 41.0,
+      "session2_participant_disjoint_prediction": 44.101938410308684,
+      "session2_direct_prediction": 42.682805342114996,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": 3.682805342114996
+    },
+    {
+      "subject_id": "sub-15",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 39.58354426044735,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 41.955228297511105,
+      "session2_direct_prediction": 40.83420433203974,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": 4.834204332039739
+    },
+    {
+      "subject_id": "sub-16",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 45.220575924085885,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 46.960601531812436,
+      "session2_direct_prediction": 42.04278809446629,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 6.042788094466289
+    },
+    {
+      "subject_id": "sub-17",
+      "session1_sas": 39.0,
+      "session1_participant_disjoint_prediction": 38.417839445008845,
+      "session2_sas": 41.0,
+      "session2_participant_disjoint_prediction": 38.32526885973174,
+      "session2_direct_prediction": 38.76264015825534,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": -0.23735984174466296
+    },
+    {
+      "subject_id": "sub-18",
+      "session1_sas": 41.0,
+      "session1_participant_disjoint_prediction": 46.817910874129815,
+      "session2_sas": 59.0,
+      "session2_participant_disjoint_prediction": 46.53191902539708,
+      "session2_direct_prediction": 42.84857379951114,
+      "observed_anchored_change": 18.0,
+      "predicted_anchored_change": 1.8485737995111435
+    },
+    {
+      "subject_id": "sub-19",
+      "session1_sas": 31.0,
+      "session1_participant_disjoint_prediction": 42.675262628074094,
+      "session2_sas": 46.0,
+      "session2_participant_disjoint_prediction": 42.93029191937583,
+      "session2_direct_prediction": 37.08058361478052,
+      "observed_anchored_change": 15.0,
+      "predicted_anchored_change": 6.080583614780522
+    },
+    {
+      "subject_id": "sub-20",
+      "session1_sas": 44.0,
+      "session1_participant_disjoint_prediction": 39.56762700331491,
+      "session2_sas": 44.0,
+      "session2_participant_disjoint_prediction": 41.26398482272011,
+      "session2_direct_prediction": 42.51545471688837,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": -1.484545283111629
+    },
+    {
+      "subject_id": "sub-22",
+      "session1_sas": 54.0,
+      "session1_participant_disjoint_prediction": 44.69165078012679,
+      "session2_sas": 54.0,
+      "session2_participant_disjoint_prediction": 36.87170204816438,
+      "session2_direct_prediction": 39.33277739850107,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": -14.667222601498928
+    },
+    {
+      "subject_id": "sub-23",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 39.79029082560512,
+      "session2_sas": 31.0,
+      "session2_participant_disjoint_prediction": 37.817301742865716,
+      "session2_direct_prediction": 36.31425227262061,
+      "observed_anchored_change": -5.0,
+      "predicted_anchored_change": 0.31425227262060673
+    },
+    {
+      "subject_id": "sub-24",
+      "session1_sas": 56.0,
+      "session1_participant_disjoint_prediction": 34.06772627952444,
+      "session2_sas": 53.0,
+      "session2_participant_disjoint_prediction": 39.76071766552395,
+      "session2_direct_prediction": 44.71140216219436,
+      "observed_anchored_change": -3.0,
+      "predicted_anchored_change": -11.28859783780564
+    },
+    {
+      "subject_id": "sub-25",
+      "session1_sas": 39.0,
+      "session1_participant_disjoint_prediction": 52.626227358919756,
+      "session2_sas": 48.0,
+      "session2_participant_disjoint_prediction": 45.72333342836043,
+      "session2_direct_prediction": 42.1872478917444,
+      "observed_anchored_change": 9.0,
+      "predicted_anchored_change": 3.1872478917443985
+    },
+    {
+      "subject_id": "sub-26",
+      "session1_sas": 35.0,
+      "session1_participant_disjoint_prediction": 40.49632374565405,
+      "session2_sas": 40.0,
+      "session2_participant_disjoint_prediction": 38.22468675808423,
+      "session2_direct_prediction": 34.50749749478331,
+      "observed_anchored_change": 5.0,
+      "predicted_anchored_change": -0.4925025052166916
+    },
+    {
+      "subject_id": "sub-27",
+      "session1_sas": 26.0,
+      "session1_participant_disjoint_prediction": 36.87813391831426,
+      "session2_sas": 43.0,
+      "session2_participant_disjoint_prediction": 30.779453871646815,
+      "session2_direct_prediction": 25.832127980416306,
+      "observed_anchored_change": 17.0,
+      "predicted_anchored_change": -0.1678720195836938
+    },
+    {
+      "subject_id": "sub-29",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 43.436180286481346,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 41.93196415149999,
+      "session2_direct_prediction": 40.83728641283796,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": 4.837286412837962
+    },
+    {
+      "subject_id": "sub-30",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 41.820620530154436,
+      "session2_sas": 41.0,
+      "session2_participant_disjoint_prediction": 40.837386359077364,
+      "session2_direct_prediction": 38.945209162899154,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 0.9452091628991539
+    },
+    {
+      "subject_id": "sub-31",
+      "session1_sas": 51.0,
+      "session1_participant_disjoint_prediction": 55.885865327036846,
+      "session2_sas": 53.0,
+      "session2_participant_disjoint_prediction": 47.808442454236385,
+      "session2_direct_prediction": 46.62928108778969,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": -4.370718912210307
+    },
+    {
+      "subject_id": "sub-32",
+      "session1_sas": 29.0,
+      "session1_participant_disjoint_prediction": 47.024703272421675,
+      "session2_sas": 25.0,
+      "session2_participant_disjoint_prediction": 45.00757255534336,
+      "session2_direct_prediction": 38.49995349520385,
+      "observed_anchored_change": -4.0,
+      "predicted_anchored_change": 9.499953495203847
+    },
+    {
+      "subject_id": "sub-33",
+      "session1_sas": 31.0,
+      "session1_participant_disjoint_prediction": 42.088521724864584,
+      "session2_sas": 29.0,
+      "session2_participant_disjoint_prediction": 36.47842990103582,
+      "session2_direct_prediction": 32.4892844794219,
+      "observed_anchored_change": -2.0,
+      "predicted_anchored_change": 1.4892844794218973
+    },
+    {
+      "subject_id": "sub-34",
+      "session1_sas": 56.0,
+      "session1_participant_disjoint_prediction": 40.0443155188907,
+      "session2_sas": 41.0,
+      "session2_participant_disjoint_prediction": 40.92647735139646,
+      "session2_direct_prediction": 48.931327999925806,
+      "observed_anchored_change": -15.0,
+      "predicted_anchored_change": -7.068672000074194
+    },
+    {
+      "subject_id": "sub-35",
+      "session1_sas": 36.0,
+      "session1_participant_disjoint_prediction": 40.713678361566004,
+      "session2_sas": 30.0,
+      "session2_participant_disjoint_prediction": 38.52776220770698,
+      "session2_direct_prediction": 36.32868148948626,
+      "observed_anchored_change": -6.0,
+      "predicted_anchored_change": 0.3286814894862573
+    },
+    {
+      "subject_id": "sub-36",
+      "session1_sas": 40.0,
+      "session1_participant_disjoint_prediction": 39.47617229107683,
+      "session2_sas": 45.0,
+      "session2_participant_disjoint_prediction": 48.06330632745125,
+      "session2_direct_prediction": 48.52191316548495,
+      "observed_anchored_change": 5.0,
+      "predicted_anchored_change": 8.521913165484953
+    },
+    {
+      "subject_id": "sub-37",
+      "session1_sas": 39.0,
+      "session1_participant_disjoint_prediction": 43.40087770501999,
+      "session2_sas": 36.0,
+      "session2_participant_disjoint_prediction": 44.2660203904595,
+      "session2_direct_prediction": 42.037169698885954,
+      "observed_anchored_change": -3.0,
+      "predicted_anchored_change": 3.037169698885954
+    },
+    {
+      "subject_id": "sub-38",
+      "session1_sas": 49.0,
+      "session1_participant_disjoint_prediction": 34.18959700698157,
+      "session2_sas": 36.0,
+      "session2_participant_disjoint_prediction": 43.352783886800246,
+      "session2_direct_prediction": 49.22161874014097,
+      "observed_anchored_change": -13.0,
+      "predicted_anchored_change": 0.22161874014096838
+    },
+    {
+      "subject_id": "sub-39",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 46.12172606328396,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 37.25199795324976,
+      "session2_direct_prediction": 36.016844864272564,
+      "observed_anchored_change": 1.0,
+      "predicted_anchored_change": -1.9831551357274364
+    },
+    {
+      "subject_id": "sub-40",
+      "session1_sas": 34.0,
+      "session1_participant_disjoint_prediction": 38.375694642533134,
+      "session2_sas": 30.0,
+      "session2_participant_disjoint_prediction": 37.53293413854881,
+      "session2_direct_prediction": 36.2143372347281,
+      "observed_anchored_change": -4.0,
+      "predicted_anchored_change": 2.2143372347280987
+    },
+    {
+      "subject_id": "sub-41",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 39.43025158458315,
+      "session2_sas": 33.0,
+      "session2_participant_disjoint_prediction": 41.759455764674456,
+      "session2_direct_prediction": 41.26587224214484,
+      "observed_anchored_change": -5.0,
+      "predicted_anchored_change": 3.2658722421448374
+    },
+    {
+      "subject_id": "sub-42",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 39.103305584648744,
+      "session2_sas": 45.0,
+      "session2_participant_disjoint_prediction": 37.51328211711619,
+      "session2_direct_prediction": 37.14786057079888,
+      "observed_anchored_change": 7.0,
+      "predicted_anchored_change": -0.8521394292011166
+    },
+    {
+      "subject_id": "sub-43",
+      "session1_sas": 35.0,
+      "session1_participant_disjoint_prediction": 50.54045507852996,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 51.59511508970544,
+      "session2_direct_prediction": 44.96561217365874,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": 9.96561217365874
+    },
+    {
+      "subject_id": "sub-44",
+      "session1_sas": 40.0,
+      "session1_participant_disjoint_prediction": 46.49484256923214,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 48.774341859444014,
+      "session2_direct_prediction": 46.200016282325045,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": 6.200016282325045
+    },
+    {
+      "subject_id": "sub-45",
+      "session1_sas": 45.0,
+      "session1_participant_disjoint_prediction": 40.42869983386189,
+      "session2_sas": 55.0,
+      "session2_participant_disjoint_prediction": 44.01426422752076,
+      "session2_direct_prediction": 45.42133454867481,
+      "observed_anchored_change": 10.0,
+      "predicted_anchored_change": 0.4213345486748068
+    },
+    {
+      "subject_id": "sub-46",
+      "session1_sas": 48.0,
+      "session1_participant_disjoint_prediction": 37.01811315455534,
+      "session2_sas": 56.0,
+      "session2_participant_disjoint_prediction": 50.660241803663105,
+      "session2_direct_prediction": 53.30062805330559,
+      "observed_anchored_change": 8.0,
+      "predicted_anchored_change": 5.300628053305587
+    },
+    {
+      "subject_id": "sub-47",
+      "session1_sas": 43.0,
+      "session1_participant_disjoint_prediction": 40.314679050403676,
+      "session2_sas": 45.0,
+      "session2_participant_disjoint_prediction": 43.222674819750885,
+      "session2_direct_prediction": 44.62323011884358,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": 1.6232301188435798
+    },
+    {
+      "subject_id": "sub-48",
+      "session1_sas": 44.0,
+      "session1_participant_disjoint_prediction": 35.62333052781274,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 42.594887263628344,
+      "session2_direct_prediction": 46.948573009302905,
+      "observed_anchored_change": -5.0,
+      "predicted_anchored_change": 2.948573009302905
+    },
+    {
+      "subject_id": "sub-49",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 42.063463888113645,
+      "session2_sas": 38.0,
+      "session2_participant_disjoint_prediction": 34.12048197658196,
+      "session2_direct_prediction": 32.67615518649595,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": -5.323844813504053
+    },
+    {
+      "subject_id": "sub-50",
+      "session1_sas": 33.0,
+      "session1_participant_disjoint_prediction": 40.95305292911755,
+      "session2_sas": 33.0,
+      "session2_participant_disjoint_prediction": 50.18885640926783,
+      "session2_direct_prediction": 49.97876663324874,
+      "observed_anchored_change": 0.0,
+      "predicted_anchored_change": 16.97876663324874
+    },
+    {
+      "subject_id": "sub-51",
+      "session1_sas": 59.0,
+      "session1_participant_disjoint_prediction": 38.30134118736838,
+      "session2_sas": 60.0,
+      "session2_participant_disjoint_prediction": 36.22605717926113,
+      "session2_direct_prediction": 43.977316230109466,
+      "observed_anchored_change": 1.0,
+      "predicted_anchored_change": -15.022683769890534
+    },
+    {
+      "subject_id": "sub-52",
+      "session1_sas": 56.0,
+      "session1_participant_disjoint_prediction": 34.35150022079689,
+      "session2_sas": 51.0,
+      "session2_participant_disjoint_prediction": 34.552795730486054,
+      "session2_direct_prediction": 48.10890010209951,
+      "observed_anchored_change": -5.0,
+      "predicted_anchored_change": -7.891099897900489
+    },
+    {
+      "subject_id": "sub-53",
+      "session1_sas": 45.0,
+      "session1_participant_disjoint_prediction": 42.07135897309269,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 34.469041422391676,
+      "session2_direct_prediction": 35.55572235169069,
+      "observed_anchored_change": -6.0,
+      "predicted_anchored_change": -9.44427764830931
+    },
+    {
+      "subject_id": "sub-54",
+      "session1_sas": 45.0,
+      "session1_participant_disjoint_prediction": 24.505718955898935,
+      "session2_sas": 48.0,
+      "session2_participant_disjoint_prediction": 41.224999099450244,
+      "session2_direct_prediction": 46.97508929281176,
+      "observed_anchored_change": 3.0,
+      "predicted_anchored_change": 1.9750892928117594
+    },
+    {
+      "subject_id": "sub-55",
+      "session1_sas": 45.0,
+      "session1_participant_disjoint_prediction": 49.33866853882662,
+      "session2_sas": 38.0,
+      "session2_participant_disjoint_prediction": 40.73179546681323,
+      "session2_direct_prediction": 39.049018460785,
+      "observed_anchored_change": -7.0,
+      "predicted_anchored_change": -5.950981539215
+    },
+    {
+      "subject_id": "sub-56",
+      "session1_sas": 43.0,
+      "session1_participant_disjoint_prediction": 35.411570044710814,
+      "session2_sas": 39.0,
+      "session2_participant_disjoint_prediction": 41.07795221499137,
+      "session2_direct_prediction": 43.357257687249266,
+      "observed_anchored_change": -4.0,
+      "predicted_anchored_change": 0.3572576872492661
+    },
+    {
+      "subject_id": "sub-57",
+      "session1_sas": 53.0,
+      "session1_participant_disjoint_prediction": 42.52616637333227,
+      "session2_sas": 63.0,
+      "session2_participant_disjoint_prediction": 43.34657684813273,
+      "session2_direct_prediction": 47.540312765135525,
+      "observed_anchored_change": 10.0,
+      "predicted_anchored_change": -5.459687234864475
+    },
+    {
+      "subject_id": "sub-58",
+      "session1_sas": 38.0,
+      "session1_participant_disjoint_prediction": 33.54855315650652,
+      "session2_sas": 49.0,
+      "session2_participant_disjoint_prediction": 38.694540838206265,
+      "session2_direct_prediction": 40.72598650654942,
+      "observed_anchored_change": 11.0,
+      "predicted_anchored_change": 2.725986506549418
+    },
+    {
+      "subject_id": "sub-59",
+      "session1_sas": 33.0,
+      "session1_participant_disjoint_prediction": 29.192868966047392,
+      "session2_sas": 35.0,
+      "session2_participant_disjoint_prediction": 35.25651576767095,
+      "session2_direct_prediction": 36.19228517496509,
+      "observed_anchored_change": 2.0,
+      "predicted_anchored_change": 3.192285174965093
+    },
+    {
+      "subject_id": "sub-60",
+      "session1_sas": 30.0,
+      "session1_participant_disjoint_prediction": 48.541542385441886,
+      "session2_sas": 29.0,
+      "session2_participant_disjoint_prediction": 43.30869313413444,
+      "session2_direct_prediction": 31.742166387046836,
+      "observed_anchored_change": -1.0,
+      "predicted_anchored_change": 1.7421663870468365
+    }
+  ],
+  "raw_source_provenance": [
+    {
+      "subject_id": "sub-01",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-01/ses-session1/eeg/sub-01_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "022b9f34914e4314f4d9e45d17bc367031c9d9d879ea983a8d6eb43f7affbc47"
+    },
+    {
+      "subject_id": "sub-01",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-01/ses-session2/eeg/sub-01_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "8998083dc3d0a2bf21b7b619af1865d3a1daa3793d28d8401ca2a7c7aa977ab9"
+    },
+    {
+      "subject_id": "sub-02",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-02/ses-session1/eeg/sub-02_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "9c9f8c321482c71657047e99a1c259aaa753bb3b5fbe09e392a06b33d8d6dacd"
+    },
+    {
+      "subject_id": "sub-02",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-02/ses-session2/eeg/sub-02_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "2f7504236b3882aa5eefd06ccd72071c28cf3cf520be809c82e040b2ff4a1d88"
+    },
+    {
+      "subject_id": "sub-03",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-03/ses-session1/eeg/sub-03_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "cb135f4e93d2a5a76ff04c791934f9a73fe050297e8bcc49cb0f7e04f27b0eb3"
+    },
+    {
+      "subject_id": "sub-03",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-03/ses-session2/eeg/sub-03_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "63a2cda55fd43af4de451e835296891f54964a1253413f220c269294eb292190"
+    },
+    {
+      "subject_id": "sub-04",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-04/ses-session1/eeg/sub-04_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "eaa0cffa47243b6c121e41fa9e2bde8fa2f99439a9e57b1bf3272a05210592cb"
+    },
+    {
+      "subject_id": "sub-04",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-04/ses-session2/eeg/sub-04_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "6d6ee44c7d0eb2550e6befa4bb8777fb3c6b054c8e40e36dfa0539d6fa7a8c4c"
+    },
+    {
+      "subject_id": "sub-05",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-05/ses-session1/eeg/sub-05_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "285ceca0ddb4447886e1a94143ee33b92b352df814d3930c8bb4cf76298e8a50"
+    },
+    {
+      "subject_id": "sub-05",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-05/ses-session2/eeg/sub-05_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "93461628b534a536bc5060a8424dbc9a08a0630fb41a805057d1ca07592856c2"
+    },
+    {
+      "subject_id": "sub-06",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-06/ses-session1/eeg/sub-06_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "2fc6d7a1c398f3c87b0c209afce3e0bca0b86ae74db805df155d90092cc7b3ec"
+    },
+    {
+      "subject_id": "sub-06",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-06/ses-session2/eeg/sub-06_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "ac06912c2553883309f0d69d5a4248db02dc03f1e61aae28714966d1efd3529b"
+    },
+    {
+      "subject_id": "sub-07",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-07/ses-session1/eeg/sub-07_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8f540b1efb1850ed87db935cf5cae6351ecc1c641dd2c3abc263e91124ab1302"
+    },
+    {
+      "subject_id": "sub-07",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-07/ses-session2/eeg/sub-07_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "9b413ddb68b012a76fe46579462fc6ba8ab19b3673de1f6f8d12be5680891a64"
+    },
+    {
+      "subject_id": "sub-08",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-08/ses-session1/eeg/sub-08_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "7661fbd9f9bb14c8acd7bca43d7043ff8d0eb89ea7c10c7a3813a385534f3b53"
+    },
+    {
+      "subject_id": "sub-08",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-08/ses-session2/eeg/sub-08_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "0092554da9976ba0910fa9190041a86091cb3c6eda66fdc33e221ccd10e733f4"
+    },
+    {
+      "subject_id": "sub-09",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-09/ses-session1/eeg/sub-09_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "57516662317d12052c5038795bb74df5a4c5b6b96efaa875e6d9ed4577a1ede7"
+    },
+    {
+      "subject_id": "sub-09",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-09/ses-session2/eeg/sub-09_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "3879fc02b0dc484970cea4eedca03d5aca9e0165e1594d0f0565bb35faac307a"
+    },
+    {
+      "subject_id": "sub-10",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-10/ses-session1/eeg/sub-10_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "08435c11951b84be497d8d1ca7e76a24655418b4f415c9c378c9d30e1a8eeee6"
+    },
+    {
+      "subject_id": "sub-10",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-10/ses-session2/eeg/sub-10_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "5c2492df9611ae3571ca3b7ff62979a3f559b64a11ada69fb48cfdd5fe3bc1cf"
+    },
+    {
+      "subject_id": "sub-11",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-11/ses-session1/eeg/sub-11_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "4f4013101ffb036bf71c3ffff01b34f550872b643933fb7fcd32aac4b78b4adf"
+    },
+    {
+      "subject_id": "sub-11",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-11/ses-session2/eeg/sub-11_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "da310f3862310bf22d23ee3d7ea0ec7f4e21bdd3771b06e4a2451d5ca2595d7b"
+    },
+    {
+      "subject_id": "sub-12",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-12/ses-session1/eeg/sub-12_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "e79d482b51a0e673323300c3ff500afea29ec4d24b809abc288f1321e678744c"
+    },
+    {
+      "subject_id": "sub-12",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-12/ses-session2/eeg/sub-12_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "dfdfac96fe0600323894ff8b5ad32003adb3e487c9dc68bd6799c6cdb387a38b"
+    },
+    {
+      "subject_id": "sub-13",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-13/ses-session1/eeg/sub-13_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "91545d05b07c7d5c8470b65fae69ef3e745bf2078c4115778a2a401d5587fdaa"
+    },
+    {
+      "subject_id": "sub-13",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-13/ses-session2/eeg/sub-13_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "7fa0213025c0f411672484157cfe8f4e6aba1c03a8948e1ada32ab0fc9baa1ad"
+    },
+    {
+      "subject_id": "sub-14",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-14/ses-session1/eeg/sub-14_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "d80258fcc9530e2579d6b8c2cc7dccd2374c8684b61aa0f1056d6274e476e5e8"
+    },
+    {
+      "subject_id": "sub-14",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-14/ses-session2/eeg/sub-14_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "f9a0d296708603b1f2190e935ee5264e668ad62fcde54db70a8db4d10f0e1e58"
+    },
+    {
+      "subject_id": "sub-15",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-15/ses-session1/eeg/sub-15_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "a577275055b46dff449eac2e70298afb4f18012fea99af5ba80adbbddd3adabf"
+    },
+    {
+      "subject_id": "sub-15",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-15/ses-session2/eeg/sub-15_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "46e78bf989bc1d3a2e2e1e7b60406f3e9610f5c7bdc6038378a52c7f16bae3cd"
+    },
+    {
+      "subject_id": "sub-16",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-16/ses-session1/eeg/sub-16_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "b17be54bdef54b75f9c707cd72862ffb0f8171e128dfc5b09088a0483b26c80b"
+    },
+    {
+      "subject_id": "sub-16",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-16/ses-session2/eeg/sub-16_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "1b7fd3e525d3ab4e234df08f195cacb19ce1396bfaefda0fec967dc83b9fbf89"
+    },
+    {
+      "subject_id": "sub-17",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-17/ses-session1/eeg/sub-17_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "205b10d7b7a5775c9757cfb42557e3d349527dee8a19945c1a42b5df64e57979"
+    },
+    {
+      "subject_id": "sub-17",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-17/ses-session2/eeg/sub-17_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "ef3c31eab44811d866d08be663f1dad6de2184b6831d91e9fed1ffb5a8be5281"
+    },
+    {
+      "subject_id": "sub-18",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-18/ses-session1/eeg/sub-18_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "53e57ec96918b2d2d5a32bf55c05a989e4e481eb67a6bc5bca12c788cf46d03a"
+    },
+    {
+      "subject_id": "sub-18",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-18/ses-session2/eeg/sub-18_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "9749fb309bb7924d3b4163d3e045c3a0ebbc8c8a806032d71e887cfb8606047f"
+    },
+    {
+      "subject_id": "sub-19",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-19/ses-session1/eeg/sub-19_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "fca2292f7d0bdc32e84e226b0fdc746d9008c156ec480e57204ef50d7f50b2a0"
+    },
+    {
+      "subject_id": "sub-19",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-19/ses-session2/eeg/sub-19_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "5e878703fa867014e355fb53293d8193d2a6e88c63c6ac1802023ce136287e62"
+    },
+    {
+      "subject_id": "sub-20",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-20/ses-session1/eeg/sub-20_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8967bedd9c9b6c6bdce8472d7d7a58b5429b4533a2469e1e5bbdbee8ce060bd1"
+    },
+    {
+      "subject_id": "sub-20",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-20/ses-session2/eeg/sub-20_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "de1cb5ef8c91ecd4ad01b6fb132ecb6dca482ffa175a5cae13744287e723af91"
+    },
+    {
+      "subject_id": "sub-22",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-22/ses-session1/eeg/sub-22_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "94addbc94cca1223be84daeea12b0cd89fcf658150b89cfaf144f53bf520588c"
+    },
+    {
+      "subject_id": "sub-22",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-22/ses-session2/eeg/sub-22_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "6274094a7e7de04ba4ed4dee3e6f4940e534b6f8fe1ff63dca62ccb7a57e4445"
+    },
+    {
+      "subject_id": "sub-23",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-23/ses-session1/eeg/sub-23_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "37cae3b6ca8e56a00d2f6ce81a4cf72e184009fff9ff0e9f2a629beb8ead2e32"
+    },
+    {
+      "subject_id": "sub-23",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-23/ses-session2/eeg/sub-23_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "b76740f680a2356fe67508c782894faeb8bab236efb68f395c13f4abb52e39fd"
+    },
+    {
+      "subject_id": "sub-24",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-24/ses-session1/eeg/sub-24_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "34534978d0d0eb9d718a4c538db6d824d63eb557d6028bf3a567756b6203c5ee"
+    },
+    {
+      "subject_id": "sub-24",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-24/ses-session2/eeg/sub-24_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "79894b26ca18bcc0f11efe0876257902907dce6da9048d17adb7743b75fd67ea"
+    },
+    {
+      "subject_id": "sub-25",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-25/ses-session1/eeg/sub-25_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "bac3ec07369615b152ed77f90af57c2e365f488acb2c1b44e30669de79cb5ca8"
+    },
+    {
+      "subject_id": "sub-25",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-25/ses-session2/eeg/sub-25_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "bb1d8ead4d69d9248767a72d5caa0ad8fd4e79f43a1a2d8ea87fd1e272eaf5b7"
+    },
+    {
+      "subject_id": "sub-26",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-26/ses-session1/eeg/sub-26_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "0c8421db51101ba1633e442ee8c99e4fb457ac5c4037ef4289d868549ed28ae5"
+    },
+    {
+      "subject_id": "sub-26",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-26/ses-session2/eeg/sub-26_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "bf699dc4774671bf4ee06ad28a482713df1e86c413f84b1fd3325a8b6c8c1c62"
+    },
+    {
+      "subject_id": "sub-27",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-27/ses-session1/eeg/sub-27_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "18006013b2d4e072187afd8f5723baf08ae5977d49fe1f403645e89b94109cff"
+    },
+    {
+      "subject_id": "sub-27",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-27/ses-session2/eeg/sub-27_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "8f80acb58fd572735543fbc5e371b8bc2d9be38bade06f1e80fdcbf8b3eaecd7"
+    },
+    {
+      "subject_id": "sub-29",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-29/ses-session1/eeg/sub-29_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "0ede247abaa322b00b03745d27783ac356069ed6fc7b0c977672520d9871196a"
+    },
+    {
+      "subject_id": "sub-29",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-29/ses-session2/eeg/sub-29_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "b38550c48d911642585a6aecf1eb5dc608d827c50d6e003f54c890cd243365bd"
+    },
+    {
+      "subject_id": "sub-30",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-30/ses-session1/eeg/sub-30_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "90897e56745f8fe296cba5c0ede583492e3f426bce0fa75692b080ff84472065"
+    },
+    {
+      "subject_id": "sub-30",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-30/ses-session2/eeg/sub-30_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "b0f493a101c9f1d0f6a25b4623a1f57dde106ccf4d349697f8c6205463ab6cda"
+    },
+    {
+      "subject_id": "sub-31",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-31/ses-session1/eeg/sub-31_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "454a6b5d41884c5d2bdc62e925bc55147a83819c7469f1ebdc2ed8268b88464f"
+    },
+    {
+      "subject_id": "sub-31",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-31/ses-session2/eeg/sub-31_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "fe0aacd4a73df6ee6516c18f26112f2ebf718904745feb1ba4d39ebc946bdd76"
+    },
+    {
+      "subject_id": "sub-32",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-32/ses-session1/eeg/sub-32_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "9cbb64e73371955ebb1bbdb5b895aa51d4358b3bffc25cb3ac77fa68e73b4502"
+    },
+    {
+      "subject_id": "sub-32",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-32/ses-session2/eeg/sub-32_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "8a534b682b80e8ed454e43eadc15d5c9b71b598824acbb5d68fa480e42ffed7e"
+    },
+    {
+      "subject_id": "sub-33",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-33/ses-session1/eeg/sub-33_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "e3dfb38ed9c1590cd5a35bbfe5fbc1c4f6acdba0aae767d5305efe5105a69172"
+    },
+    {
+      "subject_id": "sub-33",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-33/ses-session2/eeg/sub-33_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "f9c81bf7728fcd99df642d2662b21f8c61324c3f5aa1e5f86e10da6b12dc8279"
+    },
+    {
+      "subject_id": "sub-34",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-34/ses-session1/eeg/sub-34_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "6794ab60f69ba506813728380fe836c88f30c229cf1bb76f12cfbee61f5b2949"
+    },
+    {
+      "subject_id": "sub-34",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-34/ses-session2/eeg/sub-34_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "5ec2de22e8a4c144cc948b8b215931543fb93b12b005256cc1afff59b91a1b4d"
+    },
+    {
+      "subject_id": "sub-35",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-35/ses-session1/eeg/sub-35_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "c5c04043ee9944abe4e143e193b9d13a1c0fa5565de6d9d661d42be27c2241d9"
+    },
+    {
+      "subject_id": "sub-35",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-35/ses-session2/eeg/sub-35_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "22a1c9b9a7cd7d30ecb2d16f7a7601c07f1d325d61c1c2945494e8402502f945"
+    },
+    {
+      "subject_id": "sub-36",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-36/ses-session1/eeg/sub-36_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "392ca0d17081c3b3a52b490601850582861b43f01196ba28e543e320bfcc106b"
+    },
+    {
+      "subject_id": "sub-36",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-36/ses-session2/eeg/sub-36_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "fe6bcdd5f869688c78b0e8aa628e402abf67dcd22503e9325189321fcc0fe29b"
+    },
+    {
+      "subject_id": "sub-37",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-37/ses-session1/eeg/sub-37_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "5f9ed6e1807911c03cd2cfda712f52b6d747a75b16bdadf51dd8f3ccc229cb64"
+    },
+    {
+      "subject_id": "sub-37",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-37/ses-session2/eeg/sub-37_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "2b6e6364ccd957e8075cf833f6f3c88f21f91d9aa46ce3ad6e6e6de00a2b8091"
+    },
+    {
+      "subject_id": "sub-38",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-38/ses-session1/eeg/sub-38_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "aed9c16dc0bce5a20e5577e62729e344a6a907eb31378bd5035599c2b1bedf91"
+    },
+    {
+      "subject_id": "sub-38",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-38/ses-session2/eeg/sub-38_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "948c353ca0d796c9b9ab75b2571d01398c532ffb2356f840a71e8bd4e17126dc"
+    },
+    {
+      "subject_id": "sub-39",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-39/ses-session1/eeg/sub-39_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "257c22b2ba532a3e053e1f54888be1356ba166b843a983ecd6eaaa670763a7de"
+    },
+    {
+      "subject_id": "sub-39",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-39/ses-session2/eeg/sub-39_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "f084ac86ec787a7a82c91780d942b07db9ed2cf6a77055b97fceaf9b99421c53"
+    },
+    {
+      "subject_id": "sub-40",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-40/ses-session1/eeg/sub-40_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "15fd51014b974a65706e949a820445da56ba7458add5106aac0cb90f2d197510"
+    },
+    {
+      "subject_id": "sub-40",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-40/ses-session2/eeg/sub-40_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "47f055822c6e45344fe7231189f4809b585a138868b08caabd30f7d6c29bdaac"
+    },
+    {
+      "subject_id": "sub-41",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-41/ses-session1/eeg/sub-41_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "134da1245c167a5f65bd70d2284eab81fbbc9a229fbbd2cc879bf3984c783d11"
+    },
+    {
+      "subject_id": "sub-41",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-41/ses-session2/eeg/sub-41_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "009e3184d2fdf161135775f38d7cc6564a64f0fa5f86893861843040d575e423"
+    },
+    {
+      "subject_id": "sub-42",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-42/ses-session1/eeg/sub-42_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "3eb719db93334bc5117f602ce7b194b5befdbdc2287b26ad80a0595d9e472125"
+    },
+    {
+      "subject_id": "sub-42",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-42/ses-session2/eeg/sub-42_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "997de5a0f59f6f67d16b058914e982923e7db96009ef30f8b49b13f8f11246a6"
+    },
+    {
+      "subject_id": "sub-43",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-43/ses-session1/eeg/sub-43_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "7db98e40b31d6de33c250dadbb71a75cecc2f0661cf73d27a42dd42290d6fbf0"
+    },
+    {
+      "subject_id": "sub-43",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-43/ses-session2/eeg/sub-43_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "06fab3caf5ec8e360d92da36778c228cc5fc1583e22f97ae03c5cc190f2bc8f8"
+    },
+    {
+      "subject_id": "sub-44",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-44/ses-session1/eeg/sub-44_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8e1d93d06a0604f8f7d37222f02fb82dd598dc68612f4be4ee754a1e05285fc1"
+    },
+    {
+      "subject_id": "sub-44",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-44/ses-session2/eeg/sub-44_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "fb2c260d12459bedf3e8bd5f26449cfc5b38246023121ae6f53529aada53d59f"
+    },
+    {
+      "subject_id": "sub-45",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-45/ses-session1/eeg/sub-45_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "749de90af39a74ab41f3d59bc42777598624b0792973cdf7c6876dacc64496ef"
+    },
+    {
+      "subject_id": "sub-45",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-45/ses-session2/eeg/sub-45_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "3bdd0a90aa63b4a7a8e8de1bfa5437aa13d603bdc6181ba2ae48ee897cc0f9eb"
+    },
+    {
+      "subject_id": "sub-46",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-46/ses-session1/eeg/sub-46_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "75b874fe25086a6a5f02e9007c7399b86cf2d908cecff69d71943480c357b4ef"
+    },
+    {
+      "subject_id": "sub-46",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-46/ses-session2/eeg/sub-46_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "c59ef44b3a6b361da25812a601127d0ac065fbe4f38c6c6b940c025aff16af38"
+    },
+    {
+      "subject_id": "sub-47",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-47/ses-session1/eeg/sub-47_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "4506a6c9aa7a674ff3bff548c6b3c779b026cec18fdb59c8ac182ee03ce55265"
+    },
+    {
+      "subject_id": "sub-47",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-47/ses-session2/eeg/sub-47_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "09cf44dacf56d2e7ce481637e3534c262b21e253bcfb2fa851021057c71cadcb"
+    },
+    {
+      "subject_id": "sub-48",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-48/ses-session1/eeg/sub-48_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8eb5ae2f9468e8b3984ce5171d02177b7e05bc8733e46477eaae46afa4f71bc4"
+    },
+    {
+      "subject_id": "sub-48",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-48/ses-session2/eeg/sub-48_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "4e25bf7dd427786b310a4e0a9b104888c9fcad6c8545d47b50cd8c0d92429bb0"
+    },
+    {
+      "subject_id": "sub-49",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-49/ses-session1/eeg/sub-49_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "a7ca469bcbe4ed56af5e6d8373032f814860da5ec5a6b0ea3b392baf1315701b"
+    },
+    {
+      "subject_id": "sub-49",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-49/ses-session2/eeg/sub-49_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "430320fe31b52c7918979189b1563347315effb2dd6b5630dfc043be737bf9de"
+    },
+    {
+      "subject_id": "sub-50",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-50/ses-session1/eeg/sub-50_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "fdbb5cb79434cc01043aa7ad62d34231600994571dc2a5c3a92c4d836db5676d"
+    },
+    {
+      "subject_id": "sub-50",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-50/ses-session2/eeg/sub-50_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "0c9ad073587aaa4896735d51b50b6a990a9fe0f0281238db24a6bd3ab42325f2"
+    },
+    {
+      "subject_id": "sub-51",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-51/ses-session1/eeg/sub-51_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "54e0ae76df29a10448ce69cd5e2e4f4b3bee2240e758cc1b2a566f47eaf812ca"
+    },
+    {
+      "subject_id": "sub-51",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-51/ses-session2/eeg/sub-51_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "d7c800e84afdde57db549fb4ece4344884fbad55ff2cf8840ae02a919a5996cb"
+    },
+    {
+      "subject_id": "sub-52",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-52/ses-session1/eeg/sub-52_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "afcf6d8e65fa9d8cf3358a1bba74974a81a8bce65f30997e79cc4cd133e1d8c2"
+    },
+    {
+      "subject_id": "sub-52",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-52/ses-session2/eeg/sub-52_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "4808603c7f2d020c5865a30f4478f96ff894b74e52a680cbf6fb5f26621d258b"
+    },
+    {
+      "subject_id": "sub-53",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-53/ses-session1/eeg/sub-53_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "24f99d3fe2514a98c019eac6be15cb74210415333f74ad11be1931fee50fb09b"
+    },
+    {
+      "subject_id": "sub-53",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-53/ses-session2/eeg/sub-53_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "fb18f6069884c00792e2b19bffda8778889909779ce71689f4001879e6baaea6"
+    },
+    {
+      "subject_id": "sub-54",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-54/ses-session1/eeg/sub-54_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8c221c0bddf55c9605403ee7bb41ead0f0316acf4a7f0a6207faa2548251578e"
+    },
+    {
+      "subject_id": "sub-54",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-54/ses-session2/eeg/sub-54_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "4054cd5dba4806313ddcc8e28bd9006d993ace547f27d1735448cbe06d6cc89d"
+    },
+    {
+      "subject_id": "sub-55",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-55/ses-session1/eeg/sub-55_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "8f11836966ae86579e57cb920a04d5496c17647980d2cb196aabeba3ab823d31"
+    },
+    {
+      "subject_id": "sub-55",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-55/ses-session2/eeg/sub-55_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "00499f4400120ea5029631b68eb2794dc5b43da68e1f3b6d62fec04b6898c7bf"
+    },
+    {
+      "subject_id": "sub-56",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-56/ses-session1/eeg/sub-56_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "ff32189080fe33ae3b3c5e432ca85cf3418c4a50666d162b95ce5f26a0bfbd40"
+    },
+    {
+      "subject_id": "sub-56",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-56/ses-session2/eeg/sub-56_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "829ff144f95c3692bea9424404dee694a8f647c2623ebe6c4b50d68e1a6e43d4"
+    },
+    {
+      "subject_id": "sub-57",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-57/ses-session1/eeg/sub-57_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "9086e9bd55d2deee05b2509176e0dfbe2cefa33552544e636bbab91f29ff7d81"
+    },
+    {
+      "subject_id": "sub-57",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-57/ses-session2/eeg/sub-57_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "ae5883b7d60375ffbb7e5a41430e076b6f9d02b19f0a4f7023d739f75d3fa982"
+    },
+    {
+      "subject_id": "sub-58",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-58/ses-session1/eeg/sub-58_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "904f39b8d4d429faa05905b8d4987dc8d74a13f8bf7c14c699b42c8191678f4c"
+    },
+    {
+      "subject_id": "sub-58",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-58/ses-session2/eeg/sub-58_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "7be68c2d13d32cae59b66add7d7afe90cf4cd1c813e5ff5b56c1328c5251abff"
+    },
+    {
+      "subject_id": "sub-59",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-59/ses-session1/eeg/sub-59_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "1b2fda723cf13dda0839421ab1ff52162d748e093a047b450dcd9913f1d9ccfc"
+    },
+    {
+      "subject_id": "sub-59",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-59/ses-session2/eeg/sub-59_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "4d29cfba25b7c9bb2de391c4a2619fd3f83a00ecb5d33dc37ea4deab9f4223dc"
+    },
+    {
+      "subject_id": "sub-60",
+      "session_id": "session1",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-60/ses-session1/eeg/sub-60_ses-session1_task-eyesclosed_eeg.eeg",
+      "sha256": "d0eed2fe54c088a9b87122325e9e52b5dbf2f511f61326365896db1074040106"
+    },
+    {
+      "subject_id": "sub-60",
+      "session_id": "session2",
+      "url": "https://s3.amazonaws.com/openneuro.org/ds004148/sub-60/ses-session2/eeg/sub-60_ses-session2_task-eyesclosed_eeg.eeg",
+      "sha256": "78cacc17338d14ffe21eafd0a0a8ffee07373a8cb9fe479d6137d051c7407da9"
+    }
+  ]
+}

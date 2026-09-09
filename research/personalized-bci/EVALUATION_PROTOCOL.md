@@ -12,7 +12,7 @@ Preassign whole participants, sessions, and overlapping windows before feature f
 
 | Evaluation | Train / calibration access | Test | Purpose |
 | --- | --- | --- | --- |
-| Earlier-to-later, same person | Earlier sessions only | The next later session | Future-session stability |
+| Earlier-to-later, same person | Earlier sessions only | The next later session | Later-session stability |
 | Unseen person | No data from held-out people in training, preprocessing fit, or tuning | All sessions of held-out people | Population generalization |
 | Personalization | The exact, prespecified early-session calibration budget for that person | A strictly later session not used for adaptation | Recovery after personalization |
 

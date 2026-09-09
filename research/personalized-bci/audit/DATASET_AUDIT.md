@@ -57,7 +57,7 @@ Inclusion, exclusions, the session-1-only anchor, and non-imputation rules are f
 
 ## Interpretation boundary
 
-This dataset is adequate to quantify EEG/SAS stability across a future repeated session for 58 people. It is **insufficient** to meaningfully test whether personalization preserves genuine symptom change, because the available longitudinal SAS data provide one paired follow-up only, no session-3 SAS at all, and no prespecified clinical-transition reference. A future study would need more observed symptom time points and a predeclared meaningful-change criterion.
+This dataset is adequate to quantify EEG/SAS stability across a later repeated session for 58 people. It is **insufficient** to meaningfully test whether personalization preserves genuine symptom change, because the available longitudinal SAS data provide one paired follow-up only, no session-3 SAS at all, and no prespecified clinical-transition reference. A future study would need more observed symptom time points and a predeclared meaningful-change criterion.
 
 ## Reproducible artifacts
 

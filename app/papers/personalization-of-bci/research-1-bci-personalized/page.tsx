@@ -30,8 +30,8 @@ export default function ResearchOneBciPersonalizedPage() {
         </nav>
 
         <h2 id="answer">The answer we can honestly give</h2>
-        <p><strong>Not yet empirically answered.</strong> The primary outcome is now frozen: <strong>anchored SAS change</strong>. Personalization succeeds only when it improves a later, unseen session over a fixed population model <em>and</em> does not erase observed change from the person&apos;s initial SAS anchor.</p>
-        <p>This study has two deliberately separate questions. ds004148 can test whether personalization survives session drift. With only three sessions and potentially little SAS movement, it may be underpowered to establish whether personalization preserves genuine psychiatric symptom transitions. A prettier random-window score is not evidence for either claim.</p>
+        <p><strong>Not yet empirically answered.</strong> The primary outcome is frozen: <strong>anchored SAS change</strong>. Personalization succeeds only when it improves a later repeated session over a fixed population model <em>and</em> does not erase observed change from the person&apos;s initial SAS anchor.</p>
+        <p>This study has two deliberately separate questions. ds004148 can test whether personalization survives session drift. With only three sessions and limited SAS movement, it may be underpowered to establish whether personalization preserves genuine psychiatric symptom transitions. A prettier random-window score is not evidence for either claim.</p>
 
         <h2 id="dataset">1. Choose the right public dataset</h2>
         <p><strong>Discovery dataset: OpenNeuro ds004148.</strong> The data paper documents 60 participants with three EEG sessions, including short-repeat and roughly one-month follow-up sessions. The official metadata define subject IDs and repeated Self-rating Anxiety Scale (SAS), Self-rating Depression Scale (SDS), Epworth Sleepiness Scale (ESS), Karolinska Sleepiness Scale (KSS), and positive/negative affect (PANAS) fields.</p>
@@ -39,7 +39,7 @@ export default function ResearchOneBciPersonalizedPage() {
 
         <h2 id="stability">2. Measure the stability problem first</h2>
         <p>Train only on an earlier session, then predict the next later session from the same person. Separately, hold out whole people — all of their sessions — to measure new-person generalization. Fit preprocessing, tuning, and windowing inside each training split; no overlapping windows may cross a split.</p>
-        <p>Report the participant-level drop from development to future session and from familiar to unseen people. Participant/session resampling, rather than treating windows as independent patients, supplies uncertainty. This design follows the data&apos;s longitudinal structure and directly avoids the leakage warning demonstrated in translational EEG by Brookshire and colleagues.</p>
+        <p>Report the participant-level difference from a session-1 reference to the later repeated session and from familiar to unseen people. Participant/session resampling, rather than treating windows as independent patients, supplies uncertainty. This design follows the data&apos;s longitudinal structure and directly avoids the leakage warning demonstrated in translational EEG by Brookshire and colleagues.</p>
 
         <h2 id="personalization">3. Test personalization methods</h2>
         <p>Start simple: historical mean/last observation, spectral EEG + linear model, covariance/Riemannian model, and a small EEG neural network. Only after those establish later-session EEG signal should a foundation model enter the benchmark. Then compare the strongest fixed model with personal baseline, calibration head/adapters, and carefully budgeted fine-tuning.</p>
