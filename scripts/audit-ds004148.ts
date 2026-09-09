@@ -9,6 +9,10 @@ const listingDir = join(auditDir, "s3-subject-lists");
 const taskNames = ["eyesclosed", "eyesopen", "mathematic", "memory", "music"];
 const sessions = ["session1", "session2", "session3"] as const;
 type Session = (typeof sessions)[number];
+type ManifestRow = Record<string, string | number | boolean>;
+type AnalysisManifestRow = ManifestRow & {
+  analysis_cohort_included: boolean;
+};
 
 function parseTsv(source: string) {
   const [header, ...rows] = source.trimEnd().split(/\r?\n/).map((line) => line.split("\t"));
@@ -72,7 +76,7 @@ async function main() {
     listings.set(file.replace(".xml", ""), parseS3Objects(await readFile(join(listingDir, file), "utf8")));
   }
 
-  const manifest: Record<string, string | number | boolean>[] = [];
+  const manifest: ManifestRow[] = [];
   for (const participant of participants) {
     const subject = participant.participant_id;
     const objects = listings.get(subject) ?? [];
@@ -122,7 +126,7 @@ async function main() {
 
   const repeated = manifest.filter((row) => row.session_id !== "session3" && row.eeg_all_expected_tasks_available && !row.sas_missing);
   const eligibleIds = [...new Set(repeated.map((row) => row.subject_id).filter((id) => repeated.filter((row) => row.subject_id === id).length === 2))];
-  const analysisManifest = manifest.map((row) => ({ ...row, analysis_cohort_included: eligibleIds.includes(String(row.subject_id)) && row.session_id !== "session3" }));
+  const analysisManifest: AnalysisManifestRow[] = manifest.map((row) => ({ ...row, analysis_cohort_included: eligibleIds.includes(String(row.subject_id)) && row.session_id !== "session3" }));
   const frozen = analysisManifest.filter((row) => row.analysis_cohort_included);
   const sas = manifest.filter((row) => row.sas !== "").map((row) => Number(row.sas));
   const delta = analysisManifest.filter((row) => row.session_id === "session2" && row.analysis_cohort_included && row.anchored_sas_change !== "").map((row) => Number(row.anchored_sas_change));
