@@ -8,6 +8,7 @@ This directory makes the associated research page reproducible and source-tracea
 - `EVALUATION_PROTOCOL.md` — time-ordered splits, calibration budgets, controls, and reporting requirements.
 - `BASELINE_PROTOCOL.md` — frozen eyes-closed, session-1-to-session-2 fixed-population benchmark; no personalization.
 - `audit/EYESCLOSED_FIXED_POPULATION_BASELINE.md` — completed fixed-model result and its later-session stability comparison.
+- `MODEL_COMPARISON_PROTOCOL.md` and `audit/TASKWISE_MODEL_COMPARISON.md` — frozen task-wise comparison against historical, context, nonlinear EEG, and EEG+context baselines.
 - `citations.bib` — the cited primary paper and data record.
 - `sources/` — local copies of the paper and official dataset metadata used to justify eligibility. `SOURCE_MANIFEST.md` records provenance and retrieval date.
 
