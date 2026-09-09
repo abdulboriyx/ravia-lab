@@ -31,6 +31,7 @@ export default function UnequalResearchPage() {
           <h2>On this page</h2>
           <ol>
             <li><a href="#claim">The claim</a></li>
+            <li><a href="#measure">What inequality is being measured?</a></li>
             <li><a href="#objective">A normative-empirical objective function</a></li>
             <li><a href="#dimensions">The six outcomes</a></li>
             <li><a href="#limits">Floors, trade-offs, and uncertainty</a></li>
@@ -43,6 +44,23 @@ export default function UnequalResearchPage() {
           <h2>The claim</h2>
           <p>“Ideal” is a normative word. Data can show what tends to happen under different distributions; it cannot choose society’s values for us. This project therefore makes the values visible, then asks what the evidence says about them.</p>
           <p>We will not score countries by one inequality statistic. A Gini coefficient describes dispersion in income or consumption, but it does not by itself tell us whether poverty is falling, whether people can move up, whether basic risks are insured, or whether political power is becoming concentrated. The World Bank itself notes that inequality can rise while absolute poverty falls. <a href="https://databank.worldbank.org/metadataglossary/world-development-indicators/series/SI.POV.GINI">World Bank Gini metadata</a></p>
+        </section>
+
+        <section id="measure">
+          <h2>What inequality is being measured?</h2>
+          <p>There is no single “inequality” variable. The research will use a layered distributional dashboard, moving from the income produced by the market to what people finally have, then to the concentration of income, wealth, deprivation, and life chances.</p>
+          <ol className={styles.steps}>
+            <li><strong>Market-income Gini.</strong> Inequality before taxes and cash transfers. It shows how unequally the market distributes earnings and capital income.</li>
+            <li><strong>Disposable-income Gini.</strong> Inequality after direct taxes and cash transfers. The gap from market inequality makes redistribution visible.</li>
+            <li><strong>Top income shares.</strong> The share received by the top 10% and top 1%. These expose changes at the top that a Gini can conceal.</li>
+            <li><strong>Bottom 50% income share.</strong> A direct check on whether broad prosperity reaches the lower half of the distribution.</li>
+            <li><strong>Wealth concentration.</strong> Wealth shares and top wealth concentration, kept separate from annual income.</li>
+            <li><strong>Poverty and mobility.</strong> Poverty headcount and gap, alongside intergenerational mobility and equality of opportunity.</li>
+          </ol>
+          <h3>Why the layers matter</h3>
+          <p>Two countries can look similar after taxes and transfers while differing sharply in pre-tax market inequality, how much redistribution is required to reach that result, or how concentrated wealth is. Treating those cases as identical would hide the institutions and political choices doing the work.</p>
+          <p><a href="https://fsolt.org/swiid/">SWIID</a> provides comparable estimates of both market- and disposable-income Ginis across countries and over time, standardised to the Luxembourg Income Study. For top-income and wealth shares, the <a href="https://wid.world/methodology/">World Inequality Database</a> is a complementary source: its distributional national accounts combine surveys with fiscal data, national accounts, and wealth rankings, helping to better represent the upper tail than surveys alone.</p>
+          <p>The first comparative model will therefore treat the Gini as one coordinate in a distributional profile—not the target to minimize.</p>
         </section>
 
         <section id="objective">
@@ -88,6 +106,7 @@ export default function UnequalResearchPage() {
           <h2>Measurement sources</h2>
           <ul className={styles.sources}>
             <li><a href="https://pip.worldbank.org/about">World Bank Poverty and Inequality Platform</a> — household-survey-based poverty, inequality, and shared-prosperity estimates.</li>
+            <li><a href="https://fsolt.org/swiid/">Standardized World Income Inequality Database</a> — comparable market- and disposable-income Ginis, plus redistribution measures.</li>
             <li><a href="https://www.oecd.org/en/topics/social-mobility-and-equal-opportunity.html">OECD social mobility and equal opportunity</a> — mobility can be measured through income, earnings, class, health, and education; comparable-data gaps remain important.</li>
             <li><a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators">Worldwide Governance Indicators</a> — broad cross-country measures including voice and accountability and political stability, useful as a first lens but insufficient for a country-specific reform diagnosis.</li>
             <li><a href="https://wid.world/methodology/">World Inequality Database</a> — distributional national accounts and transparent documentation of data limitations.</li>
