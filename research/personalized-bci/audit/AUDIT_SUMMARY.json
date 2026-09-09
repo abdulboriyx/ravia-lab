@@ -8,6 +8,7 @@
     "session3": 60
   },
   "usable_repeated_session_subjects_with_SAS": 58,
+  "complete_three_session_sas_cases": 0,
   "sas_distribution_all_observed": {
     "n": 117,
     "mean": 41.256410256410255,
@@ -17,6 +18,38 @@
     "median": 39,
     "q3": 45,
     "max": 69
+  },
+  "sas_distribution_by_session": {
+    "session1": {
+      "n": 58,
+      "mean": 40.724137931034484,
+      "sd": 8.42467783432816,
+      "min": 26,
+      "q1": 35,
+      "median": 38.5,
+      "q3": 45,
+      "max": 69
+    },
+    "session2": {
+      "n": 59,
+      "mean": 41.779661016949156,
+      "sd": 9.135130742152121,
+      "min": 25,
+      "q1": 35,
+      "median": 39,
+      "q3": 47,
+      "max": 69
+    },
+    "session3": {
+      "n": 0,
+      "mean": null,
+      "sd": null,
+      "min": null,
+      "q1": null,
+      "median": null,
+      "q3": null,
+      "max": null
+    }
   },
   "anchored_sas_change_session2": {
     "n": 58,

@@ -28,7 +28,7 @@ Include a participant only when all are true:
 
 ## Immutable anchor and change
 
-For every participant, `sas_anchor` is their first valid SAS in BIDS session order, and `sas_anchor_session_id` preserves where it came from. For the frozen repeated-session cohort, that anchor is necessarily session1. `anchored_sas_change` equals later SAS minus this anchor. It is blank, not zero, when either value is absent.
+For every participant, session1 SAS is the only permitted immutable anchor. `sas_anchor_session_id` is `session1` when it exists and blank otherwise. `anchored_sas_change` equals later SAS minus this anchor. It is blank, not zero, when either value is absent. No later available value may replace a missing session1 anchor.
 
 ## Interpretation boundary
 

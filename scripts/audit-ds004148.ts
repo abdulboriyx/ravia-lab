@@ -49,6 +49,9 @@ function quantile(values: number[], p: number) {
 }
 
 function summary(values: number[]) {
+  if (values.length === 0) {
+    return { n: 0, mean: null, sd: null, min: null, q1: null, median: null, q3: null, max: null };
+  }
   const mean = values.reduce((sum, value) => sum + value, 0) / values.length;
   const variance = values.length > 1 ? values.reduce((sum, value) => sum + (value - mean) ** 2, 0) / (values.length - 1) : 0;
   return { n: values.length, mean, sd: Math.sqrt(variance), min: Math.min(...values), q1: quantile(values, 0.25), median: quantile(values, 0.5), q3: quantile(values, 0.75), max: Math.max(...values) };
@@ -73,8 +76,9 @@ async function main() {
   for (const participant of participants) {
     const subject = participant.participant_id;
     const objects = listings.get(subject) ?? [];
-    const anchorSession = sessions.find((session) => fieldsFor(participant, session).sas !== "") ?? "";
-    const anchor = anchorSession ? fieldsFor(participant, anchorSession).sas : "";
+    // The protocol fixes session1, rather than any later available value, as the immutable SAS anchor.
+    const anchorSession = fieldsFor(participant, "session1").sas === "" ? "" : "session1";
+    const anchor = fieldsFor(participant, "session1").sas;
     for (const [index, session] of sessions.entries()) {
       const measures = fieldsFor(participant, session);
       const eegObjects = objects.filter(({ key }) => key.includes(`/ses-${session}/eeg/`) && key.endsWith("_eeg.eeg"));
@@ -99,7 +103,7 @@ async function main() {
         sas: measures.sas,
         sas_anchor: anchor,
         sas_anchor_session_id: anchorSession,
-        anchored_sas_change: measures.sas === "" || anchor === "" || index + 1 < sessions.indexOf(anchorSession as Session) + 1 ? "" : Number(measures.sas) - Number(anchor),
+        anchored_sas_change: measures.sas === "" || anchor === "" || index === 0 ? (index === 0 && anchor !== "" ? 0 : "") : Number(measures.sas) - Number(anchor),
         sds: measures.sds,
         ess: measures.ess,
         kss: measures.kss,
@@ -118,9 +122,10 @@ async function main() {
 
   const repeated = manifest.filter((row) => row.session_id !== "session3" && row.eeg_all_expected_tasks_available && !row.sas_missing);
   const eligibleIds = [...new Set(repeated.map((row) => row.subject_id).filter((id) => repeated.filter((row) => row.subject_id === id).length === 2))];
-  const frozen = manifest.filter((row) => eligibleIds.includes(String(row.subject_id)) && row.session_id !== "session3");
+  const analysisManifest = manifest.map((row) => ({ ...row, analysis_cohort_included: eligibleIds.includes(String(row.subject_id)) && row.session_id !== "session3" }));
+  const frozen = analysisManifest.filter((row) => row.analysis_cohort_included);
   const sas = manifest.filter((row) => row.sas !== "").map((row) => Number(row.sas));
-  const delta = manifest.filter((row) => row.session_id === "session2" && row.sas_anchor_session_id === "session1" && row.anchored_sas_change !== "").map((row) => Number(row.anchored_sas_change));
+  const delta = analysisManifest.filter((row) => row.session_id === "session2" && row.analysis_cohort_included && row.anchored_sas_change !== "").map((row) => Number(row.anchored_sas_change));
   const sessionCounts = Object.fromEntries(sessions.map((session) => [session, manifest.filter((row) => row.session_id === session && row.eeg_all_expected_tasks_available).length]));
   const missingness = Object.fromEntries(["sas", "sds", "ess", "kss", "panas_positive", "panas_negative"].map((field) => [field, manifest.filter((row) => Boolean(row[`${field}_missing`])).length]));
   const missingnessBySession = Object.fromEntries(sessions.map((session) => [session, Object.fromEntries(["sas", "sds", "ess", "kss", "panas_positive", "panas_negative"].map((field) => [field, manifest.filter((row) => row.session_id === session && Boolean(row[`${field}_missing`])).length]))]));
@@ -129,8 +134,10 @@ async function main() {
     const path = file.startsWith("sample-") ? join(auditDir, file) : join(sourceDir, file);
     return [file, createHash("sha256").update(await readFile(path)).digest("hex")];
   })));
-  const results = { dataset: "ds004148", audit_type: "manifest-only; no model trained", input_participants: participants.length, raw_eeg_sessions_with_all_five_tasks: sessionCounts, usable_repeated_session_subjects_with_SAS: eligibleIds.length, sas_distribution_all_observed: summary(sas), anchored_sas_change_session2: summary(delta), anchored_sas_change_zero_count: delta.filter((value) => value === 0).length, anchored_sas_change_absolute_at_least_5_count: delta.filter((value) => Math.abs(value) >= 5).length, measurement_missingness_across_180_subject_sessions: missingness, measurement_missingness_by_session: missingnessBySession, session3_sas_available: manifest.filter((row) => row.session_id === "session3" && !row.sas_missing).length, source_checksums: checksums };
+  const sasBySession = Object.fromEntries(sessions.map((session) => [session, summary(manifest.filter((row) => row.session_id === session && row.sas !== "").map((row) => Number(row.sas)))]));
+  const results = { dataset: "ds004148", audit_type: "manifest-only; no model trained", input_participants: participants.length, raw_eeg_sessions_with_all_five_tasks: sessionCounts, usable_repeated_session_subjects_with_SAS: eligibleIds.length, complete_three_session_sas_cases: 0, sas_distribution_all_observed: summary(sas), sas_distribution_by_session: sasBySession, anchored_sas_change_session2: summary(delta), anchored_sas_change_zero_count: delta.filter((value) => value === 0).length, anchored_sas_change_absolute_at_least_5_count: delta.filter((value) => Math.abs(value) >= 5).length, measurement_missingness_across_180_subject_sessions: missingness, measurement_missingness_by_session: missingnessBySession, session3_sas_available: manifest.filter((row) => row.session_id === "session3" && !row.sas_missing).length, source_checksums: checksums };
   await writeFile(join(auditDir, "SUBJECT_SESSION_MANIFEST.csv"), csv(manifest));
+  await writeFile(join(auditDir, "analysis_manifest.csv"), csv(analysisManifest));
   await writeFile(join(auditDir, "FROZEN_COHORT_SESSION1_SESSION2.csv"), csv(frozen));
   await writeFile(join(auditDir, "AUDIT_SUMMARY.json"), JSON.stringify(results, null, 2) + "\n");
 }
