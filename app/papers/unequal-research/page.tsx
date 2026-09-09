@@ -35,6 +35,7 @@ export default function UnequalResearchPage() {
             <li><a href="#objective">A normative-empirical objective function</a></li>
             <li><a href="#dimensions">The six outcomes</a></li>
             <li><a href="#limits">Floors, trade-offs, and uncertainty</a></li>
+            <li><a href="#context">Start by comparing like with like</a></li>
             <li><a href="#comparison">How comparison will work</a></li>
             <li><a href="#sources">Measurement sources</a></li>
           </ol>
@@ -88,6 +89,18 @@ export default function UnequalResearchPage() {
           <p>Measurement error, survey differences, time lags, and value disagreement make a single universal number misleading. The outcome should normally be a context-specific <strong>robust range</strong>: inequality levels that remain near the best attainable social performance across credible measures and weights.</p>
           <h3>Income inequality is not the whole distribution</h3>
           <p>We will keep income, wealth, poverty, and opportunity distinct. Household-survey indicators are essential but can understate the top end; distributional national accounts are a useful complementary approach because they reconcile surveys with tax and national-account data while documenting limitations. <a href="https://wid.world/methodology/">World Inequality Database methodology</a></p>
+        </section>
+
+        <section id="context">
+          <h2>Start by comparing like with like</h2>
+          <p>Finland should not be used as the unqualified benchmark for Ethiopia. Before estimating any relationship, observations will be separated into the World Bank’s four income classifications: <strong>low-income, lower-middle-income, upper-middle-income, and high-income economies.</strong> The classifications use Atlas-method GNI per person and are updated annually, so the historical analysis will use the group assigned in each observation year. <a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/906519-world-bank-country-and-lending-groups">World Bank country classifications</a></p>
+          <p>Income group is a starting partition, not a theory of society. It prevents the most obvious bad comparison, but countries at the same income level can still have radically different state capacity, labour markets, demographic pressures, fiscal space, exposure to conflict or commodity cycles, and institutional arrangements.</p>
+          <h3>Second layer: institutional and welfare structures</h3>
+          <p>Within each income group, the comparison will distinguish broad structures where data allow: the tax-and-transfer system, public-service provision, social-insurance coverage, labour-market institutions, state capacity, and democratic accountability. These are not labels of success or failure. They are variables that may change the relationship between inequality and the six outcomes.</p>
+          <h3>Initial hypothesis: no universal optimum</h3>
+          <p>Our prior is that there is no single Gini, top-share, or wealth-share target that is ideal everywhere. The relevant question is conditional: <em>given this society’s economic capacity, institutions, risks, and preferences, what distributional range is associated with the best feasible outcome bundle?</em></p>
+          <p>This is not an assumption that every country is incomparable. It is a testable hypothesis. We will first estimate within income groups, then test whether institutional variables explain remaining differences and whether results travel across groups. If a common range survives those tests, that will be evidence for generality; if it does not, the result is a context-specific range.</p>
+          <p>The OECD’s review of public finance reaches the same caution: the growth and inequality effects of reallocating taxes and spending likely vary with country characteristics. Its inclusive-growth work likewise advises designing tax-and-transfer reforms around country-specific constraints and social preferences. <a href="https://www.oecd.org/en/publications/public-finance-economic-growth-and-inequality_094bdaa5-en.html">OECD public-finance evidence review</a> · <a href="https://www.oecd.org/en/publications/opportunities-for-all_9789264301665-en/full-report/component-8.html">OECD inclusive-growth framework</a></p>
         </section>
 
         <section id="comparison">
