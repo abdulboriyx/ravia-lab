@@ -3,8 +3,8 @@ import Link from "next/link";
 import styles from "./research.module.css";
 
 export const metadata: Metadata = {
-  title: "What benefits can inequality produce? | Unequal Research",
-  description: "An evidence-led assessment of the incentive, innovation, saving, and growth case for inequality."
+  title: "Unequal Research | Evidence on inequality",
+  description: "Evidence-led answers on the benefits and harms of economic inequality."
 };
 
 export default function UnequalResearchPage() {
@@ -25,6 +25,7 @@ export default function UnequalResearchPage() {
             <li><a href="#findings">What the evidence finds</a></li>
             <li><a href="#disagreement">Why major studies disagree</a></li>
             <li><a href="#verdict">Bottom line</a></li>
+            <li><a href="#harms">What harms appear as inequality rises?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -102,6 +103,67 @@ export default function UnequalResearchPage() {
             <li><a href="https://www.nber.org/papers/w21247">Aghion et al., Innovation and Top Income Inequality</a>.</li>
             <li><a href="https://doi.org/10.1016/j.respol.2022.104603">Akcigit et al. (2022), Does income redistribution impede innovation?</a>.</li>
           </ul>
+        </section>
+
+        <section id="harms" aria-labelledby="harms-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Unequal Research · Question 02 of 06</p>
+            <h2 id="harms-title">What harms appear as inequality rises?</h2>
+            <p className={styles.lede}><strong>Short answer:</strong> the clearest harms are the ones that operate through opportunity: reduced intergenerational mobility, more persistent poverty, and slower long-run growth through weaker human-capital investment. Health, trust, political influence, and instability are serious concerns, but their direct causal evidence is less uniform.</p>
+          </header>
+
+          <h3>Ranked by evidential strength</h3>
+          <p>The ordering below ranks evidence that inequality itself worsens an outcome—not the moral importance of the outcome. Country comparisons remain vulnerable to institutions, history, and reverse causation; where that limitation is decisive, it is stated rather than hidden.</p>
+
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>Strongest: mobility and opportunity</h3>
+                <p>The OECD’s cross-country evidence finds <strong>no studied country combining high income inequality with high intergenerational mobility</strong>. The association is not proof that the Gini alone causes immobility, but it is unusually consistent with the mechanisms: unequal parents can buy safer neighbourhoods, tutoring, credentials, and networks. The result directly rejects the claim that high inequality is the necessary price of high opportunity. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2018/05/a-broken-social-elevator_3ba9143a/162cc698-en.pdf">OECD, A Broken Social Elevator?</a></p>
+                <p>Education is the transmission belt. Across <strong>11 OECD countries</strong> with comparable data, roughly <strong>two-thirds of the socioeconomic achievement gap at age 15</strong> was already visible at age 10; more than half of the gap among people aged 25–29 was already present then. This does not identify inequality as the only cause, but it shows why opportunity losses persist long before the labour market. <a href="https://www.oecd.org/en/publications/equity-in-education_9789264073234-en.html">OECD, Equity in Education</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>Strong: poverty persistence and long-run growth</h3>
+                <p>World Bank simulations put a large number on the distributional constraint. If every country reduced its Gini by <strong>1% per year</strong>, global extreme poverty in 2030 would be <strong>5.4%</strong>, rather than <strong>6.5%</strong> under unchanged inequality—about <strong>100 million fewer people</strong> in extreme poverty. This is a scenario calculation, not a clean causal experiment, but it demonstrates that growth alone cannot offset worsening distribution indefinitely. <a href="https://documents.worldbank.org/curated/en/739221559589341838/pdf/How-Much-Does-Reducing-Inequality-Matter-for-Global-Poverty.pdf">World Bank, How Much Does Reducing Inequality Matter for Global Poverty?</a></p>
+                <p>For 19 OECD countries, the OECD estimated that the rise in inequality from <strong>1985–2005 cut cumulative growth by 4.7 percentage points</strong> over 1990–2010. Its central mechanism was weaker education investment among poorer households: a one-Gini-point reduction was associated with a little over <strong>0.1 percentage point more annual growth</strong> over 25 years. Mexico and New Zealand were estimated to have lost more than <strong>10 percentage points</strong> of growth. These estimates are debated, but they are among the most concrete long-run results. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2014/12/trends-in-income-inequality-and-its-impact-on-economic-growth_g17a2582/5jxrjncwxv6j-en.pdf">OECD, Trends in Income Inequality and its Impact on Economic Growth</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Strong descriptive evidence, weaker inequality-to-health causation: health gaps</h3>
+                <p>Socioeconomic health inequality is unambiguous even when the precise causal role of the Gini is not. In the OECD/EU evidence, <strong>44% of low-educated adults</strong> reported poor health, versus <strong>23% of adults with tertiary education</strong>. Across OECD countries, the education gap in life expectancy at age 30 averages <strong>6 years for men and 3 years for women</strong>. These gaps reinforce income inequality across generations through illness, lower learning, and shorter working lives. <a href="https://www.oecd.org/en/publications/health-for-everyone_3c8385d0-en/full-report/component-5.html">OECD, Health for Everyone?</a> · <a href="https://www.oecd.org/en/publications/education-at-a-glance-2021_b35a14e5-en/full-report/component-13.html">Education at a Glance 2021</a></p>
+                <p>The important qualification is causal: health reviews cannot cleanly separate income distribution from education, childhood conditions, healthcare, and selection into both income and health. The evidence therefore supports calling health inequality a major companion and transmission channel—not claiming that every cross-country health gap is caused by a higher Gini.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>Moderate and heterogeneous: political capture and trust</h3>
+                <p>A systematic review of <strong>1,163 estimates from 25 studies</strong> concludes that policy outcomes generally respond more to richer citizens’ preferences, although effects vary substantially by model and democracy. That is strong evidence of unequal political responsiveness; it is less decisive evidence that a given rise in income inequality causes it, because wealth, organisation, electoral rules, and lobbying institutions co-move. <a href="https://www.cambridge.org/core/journals/perspectives-on-politics/article/economic-inequality-and-political-responsiveness-a-systematic-review/3364318C95A3D608048BA1800013C7E1">Elkjær &amp; Klitgaard (2021)</a></p>
+                <p>Trust has a similar status. OECD comparisons show a strong negative relationship between income inequality and trust across countries and within the United States after standard controls, but the OECD explicitly says the causal effect still needs to be nailed down. The prudent finding is that inequality and low trust travel together; the direction and institutional mediators remain contested. <a href="https://www.oecd.org/en/publications/for-good-measure_9789264307278-en/full-report/component-13.html">OECD, For Good Measure</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>Least settled as direct effects: crime, instability, and aggregate demand</h3>
+                <p>The case is often overstated. A 2024 meta-analysis of <strong>1,341 estimates from 43 studies</strong> finds income inequality’s average effect on crime is <strong>small, if not nonexistent</strong>, and detects limited positive publication bias; omitted deterrence and income variables materially bias estimates. Crime is a social harm, but it should not be presented as one of the best-established causal consequences of inequality. <a href="https://doi.org/10.1016/j.worlddev.2023.106520">Rufrancos (2024), Revisiting the Income Inequality–Crime Puzzle</a></p>
+                <p>The aggregate-demand and instability channels are economically plausible but not yet comparably pinned down. Higher-income households generally save more, so a shift upward can depress consumption demand; yet an IMF general-equilibrium analysis finds redistribution can involve an output trade-off depending on demand composition. Likewise, the World Bank documents how unequal power can produce capture, exclusion, and clientelism, but this is not a universal numeric estimate from income inequality to unrest. <a href="https://www.imf.org/en/publications/wp/issues/2016/12/31/demand-composition-and-income-distribution-42526">IMF, Demand Composition and Income Distribution</a> · <a href="https://www.worldbank.org/en/publication/wdr2017">World Development Report 2017</a></p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Bottom line</h3>
+          <p className={styles.lede}>The evidence is strongest where inequality makes opportunity less equal and poverty harder to escape; those losses can accumulate into weaker long-run growth. It is substantial but more conditional for health gaps and political responsiveness. It is weakest for broad claims that inequality mechanically produces crime, collapse, or a fixed loss of demand. A credible account should treat those last mechanisms as risks shaped by institutions—not settled universal laws.</p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
