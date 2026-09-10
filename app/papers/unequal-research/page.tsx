@@ -30,6 +30,7 @@ export default function UnequalResearchPage() {
             <li><a href="#acceleration">Where do the harms begin accelerating?</a></li>
             <li><a href="#development">How does this differ by development level?</a></li>
             <li><a href="#range">What range does the total evidence support?</a></li>
+            <li><a href="#corridor-test">Does the 25–35 disposable-Gini corridor hold up?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -413,6 +414,78 @@ export default function UnequalResearchPage() {
 
           <h3>Final synthesis</h3>
           <p className={styles.lede}>The total record supports “productive inequality with bounded outcomes”: allow some market dispersion and exceptional rewards, but keep disposable incomes broadly clustered and prevent asset ownership from becoming a closed inheritance system. The critical test is not whether a country matches a number. It is whether inequality remains reversible—especially whether intergenerational earnings elasticity stays below about .3, the bottom half gains income and assets, and high market inequality is actually offset by opportunity and security.</p>
+        </section>
+
+        <section id="corridor-test" aria-labelledby="corridor-test-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Evidence check · Testing the provisional corridor</p>
+            <h2 id="corridor-test-title">Does the 25–35 disposable-Gini corridor actually dominate?</h2>
+            <p className={styles.lede}><strong>Verdict:</strong> it clearly outperforms the 35–50 range on mobility and poverty risk, but it does <strong>not</strong> yet beat 20–25 on every outcome. The direct evidence supports 25–35 as a broad, high-performing <em>corridor</em>, not as a uniquely optimal point. Productivity, median-income growth, health, and institutional quality vary too much within each band to declare a clean winner.</p>
+          </header>
+
+          <h3>Country-cluster comparison</h3>
+          <div className={styles.rangeTable} role="region" aria-label="Evidence check of disposable-income Gini bands">
+            <table>
+              <thead><tr><th>Disposable-Gini band</th><th>Country examples</th><th>What the comparison supports</th><th>Does it beat 25–35?</th></tr></thead>
+              <tbody>
+                <tr><th>20–25</th><td>Slovakia, Slovenia, Czechia and the lowest-inequality Central European cases</td><td>Low poverty and strong distributional security are compatible with this band, but it contains relatively few otherwise comparable rich-country cases. Its observed productivity and median-income growth are not uniformly higher than in the Nordics, Netherlands, Germany, or Japan.</td><td><strong>No direct evidence of dominance.</strong> This is a small, historically and institutionally distinctive comparison group.</td></tr>
+                <tr><th>25–35</th><td>Denmark, Finland, Norway, Sweden, France, Germany, Netherlands, Japan, Korea, Canada</td><td>Combines the OECD’s lowest disposable inequality cases with high mobility in several Nordic countries and broad income security. Norway and Japan show that similar market inequality (about 38) can produce disposable Ginis of 27 and 32 through different policy systems.</td><td><strong>Best-supported broad corridor.</strong> Strongest for mobility and relative-poverty protection; mixed for productivity and median-growth leadership.</td></tr>
+                <tr><th>35–40</th><td>United Kingdom, United States, Israel and some Southern European / Latin American cases depending on year and definition</td><td>Contains rich, innovative economies, so it cannot be dismissed as economically stagnant. But OECD mobility comparisons place high-inequality countries at the low-mobility end, and the evidence does not show that their additional dispersion buys systematically faster median-income growth.</td><td><strong>Generally worse on mobility and poverty.</strong> No robust offsetting productivity advantage has been identified.</td></tr>
+                <tr><th>40–50</th><td>Chile, Mexico, Costa Rica, Colombia, Brazil and other high-inequality cases, depending on survey concept</td><td>High inequality is concentrated in Latin America and fragile settings; these cases combine higher poverty persistence and lower mobility with very different growth histories. Their income level, informality, and state capacity are major confounders.</td><td><strong>Clearly does not dominate.</strong> It is a high-risk range, but not proof of a single causal cliff.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Country placement is deliberately approximate: disposable-income Ginis vary with the year, household definition, and whether pensions and in-kind benefits are included. The OECD identifies the Nordic and some Central European countries as the lowest-inequality group and Latin America, Türkiye, and the United States as the highest; its income-distribution database is the appropriate source for checking any country-year value. <a href="https://www.oecd.org/en/publications/society-at-a-glance-2024_918d8db3-en/full-report/income-and-wealth-inequalities_7ac4178f.html">OECD, Society at a Glance 2024</a> · <a href="https://www.oecd.org/en/data/datasets/income-and-wealth-distribution-database.html">OECD Income Distribution Database</a></p>
+
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>Mobility: the corridor wins against 35–50, but not demonstrably against 20–25</h3>
+                <p>The new OECD cross-country analysis directly links household disposable-income inequality in 2000–06 to later earnings mobility and reports an <strong>R² of .4622</strong>. Its country scatter includes Denmark, Finland, Norway, France, Japan, Canada, the U.K., U.S., and Chile. That is substantial descriptive explanatory power for a single national inequality measure, and it supports the corridor’s advantage over the high-inequality end. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2026/03/intergenerational-social-mobility-across-oecd-countries_c45c6be5/6d76ec2a-en.pdf">OECD, Intergenerational Social Mobility (2026)</a></p>
+                <p>It does not prove that 25–35 is better than 20–25. The lowest band has too few comparable country observations and shares many of the same supportive institutions. The responsible conclusion is a <strong>plateau of good mobility below the mid-30s</strong>, rather than evidence that pushing from 25 to 20 improves mobility further.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>Poverty: 25–35 is safer than 35–50, while 20–25 brings no proven extra payoff</h3>
+                <p>Relative poverty is mechanically and empirically more difficult to prevent as disposable incomes spread out. Across OECD countries, relative income poverty averages <strong>12%</strong>; government redistribution reduces relative poverty in <strong>every OECD country</strong> with available data. The 2026 mobility report also finds a substantial relationship between working-age poverty and the educational penalty, with an <strong>R² of .4138</strong>. <a href="https://www.oecd.org/en/publications/2020/03/how-s-life-2020_b547d82c/full-report/component-5.html">OECD, How’s Life?</a> · <a href="https://www.oecd.org/en/publications/government-at-a-glance-2025_0efd0bcd-en/full-report/poverty-and-inequality_5f7b56a0.html">Government at a Glance 2025</a></p>
+                <p>This supports keeping outcomes below the high-30s, but it is not evidence that a disposable Gini of 21 produces better poverty reduction than one of 28 once the poverty floor, housing costs, and transfers are held constant.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Median-income growth and productivity: no corridor dominance has been established</h3>
+                <p>The cleanest broad growth estimate remains the OECD’s 19-country result: rising inequality from 1985–2005 was associated with a <strong>4.7-percentage-point</strong> loss of cumulative growth over 1990–2010, largely through weaker skills investment among poorer households. It supports avoiding sustained high inequality, but it does not estimate a 25–35 optimum or show that the 20–25 countries grow more slowly. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2014/12/trends-in-income-inequality-and-its-impact-on-economic-growth_g17a2582/5jxrjncwxv6j-en.pdf">OECD, Inequality and Growth</a></p>
+                <p>Nor does the country record justify a simple productivity ranking. Aggregate labour-productivity growth has decoupled from real median compensation growth in <strong>most OECD countries</strong> over the past two decades. A country can therefore sit in the corridor while having weak median-income growth, or sit above it while having high productivity but poor distribution. The corridor is a guardrail for shared prosperity, not a productivity-maximising law. <a href="https://www.oecd.org/en/publications/opportunities-for-all_9789264301665-en/full-report/component-8.html">OECD, Opportunities for All</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>Health and institutions: the association is real, the band comparison remains conditional</h3>
+                <p>Low-inequality countries are often healthier and more trusting, but a direct Gini-band test cannot isolate inequality from universal healthcare, education, age structure, and state capacity. The OECD/EU gap remains stark within countries—<strong>44%</strong> of low-educated adults report poor health versus <strong>23%</strong> of tertiary-educated adults—and the life-expectancy gap at age 30 averages <strong>6 years for men and 3 years for women</strong>. <a href="https://www.oecd.org/en/publications/health-for-everyone_3c8385d0-en/full-report/component-5.html">OECD, Health for Everyone?</a> · <a href="https://www.oecd.org/en/publications/education-at-a-glance-2021_b35a14e5-en/full-report/component-13.html">Education at a Glance</a></p>
+                <p>For institutions, the best evidence supports a risk relationship rather than a corridor optimum: the World Bank finds about <strong>two-fifths</strong> of fragile and conflict-affected states above Gini 40, versus about <strong>one-quarter</strong> of other sampled countries. This makes 40–50 an institutional warning range, but does not distinguish 20–25 from 25–35. <a href="https://blogs.worldbank.org/en/opendata/the-geography-of-high-inequality--monitoring-the-world-bank-s-ne">World Bank high-inequality indicator</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>The strongest disagreement: the Gini is not the whole distribution</h3>
+                <p>A meta-analysis of the inequality–mobility literature finds that, after controlling for methodological and country differences, the correlation with the Gini loses significance while the association with the <strong>top-1% income share remains</strong>. This is a serious warning against treating a 25–35 Gini corridor as sufficient. A country can remain inside it while wealth, top incomes, housing, or inherited capital become highly concentrated. <a href="https://doi.org/10.1177/2378023119881282">Amaral, Yen &amp; Wang-Goodman (2019)</a></p>
+                <p>The direct test therefore refines, rather than overturns, the provisional range: <strong>25–35 is a sensible disposable-income corridor only when paired with mobility, poverty, and top-share checks.</strong> It is not the answer by itself.</p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Revised conclusion</h3>
+          <p className={styles.lede}>Keep the 25–35 corridor as a practical benchmark for disposable income, but downgrade the claim that it is “optimal.” It performs better than 35–50 on the outcomes with the strongest evidence—mobility and poverty persistence—and has no demonstrated growth or productivity penalty. Yet the evidence cannot show that 25 is better than 30, or that 20–25 is too equal. The better claim is: <strong>below the mid-30s, protect opportunity; above the high-30s, presume rising risk; at every level, inspect top shares, wealth, and public capacity.</strong></p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
