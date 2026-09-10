@@ -36,6 +36,7 @@ export default function UnequalResearchPage() {
             <li><a href="#dimensions">The six outcomes</a></li>
             <li><a href="#limits">Floors, trade-offs, and uncertainty</a></li>
             <li><a href="#context">Start by comparing like with like</a></li>
+            <li><a href="#tests">Test the consequences</a></li>
             <li><a href="#comparison">How comparison will work</a></li>
             <li><a href="#sources">Measurement sources</a></li>
           </ol>
@@ -101,6 +102,23 @@ export default function UnequalResearchPage() {
           <p>Our prior is that there is no single Gini, top-share, or wealth-share target that is ideal everywhere. The relevant question is conditional: <em>given this society’s economic capacity, institutions, risks, and preferences, what distributional range is associated with the best feasible outcome bundle?</em></p>
           <p>This is not an assumption that every country is incomparable. It is a testable hypothesis. We will first estimate within income groups, then test whether institutional variables explain remaining differences and whether results travel across groups. If a common range survives those tests, that will be evidence for generality; if it does not, the result is a context-specific range.</p>
           <p>The OECD’s review of public finance reaches the same caution: the growth and inequality effects of reallocating taxes and spending likely vary with country characteristics. Its inclusive-growth work likewise advises designing tax-and-transfer reforms around country-specific constraints and social preferences. <a href="https://www.oecd.org/en/publications/public-finance-economic-growth-and-inequality_094bdaa5-en.html">OECD public-finance evidence review</a> · <a href="https://www.oecd.org/en/publications/opportunities-for-all_9789264301665-en/full-report/component-8.html">OECD inclusive-growth framework</a></p>
+        </section>
+
+        <section id="tests">
+          <h2>Test the consequences</h2>
+          <p>For each development group—and then for institutional subgroups—the question is not whether inequality is “good” or “bad” in the abstract. It is whether a higher or lower distributional measure predicts improvement, deterioration, or no reliable difference in each outcome below.</p>
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}><span>01</span><div><h3>Prosperity and productive capacity</h3><p><strong>Tests:</strong> GDP per person and productivity growth, median household income growth, investment, firm creation, and entrepreneurship.</p></div></section>
+            <section className={styles.dimension}><span>02</span><div><h3>Deprivation and security</h3><p><strong>Tests:</strong> poverty headcount and gap, unemployment and underemployment, income volatility, and access to basic services.</p></div></section>
+            <section className={styles.dimension}><span>03</span><div><h3>Human development</h3><p><strong>Tests:</strong> health outcomes, educational achievement and completion, and gaps in access by family background or region.</p></div></section>
+            <section className={styles.dimension}><span>04</span><div><h3>Mobility and opportunity</h3><p><strong>Tests:</strong> intergenerational earnings, income, educational, and occupational mobility; the share of outcome inequality attributable to inherited circumstances; sticky floors and sticky ceilings.</p></div></section>
+            <section className={styles.dimension}><span>05</span><div><h3>Social and political resilience</h3><p><strong>Tests:</strong> interpersonal and institutional trust, social stability, political participation gaps, voice and accountability, and concentration of political power.</p></div></section>
+          </div>
+          <h3>Mobility is a decisive test</h3>
+          <p>High outcome inequality is sometimes defended as the price of opportunity. That is an empirical claim, not a premise. The model therefore gives mobility its own outcome family and asks whether higher inequality coincides with greater mobility once development level and institutions are held in view.</p>
+          <p>The OECD’s 2018 cross-country comparison found no country combining high income inequality with high intergenerational mobility; its 2025 work extends the measurement agenda by separating inequality of opportunity from inequality of outcomes. The evidence is correlational, so it does not prove that one country’s inequality level causes its mobility level—but it is enough to reject the easy assertion that high inequality is demonstrably required for high opportunity. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2018/05/a-broken-social-elevator_3ba9143a/162cc698-en.pdf">OECD, A Broken Social Elevator?</a> · <a href="https://www.oecd.org/en/publications/2025/09/to-have-and-have-not-how-to-bridge-the-gap-in-opportunities_f642138a.html">OECD, To Have and Have Not (2025)</a></p>
+          <h3>What counts as a result</h3>
+          <p>For every outcome, we will report the direction, estimated size, uncertainty interval, time lag, and sensitivity to the inequality measure used. A correlation will be labelled as correlation. A causal claim will require a design that can plausibly separate inequality from the policies, shocks, and institutions that move with it.</p>
         </section>
 
         <section id="comparison">
