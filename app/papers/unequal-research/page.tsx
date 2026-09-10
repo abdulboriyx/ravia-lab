@@ -29,6 +29,7 @@ export default function UnequalResearchPage() {
             <li><a href="#limits">Where do the benefits stop increasing?</a></li>
             <li><a href="#acceleration">Where do the harms begin accelerating?</a></li>
             <li><a href="#development">How does this differ by development level?</a></li>
+            <li><a href="#range">What range does the total evidence support?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -341,6 +342,77 @@ export default function UnequalResearchPage() {
 
           <h3>Bottom line</h3>
           <p className={styles.lede}>Development level changes the mechanisms and the resilience, not the basic goal of broad productive opportunity. Low-income countries face the sharpest finance, schooling, and informality constraints; middle-income countries are particularly exposed to dual-economy and institutional traps; high-income countries can buffer market inequality with taxes, transfers, and universal services but can still lose mobility. The evidence does not support imposing Finland’s exact distribution on Ethiopia—or treating extreme inequality as Ethiopia’s development strategy.</p>
+        </section>
+
+        <section id="range" aria-labelledby="range-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Unequal Research · Question 06 of 06</p>
+            <h2 id="range-title">What range does the total evidence support?</h2>
+            <p className={styles.lede}><strong>Provisional conclusion:</strong> the evidence supports a <strong>conditional corridor</strong>, not one ideal number. A country should keep disposable-income inequality roughly in the high-20s to mid-30s where possible; keep market inequality below the point where taxes and transfers can no longer preserve mobility; and treat extreme wealth concentration as a separate warning signal. These are evidence-informed guardrails, not mechanically estimated optima.</p>
+          </header>
+
+          <h3>Provisional ranges and guardrails</h3>
+          <div className={styles.rangeTable} role="region" aria-label="Provisional inequality ranges by development level">
+            <table>
+              <thead><tr><th>Development level</th><th>Market-income Gini</th><th>Disposable-income Gini</th><th>Wealth concentration</th></tr></thead>
+              <tbody>
+                <tr><th>Low income</th><td><strong>30–40</strong><br /><small>Provisional; confidence: low</small></td><td><strong>25–35</strong><br /><small>Provisional; confidence: low</small></td><td><strong>No numeric optimum</strong><br /><small>Review risk if top 10% ≥70%, top 1% ≥35%, or bottom 50% ≤3%; confidence: very low</small></td></tr>
+                <tr><th>Lower-/upper-middle income</th><td><strong>30–40</strong><br /><small>Provisional; confidence: low–medium</small></td><td><strong>25–35</strong>; <strong>35–40</strong> caution<br /><small>Confidence: medium</small></td><td><strong>No numeric optimum</strong><br /><small>Same review triggers; confidence: very low</small></td></tr>
+                <tr><th>High income</th><td><strong>35–45</strong>, only with high mobility and effective redistribution<br /><small>Confidence: medium</small></td><td><strong>25–35</strong>; <strong>&gt;40</strong> high-risk<br /><small>Confidence: medium</small></td><td><strong>Top 10% 45–60%</strong>; top 1% roughly <strong>15–25%</strong> is the least-concentrated observed band, not a proven optimum<br /><small>Confidence: low</small></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p><strong>How to read this:</strong> all Ginis are on the 0–100 scale and must use the same household, income, and equivalence definitions over time. The income bands are targets for a broad social outcome, not evidence that a country at 34 is necessarily better than one at 36. The wealth figures use net household wealth shares, not a wealth Gini, because top-share data are more comparable and more revealing at the tail.</p>
+
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>Why the disposable-income corridor is 25–35</h3>
+                <p>The OECD average after taxes and transfers is near <strong>31</strong>, and its country evidence shows that similar market Ginis can yield very different disposable outcomes: Japan and Norway both have market-income Ginis around <strong>38</strong>, but disposable inequality is about <strong>32 in Japan</strong> and <strong>27 in Norway</strong>. Taxes and transfers reduce market inequality by slightly more than <strong>25% (11 Gini points)</strong> across the OECD. This places the high-20s to mid-30s in the range repeatedly achieved by affluent, mobile welfare states without requiring equal market rewards. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2019/02/income-redistribution-across-oecd-countries_f2d12a2b/3b63e61c-en.pdf">OECD, Income Redistribution Across Countries</a></p>
+                <p>The upper guardrail is deliberately softer than a claimed tipping point: the World Bank classifies Ginis above <strong>40</strong> as high inequality, while the mobility evidence shows deterioration across parental-income Ginis in the 30s and 40s. Thus 35–40 is a caution zone, and above 40 is a strong prompt to test poverty persistence, mobility, and political inclusion directly.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>Why lower-income countries do not get a higher allowance</h3>
+                <p>Capital scarcity provides a possible short-run rationale for a somewhat wider <em>market</em> distribution, but not for a higher disposable-income target. In a typical developing economy, informality accounts for about <strong>35% of GDP</strong> and <strong>70% of employment</strong>; thin tax capacity and limited access to credit mean high inequality more readily excludes families from education, formal jobs, and investment. That supports a market-income guardrail of 30–40 and an ambitious 25–35 disposable goal where fiscal capacity allows—not a claim that poor countries should accept a Gini above 40 to accumulate capital. <a href="https://datacatalog.worldbank.org/search/dataset/0040660/informality-in-the-process-of-development-and-growth">World Bank, Informality in Development</a></p>
+                <p><strong>Exception:</strong> a low-income country undergoing early industrialisation may temporarily sit above these bands while financing infrastructure or urbanisation. Confidence is low because income surveys often measure consumption rather than income and miss informal and top-end resources. The exception is acceptable only if opportunity indicators improve rather than become inherited.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Why middle-income countries face the tightest practical constraint</h3>
+                <p>The IMF’s 77-country analysis finds the negative growth effect of inequality is driven in part by <strong>emerging markets</strong>; its country examples of large negative effects include Ecuador, Jordan, Nigeria, and Panama. That supports holding both market and disposable inequality below the 40 high-risk line, with a 25–35 disposable corridor and 30–40 market corridor as the provisional middle-income target. <a href="https://www.imf.org/en/publications/wp/issues/2016/12/31/inequality-and-growth-a-heterogeneous-approach-44464">IMF, Heterogeneous Approach</a></p>
+                <p><strong>Exception:</strong> income level alone is insufficient. A middle-income economy with broad schooling, accessible finance, and a capable state can tolerate a higher market Gini than one with a dual formal/informal labour market. The confidence is medium only for the direction—avoiding high inequality—not for the exact endpoints.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>Why high-income countries can allow a wider market corridor—but not a wider opportunity gap</h3>
+                <p>A high-income welfare state can sustain a market Gini in the <strong>35–45</strong> range if it converts it into a disposable Gini around 25–35 and keeps mobility high. This is a conditional range, not a reward for being rich: the IMF finds the inequality-growth penalty becomes unambiguously negative when intergenerational earnings elasticity passes about <strong>.3</strong>, a condition met by <strong>70–75% of countries</strong> in its sample, including several advanced economies. <a href="https://www.imf.org/en/-/media/files/publications/wp/2019/wpiea2019034.pdf">Aiyar &amp; Ebeke (2019)</a></p>
+                <p><strong>Exception:</strong> high market inequality without credible transfers, universal services, or entry into education and finance does not belong in this corridor. It is better classified with the middle-income risk case. Finland’s positive estimate in one IMF distribution is a country-specific result, not a licence for high inequality everywhere.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>Wealth: use a warning dashboard, not a fabricated optimum</h3>
+                <p>Current wealth data show why a strict “ideal wealth Gini” would be false precision. In 2025, Europe—the least concentrated large region—still had a top-10% wealth share of about <strong>60%</strong> and a top-1% share of <strong>25%</strong>; across regions, the top 10% held <strong>60–74%</strong> and the top 1% <strong>25–46%</strong>. No country had a top-10% share below about <strong>45%</strong>. <a href="https://wir2026.wid.world/insight/regional-wealth-inequality/">World Inequality Report 2026</a></p>
+                <p>The proposed 45–60% top-decile band for high-income economies is therefore a <strong>comparative benchmark</strong>, not a causal estimate. Top-10% shares around 70% or more, top-1% shares around 35% or more, or bottom-50% shares at 3% or less should trigger scrutiny of inheritance, housing, debt, financial access, and political power. The evidence on an exact wealth threshold is very low confidence; what is strong is that wealth concentration is much greater than income concentration and must not be inferred from the disposable Gini.</p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Final synthesis</h3>
+          <p className={styles.lede}>The total record supports “productive inequality with bounded outcomes”: allow some market dispersion and exceptional rewards, but keep disposable incomes broadly clustered and prevent asset ownership from becoming a closed inheritance system. The critical test is not whether a country matches a number. It is whether inequality remains reversible—especially whether intergenerational earnings elasticity stays below about .3, the bottom half gains income and assets, and high market inequality is actually offset by opportunity and security.</p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
