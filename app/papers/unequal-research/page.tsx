@@ -37,6 +37,7 @@ export default function UnequalResearchPage() {
             <li><a href="#limits">Floors, trade-offs, and uncertainty</a></li>
             <li><a href="#context">Start by comparing like with like</a></li>
             <li><a href="#tests">Test the consequences</a></li>
+            <li><a href="#range">Estimate ranges, not magic numbers</a></li>
             <li><a href="#comparison">How comparison will work</a></li>
             <li><a href="#sources">Measurement sources</a></li>
           </ol>
@@ -119,6 +120,29 @@ export default function UnequalResearchPage() {
           <p>The OECD’s 2018 cross-country comparison found no country combining high income inequality with high intergenerational mobility; its 2025 work extends the measurement agenda by separating inequality of opportunity from inequality of outcomes. The evidence is correlational, so it does not prove that one country’s inequality level causes its mobility level—but it is enough to reject the easy assertion that high inequality is demonstrably required for high opportunity. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2018/05/a-broken-social-elevator_3ba9143a/162cc698-en.pdf">OECD, A Broken Social Elevator?</a> · <a href="https://www.oecd.org/en/publications/2025/09/to-have-and-have-not-how-to-bridge-the-gap-in-opportunities_f642138a.html">OECD, To Have and Have Not (2025)</a></p>
           <h3>What counts as a result</h3>
           <p>For every outcome, we will report the direction, estimated size, uncertainty interval, time lag, and sensitivity to the inequality measure used. A correlation will be labelled as correlation. A causal claim will require a design that can plausibly separate inequality from the policies, shocks, and institutions that move with it.</p>
+        </section>
+
+        <section id="range">
+          <h2>Estimate ranges, not magic numbers</h2>
+          <p>The estimated relationship may be nonlinear. A useful hypothesis to test is a three-part shape: <strong>too little inequality ← a potentially beneficial or neutral range → excessive inequality.</strong> But that shape is not a conclusion built into the model. Each outcome can be flat, monotonic, U-shaped, inverted-U-shaped, or too uncertain to classify.</p>
+          <p>The research literature gives a reason to test nonlinearity rather than assume a straight line, while also warning against overconfidence: empirical results differ by data, method, development level, and whether the analysis exploits within-country or between-country variation. <a href="https://openknowledge.worldbank.org/bitstream/handle/10986/35355/Links-between-Growth-Inequality-and-Poverty-A-Survey.pdf">World Bank survey of growth, inequality, and poverty evidence</a> · <a href="https://www.elibrary.imf.org/view/journals/001/2019/034/article-A001-en.xml">IMF work testing inequality, opportunity, and growth</a></p>
+          <h3>An illustration, not a threshold claim</h3>
+          <p>For example, a future result might show that moving from a disposable-income Gini of .20 to .28 has little measurable cost or coincides with stronger economic outcomes; .28 to .35 remains compatible with high mobility; and .35 to .45 is associated with growing opportunity or political costs. These numbers are placeholders only. They are not a recommended target and will not be used as model cut-offs.</p>
+          <h3>Three separate distributional ranges</h3>
+          <p>We will estimate separate acceptable ranges for <strong>market income</strong>, <strong>disposable income</strong>, and <strong>wealth</strong>. Collapsing them would be misleading: market inequality reflects the pre-tax distribution; disposable inequality also reflects tax-and-transfer choices; wealth concentration captures accumulated assets and power that annual income can miss.</p>
+          <dl className={styles.terms}>
+            <div><dt>Market-income range</dt><dd>Pre-tax, pre-transfer distribution, measured with market Gini and income shares.</dd></div>
+            <div><dt>Disposable-income range</dt><dd>Post-tax, post-transfer distribution, measured with disposable Gini, poverty, and bottom shares.</dd></div>
+            <div><dt>Wealth range</dt><dd>Concentration of net wealth and top wealth shares, estimated separately from annual income.</dd></div>
+          </dl>
+          <h3>How a range becomes acceptable</h3>
+          <ol className={styles.steps}>
+            <li><strong>Fit flexible curves.</strong> Use splines and other flexible specifications within each context group, rather than imposing a linear effect or selecting thresholds beforehand.</li>
+            <li><strong>Apply the floors.</strong> Exclude ranges that fail the minimum standards for deprivation, security, participation, or political stability.</li>
+            <li><strong>Keep near-best values.</strong> Retain values whose combined outcome performance is statistically indistinguishable from the best feasible value under transparent weights.</li>
+            <li><strong>Stress-test.</strong> Change the outcome weights, lag structure, inequality measure, and model specification. A range is publishable only if it remains credible across those choices.</li>
+          </ol>
+          <p>The final output should therefore read, for example, “for upper-middle-income democracies with these institutional conditions, this disposable-income range is compatible with the strongest observed outcome bundle,” not “the world’s ideal Gini is X.”</p>
         </section>
 
         <section id="comparison">
