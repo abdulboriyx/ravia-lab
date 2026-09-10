@@ -38,6 +38,7 @@ export default function UnequalResearchPage() {
             <li><a href="#context">Start by comparing like with like</a></li>
             <li><a href="#tests">Test the consequences</a></li>
             <li><a href="#range">Estimate ranges, not magic numbers</a></li>
+            <li><a href="#mechanisms">Explain why countries differ</a></li>
             <li><a href="#comparison">How comparison will work</a></li>
             <li><a href="#sources">Measurement sources</a></li>
           </ol>
@@ -143,6 +144,23 @@ export default function UnequalResearchPage() {
             <li><strong>Stress-test.</strong> Change the outcome weights, lag structure, inequality measure, and model specification. A range is publishable only if it remains credible across those choices.</li>
           </ol>
           <p>The final output should therefore read, for example, “for upper-middle-income democracies with these institutional conditions, this disposable-income range is compatible with the strongest observed outcome bundle,” not “the world’s ideal Gini is X.”</p>
+        </section>
+
+        <section id="mechanisms">
+          <h2>Explain why countries differ</h2>
+          <p>Once an empirical range is estimated, the task changes. We move from description—who lies above or below a context-specific range—to political economy: which institutions, market structures, and shocks help produce that position, and which can change it without damaging the outcome bundle?</p>
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}><span>01</span><div><h3>Taxes, transfers, and public services</h3><p><strong>Mechanisms to test:</strong> tax progressivity and enforcement; cash transfers; pensions; and the availability and quality of education, healthcare, childcare, and other in-kind services. These shape disposable income directly and life chances over time.</p></div></section>
+            <section className={styles.dimension}><span>02</span><div><h3>Education, health, and housing</h3><p><strong>Mechanisms to test:</strong> early-childhood access, school quality and segregation, health access, housing affordability, neighbourhood opportunity, and credit constraints. These can transmit advantage or disadvantage before people enter the labour market.</p></div></section>
+            <section className={styles.dimension}><span>03</span><div><h3>Labour institutions and market power</h3><p><strong>Mechanisms to test:</strong> collective bargaining, minimum wages, employment protection, informality, occupational licensing, competition, monopoly rents, and the division of income between labour and capital.</p></div></section>
+            <section className={styles.dimension}><span>04</span><div><h3>Assets, inheritance, and capital ownership</h3><p><strong>Mechanisms to test:</strong> who owns housing, land, businesses, and financial assets; inheritance and gift rules; access to credit; and the relative return to capital and work. These are especially important for wealth concentration and intergenerational mobility.</p></div></section>
+            <section className={styles.dimension}><span>05</span><div><h3>Technology, globalization, and political feedback</h3><p><strong>Mechanisms to test:</strong> skill-biased technological change, trade exposure, financial integration, commodity cycles, lobbying, campaign finance, media ownership, and state capture. These can alter both market inequality and the capacity to respond to it democratically.</p></div></section>
+          </div>
+          <p>These variables are not a checklist of interchangeable policies. Their effects can differ by development level and institutional setting, and some operate through several channels at once. The IMF’s overview likewise distinguishes global forces such as technology and globalization from domestic fiscal, labour-market, and financial policies, while emphasising that their importance varies across countries. <a href="https://www.imf.org/en/topics/inequality/introduction-to-inequality">IMF introduction to inequality</a> · <a href="https://www.oecd.org/en/publications/the-causes-of-growing-inequalities-in-oecd-countries_9789264119536-en.html">OECD, Divided We Stand</a></p>
+          <h3>From correlation to explanation</h3>
+          <p>For each candidate mechanism, the analysis will ask four questions: does it predict a country’s position relative to the range; does it change market, disposable, or wealth inequality; does it improve the outcome bundle; and does the timing support the proposed pathway? Country case studies will be used to interrogate the statistical results, not decorate them.</p>
+          <h3>Final research question</h3>
+          <p className={styles.lede}><strong>For societies at different levels of economic development, what distribution of income, wealth and opportunity maximizes broadly shared prosperity without destroying productive incentives—and which institutions can sustain it?</strong></p>
         </section>
 
         <section id="comparison">
