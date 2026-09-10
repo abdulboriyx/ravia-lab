@@ -28,6 +28,7 @@ export default function UnequalResearchPage() {
             <li><a href="#harms">What harms appear as inequality rises?</a></li>
             <li><a href="#limits">Where do the benefits stop increasing?</a></li>
             <li><a href="#acceleration">Where do the harms begin accelerating?</a></li>
+            <li><a href="#development">How does this differ by development level?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -281,6 +282,65 @@ export default function UnequalResearchPage() {
 
           <h3>Bottom line</h3>
           <p className={styles.lede}>The empirical answer is narrower than a universal “danger Gini.” Harms accelerate most clearly when high inequality becomes inherited inequality: the .3 intergenerational-elasticity threshold marks a sharp rise in the growth penalty. A disposable-income or parental-income Gini in the 40s is a useful high-risk range; top shares and wealth concentration must be assessed alongside whether they are blocking broad asset ownership, finance, education, and political access. Those mechanisms, not one number, determine whether inequality becomes self-reinforcing.</p>
+        </section>
+
+        <section id="development" aria-labelledby="development-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Unequal Research · Question 05 of 06</p>
+            <h2 id="development-title">How does this differ by development level?</h2>
+            <p className={styles.lede}><strong>Short answer:</strong> poorer economies do not have an empirically demonstrated right to “more inequality.” They have different constraints: scarce capital, thin credit markets, informality, and weak public services make it easier for inequality to lock people out of productive investment. Rich economies can sometimes absorb greater market inequality through broad education, finance, and transfers—but those institutions are doing the work, not inequality itself.</p>
+          </header>
+
+          <h3>What changes from low to high income</h3>
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>The direct answer: no evidence supports a higher “optimal” range for poorer countries</h3>
+                <p>The literature contains a real disagreement. Barro’s panel found that higher inequality tended to <strong>retard growth in poorer countries</strong> and encourage it in richer ones. A later IMF survey notes an opposing result from Brueckner and Lederman: inequality may help <strong>transitional</strong> growth in poor economies but becomes harmful at high average incomes. Both results are conditional averages, not estimates of an ideal Gini for either group. <a href="https://barro.scholars.harvard.edu/publications/inequality-and-growth-panel-countries">Barro (2000)</a> · <a href="https://www.elibrary.imf.org/abstract/journals/001/2021/068/article-A001-en.xml">IMF survey (2021)</a></p>
+                <p>The common ground is more useful: the sign depends on whether a country can turn concentrated savings into broad productive opportunity. That is why country income alone is a poor proxy for the relevant conditions.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>Low-income economies: capital scarcity can make concentration look useful, but exclusion is the larger empirical risk</h3>
+                <p>The strongest argument for wider inequality at low incomes is that somebody must accumulate enough savings to finance factories, schooling, or firms when credit markets are missing. Iradian’s panel finds a possible <strong>short-to-medium-run positive link</strong> in low- and middle-income countries and identifies credit-market imperfections as the proposed mechanism; the same study warns that inequality can harm growth in the long run. <a href="https://www.elibrary.imf.org/view/journals/001/2005/028/article-A001-en.xml">Iradian (2005)</a></p>
+                <p>But the same credit constraint cuts the other way: when poor households cannot borrow, inequality prevents them from investing in human and physical capital. Informality amplifies that problem. In a typical developing economy, the informal sector produces about <strong>35% of GDP</strong> and employs about <strong>70% of the labour force</strong>; the World Bank links pervasive informality to lower fiscal resources, investment, productivity, and financial development. Under those conditions, concentrating income in a formal elite is not a reliable route to mass productivity. <a href="https://datacatalog.worldbank.org/search/dataset/0040660/informality-in-the-process-of-development-and-growth">World Bank, Informality in Development</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Middle-income economies: the negative results are concentrated here</h3>
+                <p>The IMF’s heterogeneous analysis covers <strong>77 countries</strong> with at least <strong>20 years</strong> of data. Its median growth response to an inequality shock is negative, and it identifies <strong>emerging markets across income levels</strong> as a main source of that negative result. Ecuador, Jordan, Nigeria, and Panama are cited as strongly negative cases; the result is not a claim that every middle-income country responds identically. <a href="https://www.imf.org/en/publications/wp/issues/2016/12/31/inequality-and-growth-a-heterogeneous-approach-44464">IMF, Inequality and Growth: A Heterogeneous Approach</a></p>
+                <p>This is the group in which structural transformation can most easily produce dual economies: productive urban and formal sectors alongside rural or informal work, with incomplete education, housing, and social insurance. The evidence suggests that institutions matter enough to change the sign: the same IMF analysis finds that improved institutional frameworks reduce inequality’s negative growth effect. A middle-income country does not need to copy a Nordic disposable-income Gini; it needs to prevent market gains from becoming durable barriers to schooling, finance, formal employment, and entry.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>High-income economies: market inequality can be buffered, but only through institutions</h3>
+                <p>High-income cases sometimes show a less negative or even positive short-run response. Finland appears among the positive cases in the IMF distribution, while at least one-quarter of its overall country sample has a positive response. Yet the same analysis finds a negative median effect, and its mobility threshold includes the U.S., U.K., Japan, and most euro-area countries. Wealth and market-income inequality therefore remain consequential even where disposable income is moderated. <a href="https://www.imf.org/en/Blogs/Articles/2017/05/11/a-new-twist-in-the-link-between-inequality-and-economic-development">IMF country results</a> · <a href="https://www.imf.org/en/-/media/files/publications/wp/2019/wpiea2019034.pdf">IMF mobility results</a></p>
+                <p>The distinction between market and disposable income is especially large here. Among OECD countries, higher market inequality is associated roughly <strong>one-for-one</strong> with more redistribution, leaving almost no overall correlation between market and net inequality. This is not free: it shows that a tolerable disposable-income range in a rich country can rest on much larger pre-tax inequality and a capable fiscal state. <a href="https://www.imf.org/-/media/websites/imf/imported/external/pubs/ft/sdn/2014/_sdn1402pdf.pdf">Ostry, Berg &amp; Tsangarides (2014)</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>East Asia shows that rapid industrialisation does not require high inequality</h3>
+                <p>Korea and the Philippines entered the 1960s with similar GDP per person, investment, and saving, but Korea was substantially less unequal and subsequently grew much faster. The comparison cannot prove that lower inequality caused Korea’s performance, but it is strong evidence against the claim that a poorer industrialising country must tolerate extreme inequality to mobilise capital. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2013/01/innovation-and-inclusive-development_g17a222e/5k4dd1rvsnjj-en.pdf">OECD, Innovation and Inclusive Development</a></p>
+                <p>The Philippine record makes the distributional contrast concrete: the economy grew about <strong>6% for most of the 1970s</strong> under import-substitution industrialisation, while poverty and distributional inequality changed little. High headline growth without broad access did not automatically translate into shared progress. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2002/03/oecd-papers-volume-2-issue-1_g1gh29bc/oecd_papers-v2-1-en.pdf">OECD, Growth, Poverty and Inequality in Asia</a></p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Bottom line</h3>
+          <p className={styles.lede}>Development level changes the mechanisms and the resilience, not the basic goal of broad productive opportunity. Low-income countries face the sharpest finance, schooling, and informality constraints; middle-income countries are particularly exposed to dual-economy and institutional traps; high-income countries can buffer market inequality with taxes, transfers, and universal services but can still lose mobility. The evidence does not support imposing Finland’s exact distribution on Ethiopia—or treating extreme inequality as Ethiopia’s development strategy.</p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
