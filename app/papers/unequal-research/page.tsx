@@ -26,6 +26,7 @@ export default function UnequalResearchPage() {
             <li><a href="#disagreement">Why major studies disagree</a></li>
             <li><a href="#verdict">Bottom line</a></li>
             <li><a href="#harms">What harms appear as inequality rises?</a></li>
+            <li><a href="#limits">Where do the benefits stop increasing?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -164,6 +165,62 @@ export default function UnequalResearchPage() {
 
           <h3>Bottom line</h3>
           <p className={styles.lede}>The evidence is strongest where inequality makes opportunity less equal and poverty harder to escape; those losses can accumulate into weaker long-run growth. It is substantial but more conditional for health gaps and political responsiveness. It is weakest for broad claims that inequality mechanically produces crime, collapse, or a fixed loss of demand. A credible account should treat those last mechanisms as risks shaped by institutions—not settled universal laws.</p>
+        </section>
+
+        <section id="limits" aria-labelledby="limits-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Unequal Research · Question 03 of 06</p>
+            <h2 id="limits-title">Where do the benefits stop increasing?</h2>
+            <p className={styles.lede}><strong>Short answer:</strong> the literature does not justify a universal Gini cutoff—such as “.35 is optimal.” Its more defensible threshold is institutional: the potential incentive benefit stops being visible once inequality is transmitted into unequal opportunity. Beyond that point, further inequality is associated with weaker, not stronger, growth.</p>
+          </header>
+
+          <h3>What the nonlinear evidence actually says</h3>
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>No credible universal Gini turning point exists</h3>
+                <p>Large cross-country studies do not converge on a single level where inequality turns from useful to harmful. Barro finds little overall level relationship, with different signs in poorer and richer countries; the IMF’s 2019 interaction model finds that adding a <strong>squared Gini term is not statistically significant</strong>. That is not evidence of linearity. It is evidence that a global “magic number” is too crude for the data. Any numeric range must be conditional on income level, market versus disposable income, and opportunity institutions. <a href="https://barro.scholars.harvard.edu/publications/inequality-and-growth-panel-countries">Barro (2000)</a> · <a href="https://www.imf.org/en/-/media/files/publications/wp/2019/wpiea2019034.pdf">Aiyar &amp; Ebeke (2019)</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>The clearest threshold is mobility, not the Gini</h3>
+                <p>Using internationally comparable data, Aiyar and Ebeke estimate that inequality becomes <strong>unambiguously growth-reducing when the intergenerational earnings elasticity exceeds about 0.3</strong>—that is, when more than 30% of a parent’s earnings advantage is passed to a child. About <strong>70–75% of countries in their sample</strong>, including the U.S., U.K., Japan, much of the euro area, China, India, and Brazil, lie above it. This is the most useful “where benefits stop” result because it locates the boundary in unequal opportunity rather than in a country’s Gini alone. <a href="https://www.imf.org/en/-/media/files/publications/wp/2019/wpiea2019034.pdf">IMF Working Paper 19/34</a></p>
+                <p>The magnitude is material: a 10-point increase in the Gini reduced next-period five-year average growth by <strong>0.5 percentage points</strong> at the 25th percentile of intergenerational immobility (roughly Japan), but by <strong>1.3 points</strong> at the 75th percentile (roughly Brazil). With the more plausible within-country inequality shock, the corresponding losses were <strong>0.25 and 0.65 points</strong>. The same inequality is therefore far more damaging after opportunity has become sticky.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Positive short-run estimates do not persist into an identifiable high-inequality zone</h3>
+                <p>The best-known positive result—Forbes’ short- and medium-run within-country estimate—does not supply a level at which more inequality continues to raise growth. The later IMF country panel finds a <strong>median 0.14-percentage-point fall in GDP-per-person growth</strong> after a one-point inequality-growth shock, although at least one-quarter of countries have positive responses. In other words, the positive cases are exceptions tied to country conditions, not evidence of rising returns at high inequality. <a href="https://www.imf.org/en/Blogs/Articles/2017/05/11/a-new-twist-in-the-link-between-inequality-and-economic-development">IMF, country heterogeneity</a></p>
+                <p>This also explains why “poor versus rich country” is not a usable threshold by itself. Barro’s finding that inequality tends to retard growth in poorer countries but may encourage it in richer ones is an average split; the IMF’s mobility result places many rich countries on the negative side once opportunity is considered.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>Stability matters: gains do not rise smoothly with changes in inequality</h3>
+                <p>Banerjee and Duflo’s non-parametric result is an inverted U in <strong>changes</strong> in inequality, with the peak near <strong>no change</strong>: both rises and falls in inequality predict lower subsequent growth. This should not be read as a defence of the existing distribution—its authors stress identification problems—but it is decisive against a simple “more inequality, more incentive, more growth” story. Large distributive shifts may capture transition costs, political conflict, measurement changes, or real disruption rather than productivity gains. <a href="https://www.nber.org/papers/w7793">Banerjee &amp; Duflo (2003)</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>The proposed mechanism itself has a ceiling</h3>
+                <p>Innovation can create concentrated rewards: U.S. patenting-based innovation explains about <strong>17% of the increase in the top 1% share</strong> from 1975–2010. But that result runs from innovation to top inequality, not from more general inequality to innovation. The direct 34-country test of redistribution and patenting found <strong>no negative effect</strong>. Taken together, these studies imply that an economy may need meaningful rewards for invention, while adding broad inequality after those rewards exist does not show an additional innovation payoff. <a href="https://www.nber.org/papers/w21247">Aghion et al.</a> · <a href="https://doi.org/10.1016/j.respol.2022.104603">Akcigit et al. (2022)</a></p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Bottom line</h3>
+          <p className={styles.lede}>The evidence points to a conditional optimum, not a fixed Gini. Inequality can coexist with productive rewards while people can still convert talent into education, finance, entry, and advancement. Its defensible benefits stop—or become dominated by costs—when parental advantage becomes durable enough to block that conversion. The currently best-supported empirical boundary is an intergenerational earnings elasticity near .3, not a single income-Gini number.</p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
