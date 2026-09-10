@@ -27,6 +27,7 @@ export default function UnequalResearchPage() {
             <li><a href="#verdict">Bottom line</a></li>
             <li><a href="#harms">What harms appear as inequality rises?</a></li>
             <li><a href="#limits">Where do the benefits stop increasing?</a></li>
+            <li><a href="#acceleration">Where do the harms begin accelerating?</a></li>
             <li><a href="#sources">Primary sources</a></li>
           </ol>
         </nav>
@@ -221,6 +222,65 @@ export default function UnequalResearchPage() {
 
           <h3>Bottom line</h3>
           <p className={styles.lede}>The evidence points to a conditional optimum, not a fixed Gini. Inequality can coexist with productive rewards while people can still convert talent into education, finance, entry, and advancement. Its defensible benefits stop—or become dominated by costs—when parental advantage becomes durable enough to block that conversion. The currently best-supported empirical boundary is an intergenerational earnings elasticity near .3, not a single income-Gini number.</p>
+        </section>
+
+        <section id="acceleration" aria-labelledby="acceleration-title">
+          <header className={styles.intro}>
+            <p className={styles.kicker}>Unequal Research · Question 04 of 06</p>
+            <h2 id="acceleration-title">Where do the harms begin accelerating?</h2>
+            <p className={styles.lede}><strong>Short answer:</strong> there is one reasonably well-estimated breakpoint: harms to growth become much larger once intergenerational immobility passes an earnings-elasticity of about .3. For disposable-income Gini, top shares, and wealth concentration, the evidence does <em>not</em> yet establish a portable causal cliff. A Gini above 40 is a useful global warning flag, not an empirically proven tipping point.</p>
+          </header>
+
+          <h3>Thresholds, ranges, and what they can honestly support</h3>
+          <div className={styles.dimensionList}>
+            <section className={styles.dimension}>
+              <span>01</span>
+              <div>
+                <h3>A genuine estimated breakpoint: intergenerational immobility around .3</h3>
+                <p>In the IMF’s cross-country model, a parent–child earnings elasticity of approximately <strong>0.3</strong> is the point beyond which higher income inequality is unambiguously associated with lower growth. At the 25th percentile of immobility (roughly Japan), a 10-point Gini increase predicts a <strong>0.5-point</strong> loss in the next five-year average growth rate; at the 75th percentile (roughly Brazil), the loss is <strong>1.3 points</strong>. The effect therefore steepens by more than two-and-a-half times as opportunity becomes less mobile. <a href="https://www.imf.org/en/-/media/files/publications/wp/2019/wpiea2019034.pdf">Aiyar &amp; Ebeke (2019)</a></p>
+                <p>About <strong>70–75% of countries</strong> in that sample lie above the .3 threshold. This is a threshold for the <em>interaction</em> of inequality and inherited advantage, not a claim that every country with a particular disposable-income Gini suddenly deteriorates at the same number.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>02</span>
+              <div>
+                <h3>Disposable-income Gini: 40 is an alert line, not a proven cliff</h3>
+                <p>The World Bank now defines a society with a survey Gini above <strong>40</strong> as “high inequality.” On the latest surveys, <strong>49 countries</strong>, containing about <strong>22% of the world’s population</strong>, crossed that line. More than <strong>80% of Latin American and Caribbean economies</strong> did so; only Chile, Panama, the United States, and Uruguay were high-income economies in the group. <a href="https://blogs.worldbank.org/en/opendata/the-geography-of-high-inequality--monitoring-the-world-bank-s-ne">World Bank high-inequality indicator</a></p>
+                <p>This is valuable for comparison, but it is not an estimated point at which mobility or stability suddenly collapses. It mixes income and consumption Ginis, and consumption is usually more equally distributed than income. Calling .40 an “acceleration threshold” would overstate what the data say; it is better read as an internationally used risk range that demands closer inspection of opportunity, poverty, and institutions.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>03</span>
+              <div>
+                <h3>Within-country mobility worsens across a broad range rather than at one cliff</h3>
+                <p>Canadian administrative data follow successive birth cohorts within provinces and show the Great Gatsby pattern over time. In British Columbia, the parental-income Gini rose from <strong>32.07</strong> for the 1963 cohort to <strong>45.88</strong> for the 1982 cohort, while the rank–rank slope rose from <strong>.16 to .23</strong>; Alberta moved from <strong>35.63 to 45.61</strong> and from <strong>.15 to .22</strong>. A higher slope means children’s position is more tied to their parents’. <a href="https://www150.statcan.gc.ca/n1/pub/11f0019m/11f0019m2021001-eng.htm">Statistics Canada, intergenerational mobility</a></p>
+                <p>That is concrete evidence of deterioration over the roughly <strong>32–46</strong> parental-Gini range, not evidence of a discrete break at 40. It also demonstrates why a single cross-country disposable-income cutoff can mislead: the relevant distribution is the income available to parents when children’s education, neighbourhood, and early assets are formed.</p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>04</span>
+              <div>
+                <h3>Top-income shares: the slope turns adverse in advanced economies, but no share cutoff survives scrutiny</h3>
+                <p>A 2024 study of top-1% shares in <strong>137 countries</strong> from the 1920s to the 2010s uses flexible splines rather than imposing a straight line. It finds that any positive short- or medium-run association weakens as development advances; in advanced economies the medium- to long-run association is often <strong>negative or nonpositive</strong>. That is a genuine nonlinearity by development and time horizon, but the study does not identify a common top-1% share at which the sign flips. <a href="https://doi.org/10.1007/s10888-023-09604-7">Tuominen (2024)</a></p>
+                <p>That restraint matters. A separate 12-OECD-country study used a sample median top-1% share of <strong>8.21%</strong> only to split its data; its authors explicitly say the threshold at which lower groups cease to benefit remains to be uncovered. A sample median is not a social optimum or a harm threshold. <a href="https://roiw.org/2020/n1/roiw12399.pdf">Herwartz &amp; Walle (2020)</a></p>
+              </div>
+            </section>
+
+            <section className={styles.dimension}>
+              <span>05</span>
+              <div>
+                <h3>Wealth concentration and stability: evidence of risk, no general numerical trigger</h3>
+                <p>Wealth is the least adequately measured dimension for setting a general threshold. In a panel of <strong>13 MENA economies from 1995–2019</strong>, wealth inequality inhibited growth at every observed level of financial development, and the negative association intensified as financial development rose. The result is important because it rejects a simple claim that deeper finance automatically makes concentrated wealth harmless; it does <em>not</em> establish a universal wealth-Gini cutoff. <a href="https://doi.org/10.1016/j.jeca.2023.e00324">Wealth inequality and growth in MENA</a></p>
+                <p>The same caution applies to political stability. In the World Bank’s latest data, roughly <strong>two-fifths</strong> of fragile and conflict-affected states had Ginis above 40, versus about <strong>one-quarter</strong> of other sampled countries. That is a large descriptive gap, but conflict can cause inequality as well as result from it. The evidence supports treating high concentration as a compounding institutional risk—not claiming a numeric point at which unrest mechanically begins. <a href="https://blogs.worldbank.org/en/opendata/the-geography-of-high-inequality--monitoring-the-world-bank-s-ne">World Bank comparison</a></p>
+              </div>
+            </section>
+          </div>
+
+          <h3>Bottom line</h3>
+          <p className={styles.lede}>The empirical answer is narrower than a universal “danger Gini.” Harms accelerate most clearly when high inequality becomes inherited inequality: the .3 intergenerational-elasticity threshold marks a sharp rise in the growth penalty. A disposable-income or parental-income Gini in the 40s is a useful high-risk range; top shares and wealth concentration must be assessed alongside whether they are blocking broad asset ownership, finance, education, and political access. Those mechanisms, not one number, determine whether inequality becomes self-reinforcing.</p>
         </section>
 
         <footer className={styles.footer}><Link href="/papers">← Back to Papers</Link></footer>
