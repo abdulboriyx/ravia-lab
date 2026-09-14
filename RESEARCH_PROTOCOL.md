@@ -152,6 +152,12 @@ The operational definitions, inclusion and exclusion examples, and confusing nei
 
 Before large-scale annotation, review 50–100 posts to assess whether dimensions almost always overlap or cannot be reliably distinguished. Log any merges or removals in the change log before annotation begins.
 
+## Human gold-standard dataset
+
+The gold-standard process begins only after the eligibility pilot and privacy gates are complete. Annotate 50 de-identified posts first to identify ontology failures; expand to about 150 after resolving ambiguity; then expand to 400–500 posts using the stable codebook and representation from every subreddit family.
+
+`ANNOTATION_DECISIONS.md` records difficult cases and codebook changes without storing direct identifiers or unnecessary verbatim text. If a second annotator is available, both annotators code a shared preselected subset. Calculate Cohen’s kappa, Krippendorff’s alpha where appropriate, raw agreement, and a disagreement matrix; redefine weak categories before automation.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.

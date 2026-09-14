@@ -29,6 +29,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#diagnostic-evidence">Diagnostic evidence</a></li>
             <li><a href="#symptoms">Symptom evidence</a></li>
             <li><a href="#phenotype">Psychological phenotype</a></li>
+            <li><a href="#gold-standard">Human gold standard</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -90,6 +91,10 @@ export default function DepressionPersonalizationPage() {
         <p>The phenotype layer codes hopelessness, rumination, anxiety, emotional numbness, loneliness, social withdrawal, irritability, motivation impairment, effort intolerance, self-hatred, perceived burdensomeness, and loss of meaning as distinct evidence dimensions.</p>
         <p>Similar constructs are not merged automatically. For example, emotional numbness describes a blunted felt response, while motivation impairment describes difficulty initiating an intended action. Each uses the same four evidence states and requires a de-identified evidence span when present.</p>
         <p>The full operational definitions, inclusion and exclusion examples, and neighboring constructs are in <code>PSYCHOLOGICAL_PHENOTYPE_CODEBOOK.md</code>. A 50–100-post pilot must test whether dimensions are distinguishable before large-scale annotation.</p>
+
+        <h2 id="gold-standard">Human gold standard</h2>
+        <p>The human annotation workflow begins with 50 de-identified posts to expose ontology problems, expands to about 150 after ambiguity is resolved, and reaches 400–500 only with a stable codebook and representation from every subreddit family.</p>
+        <p>Tricky cases and codebook changes are recorded in <code>ANNOTATION_DECISIONS.md</code>. When a second annotator is available, a shared subset is double-coded; raw agreement, Cohen&apos;s κ, Krippendorff&apos;s α where appropriate, and a disagreement matrix are calculated before automation.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>
