@@ -4,7 +4,7 @@ import styles from "../../personalization-of-bci/paper.module.css";
 
 export const metadata: Metadata = {
   title: "Depression: diagnosis and personalization | Ravia",
-  description: "A research page on diagnosis and personalization in depression."
+  description: "A protocol for studying multidimensional self-described depressive experiences on Reddit without diagnosing individuals."
 };
 
 export default function DepressionPersonalizationPage() {
@@ -15,7 +15,40 @@ export default function DepressionPersonalizationPage() {
           <Link href="/papers/research/">← Research</Link>
           <h1 id="depression-personalization-title">Depression: diagnosis and personalization</h1>
         </header>
-        <p>This research page is being prepared.</p>
+        <p className={styles.date}>Research protocol · Frozen before collection</p>
+
+        <nav className={styles.contents} aria-label="Research contents">
+          <h2>In this protocol</h2>
+          <ol>
+            <li><a href="#primary-question">Primary question</a></li>
+            <li><a href="#secondary-questions">Secondary questions</a></li>
+            <li><a href="#boundaries">What this project does not claim</a></li>
+            <li><a href="#protocol">Protocol status</a></li>
+          </ol>
+        </nav>
+
+        <h2 id="primary-question">Primary question</h2>
+        <p>Do self-described depressive experiences on Reddit form reproducible multidimensional profiles that contain more information than the broad label “depression”?</p>
+
+        <h2 id="secondary-questions">Secondary questions</h2>
+        <ul>
+          <li>Which symptom combinations recur?</li>
+          <li>Which life contexts co-occur with which symptom profiles?</li>
+          <li>Do self-reported clinician-diagnosed users differ from self-suspected users?</li>
+          <li>Are some profiles associated with more functional impairment or suicidality?</li>
+        </ul>
+
+        <h2 id="boundaries">What this project does not claim</h2>
+        <ul>
+          <li>It does not diagnose individuals.</li>
+          <li>It does not infer that life events cause depressive experiences.</li>
+          <li>It does not claim that any clusters are biological diseases.</li>
+          <li>It does not claim that Reddit represents all depressed people.</li>
+        </ul>
+
+        <h2 id="protocol">Protocol status</h2>
+        <p>The primary question, secondary questions, and interpretive limits are frozen in <code>RESEARCH_PROTOCOL.md</code> before collection begins. Sampling criteria and outcome definitions must be documented there before collection starts.</p>
+        <p>After collection begins, any major change to the primary question, sampling criteria, or outcomes will be added to the protocol’s change log with its date and rationale; it will not be silently substituted.</p>
         <footer className={styles.footer}>
           <Link href="/papers/research/">← Back to Research</Link>
         </footer>
