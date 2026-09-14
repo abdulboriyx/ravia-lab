@@ -30,6 +30,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#symptoms">Symptom evidence</a></li>
             <li><a href="#phenotype">Psychological phenotype</a></li>
             <li><a href="#gold-standard">Human gold standard</a></li>
+            <li><a href="#automation">Automated annotation</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -95,6 +96,11 @@ export default function DepressionPersonalizationPage() {
         <h2 id="gold-standard">Human gold standard</h2>
         <p>The human annotation workflow begins with 50 de-identified posts to expose ontology problems, expands to about 150 after ambiguity is resolved, and reaches 400–500 only with a stable codebook and representation from every subreddit family.</p>
         <p>Tricky cases and codebook changes are recorded in <code>ANNOTATION_DECISIONS.md</code>. When a second annotator is available, a shared subset is double-coded; raw agreement, Cohen&apos;s κ, Krippendorff&apos;s α where appropriate, and a disagreement matrix are calculated before automation.</p>
+
+        <h2 id="automation">Automated annotation</h2>
+        <p>Automated annotation must return valid JSON only, label only what is stated or strongly entailed, avoid diagnosis, trauma, and causal inference, and use <code>not_mentioned</code> generously.</p>
+        <p>It cannot be validated or used until a held-out portion of the human gold-standard dataset exists. Each variable is evaluated separately for precision, recall, F1, specificity where useful, and its confusion matrix.</p>
+        <p>Per-variable F1 above .80 is usable; .70–.80 is usable with caution; .60–.70 is exploratory; below .60 must not be used automatically. Overall performance cannot hide a weak category.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>

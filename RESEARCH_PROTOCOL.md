@@ -158,6 +158,12 @@ The gold-standard process begins only after the eligibility pilot and privacy ga
 
 `ANNOTATION_DECISIONS.md` records difficult cases and codebook changes without storing direct identifiers or unnecessary verbatim text. If a second annotator is available, both annotators code a shared preselected subset. Calculate Cohen’s kappa, Krippendorff’s alpha where appropriate, raw agreement, and a disagreement matrix; redefine weak categories before automation.
 
+## Automated annotation
+
+Automated annotation returns machine-readable JSON only, using the strict contract in `AUTOMATED_ANNOTATION_SPEC.md`. It labels only what is stated or strongly entailed, does not infer diagnoses, trauma, or causation, and uses `not_mentioned` generously.
+
+Before any automated use, hold back part of the human gold-standard dataset and evaluate every variable independently for precision, recall, F1, specificity where useful, and its confusion matrix. Per-variable F1 thresholds are: above .80 usable; .70–.80 usable with caution; .60–.70 exploratory; below .60 do not use automatically. An overall F1 cannot override a weak category.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
