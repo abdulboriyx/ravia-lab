@@ -1,7 +1,7 @@
 # Research Protocol: Depression Diagnosis and Personalization
 
 **Status:** Pre-collection; eligibility pilot pending  
-**Version:** 1.4  
+**Version:** 1.5  
 **Date frozen:** 2026-09-14
 
 ## Primary question
@@ -124,6 +124,26 @@ For `clinician_diagnosis_self_reported`, record `clinical_source` only when it i
 
 Record the following as separate self-reported clinical-history variables: medication, psychotherapy, hospitalization, previous diagnosis, current treatment, and treatment discontinuation. These variables must not by themselves change `diagnosis_status` or be used as proof of a clinician diagnosis. The complete field definitions are in `DIAGNOSTIC_EVIDENCE_CODEBOOK.md`.
 
+## Symptom evidence coding
+
+The study codes these nine symptom domains independently:
+
+1. depressed mood;
+2. anhedonia;
+3. appetite or weight change;
+4. sleep disturbance;
+5. psychomotor change;
+6. fatigue or loss of energy;
+7. worthlessness or guilt;
+8. concentration or decision problems; and
+9. suicidal ideation or death thoughts.
+
+Each domain has exactly one state: `present`, `explicitly_absent`, `uncertain`, or `not_mentioned`. `not_mentioned` must never be converted to `explicitly_absent` or treated as zero.
+
+Every `present` label must retain a de-identified internal evidence span showing the text fragment that justified it. The symptom schema and validation helper are in `DSM_SYMPTOM_CODEBOOK.md` and `analysis/symptom_schema.py`.
+
+Symptom coding is not diagnostic. The study must not implement any rule that converts a symptom count into an MDD or other diagnosis: Reddit posts commonly lack sufficient information about duration, impairment, exclusion criteria, mania, substances, and medical causes.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
@@ -135,3 +155,4 @@ After collection begins, major changes to the primary question, sampling criteri
 | 2026-09-14 | Version 1.2: added provisional eligibility rules, three screening labels, and a required 100-post pilot review. | Prevent ambiguous posts from being forced into the dataset and calibrate the rules before full collection. |
 | 2026-09-14 | Version 1.3: added data separation, direct and indirect identifier controls, and irreversible longitudinal research IDs. | Establish a privacy and ethics layer before data collection. |
 | 2026-09-14 | Version 1.4: added conservative diagnostic-evidence categories and separate clinical-history variables. | Distinguish explicit self-reported clinician diagnosis from suspicion, unspecified descriptions, and treatment history. |
+| 2026-09-14 | Version 1.5: added nine symptom domains, four-state evidence coding, and a no-diagnosis constraint. | Preserve missingness and prevent symptom counts from being misrepresented as clinical diagnosis. |

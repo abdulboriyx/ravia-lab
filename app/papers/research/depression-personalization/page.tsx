@@ -27,6 +27,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#eligibility">Post eligibility</a></li>
             <li><a href="#privacy">Privacy and ethics</a></li>
             <li><a href="#diagnostic-evidence">Diagnostic evidence</a></li>
+            <li><a href="#symptoms">Symptom evidence</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -78,6 +79,11 @@ export default function DepressionPersonalizationPage() {
         <p>Diagnosis status is coded as <code>clinician_diagnosis_self_reported</code>, <code>self_diagnosed_or_suspected</code>, <code>diagnosis_unspecified</code>, or <code>ambiguous</code>.</p>
         <p>Only an explicit first-person statement that a clinician made a diagnosis can receive <code>clinician_diagnosis_self_reported</code>. For example, “My psychiatrist diagnosed me with MDD” qualifies. “I&apos;ve been depressed for five years” does not establish clinician diagnosis.</p>
         <p>When explicitly named, the clinical source is recorded as psychiatrist, psychologist, family doctor, therapist, or unknown clinician. Medication, psychotherapy, hospitalization, previous diagnosis, current treatment, and treatment discontinuation are captured as separate self-reported history variables—not as proof of diagnosis.</p>
+
+        <h2 id="symptoms">Symptom evidence</h2>
+        <p>Nine domains are coded independently: depressed mood; anhedonia; appetite or weight change; sleep disturbance; psychomotor change; fatigue or loss of energy; worthlessness or guilt; concentration or decision problems; and suicidal ideation or death thoughts.</p>
+        <p>Each domain receives exactly one state: <code>present</code>, <code>explicitly_absent</code>, <code>uncertain</code>, or <code>not_mentioned</code>. A missing mention is never treated as a zero.</p>
+        <p>Every <code>present</code> finding retains a de-identified evidence span internally. Symptom presence is evidence coding, not diagnosis: the research does not infer major depressive disorder from any symptom count.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>
