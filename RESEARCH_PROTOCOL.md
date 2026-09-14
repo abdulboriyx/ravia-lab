@@ -1,7 +1,7 @@
 # Research Protocol: Depression Diagnosis and Personalization
 
-**Status:** Frozen before collection  
-**Version:** 1.1  
+**Status:** Pre-collection; eligibility pilot pending  
+**Version:** 1.2  
 **Date frozen:** 2026-09-14
 
 ## Primary question
@@ -26,7 +26,11 @@ This project does not:
 
 ## Collection gate
 
-Collection must not begin until outcome definitions are recorded in this protocol. Sampling criteria are specified below.
+Full collection must not begin until all of the following are complete:
+
+- outcome definitions are recorded in this protocol;
+- the eligibility pilot is complete; and
+- the final eligibility rules are frozen.
 
 ## Sampling design
 
@@ -54,6 +58,47 @@ Posts will be sampled across calendar quarters from **2021-01-01** through **202
 
 Each final dataset record must retain the manifest row, subreddit family, source community, and calendar-quarter stratum. This makes the final dataset traceable back to the sampling design.
 
+## Post eligibility rules
+
+### Include
+
+Include a post only when it:
+
+- is written in the first person;
+- concerns the author’s own experience;
+- discusses mood, cognition, motivation, functioning, symptoms, treatment, or circumstances; and
+- contains enough text to interpret its meaning.
+
+### Exclude
+
+Exclude:
+
+- memes;
+- advertisements;
+- moderator posts;
+- reposted news;
+- pure questions about somebody else;
+- bot posts;
+- obvious fiction;
+- empty or deleted posts; and
+- extremely short posts without interpretable content.
+
+### Decision labels
+
+Every screened candidate post receives exactly one of these labels:
+
+| Label | Meaning |
+| --- | --- |
+| `include` | Meets all inclusion criteria and no exclusion criterion. |
+| `exclude` | Meets an exclusion criterion or fails an inclusion criterion. |
+| `uncertain` | The available text does not support a confident inclusion or exclusion decision. |
+
+`uncertain` posts must not be forced into the final dataset.
+
+### Pilot review before final freeze
+
+Before full collection, approximately 100 randomly selected candidate posts must be manually screened. `PILOT_SCREENING_LOG.csv` records each post’s decision and rationale. After the pilot, ambiguous definitions may be clarified and logged; the eligibility rules are frozen only after that review.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
@@ -62,3 +107,4 @@ After collection begins, major changes to the primary question, sampling criteri
 | --- | --- | --- |
 | 2026-09-14 | Protocol created and frozen before collection. | Establish the study questions, interpretive limits, and change-control rule. |
 | 2026-09-14 | Version 1.1: added the 10,000-post family allocation, time stratification, and sampling manifest. | Freeze sampling criteria before collection. |
+| 2026-09-14 | Version 1.2: added provisional eligibility rules, three screening labels, and a required 100-post pilot review. | Prevent ambiguous posts from being forced into the dataset and calibrate the rules before full collection. |
