@@ -16,6 +16,7 @@ export default function ResearchPage() {
           <h1 id="research-title">Research</h1>
         </header>
         <p className={styles.date}>Published research on personalization, generalization, and longitudinal EEG.</p>
+
         <nav className={styles.contents} aria-label="Research publications">
           <h2>Publications</h2>
           <ol>
@@ -27,6 +28,11 @@ export default function ResearchPage() {
             <li>
               <Link href="/papers/personalization-of-bci/research-2-personalized-bci-mental-health/">
                 Research #2 — Personalized BCI for mental health →
+              </Link>
+            </li>
+            <li>
+              <Link href="/papers/research/depression-personalization/">
+                Depression: diagnosis and personalization →
               </Link>
             </li>
           </ol>
