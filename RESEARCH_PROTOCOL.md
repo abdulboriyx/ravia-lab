@@ -1,7 +1,7 @@
 # Research Protocol: Depression Diagnosis and Personalization
 
 **Status:** Pre-collection; eligibility pilot pending  
-**Version:** 1.5  
+**Version:** 1.6  
 **Date frozen:** 2026-09-14
 
 ## Primary question
@@ -144,6 +144,14 @@ Every `present` label must retain a de-identified internal evidence span showing
 
 Symptom coding is not diagnostic. The study must not implement any rule that converts a symptom count into an MDD or other diagnosis: Reddit posts commonly lack sufficient information about duration, impairment, exclusion criteria, mania, substances, and medical causes.
 
+## Psychological phenotype coding
+
+The study additionally codes hopelessness, rumination, anxiety, emotional numbness, loneliness, social withdrawal, irritability, motivation impairment, effort intolerance, self-hatred, perceived burdensomeness, and loss of meaning as separate psychological dimensions. Each uses the same four evidence states as the symptom layer, and each `present` label requires a de-identified evidence span.
+
+The operational definitions, inclusion and exclusion examples, and confusing neighboring concepts are frozen in `PSYCHOLOGICAL_PHENOTYPE_CODEBOOK.md`. Similar constructs must not be collapsed by default: emotional numbness (blunted felt response) and motivation impairment (difficulty initiating an intended action) are distinct.
+
+Before large-scale annotation, review 50–100 posts to assess whether dimensions almost always overlap or cannot be reliably distinguished. Log any merges or removals in the change log before annotation begins.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
@@ -156,3 +164,4 @@ After collection begins, major changes to the primary question, sampling criteri
 | 2026-09-14 | Version 1.3: added data separation, direct and indirect identifier controls, and irreversible longitudinal research IDs. | Establish a privacy and ethics layer before data collection. |
 | 2026-09-14 | Version 1.4: added conservative diagnostic-evidence categories and separate clinical-history variables. | Distinguish explicit self-reported clinician diagnosis from suspicion, unspecified descriptions, and treatment history. |
 | 2026-09-14 | Version 1.5: added nine symptom domains, four-state evidence coding, and a no-diagnosis constraint. | Preserve missingness and prevent symptom counts from being misrepresented as clinical diagnosis. |
+| 2026-09-14 | Version 1.6: added a twelve-dimension psychological phenotype ontology and a required pilot. | Distinguish adjacent constructs before large-scale annotation. |

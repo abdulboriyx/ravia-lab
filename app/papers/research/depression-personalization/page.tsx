@@ -28,6 +28,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#privacy">Privacy and ethics</a></li>
             <li><a href="#diagnostic-evidence">Diagnostic evidence</a></li>
             <li><a href="#symptoms">Symptom evidence</a></li>
+            <li><a href="#phenotype">Psychological phenotype</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -84,6 +85,11 @@ export default function DepressionPersonalizationPage() {
         <p>Nine domains are coded independently: depressed mood; anhedonia; appetite or weight change; sleep disturbance; psychomotor change; fatigue or loss of energy; worthlessness or guilt; concentration or decision problems; and suicidal ideation or death thoughts.</p>
         <p>Each domain receives exactly one state: <code>present</code>, <code>explicitly_absent</code>, <code>uncertain</code>, or <code>not_mentioned</code>. A missing mention is never treated as a zero.</p>
         <p>Every <code>present</code> finding retains a de-identified evidence span internally. Symptom presence is evidence coding, not diagnosis: the research does not infer major depressive disorder from any symptom count.</p>
+
+        <h2 id="phenotype">Psychological phenotype</h2>
+        <p>The phenotype layer codes hopelessness, rumination, anxiety, emotional numbness, loneliness, social withdrawal, irritability, motivation impairment, effort intolerance, self-hatred, perceived burdensomeness, and loss of meaning as distinct evidence dimensions.</p>
+        <p>Similar constructs are not merged automatically. For example, emotional numbness describes a blunted felt response, while motivation impairment describes difficulty initiating an intended action. Each uses the same four evidence states and requires a de-identified evidence span when present.</p>
+        <p>The full operational definitions, inclusion and exclusion examples, and neighboring constructs are in <code>PSYCHOLOGICAL_PHENOTYPE_CODEBOOK.md</code>. A 50–100-post pilot must test whether dimensions are distinguishable before large-scale annotation.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>
