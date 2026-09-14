@@ -1,0 +1,11 @@
+subreddit_group,subreddit,analytical_rationale,validation_status,substitution_for,validation_note
+general_depression,depression,"Candidate general first-person depression discussion community.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+general_depression,depression_help,"Candidate peer-support depression discussion community.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+anhedonia_emotional_numbness,anhedonia,"Candidate community centered on anhedonia.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+suicidal_ideation,SuicideWatch,"Candidate community for self-described suicidal ideation.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+loneliness_social_disconnection,lonely,"Candidate community for loneliness and social disconnection.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+loneliness_social_disconnection,loneliness,"Candidate community for loneliness and social disconnection.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+depression_treatment_recovery,depressionregimens,"Candidate treatment-focused depression discussion community.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+depression_treatment_recovery,depression_help,"Candidate peer-support and recovery community; overlap is logged rather than hidden.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+related_comparison_communities,Anxiety,"Candidate anxiety comparison community.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
+related_comparison_communities,socialanxiety,"Candidate social-anxiety comparison community.",pending_authorized_api,,"Must be confirmed through the authorized Reddit Data API before use."
