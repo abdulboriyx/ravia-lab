@@ -13,3 +13,8 @@ dist
 
 # Downloaded public EEG used by reproducible research scripts; never commit raw recordings.
 research/personalized-bci/local-data/
+
+# Sensitive Reddit research material is local-only. Never commit raw or de-identified records.
+/data_raw_private/
+/data_deidentified/*
+!/data_deidentified/.gitkeep

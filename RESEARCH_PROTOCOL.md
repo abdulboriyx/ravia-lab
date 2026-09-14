@@ -1,7 +1,7 @@
 # Research Protocol: Depression Diagnosis and Personalization
 
 **Status:** Pre-collection; eligibility pilot pending  
-**Version:** 1.2  
+**Version:** 1.3  
 **Date frozen:** 2026-09-14
 
 ## Primary question
@@ -99,6 +99,14 @@ Every screened candidate post receives exactly one of these labels:
 
 Before full collection, approximately 100 randomly selected candidate posts must be manually screened. `PILOT_SCREENING_LOG.csv` records each post’s decision and rationale. After the pilot, ambiguous definitions may be clarified and logged; the eligibility rules are frozen only after that review.
 
+## Privacy and ethics
+
+Raw Reddit text and source identifiers are stored only in `data_raw_private/`, which is excluded from Git. De-identified research records are stored separately in `data_deidentified/`; analysis code belongs in `analysis/` and must contain no participant data.
+
+Before analysis, remove direct identifiers including usernames, profile links, names, email addresses, phone numbers, exact addresses, URLs, workplaces, universities, hospitals, and other explicitly identifying entities where feasible. Flag and generalize combinations of details that could still identify someone, such as an age, nationality, institution, and residence in the same post.
+
+If longitudinal analysis becomes necessary, use an irreversible HMAC-SHA-256 research ID generated from the source user name and a local secret salt. Do not retain a source-user lookup mapping. The operational rules are in `PRIVACY_AND_ETHICS.md` and the local helper is `analysis/deidentify_reddit.py`.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
@@ -108,3 +116,4 @@ After collection begins, major changes to the primary question, sampling criteri
 | 2026-09-14 | Protocol created and frozen before collection. | Establish the study questions, interpretive limits, and change-control rule. |
 | 2026-09-14 | Version 1.1: added the 10,000-post family allocation, time stratification, and sampling manifest. | Freeze sampling criteria before collection. |
 | 2026-09-14 | Version 1.2: added provisional eligibility rules, three screening labels, and a required 100-post pilot review. | Prevent ambiguous posts from being forced into the dataset and calibrate the rules before full collection. |
+| 2026-09-14 | Version 1.3: added data separation, direct and indirect identifier controls, and irreversible longitudinal research IDs. | Establish a privacy and ethics layer before data collection. |

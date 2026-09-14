@@ -25,6 +25,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#boundaries">What this project does not claim</a></li>
             <li><a href="#sample">10,000-post sample</a></li>
             <li><a href="#eligibility">Post eligibility</a></li>
+            <li><a href="#privacy">Privacy and ethics</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -65,6 +66,12 @@ export default function DepressionPersonalizationPage() {
         <p>Memes, advertisements, moderator posts, reposted news, questions solely about someone else, bot posts, obvious fiction, empty or deleted posts, and extremely short posts without interpretable content are excluded.</p>
         <p>Every screened post receives one of three labels: <strong>include</strong>, <strong>exclude</strong>, or <strong>uncertain</strong>. Ambiguous posts are not forced into the dataset.</p>
         <p>Before full collection, approximately 100 randomly selected candidate posts must be reviewed and recorded in <code>PILOT_SCREENING_LOG.csv</code>, including the decision and rationale. The definitions may be clarified after that pilot; only then are they frozen for full collection.</p>
+
+        <h2 id="privacy">Privacy and ethics</h2>
+        <p>Raw Reddit text and source identifiers remain in a local-only private area. De-identified research records are held separately, and the analysis area contains tools only—not participant data.</p>
+        <p>Before analysis, direct identifiers are removed, including usernames, profile links, names, email addresses, phone numbers, addresses, URLs, workplaces, universities, hospitals, and other explicitly identifying entities where feasible.</p>
+        <p>Potentially identifying combinations of details are flagged and generalized. For example, a precise age, nationality, university, and residence in one post may be replaced with broader categories.</p>
+        <p>If longitudinal analysis is needed, an irreversible salted HMAC produces a research user ID. The source user name is removed after ID creation, and no lookup mapping is retained.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>
