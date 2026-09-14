@@ -1,12 +1,13 @@
 """Local-only de-identification helpers for the Reddit research protocol.
 
-This tool never downloads data. It expects local JSONL input and writes de-identified
-JSONL only when explicitly run. Keep both input and output outside Git.
+This tool never downloads data. It exports only human-reviewed included local JSONL
+records to de-identified JSONL or CSV. Keep both input and output outside Git.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import hmac
 import json
@@ -57,28 +58,67 @@ def deidentify_text(text: str) -> tuple[str, list[str]]:
 
 def deidentify_record(record: dict[str, Any], salt: str) -> dict[str, Any]:
     """Produce an analysis record while dropping direct source-identity fields."""
-    body, flags = deidentify_text(str(record.get("body", "")))
+    title, title_flags = deidentify_text(str(record.get("title", "")))
+    body, body_flags = deidentify_text(str(record.get("body", "")))
     author = str(record.get("author", ""))
-    cleaned = {key: value for key, value in record.items() if key not in {"author", "username", "profile_url", "url", "body"}}
+    created_utc = record.get("created_utc")
+    cleaned = {
+        "research_post_id": "research_post_" + hmac.new(salt.encode("utf-8"), str(record.get("post_id", "")).encode("utf-8"), hashlib.sha256).hexdigest()[:16],
+        "subreddit": record.get("subreddit", ""),
+        "sampling_group": record.get("sampling_group", ""),
+        "time_stratum": record.get("quarter_time_stratum", ""),
+        "title": title,
+    }
     cleaned["body"] = body
     cleaned["research_user_id"] = research_user_id(author, salt) if author else None
-    cleaned["deidentification_flags"] = flags
+    cleaned["deidentification_flags"] = sorted(set(title_flags + body_flags))
     return cleaned
+
+
+def included_source_ids(screening_path: Path) -> set[str]:
+    """Return only human-reviewed include decisions; unreviewed records never enter analysis."""
+    with screening_path.open(newline="", encoding="utf-8") as handle:
+        return {
+            row["research_post_id"].removeprefix("research_post_")
+            for row in csv.DictReader(handle)
+            if row.get("eligibility_status") == "include"
+        }
+
+
+def write_records(records: list[dict[str, Any]], output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    if output.suffix.lower() == ".csv":
+        with output.open("w", newline="", encoding="utf-8") as destination:
+            writer = csv.DictWriter(destination, fieldnames=list(records[0]))
+            writer.writeheader()
+            writer.writerows(records)
+        return
+    with output.open("w", encoding="utf-8") as destination:
+        for record in records:
+            destination.write(json.dumps(record, ensure_ascii=False) + "\n")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Locally de-identify JSONL Reddit records.")
     parser.add_argument("input", type=Path)
     parser.add_argument("output", type=Path)
+    parser.add_argument("--screening", type=Path, required=True, help="Human-reviewed screening CSV; only `include` rows are exported.")
     args = parser.parse_args()
     salt = os.environ.get("REDDIT_USER_ID_SALT")
     if not salt:
         raise SystemExit("Set REDDIT_USER_ID_SALT locally before running this tool.")
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    with args.input.open(encoding="utf-8") as source, args.output.open("w", encoding="utf-8") as destination:
+    included_ids = included_source_ids(args.screening)
+    records: list[dict[str, Any]] = []
+    with args.input.open(encoding="utf-8") as source:
         for line in source:
             if line.strip():
-                destination.write(json.dumps(deidentify_record(json.loads(line), salt), ensure_ascii=False) + "\n")
+                raw_record = json.loads(line)
+                if raw_record.get("post_id") in included_ids:
+                    records.append(deidentify_record(raw_record, salt))
+    if not records:
+        raise SystemExit("No human-reviewed included posts were found; no analysis dataset was written.")
+    write_records(records, args.output)
+    print(f"Wrote {len(records)} de-identified included posts to {args.output}")
 
 
 if __name__ == "__main__":
