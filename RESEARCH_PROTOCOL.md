@@ -1,7 +1,7 @@
 # Research Protocol: Depression Diagnosis and Personalization
 
 **Status:** Pre-collection; eligibility pilot pending  
-**Version:** 1.3  
+**Version:** 1.4  
 **Date frozen:** 2026-09-14
 
 ## Primary question
@@ -107,6 +107,23 @@ Before analysis, remove direct identifiers including usernames, profile links, n
 
 If longitudinal analysis becomes necessary, use an irreversible HMAC-SHA-256 research ID generated from the source user name and a local secret salt. Do not retain a source-user lookup mapping. The operational rules are in `PRIVACY_AND_ETHICS.md` and the local helper is `analysis/deidentify_reddit.py`.
 
+## Diagnostic evidence coding
+
+Diagnostic evidence is coded from the author’s own words. It is not a clinical assessment and does not diagnose the author.
+
+| `diagnosis_status` | Rule |
+| --- | --- |
+| `clinician_diagnosis_self_reported` | The author explicitly states that a clinician diagnosed them. Example: “My psychiatrist diagnosed me with MDD.” |
+| `self_diagnosed_or_suspected` | The author explicitly self-diagnoses or expresses suspicion without saying a clinician diagnosed them. |
+| `diagnosis_unspecified` | The author self-describes as depressed or having depression but provides no explicit source for a diagnosis. |
+| `ambiguous` | The statement is unclear, attributed to someone else, hypothetical, quoted, or otherwise cannot be confidently coded. |
+
+“I’ve been depressed for five years” may support `diagnosis_unspecified`; it does **not** support `clinician_diagnosis_self_reported`.
+
+For `clinician_diagnosis_self_reported`, record `clinical_source` only when it is explicit: `psychiatrist`, `psychologist`, `family_doctor`, `therapist`, or `unknown_clinician` when a clinician is named generically without a role.
+
+Record the following as separate self-reported clinical-history variables: medication, psychotherapy, hospitalization, previous diagnosis, current treatment, and treatment discontinuation. These variables must not by themselves change `diagnosis_status` or be used as proof of a clinician diagnosis. The complete field definitions are in `DIAGNOSTIC_EVIDENCE_CODEBOOK.md`.
+
 ## Change control after collection begins
 
 After collection begins, major changes to the primary question, sampling criteria, or outcomes must be recorded below with the date, the change, and its rationale. They must not be silently changed.
@@ -117,3 +134,4 @@ After collection begins, major changes to the primary question, sampling criteri
 | 2026-09-14 | Version 1.1: added the 10,000-post family allocation, time stratification, and sampling manifest. | Freeze sampling criteria before collection. |
 | 2026-09-14 | Version 1.2: added provisional eligibility rules, three screening labels, and a required 100-post pilot review. | Prevent ambiguous posts from being forced into the dataset and calibrate the rules before full collection. |
 | 2026-09-14 | Version 1.3: added data separation, direct and indirect identifier controls, and irreversible longitudinal research IDs. | Establish a privacy and ethics layer before data collection. |
+| 2026-09-14 | Version 1.4: added conservative diagnostic-evidence categories and separate clinical-history variables. | Distinguish explicit self-reported clinician diagnosis from suspicion, unspecified descriptions, and treatment history. |

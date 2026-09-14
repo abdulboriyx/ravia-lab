@@ -26,6 +26,7 @@ export default function DepressionPersonalizationPage() {
             <li><a href="#sample">10,000-post sample</a></li>
             <li><a href="#eligibility">Post eligibility</a></li>
             <li><a href="#privacy">Privacy and ethics</a></li>
+            <li><a href="#diagnostic-evidence">Diagnostic evidence</a></li>
             <li><a href="#protocol">Protocol status</a></li>
           </ol>
         </nav>
@@ -72,6 +73,11 @@ export default function DepressionPersonalizationPage() {
         <p>Before analysis, direct identifiers are removed, including usernames, profile links, names, email addresses, phone numbers, addresses, URLs, workplaces, universities, hospitals, and other explicitly identifying entities where feasible.</p>
         <p>Potentially identifying combinations of details are flagged and generalized. For example, a precise age, nationality, university, and residence in one post may be replaced with broader categories.</p>
         <p>If longitudinal analysis is needed, an irreversible salted HMAC produces a research user ID. The source user name is removed after ID creation, and no lookup mapping is retained.</p>
+
+        <h2 id="diagnostic-evidence">Diagnostic evidence</h2>
+        <p>Diagnosis status is coded as <code>clinician_diagnosis_self_reported</code>, <code>self_diagnosed_or_suspected</code>, <code>diagnosis_unspecified</code>, or <code>ambiguous</code>.</p>
+        <p>Only an explicit first-person statement that a clinician made a diagnosis can receive <code>clinician_diagnosis_self_reported</code>. For example, “My psychiatrist diagnosed me with MDD” qualifies. “I&apos;ve been depressed for five years” does not establish clinician diagnosis.</p>
+        <p>When explicitly named, the clinical source is recorded as psychiatrist, psychologist, family doctor, therapist, or unknown clinician. Medication, psychotherapy, hospitalization, previous diagnosis, current treatment, and treatment discontinuation are captured as separate self-reported history variables—not as proof of diagnosis.</p>
 
         <h2 id="protocol">Protocol status</h2>
         <p>The primary question, secondary questions, interpretive limits, and sample allocation are frozen in <code>RESEARCH_PROTOCOL.md</code>. Eligibility criteria remain provisional until the required pilot review is completed, and outcome definitions must be documented before collection starts.</p>
