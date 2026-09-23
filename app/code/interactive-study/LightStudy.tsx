@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { EyeStructureStudy } from "./EyeStructureStudy";
 import styles from "./light-study.module.css";
 
 type Interaction = "reflection" | "absorption" | "refraction";
@@ -126,9 +127,9 @@ export function LightStudy() {
       <div className={styles.content}>
         <header className={styles.hero}>
           <div className={styles.eyebrow}><span>CODE / INTERACTIVE STUDY</span><span>01 — THE EYE</span></div>
-          <h1>Properties<br />of <em>Light</em></h1>
-          <p>Before light becomes vision, it travels as an electromagnetic wave and interacts with the world. Change the controls to see how its properties and path relate.</p>
-          <div className={styles.topicLine}><span>WAVES</span><span>SPECTRUM</span><span>OPTICS</span></div>
+          <h1>Light &amp;<br />the <em>Eye</em></h1>
+          <p>Follow light from its wave properties through the structures that focus it onto the retina. Change the controls, inspect the anatomy, and connect each part to vision.</p>
+          <div className={styles.topicLine}><span>WAVES</span><span>SPECTRUM</span><span>OPTICS</span><span>ANATOMY</span></div>
         </header>
 
         <section className={styles.studySection} aria-labelledby="wave-title">
@@ -174,7 +175,9 @@ export function LightStudy() {
           </div>
         </section>
 
-        <footer className={styles.reference}>REFERENCE · Bear, Connors &amp; Paradiso, <cite>Neuroscience: Exploring the Brain</cite>, Chapter 9, pp. 295–296 (Figs. 9.1–9.3). Diagrams are original teaching illustrations.</footer>
+        <EyeStructureStudy />
+
+        <footer className={styles.reference}>REFERENCE · Bear, Connors &amp; Paradiso, <cite>Neuroscience: Exploring the Brain</cite>, Chapter 9, pp. 295–299 (Figs. 9.1–9.6). Diagrams are original teaching illustrations.</footer>
       </div>
     </main>
   );
