@@ -18,6 +18,12 @@ export type ArchiveEntry = {
 
 export const archiveEntries: ArchiveEntry[] = [
   {
+    date: "2026-09-23",
+    type: "Code",
+    title: "Interactive Study",
+    description: "A workspace for interactive study.",
+    href: "/code/interactive-study"
+  },
     date: "2026-08-04",
     type: "Code",
     title: "Scina",
