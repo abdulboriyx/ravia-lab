@@ -24,6 +24,7 @@ export const archiveEntries: ArchiveEntry[] = [
     description: "A workspace for interactive study.",
     href: "/code/interactive-study"
   },
+  {
     date: "2026-08-04",
     type: "Code",
     title: "Scina",
