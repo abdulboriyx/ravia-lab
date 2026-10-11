@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { AtlasExperience } from "./AtlasExperience";
 import "./atlas.css";
+import "./atlas-graph.css";
 
 export const metadata: Metadata = {
   title: "MappedTech — US Defense Ecosystem",
