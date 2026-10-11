@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DefenseEcosystemMap } from "./DefenseEcosystemMap";
 import "./map.css";
+import "./records.css";
 
 export const metadata: Metadata = {
   title: "MappedTech — US Defense Ecosystem",
