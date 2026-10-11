@@ -8,8 +8,6 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true }
 };
 
-export const dynamic = "force-dynamic";
-
 export default function MappedTechMinePage() {
   const briefingDate = new Intl.DateTimeFormat("en-US", {
     day: "2-digit",
