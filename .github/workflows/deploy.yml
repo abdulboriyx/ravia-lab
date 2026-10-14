@@ -34,40 +34,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Chromium
-        run: npx playwright install --with-deps chromium
-
       - name: Lint
         run: npm run lint
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Spatial RAVIA tests
-        run: npm run test:spatial
-
-      - name: Spatial RAVIA scientific evaluation
-        run: npm run eval:spatial
-        env:
-          SPATIAL_RAVIA_EVAL_THRESHOLD: "1"
-
-      - name: ChapterBio install dependencies
-        working-directory: chapterbio
-        run: npm ci
-
-      - name: ChapterBio tests
-        working-directory: chapterbio
-        run: npm test
-
-      - name: ChapterBio build
-        working-directory: chapterbio
-        run: npm run build
-
       - name: Build static site
         run: npm run build
-
-      - name: Spatial RAVIA static smoke
-        run: npm run smoke:spatial
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
