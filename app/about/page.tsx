@@ -2,8 +2,7 @@ export default function AboutPage() {
   return (
     <main className="aboutPage">
       <h1 className="aboutStatement">
-        Ravia Lab is exploring the brain, consciousness, and psychiatric
-        diseases.
+        Ravia is a space for work in progress.
       </h1>
     </main>
   );

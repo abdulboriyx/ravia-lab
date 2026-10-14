@@ -1,6 +1,4 @@
 import Image from "next/image";
-import { ArchiveList } from "@/components/ArchiveList";
-import { archiveEntries } from "@/data/archive";
 
 export default function Home() {
   return (
@@ -27,10 +25,9 @@ export default function Home() {
 
       <section className="indexSection" aria-labelledby="index-title">
         <div className="sectionRule">
-          <h2 id="index-title">Everything</h2>
-          <span>Newest first</span>
+          <h2 id="index-title">Ravia</h2>
+          <span>New work will appear here.</span>
         </div>
-        <ArchiveList entries={archiveEntries} />
       </section>
     </main>
   );
