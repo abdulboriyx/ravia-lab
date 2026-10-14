@@ -1,38 +1,24 @@
 import type { Metadata } from "next";
-import { Oxanium, Space_Grotesk } from "next/font/google";
 import Link from "next/link";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteControls } from "@/components/SiteControls";
 import "./globals.css";
-
-const oxanium = Oxanium({
-  subsets: ["latin"],
-  variable: "--font-display",
-  display: "swap"
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap"
-});
+import "./site.css";
 
 export const metadata: Metadata = {
   title: "Ravia",
-  description: "A space for work in progress."
+  description: "An independent research lab exploring minds, intelligence, and computation."
 };
 
 const themeScript = `
 (() => {
   try {
-    const stored = window.localStorage.getItem("theme");
-    const theme = stored === "light" || stored === "dark"
-      ? stored
-      : window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-    document.documentElement.dataset.theme = theme;
+    const stored = window.localStorage.getItem("ravia-theme");
+    const theme = stored === "dark" ? "dark" : "light";
+    document.documentElement.dataset.siteTheme = theme;
     document.documentElement.style.colorScheme = theme;
   } catch {
-    document.documentElement.dataset.theme = "dark";
-    document.documentElement.style.colorScheme = "dark";
+    document.documentElement.dataset.siteTheme = "light";
+    document.documentElement.style.colorScheme = "light";
   }
 })();
 `;
@@ -47,22 +33,30 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
-      <body className={`${oxanium.variable} ${spaceGrotesk.variable}`}>
-        <header className="siteHeader" aria-label="Site header">
-          <Link className="brand" href="/" aria-label="Ravia home">
+      <body className="raviaBody">
+        <div className="paperFrame">
+        <header className="raviaHeader" aria-label="Site header">
+          <Link className="raviaBrand" href="/" aria-label="Ravia home">
             <span className="emblem" aria-hidden="true">
               <span />
               <span />
               <span />
             </span>
-            <span>Ravia</span>
+            <span className="brandWords"><strong>ravia</strong><small>independent research lab</small></span>
           </Link>
-          <nav aria-label="Primary navigation">
+          <nav className="raviaNav" aria-label="Primary navigation">
+            <Link href="/">Home</Link>
             <Link href="/about">About</Link>
-            <ThemeToggle />
+            <Link href="/research">Research</Link>
+            <Link href="/publications">Publications</Link>
+            <Link href="/projects">Projects</Link>
+            <Link href="/lab-notebook">Lab Notebook</Link>
+            <Link href="/cv">CV</Link>
           </nav>
+          <SiteControls />
         </header>
         {children}
+        </div>
       </body>
     </html>
   );
