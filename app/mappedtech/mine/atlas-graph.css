@@ -1,0 +1,11 @@
+.atlas-network-map{display:block;overflow-x:auto;padding:10px;border:1px solid #2d5660;background:radial-gradient(circle,#0d3741,#071a22)}
+.atlas-network-map svg{display:block;width:100%;min-width:760px;height:auto}
+.atlas-graph-heading{fill:#78d1d6;font:700 14px Arial;letter-spacing:.15em}
+.atlas-graph-link{stroke:#3a8f9a;stroke-width:1.4;opacity:.42;cursor:pointer;transition:.15s}
+.atlas-graph-link.invest{stroke:#98c898}
+.atlas-graph-link:hover{stroke:#e4ffff;stroke-width:4;opacity:1}
+.atlas-graph-node{cursor:pointer}
+.atlas-graph-node circle{fill:#81e5ec;filter:drop-shadow(0 0 5px #4bd9e4)}
+.atlas-graph-node text{fill:#cae8e9;font:12px Arial;paint-order:stroke;stroke:#09212a;stroke-width:4}
+.atlas-graph-node:hover text{fill:#fff}
+.atlas-graph-node:hover circle{fill:#fff}
