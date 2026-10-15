@@ -46,6 +46,7 @@ export default function RootLayout({
           </Link>
           <nav className="raviaNav" aria-label="Primary navigation">
             <Link href="/">Home</Link>
+            <Link href="/wild-world">Wild World</Link>
             <Link href="/about">About</Link>
             <Link href="/research">Research</Link>
             <Link href="/publications">Publications</Link>
