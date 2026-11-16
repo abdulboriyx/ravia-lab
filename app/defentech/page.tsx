@@ -1,31 +1,11 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import styles from "./page.module.css";
+import NetworkExplorer from "./NetworkExplorer";
 
 export const metadata: Metadata = {
-  title: "Defentech | Ravia",
-  description: "Explore defense technology companies and Individual Politics through people, votes, legislation, and sources."
+  title: "Defentech — The U.S.–Israel Network | Ravia",
+  description: "A visual research atlas of U.S.–Israel defense authority, financing, procurement, and technology. Explore documented links and open research questions."
 };
 
 export default function DefentechPage() {
-  return (
-    <main className={styles.page}>
-      <section className={styles.content} aria-labelledby="defentech-title">
-        <p className={styles.label}>Ravia / Defentech</p>
-        <h1 id="defentech-title">Defentech</h1>
-        <p className={styles.status}>Explore the companies, people, and technology behind the systems.</p>
-        <Link className={styles.companies} href="/defentech/companies">
-          <span>Research directory</span>
-          <strong>Companies ↗</strong>
-          <p>21 companies. 108 people. Explore capabilities and the funding framework.</p>
-        </Link>
-        <Link className={styles.companies} href="/defentech/individual-politics">
-          <span>Votes &amp; legislation</span>
-          <strong>Individual Politics ↗</strong>
-          <p>31 people. 49 verified votes. Compare decisions, explore the timeline, and visit the sources.</p>
-        </Link>
-        <Link className={styles.home} href="/">Back to Ravia ↗</Link>
-      </section>
-    </main>
-  );
+  return <NetworkExplorer />;
 }
