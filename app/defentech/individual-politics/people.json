@@ -1,0 +1,792 @@
+[
+  {
+    "id": "jim-risch",
+    "name": "Jim Risch",
+    "party": "Republican",
+    "state": "Idaho",
+    "chamber": "Senate",
+    "role": "U.S. Senator",
+    "claims": [],
+    "links": [],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "brian-mast",
+    "name": "Brian Mast",
+    "party": "Republican",
+    "state": "Florida",
+    "chamber": "House",
+    "role": "U.S. Representative",
+    "claims": [],
+    "links": [
+      "https://www.youtube.com/watch?v=IjbZO8LCOf4&t=11s"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "jeanne-shaheen",
+    "name": "Jeanne Shaheen",
+    "party": "Democrat",
+    "state": "New Hampshire",
+    "chamber": "Senate",
+    "role": "U.S. Senator",
+    "claims": [],
+    "links": [],
+    "votes": {
+      "restriction": "Yea"
+    }
+  },
+  {
+    "id": "ben-cardin",
+    "name": "Ben Cardin",
+    "party": "Democrat",
+    "state": "Maryland",
+    "chamber": "Senate",
+    "role": "U.S. Senator",
+    "claims": [],
+    "links": [
+      "https://thehill.com/homenews/senate/4657945-ben-cardin-israel-military-aid-should-continue-war-conduct-report-raised-concerns/"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "michael-mccaul",
+    "name": "Michael McCaul",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "House",
+    "role": "U.S. Representative",
+    "claims": [],
+    "links": [
+      "https://x.com/RepMcCaul/status/1975611968892641354"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "gregory-meeks",
+    "name": "Gregory Meeks",
+    "party": "Democrat",
+    "state": "New York",
+    "chamber": "House",
+    "role": "U.S. Representative",
+    "claims": [],
+    "links": [
+      "https://edition.cnn.com/videos/world/2023/11/14/exp-gregory-meeks-biden-israel-hamas-war-111411aseg1-cnni-world.cnn",
+      "https://www.youtube.com/watch?v=zUh6U-Qbfnk",
+      "https://democrats-foreignaffairs.house.gov/2026/2/statement-by-ranking-member-gregory-meeks-on-israel-s-decision-to-deepen-control-over-the-west-bank"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Nay"
+    }
+  },
+  {
+    "id": "chuck-schumer",
+    "name": "Chuck Schumer",
+    "party": "Democrat",
+    "state": "New York",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 1999; Senate Majority Leader (2021–2024).",
+    "claims": [
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on the motion to advance S.J.Res. 111, opposing an attempt to block the sale of tank ammunition to Israel."
+      }
+    ],
+    "links": [
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "mitch-mcconnell",
+    "name": "Mitch McConnell",
+    "party": "Republican",
+    "state": "Kentucky",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 1985; Senate Republican Leader (2007–2024).",
+    "claims": [
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111, opposing the proposed restriction on tank-ammunition transfers to Israel."
+      }
+    ],
+    "links": [
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "lindsey-graham",
+    "name": "Lindsey Graham",
+    "party": "Republican",
+    "state": "South Carolina",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2003; senior member of the Senate Appropriations Committee.",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Introduced a resolution condemning the Biden administration's decision to suspend shipments of U.S. weapons and ammunition to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on the motion to advance S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "john-thune",
+    "name": "John Thune",
+    "party": "Republican",
+    "state": "South Dakota",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2005; Senate Majority Leader (2025–2026).",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Named among the sponsors of the resolution condemning the withholding of U.S. weapons and ammunition shipments to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "roger-wicker",
+    "name": "Roger Wicker",
+    "party": "Republican",
+    "state": "Mississippi",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2007; Senate Armed Services Committee Ranking Member (2023–2024), Chair (2025–2026).",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Listed as a sponsor of the resolution opposing the Biden administration's withholding of weapons shipments to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "john-cornyn",
+    "name": "John Cornyn",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2002.",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Listed as a sponsor of the resolution condemning the suspension of weapons deliveries to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "tom-cotton",
+    "name": "Tom Cotton",
+    "party": "Republican",
+    "state": "Arkansas",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2015; member of the Senate Armed Services Committee.",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Listed as a sponsor of the resolution condemning restrictions on arms deliveries to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "ted-cruz",
+    "name": "Ted Cruz",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2013.",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Listed as a sponsor of the resolution criticizing the Biden administration for withholding weapons shipments to Israel."
+      },
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111."
+      }
+    ],
+    "links": [
+      "https://www.scott.senate.gov/wp-content/uploads/Biden-Withholding-Weapons-for-Israel-Res.pdf",
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "john-fetterman",
+    "name": "John Fetterman",
+    "party": "Democrat",
+    "state": "Pennsylvania",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2023.",
+    "claims": [
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111, opposing the attempt to halt the proposed tank-ammunition sale to Israel."
+      }
+    ],
+    "links": [
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "chris-coons",
+    "name": "Chris Coons",
+    "party": "Democrat",
+    "state": "Delaware",
+    "chamber": "Senate",
+    "role": "U.S. Senator since 2010; member of the Senate Foreign Relations Committee.",
+    "claims": [
+      {
+        "date": "November 20, 2024",
+        "text": "Voted NAY on S.J.Res. 111, opposing the attempt to block the proposed arms sale."
+      }
+    ],
+    "links": [
+      "https://www.senate.gov/legislative/LIS/roll_call_votes/vote1182/vote_118_2_00292.htm"
+    ],
+    "votes": {
+      "restriction": "Nay"
+    }
+  },
+  {
+    "id": "tom-cole",
+    "name": "Tom Cole",
+    "party": "Republican",
+    "state": "Oklahoma",
+    "chamber": "House",
+    "role": "U.S. Representative since 2003; House Appropriations Committee Chair since 2024.",
+    "claims": [
+      {
+        "date": "April 17, 2024",
+        "text": "Introduced H.R. 8034, the Israel Security Supplemental Appropriations Act, with Ken Calvert and Mario Díaz-Balart."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034, which passed 366–58."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369, the Israel Security Assistance Support Act, intended to accelerate defense-equipment deliveries to Israel."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr8034ih",
+      "https://clerk.house.gov/Votes/2024152",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "ken-calvert",
+    "name": "Ken Calvert",
+    "party": "Republican",
+    "state": "California",
+    "chamber": "House",
+    "role": "U.S. Representative since 1993; senior member of the House Defense Appropriations Subcommittee.",
+    "claims": [
+      {
+        "date": "November 2023",
+        "text": "Original cosponsor of H.R. 6126, proposing supplemental military funding for Israel."
+      },
+      {
+        "date": "April 2024",
+        "text": "Original cosponsor of H.R. 8034."
+      },
+      {
+        "date": "May 2024",
+        "text": "Introduced H.R. 8369, the Israel Security Assistance Support Act, aimed at expediting delivery of U.S. defense articles and services to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369, which passed the House 224–187."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8034ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "mario-diaz-balart",
+    "name": "Mario Díaz-Balart",
+    "party": "Republican",
+    "state": "Florida",
+    "chamber": "House",
+    "role": "U.S. Representative since 2003; member of the House Appropriations Committee.",
+    "claims": [
+      {
+        "date": "November 2023",
+        "text": "Original cosponsor of H.R. 6126, the Israel Security Supplemental Appropriations Act."
+      },
+      {
+        "date": "April 2024",
+        "text": "Original cosponsor of H.R. 8034."
+      },
+      {
+        "date": "May 2024",
+        "text": "Cosponsored H.R. 8369, seeking expedited delivery of defense equipment to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8034ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "kay-granger",
+    "name": "Kay Granger",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "House",
+    "role": "U.S. Representative (1997–2025); House Appropriations Committee Chair (2023–2024).",
+    "claims": [
+      {
+        "date": "October 30, 2023",
+        "text": "Introduced H.R. 6126 to provide emergency supplemental appropriations for Israel."
+      },
+      {
+        "date": "November 2, 2023",
+        "text": "The House passed the legislation 226–196; the proposal did not become law."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034, providing supplemental Israel-related military assistance."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://clerk.house.gov/Votes/2024152"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "rosa-delauro",
+    "name": "Rosa DeLauro",
+    "party": "Democrat",
+    "state": "Connecticut",
+    "chamber": "House",
+    "role": "U.S. Representative since 1991; House Appropriations Committee Chair (2021–2022), Ranking Member (2023–2026).",
+    "claims": [
+      {
+        "date": "September 2021",
+        "text": "Introduced H.R. 5323, proposing $1 billion in emergency funding to replenish Israel's Iron Dome missile-defense system."
+      },
+      {
+        "date": "September 23, 2021",
+        "text": "The House approved the measure by 420–9."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034."
+      }
+    ],
+    "links": [
+      "https://www.congress.gov/bill/117th-congress/house-bill/5323",
+      "https://clerk.house.gov/Votes/2024152"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Nay"
+    }
+  },
+  {
+    "id": "steve-scalise",
+    "name": "Steve Scalise",
+    "party": "Republican",
+    "state": "Louisiana",
+    "chamber": "House",
+    "role": "House Majority Leader (2023–2026).",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Original cosponsor of H.R. 6126, proposing additional military assistance for Israel."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369, seeking continued and expedited weapons deliveries to Israel."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://clerk.house.gov/Votes/2024152",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "elise-stefanik",
+    "name": "Elise Stefanik",
+    "party": "Republican",
+    "state": "New York",
+    "chamber": "House",
+    "role": "U.S. Representative (2015–2025); House Republican Conference Chair (2021–2025).",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Original cosponsor of H.R. 6126."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://clerk.house.gov/Votes/2024152",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "claudia-tenney",
+    "name": "Claudia Tenney",
+    "party": "Republican",
+    "state": "New York",
+    "chamber": "House",
+    "role": "U.S. Representative.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126, supporting supplemental military assistance to Israel."
+      },
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, proposing expedited delivery of defense articles and services to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on the bill."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "michael-lawler",
+    "name": "Michael Lawler",
+    "party": "Republican",
+    "state": "New York",
+    "chamber": "House",
+    "role": "U.S. Representative since 2023; Chair of the House Middle East and North Africa Subcommittee (2025–2026).",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, legislation to expedite U.S. defense deliveries to Israel."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024152",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "john-moolenaar",
+    "name": "John Moolenaar",
+    "party": "Republican",
+    "state": "Michigan",
+    "chamber": "House",
+    "role": "U.S. Representative since 2015.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126."
+      },
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369 to expedite U.S. military assistance and defense-equipment deliveries to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "david-joyce",
+    "name": "David Joyce",
+    "party": "Republican",
+    "state": "Ohio",
+    "chamber": "House",
+    "role": "U.S. Representative since 2013; House Appropriations Committee member.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126."
+      },
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, aiming to ensure delivery of defense articles and services to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "robert-aderholt",
+    "name": "Robert Aderholt",
+    "party": "Republican",
+    "state": "Alabama",
+    "chamber": "House",
+    "role": "U.S. Representative since 1997; senior House appropriator.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126, supplemental appropriations for Israel."
+      },
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, concerning expedited military deliveries."
+      },
+      {
+        "date": "April 20, 2024",
+        "text": "Voted YES on H.R. 8034."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024152"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "randy-weber",
+    "name": "Randy Weber",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "House",
+    "role": "U.S. Representative since 2013.",
+    "claims": [
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, supporting expedited delivery of American military equipment to Israel."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on passage of the bill."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "tom-mcclintock",
+    "name": "Tom McClintock",
+    "party": "Republican",
+    "state": "California",
+    "chamber": "House",
+    "role": "U.S. Representative since 2009.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126, supplemental military funding for Israel."
+      },
+      {
+        "date": "2024",
+        "text": "Cosponsored H.R. 8369, seeking to prevent delays in military-equipment transfers."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://www.govinfo.gov/app/details/BILLS-118hr8369ih"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  },
+  {
+    "id": "ronny-jackson",
+    "name": "Ronny Jackson",
+    "party": "Republican",
+    "state": "Texas",
+    "chamber": "House",
+    "role": "U.S. Representative since 2021.",
+    "claims": [
+      {
+        "date": "2023",
+        "text": "Cosponsored H.R. 6126."
+      },
+      {
+        "date": "2024",
+        "text": "Supported H.R. 8034 and voted YES on its passage."
+      },
+      {
+        "date": "May 16, 2024",
+        "text": "Voted YES on H.R. 8369."
+      }
+    ],
+    "links": [
+      "https://www.govinfo.gov/app/details/BILLS-118hr6126ih",
+      "https://clerk.house.gov/Votes/2024152",
+      "https://clerk.house.gov/Votes/2024217"
+    ],
+    "votes": {
+      "aid": "Yea",
+      "delivery": "Yea"
+    }
+  }
+]
