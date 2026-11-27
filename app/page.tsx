@@ -41,6 +41,7 @@ export default function Home() {
       <aside className="heroAside"><WaveGraph/><blockquote>To understand intelligence,<br/>we must study nature, build models,<br/>and remain open to what we do not yet know.<cite>— ravia</cite></blockquote></aside>
     </section>
     <section className="sectionGrid" aria-label="Explore the lab">{sections.map((section) => <article className="sectionCard" id={section.title.toLowerCase().replaceAll(" ", "-")} key={section.number}><div className="cardText"><span className="cardNumber">{section.number}</span><h2>{section.title}</h2><p className="cardEyebrow">{section.eyebrow}</p><p className="cardDescription">{section.description}</p><Link className="cardLink" href={section.href}>{section.action}<span aria-hidden="true">→</span></Link></div><CardArt art={section.art}/></article>)}</section>
+    <nav aria-label="TimeLine"><Link className="cardLink" href="/timeline">TimeLine<span aria-hidden="true">→</span></Link></nav>
     <footer className="raviaFooter"><span>ravia <i>/</i> independent research lab</span><em>Curiosity, rigor, and room to revise.</em><span>RESEARCH · OPEN SCIENCE · LONG TERM THINKING</span></footer>
   </main>;
 }
